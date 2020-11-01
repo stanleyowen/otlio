@@ -10,11 +10,14 @@ router.route('/').get((req, res) => {
 router.route('/login').post((req,res) => {
     const username = req.body.username;
     const password = req.body.password;
-    User.findOne({ username: username }, (err, user) => {
+    User.findOne({username: username}, (err, user) => {
+        if(!user){
+            return res.status(400).json('User not found');
+        }
         if(err){
             res.status(400).json('Error: '+err);
         }
-        user.comparePassword(password, (err, isMatch) =>{
+        user.comparePassword(password, (err, isMatch) => {
             if(err){
                 res.status(400).json('Error: '+err);
             }
@@ -22,7 +25,7 @@ router.route('/login').post((req,res) => {
                 res.json(user.token);
             }
             else{
-                res.status(400).json('Password not Match');
+                res.status(400).json('Password Mismatch');
             }
         })
     });
@@ -33,9 +36,9 @@ router.route('/register').post((req,res) => {
     const password = req.body.password;
     const token = req.body.token;
     const newUser = new User ({
-        username: username,
-        password: password,
-        token: token,
+        "username": username,
+        "password": password,
+        "token": token,
     });
     newUser.save()
     .then(res.json('User Added!'))

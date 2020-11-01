@@ -10,15 +10,14 @@ const userSchema = new Schema ({
         unique: true,
         trim: true,
         required: true,
-        minlength: 5
     },
     password : {
         type: String,
-        required: true
+        required: true,
     },
     token : {
         type: String,
-        required: true
+        required: true,
     }
 }, {
     timestamps: true
@@ -33,16 +32,16 @@ userSchema.pre('save', function(next) {
             if(err) return next(err);
             user.password = hash;
             next();
-        })
-    })
-})
+        });
+    });
+});
 
 userSchema.methods.comparePassword = function(candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
         if(err) return cb(err);
         cb(null, isMatch);
-    })
-}
+    });
+};
 
 const User = mongoose.model('users', userSchema);
 module.exports = User;
