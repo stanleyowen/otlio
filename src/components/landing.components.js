@@ -10,7 +10,7 @@ export default class Landing extends Component {
         .then(res => {
             (res.data).forEach(i=> {
                 if(i.token === token){
-                    window.location = "/load";
+                    window.location = "/dashboard";
                 }
             })
         })
@@ -22,8 +22,9 @@ export default class Landing extends Component {
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.state = {
-            "username" : "",
-            "password" : ""
+            username : "",
+            password : "",
+            msg : "",
         }
     }
     onChangeUsername(e){
@@ -48,7 +49,7 @@ export default class Landing extends Component {
             cookie.save('token', res.data, {path: '/'});
             window.location = '/';
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err.response));
     }
     render() { 
         return (
@@ -78,9 +79,9 @@ export default class Landing extends Component {
                                     <div className="input-group-prepend">
                                         <span className="input-group-text"><i className="fas fa-lock"></i></span>
                                     </div>
-                                    <input type="text" className="form-control" onChange={this.onChangePassword} placeholder="Password" value={this.state.password} required/>
+                                    <input type="password" className="form-control" onChange={this.onChangePassword} placeholder="Password" value={this.state.password} required/>
                                 </div>
-                                <input type="submit" className="btn btn-outline-primary" onChange=""style={{ width: '100%' }} />
+                                <input type="submit" value="Login" className="btn btn-outline-primary" onChange=""style={{ width: '100%' }} />
                             </form>
                             <p>Haven't Have an Account? <a href="/register">Register</a></p>
                         </div>
