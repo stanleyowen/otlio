@@ -47,7 +47,7 @@ export default class Landing extends Component {
         axios.post('http://localhost:5000/user/login', User)
         .then(res => {
             cookie.save('token', res.data, {path: '/'});
-            window.location = '/';
+            window.location = '/dashboard';
         })
         .catch(err => this.setState({ msg: "Invalid Credentials" }));
     }

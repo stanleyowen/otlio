@@ -66,7 +66,7 @@ export default class Landing extends Component {
         axios.post('http://localhost:5000/user/register', newUser)
         .then(res => {
             cookie.save('token', token, {path: '/'});
-            window.location = '/';
+            window.location = '/dashboard';
         })
         .catch(err => console.log(err));
     }
