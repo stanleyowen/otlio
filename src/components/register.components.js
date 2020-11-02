@@ -23,9 +23,10 @@ export default class Landing extends Component {
         this.onChangePassword2 = this.onChangePassword2.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.state = {
-            "username" : "",
-            "password" : "",
-            "password2" : "",
+            username : "",
+            password : "",
+            password2 : "",
+            msg : null
         }
     }
     onChangeUsername(e){
@@ -45,8 +46,17 @@ export default class Landing extends Component {
     }
     onSubmit(e){
         e.preventDefault();
-        var randomToken = require('random-token').create('~!@#$%^&*()_+=-\/1234567890abcdefghijklmnopqrstuvwwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        var randomToken = require('random-token').create('~!@#$%^&*()_+=-1234567890abcdefghijklmnopqrstuvwwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
         var token = randomToken(80);
+        if(this.state.username.length < 6){
+            return this.setState({ msg: "Username Field must contain at least 6 characters" });
+        }
+        if(this.state.password.length < 6){
+            return this.setState({ msg: "Password must contain at least 6 characters" });
+        }
+        if(this.state.password !== this.state.password2){
+            return this.setState({ msg: "Please Make Sure Both Password are Match!" });
+        }
         const newUser = {
             username: this.state.username,
             password: this.state.password,
@@ -65,19 +75,21 @@ export default class Landing extends Component {
             <section id="landing">
                 <div className="container" style={{ fontFamily:'Itim' }}>
                     <div className="row">
-                        <div className="col-lg-7 col-md-7 col-sm-12" style={{ marginTop:'45vh' }}>
+                        <div className="col-lg-7 col-md-7 col-sm-12" style={{ marginTop:'30vh' }}>
                             <h1>
-                                Welcome to
+                                To Do List
                                 <br/>
-                                Todo App MERN
-                                <br/>
-                                Author : <a href="http://stanleyowen.atwebpages.com" rel="noreferrer" target="_blank">Stanley Owen</a>
+                                <ul style={{ marginTop:'5vh' }}>
+                                    <li>Focus</li>
+                                    <li>Enjoy the little things</li>
+                                    <li><b><i>Smile</i></b> More</li>
+                                </ul>
                             </h1>
                         </div>
-                        <div className="col-lg-5 col-md-5 col-sm-12" style={{ marginTop: '30vh' }}>
-                            <h2><i><b>Register</b></i><br/>Your Account Now</h2>
-                            <br/><br/>
-                            {this.state.password !== this.state.password2 ? (<div className="p-3 mb-2 bg-danger text-white">Please Make Sure Both Password are Match!</div>) : null}
+                        <div className="col-lg-5 col-md-5 col-sm-12" style={{ marginTop: '20vh' }}>
+                            <h2><b>Register</b><br/>Your Account Now</h2>
+                            <br/>
+                            {this.state.msg !== null ? (<div className="p-3 mb-2 bg-danger text-white"> {this.state.msg} </div>) : null}
                             <form onSubmit={this.onSubmit}>
                                 <div className="input-group mb-3">
                                     <div className="input-group-prepend">
@@ -97,8 +109,9 @@ export default class Landing extends Component {
                                     </div>
                                     <input type="password" className="form-control" onChange={this.onChangePassword2} placeholder="Confirm Password" value={this.state.password2} required/>
                                 </div>
-                                <input type="submit" value="Register" className="btn btn-outline-primary" onChange=""style={{ width: '100%' }} />
-                            </form>    
+                                <input type="submit" value="Register" className="btn btn-outline-primary" style={{ width: '100%' }} />
+                            </form>
+                            <p>Already Have an Account? <a href="/">Login</a></p>
                         </div>
                     </div>
                 </div>

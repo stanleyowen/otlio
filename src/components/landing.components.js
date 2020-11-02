@@ -24,7 +24,7 @@ export default class Landing extends Component {
         this.state = {
             username : "",
             password : "",
-            msg : "",
+            msg : null,
         }
     }
     onChangeUsername(e){
@@ -49,25 +49,25 @@ export default class Landing extends Component {
             cookie.save('token', res.data, {path: '/'});
             window.location = '/';
         })
-        .catch(err => console.log(err.response));
+        .catch(err => this.setState({ msg: "Invalid Credentials" }));
     }
     render() { 
         return (
             <section id="landing">
                 <div className="container" style={{ fontFamily:'Itim' }}>
                     <div className="row">
-                        <div className="col-lg-7 col-md-7 col-sm-12" style={{ marginTop:'45vh' }}>
+                        <div className="col-lg-7 col-md-7 col-sm-12" style={{ marginTop:'35vh' }}>
                             <h1>
                                 Welcome to
                                 <br/>
                                 Todo App MERN
                                 <br/>
-                                Author : <a href="http://stanleyowen.atwebpages.com" rel="noreferrer" target="_blank">Stanley Owen</a>
                             </h1>
                         </div>
-                        <div className="col-lg-5 col-md-5 col-sm-12" style={{ marginTop: '30vh' }}>
+                        <div className="col-lg-5 col-md-5 col-sm-12" style={{ marginTop: '25vh' }}>
                             <h2>Login to your Account</h2>
                             <br/><br/>
+                            {this.state.msg !== null ? (<div className="p-3 mb-2 bg-danger text-white"> {this.state.msg} </div>) : null}
                             <form onSubmit={this.onSubmit}>
                                 <div className="input-group mb-3">
                                     <div className="input-group-prepend">
@@ -81,7 +81,7 @@ export default class Landing extends Component {
                                     </div>
                                     <input type="password" className="form-control" onChange={this.onChangePassword} placeholder="Password" value={this.state.password} required/>
                                 </div>
-                                <input type="submit" value="Login" className="btn btn-outline-primary" onChange=""style={{ width: '100%' }} />
+                                <input type="submit" value="Login" className="btn btn-outline-primary" style={{ width: '100%' }} />
                             </form>
                             <p>Haven't Have an Account? <a href="/register">Register</a></p>
                         </div>

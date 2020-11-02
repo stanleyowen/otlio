@@ -10,10 +10,12 @@ const userSchema = new Schema ({
         unique: true,
         trim: true,
         required: true,
+        minlength: 6,
     },
     password : {
         type: String,
         required: true,
+        minlength: 6,
     },
     token : {
         type: String,
