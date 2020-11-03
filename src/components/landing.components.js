@@ -57,14 +57,14 @@ export default class Landing extends Component {
                 <div className="container" style={{ fontFamily:'Itim' }}>
                     <div className="row">
                         <div className="col-lg-7 col-md-7 col-sm-12" style={{ marginTop:'35vh' }}>
-                            <h1>
+                            <h1 className="text-center">
                                 Welcome to
                                 <br/>
                                 Todo App MERN
                                 <br/>
                             </h1>
                         </div>
-                        <div className="col-lg-5 col-md-5 col-sm-12" style={{ marginTop: '25vh' }}>
+                        <div className="col-lg-5 col-md-5 col-sm-12" style={{ margin: '23vh auto 20vh auto' }}>
                             <h2>Login to your Account</h2>
                             <br/><br/>
                             {this.state.msg !== null ? (<div className="p-3 mb-2 bg-danger text-white"> {this.state.msg} </div>) : null}

@@ -86,7 +86,7 @@ export default class Landing extends Component {
                                 </ul>
                             </h1>
                         </div>
-                        <div className="col-lg-5 col-md-5 col-sm-12" style={{ marginTop: '20vh' }}>
+                        <div className="col-lg-5 col-md-5 col-sm-12" style={{ margin: '23vh auto 15vh auto' }}>
                             <h2><b>Register</b><br/>Your Account Now</h2>
                             <br/>
                             {this.state.msg !== null ? (<div className="p-3 mb-2 bg-danger text-white"> {this.state.msg} </div>) : null}
