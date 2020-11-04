@@ -27,6 +27,7 @@ export default class todo extends Component {
         this.onChangeUsername = this.onChangeUsername.bind(this);
         this.onChangeTodo = this.onChangeTodo.bind(this);
         this.onChangeDueDate = this.onChangeDueDate.bind(this);
+        this.logout = this.logout.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
@@ -70,6 +71,10 @@ export default class todo extends Component {
             date: date
         })
     }
+    logout(e) {
+        cookie.remove('token');
+        window.location='/';
+    }
     onSubmit(e){
         e.preventDefault();
         if(this.state.todo.length === 0){
@@ -83,7 +88,6 @@ export default class todo extends Component {
             description: this.state.todo,
             date: this.state.date,
         }
-        console.log(newtodo);
         axios.post('http://localhost:5000/todo/add/', newtodo)
         .then(res => console.log(res.data))
         .catch(err => console.log(err.data));
@@ -112,7 +116,7 @@ export default class todo extends Component {
                             </div>
                             <input type="submit" className="btn btn-outline-primary" value="Add" style={{ width: '100%', marginBottom: '10px' }} />
                             <a href="/dashboard" className="btn btn-outline-warning" style={{ width: '100%', marginBottom: '10px' }}>Discard</a>
-                            <a href="#" className="btn btn-outline-danger" style={{ width: '100%', marginBottom: '10px' }}>Logout</a>
+                            <a href="#" onClick={this.logout} className="btn btn-outline-danger" style={{ width: '100%', marginBottom: '10px' }}>Logout</a>
                         </form>
                     </div>
                 </div>

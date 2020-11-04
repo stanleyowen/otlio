@@ -7,7 +7,7 @@ const Todos = props => (
         <td>{props.todo.description}</td>
         <td>{props.todo.date.substring(0, 10)}</td>
         <td>
-            <a href="#" onClick={()=> {props.deleteTodo(props.todo._id)}}><i class="fas fa-trash-alt"></i></a>
+            <a href="#" onClick={()=> {props.deleteTodo(props.todo._id)}}><i className="fas fa-trash-alt"></i></a>
         </td>
     </tr>
 )
@@ -32,6 +32,7 @@ export default class todo extends Component {
     constructor(props){
         super(props);
 
+        this.logout = this.logout.bind(this);
         this.onChangeUsername = this.onChangeUsername.bind(this);
         this.deleteTodo = this.deleteTodo.bind(this);
 
@@ -65,6 +66,11 @@ export default class todo extends Component {
         .catch((err) => {console.log(err)});
     }
 
+    logout(e) {
+        cookie.remove('token');
+        window.location='/';
+    }
+
     onChangeUsername(e){
         this.setState({
             username: e.target.value
@@ -89,7 +95,7 @@ export default class todo extends Component {
                 <div className="row">
                     <h1>Activity List</h1>
                     <a href="/add" className="btn btn-outline-primary" style={{ width: '100%', marginBottom: '10px' }}>Add Activity</a>
-                    <a href="#" className="btn btn-outline-danger" style={{ width: '100%', marginBottom: '10px' }}>Logout</a>
+                    <a href="#" onClick={this.logout} className="btn btn-outline-danger" style={{ width: '100%', marginBottom: '10px' }}>Logout</a>
                     <table className="table table-stripped">
                         <thead>
                             <tr>
