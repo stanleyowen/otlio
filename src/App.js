@@ -8,6 +8,7 @@ import Landing from './components/landing.components';
 import Register from './components/register.components';
 import Footer from './components/footer.components';
 import Dashboard from './components/todo.components';
+import AddExercise from './components/add-todo.components';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path='/' exact component={Landing} />
       <Route path='/register' component={Register} />
       <Route path='/dashboard' component={Dashboard} />
+      <Route path='/add' component={AddExercise} />
       <Footer />
     </Router>
   );
