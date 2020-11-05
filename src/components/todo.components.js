@@ -57,7 +57,8 @@ export default class todo extends Component {
                 }
             })
         })
-        await axios.get('http://localhost:5000/todo')
+        var userdata = this.state.username;
+        await axios.get('http://localhost:5000/todo/'+userdata)
         .then(res => {
             this.setState({
                 todos: res.data
@@ -85,9 +86,12 @@ export default class todo extends Component {
         })
     }
     todoList(){
-        return this.state.todos.map(i => {
-            return <Todos todo={i} deleteTodo={this.deleteTodo} key={i._id} />; }
-        )
+        console.log(this.state.todos);
+        if(this.state.todos){
+            return this.state.todos.map(i => {
+                return <Todos todo={i} deleteTodo={this.deleteTodo} key={i._id} />; }
+            )
+        }
     }
     render() { 
         return (
