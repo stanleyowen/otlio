@@ -4,11 +4,16 @@ This project is designed using Bootstrap Framework and built using MERN Stack (M
 
 ## Guide / How to Run the App
 - Download the code, fork, or clone it.
-- For Clone, you can use `git clone https://github.com/stanleyowen/MERN-Todo.git`
-- For Fork, you can simply tap **fork** in the top right
-- For Downloading the Code, simply click the code and hit on Download ZIP
+  - For Clone, you can use `git clone https://github.com/stanleyowen/MERN-Todo.git`
+  - For Fork, you can simply tap **fork** in the top right
+  - For Downloading the Code, simply click the code and hit on Download ZIP
 - Download All Dependency :
-- For server side (in the backend directory) : Run `npm install`
-- For client side (in this directory) : Run `npm install`
+  - For server side (in the backend directory) : Run `npm install`
+  - For client side (in this directory) : Run `npm install`
 - In the `backend` directory, create a file called `.env` and type `ATLAS_URI=` and store the MongoDB URI
 - In the `client` side run `npm start` and in the `server` side or `backend` directory run `nodemon server`
+
+Any problems? Contact Stanley via :
+- Website : <a href="http://stanleyowen.atwebpages.com">stanleyowen.atwebpages.com</a>
+- Email : <a href="mailto:stanleyowen06@gmail.com"stanleyowen06@gmail.com</a>
+- Instgaram : <a href="https://instagram.com/stanleyowennn">stanleyowennn</a>
