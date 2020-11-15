@@ -9,7 +9,6 @@
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.0",
     "bootstrap": "^4.5.3",
-    "dotenv": "^8.2.0",
     "materialize-css": "^1.0.0-rc.2",
     "random-token": "0.0.8",
     "react": "^17.0.1",
