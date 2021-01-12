@@ -268,36 +268,33 @@ button, a { user-select: none; cursor: pointer; }
     text-align: center;
     font-size: 50px;
     color: #1976d2;
+    transition: all .4s;
 }
-.main__divider {
+.btn__outline {
     width: 30%;
-    border: none;
-    height: 10px;
-    border-radius: 25px;
-    transition: all .4s;
-    background: linear-gradient(to right, #89253e, #3a6186);
-    background: -webkit-linear-gradient(to right, #89253e, #3a6186);
-}
-.main__button {
+    margin: auto;
+    height: auto;
     display: block;
-    width: 15%;
-    color: #212121;
+    color: #1a73e8;
+    font-size: 20px;
+    font-weight: bold;
     text-align: center;
-    margin: 20px auto;
-    padding: 15px 20px;
+    padding: 15px 25px;
     transition: all .4s;
-    border-radius: 10px;
+    border-radius: 100px;
     text-decoration: none;
-    background-color: #6eb1ff;
-    border: solid 3px transparent;
-    box-shadow: 2px 1000px 1px #FFFFFF inset;
+    background-color: none;
+    border: 2px solid #1a73e8;
+    margin-top: 50px;
 }
-.main__button:hover { background-color: #1976d2; }
-.animation__picture {
-    display: block;
-    margin-top: 150px;
+.btn__outline:hover { background-color: #1976d2; color: #FFFFFF; }
+.green__text { color: #23c739; }
+.badges {
+    position: absolute;
+    bottom: 0;
     width: 100%;
 }
+.badges a { margin-left: 10px; }
 .animation__message {
     display: block;
     margin-left: auto;
@@ -363,22 +360,7 @@ button, a { user-select: none; cursor: pointer; }
 .projects__card:hover .projects__detail { opacity: 1; }
 .projects__detail:hover { color: #1a73e8!important }
 .isCentered { text-align: center; }
-.projects__viewMore {
-    width: 50%;
-    margin: auto;
-    height: auto;
-    color: #1a73e8;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    padding: 15px 25px;
-    transition: all .4s;
-    border-radius: 100px;
-    text-decoration: none;
-    background-color: none;
-    border: 2px solid #1a73e8;
-}
-.projects__viewMore:hover { background-color: #1976d2; color: #FFFFFF; }
+
 .modal {
     left: 0;
     top: 0;

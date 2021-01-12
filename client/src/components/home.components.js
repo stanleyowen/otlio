@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import cookie from 'react-cookies';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import getUserToken from '../library/getUserToken';
+import cookies from 'universal-cookie';
 
-const Todos = props => (
+/*const Todos = props => (
     <tr>
         <td>{props.todo.description}</td>
         <td>{props.todo.date.substring(0, 10)}</td>
@@ -10,25 +10,23 @@ const Todos = props => (
             <a href="#" onClick={()=> {props.deleteTodo(props.todo._id)}}><i className="fas fa-trash-alt"></i></a>
         </td>
     </tr>
-)
+)*/
 
-const token = cookie.load('token');
-async function check_token(){
-    var logged_in = false
-    await axios.get('http://localhost:5000/user')
-    .then(res => {
-        (res.data).forEach(i=> {
-            if(i.token === token){
-                logged_in = true;
-                return true;
-            }
+const Home = () => {
+    useEffect(() => {
+        const token = new cookies().get('token');
+        getUserToken(token)
+        .then(res => {
+            if(res){
+                if(res.status) { window.location='/landing'; }
+                else {
+                    const cookie = new cookies();
+                    cookie.set('token', res.token, {path: '/', maxAge: 604800});
+                }
+            }else { window.location='/welcome'; }
         })
-    })
-    .catch(err => console.log(err));
-    return logged_in;
-}
-
-export default class todo extends Component {
+    }, []);
+    /*
     constructor(props){
         super(props);
 
@@ -93,27 +91,31 @@ export default class todo extends Component {
             )
         }
     }
-    render() { 
-        return (
-            <div className="container" style={{ marginTop: '20vh', fontFamily:'Itim' }}>
-                <div className="row">
-                    <h1>Activity List</h1>
-                    <a href="/add" className="btn btn-outline-primary" style={{ width: '100%', marginBottom: '10px' }}>Add Activity</a>
-                    <a href="#" onClick={this.logout} className="btn btn-outline-danger" style={{ width: '100%', marginBottom: '10px' }}>Logout</a>
-                    <table className="table table-stripped">
-                        <thead>
-                            <tr>
-                                <th>Activity Name</th>
-                                <th>DueDate</th>
-                                <th>Button</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.todoList()}
-                        </tbody>
-                    </table>
-                </div>
+    */
+    return (
+        /*
+        <div className="container" style={{ marginTop: '20vh', fontFamily:'Itim' }}>
+            <div className="row">
+                <h1>Activity List</h1>
+                <a href="/add" className="btn btn-outline-primary" style={{ width: '100%', marginBottom: '10px' }}>Add Activity</a>
+                <a href="#" onClick={this.logout} className="btn btn-outline-danger" style={{ width: '100%', marginBottom: '10px' }}>Logout</a>
+                <table className="table table-stripped">
+                    <thead>
+                        <tr>
+                            <th>Activity Name</th>
+                            <th>DueDate</th>
+                            <th>Button</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.todoList()}
+                    </tbody>
+                </table>
             </div>
-        );
-    }
+        </div>
+        */
+       <div></div>
+    );
 }
+
+export default Home;

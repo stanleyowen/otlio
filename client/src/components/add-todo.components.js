@@ -116,7 +116,7 @@ export default class todo extends Component {
                             </div>
                             <input type="submit" className="btn btn-outline-primary" value="Add" style={{ width: '100%', marginBottom: '10px' }} />
                             <a href="/dashboard" className="btn btn-outline-warning" style={{ width: '100%', marginBottom: '10px' }}>Discard</a>
-                            <a href="#" onClick={this.logout} className="btn btn-outline-danger" style={{ width: '100%', marginBottom: '10px' }}>Logout</a>
+                            <a href="#!" onClick={this.logout} className="btn btn-outline-danger" style={{ width: '100%', marginBottom: '10px' }}>Logout</a>
                         </form>
                     </div>
                 </div>
