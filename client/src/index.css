@@ -291,10 +291,22 @@ button, a { user-select: none; cursor: pointer; }
 .green__text { color: #23c739; }
 .badges {
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
     width: 100%;
 }
 .badges a { margin-left: 10px; }
+.badges button {
+    padding: 2px;
+    transition: all .4s;
+}
+.badges button:hover {
+    border-style: solid;
+    border-color: #bad7fc;
+    background-color: #bad7fc;
+}
+.btn__value { border: auto solid rgb(122, 122, 122); }
+body.dark .badges a button { background-color: #333; color: #FFFFFF; }
+body.dark .badges a button { border: 1px solid #FFF; }
 .animation__message {
     display: block;
     margin-left: auto;
