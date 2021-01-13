@@ -299,14 +299,24 @@ button, a { user-select: none; cursor: pointer; }
     padding: 2px;
     transition: all .4s;
 }
-.badges button:hover {
+.btn__value {
+    background-color: #1a73e8;
+    color: #FFFFFF;
     border-style: solid;
-    border-color: #bad7fc;
-    background-color: #bad7fc;
+    border-color: #1a73e8;
 }
-.btn__value { border: auto solid rgb(122, 122, 122); }
-body.dark .badges a button { background-color: #333; color: #FFFFFF; }
-body.dark .badges a button { border: 1px solid #FFF; }
+body.dark .btn__label {
+    background-color: #333;
+    color: #FFFFFF;
+    border-style: solid;
+    border-color: #333;
+}
+body.dark .btn__value {
+    background-color: #FFF;
+    border-color: #FFF;
+    border-style: solid;
+    color: #333;
+}
 .animation__message {
     display: block;
     margin-left: auto;
