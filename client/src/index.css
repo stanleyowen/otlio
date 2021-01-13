@@ -507,11 +507,17 @@ body.dark .btn__value {
 }
 body.dark .contact__onFocus { background: #FFFFFF; }
 .contact__infoField .contact__inputField:focus + .contact__onFocus { left: 0; }
-#form { padding-top: 120px; }
+#form {
+    width: 60%;
+    padding-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: all .4s;
+}
 .form__contact {
     margin: 20px;
     margin-bottom: 40px;
-    padding: 10px;
+    padding: 40px 10px;
     border-radius: 10px;
     transition: all .4s;
     background-color: #F0F0F0;
@@ -592,6 +598,7 @@ body.dark .contact__onFocus { background: #FFFFFF; }
 @media only screen and (max-width: 1024px) {
     .body__aboutLeft, .body__aboutRight { display: none; }
     .body__about { flex: 1; }
+    #form { width: 70%; }
 }
 @media only screen and (max-width: 900px) {
     .body__aboutLeft,.body__aboutRight { font-size: 320px; }
@@ -615,6 +622,7 @@ body.dark .contact__onFocus { background: #FFFFFF; }
     .contact { margin: auto 25px -70px 25px; }
     .contact__me { padding: 10px; text-align: center; }
     .contact__container { grid-template-columns: auto; }
+    #form { width: 100%; }
     .form__container { grid-template-columns: auto; }
     .footer__socialBtn { width: 75%; }
 }
