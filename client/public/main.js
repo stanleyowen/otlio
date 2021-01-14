@@ -42,7 +42,7 @@ if(currentTheme == "dark"){
     document.body.classList.add("dark");
 }
 
-window.onscroll = function() {scrollButton()};
+/*window.onscroll = function() {scrollButton()};
 
 function scrollButton() {
   if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
@@ -50,7 +50,7 @@ function scrollButton() {
   } else {
     scrollTop_btn.style.display = "none";
   }
-}
+}*/
 
 function scrollToTop() {
     document.body.scrollTop = 0;

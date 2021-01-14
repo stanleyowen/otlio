@@ -536,13 +536,14 @@ body.dark .contact__onFocus { background: #FFFFFF; }
     display: block;
     outline: none;
     margin: auto;
+    margin-top: 30px;
     height: auto;
     color: #1a73e8;
     font-size: 20px;
     text-align: center;
     padding: 15px 25px;
     transition: all .4s;
-    border-radius: 100px;
+    border-radius: 10px;
     text-decoration: none;
     background-color: transparent;
     border: 2px solid #1a73e8;

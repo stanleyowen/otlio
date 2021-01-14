@@ -32,11 +32,11 @@ router.route('/login').post((req,res) => {
 });
 
 router.route('/register').post((req,res) => {
-    const username = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
     const token = req.body.token;
     const newUser = new User ({
-        "username": username,
+        "username": email,
         "password": password,
         "token": token,
     });
