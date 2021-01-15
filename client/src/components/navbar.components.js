@@ -7,7 +7,7 @@ const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 const Navbar = () => {
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
-    useEffect(() => {
+    /*useEffect(() => {
         async function getToken() {
             const token = new cookies().get('token');
             getUserToken(token)
@@ -25,7 +25,7 @@ const Navbar = () => {
             })
         }
         getToken();
-    },[]);
+    },[]);*/
 
     const toggleNavbar = (e) => {
         e.preventDefault();
