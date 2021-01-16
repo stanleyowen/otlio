@@ -3,17 +3,20 @@ import getUserToken from '../library/getUserToken';
 import cookies from 'universal-cookie';
 import axios from 'axios';
 
+const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPsw, setConfirmPsw] = useState('');
     const [errMessage, setErrMessage] = useState('');
+
     const Submit = (e) => {
         e.preventDefault();
         async function submitData(){
-            const registerData = { email, password, confirmPsw }
+            const registerData = { SECRET_KEY, email, password, confirmPsw }
             await axios.post(`${SERVER_URL}/user/register`, registerData)
             .then(res => {
                 if(res && res.status === 200){
@@ -24,10 +27,12 @@ const Register = () => {
             })
             .catch(err => { setErrMessage(err.response.data.message); });
         }
-        /*if(!email || !password || !confirmPsw){ setErrMessage('Please Make Sure to Fill Out All the Required Fields !') }
+        if(!email || !password || !confirmPsw){ setErrMessage('Please Make Sure to Fill Out All the Required Fields !') }
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setErrMessage('Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
-        else if(password !== confirmPsw){ setErrMessage('Please Make Sure Both Password are Match !'); document.getElementById('password').focus(); }*/
-        submitData();
+        else if(email.length < 6 || email.length > 50){ setErrMessage('Please Provide an Email between 6 ~ 50 digits !'); document.getElementById('email').focus(); }
+        else if(password.length < 6 || password.length > 30){ setErrMessage('Please Provide a Password between 6 ~ 30 digits !'); document.getElementById('password').focus(); }
+        else if(password !== confirmPsw){ setErrMessage('Please Make Sure Both Password are Match !'); document.getElementById('password').focus(); }
+        else { submitData(); }
     }
 
     return (
