@@ -17,7 +17,7 @@ const Register = () => {
         e.preventDefault();
         async function submitData(){
             const registerData = { SECRET_KEY, email, password, confirmPsw }
-            await axios.post(`${SERVER_URL}/user/register`, registerData)
+            await axios.post(`${SERVER_URL}/data/users/register`, registerData)
             .then(res => {
                 if(res && res.status === 200){
                     const token = new cookies();
@@ -46,30 +46,31 @@ const Register = () => {
                     <div className="form">
                         { errMessage ? (<div className="message__error">{errMessage}</div>) : null }
                         <form className="contact__form" name="contact__form" onSubmit={Submit}>
+                            <input type="hidden" name="_honeypot" />
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="email">Email <span className="required">*</span></label>
-                                    <input title="Email" id="email" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus/>
+                                    <input title="Email" id="email" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus autoComplete="username"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="form__container">
-                                <input type="hidden" name="_honeypot" />
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="password">Password <span className="required">*</span></label>
-                                        <input title="Password" id="password" type="password" className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required/>
+                                        <input title="Password" id="password" type="password" className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required autoComplete="new-password"/>
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="confirm_psw">Confirm Password <span className="required">*</span></label>
-                                        <input title="Confirm Password" id="confirm_psw" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required/>
+                                        <input title="Confirm Password" id="confirm_psw" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required autoComplete="new-password"/>
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
                             </div>
+                            <p style={{textAlign: 'center'}}>Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
                             <button type="submit" className="contact__sendBtn">Register</button>
                         </form>
                     </div>

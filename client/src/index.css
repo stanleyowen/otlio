@@ -16,6 +16,8 @@ body.dark {
     color: #FFFFFF;
     background-color: #212121;
 }
+a:visited { color: #212121; }
+body.dark a:visited { color: #FFF; }
 body.dark .navbar,
 body.dark .btn__changeMode,
 body.dark .about,
@@ -40,7 +42,8 @@ body.dark .footer {
 }
 body.dark .navbar .animation__underline:after,
 body.dark .contact__body .animation__underline:after,
-body.dark .modal__body .animation__underline:after {
+body.dark .modal__body .animation__underline:after,
+body.dark .animation__underline:after {
     background: #FFFFFF;
 }
 body.dark .modal__container,

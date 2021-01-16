@@ -30,27 +30,28 @@ router.route('/').get((req, res) => {
 })
 
 router.route('/login').post((req,res) => {
-    const username = req.body.username;
+    const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
+    const email = req.body.email;
     const password = req.body.password;
-    User.findOne({username: username}, (err, user) => {
-        if(!user){
-            return res.status(400).json('User not found');
-        }
-        if(err){
-            res.status(400).json('Error: '+err);
-        }
-        user.comparePassword(password, (err, isMatch) => {
-            if(err){
-                res.status(400).json('Error: '+err);
+    if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[8]});
+    else if(SECRET_KEY === CLIENT_SECRET_KEY){
+        User.findOne({email}, (err, user) => {
+            if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+            else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
+            else if(user){
+                user.comparePassword(password, (err, isMatch) => {
+                    if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+                    else if(!isMatch) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
+                    else if(isMatch){
+                        const token = generateToken();
+                        user.token = token;
+                        user.save()
+                        res.json({"message":"success", "token":token})
+                    }
+                })
             }
-            if(isMatch){
-                res.json(user.token);
-            }
-            else{
-                res.status(400).json('Password Mismatch');
-            }
-        })
-    });
+        });
+    }
 });
 
 router.post('/register', jsonParser, (req,res) => {
@@ -73,7 +74,7 @@ router.post('/register', jsonParser, (req,res) => {
                     const token = generateToken();
                     const newUser = new User ({ email, password, token });
                     newUser.save()
-                    .then(() => { res.json({"message":"success", token})})
+                    .then(() => { res.json({"message":"success", "token":token})})
                     .catch(err => res.status(500).json({"code":500, "message":ERR_MSG[0]}))
                 }
             }
