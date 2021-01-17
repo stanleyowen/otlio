@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import getUserToken from '../library/getUserToken';
-import cookies from 'universal-cookie';
 
 /*const Todos = props => (
     <tr>
@@ -13,6 +12,9 @@ import cookies from 'universal-cookie';
 )*/
 
 const Home = () => {
+    useEffect(() => {
+        console.log(localStorage.getItem('__email'));
+    })
     /*
     constructor(props){
         super(props);

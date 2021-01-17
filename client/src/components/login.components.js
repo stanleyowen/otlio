@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import getUserToken from '../library/getUserToken';
-import cookies from 'universal-cookie';
 import axios from 'axios';
 
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
@@ -19,8 +18,7 @@ const Login = () => {
             await axios.post(`${SERVER_URL}/data/accounts/login`, registerData)
             .then(res => {
                 if(res && res.status === 200){
-                    const token = new cookies();
-                    token.set('token', res.data.token, {path: '/', maxAge: 604800});
+                    localStorage.setItem('__token', res.data.token);
                     window.location = '/';
                 }
             })

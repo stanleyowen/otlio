@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import getUserToken from '../library/getUserToken';
-import cookies from 'universal-cookie';
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 
 const redirectLocation = ['/welcome', '/login', '/get-started', '/welcome/', '/login/', '/get-started/'];
@@ -12,12 +11,12 @@ const Navbar = ({ location }) => {
     const locations = useLocation();
     useEffect(() => {
         async function getToken() {
-            const token = new cookies().get('token');
+            const token = localStorage.getItem('__token')
             getUserToken(token)
             .then(res => {
                 if(res && !res.status){
-                    const token = new cookies();
-                    token.set('token', res.token, {path: '/', maxAge: 604800});
+                    localStorage.setItem('__token', res.token);
+                    localStorage.setItem('__email', res.email);
                     setValue_a(['Dashboard',`${CLIENT_URL}`]);
                     setValue_b(['Logout','#!']);
                     if(locations.pathname === redirectLocation) window.location='/';

@@ -7,7 +7,7 @@ const getUserToken = async token => {
         let _userInfo = null;
         const userInfo = { SECRET_KEY, token }
         await axios.post(`${SERVER_URL}/data/accounts/getUserByToken`, userInfo)
-        .then(res => {_userInfo = res.data; console.log(res.data)})
+        .then(res => {_userInfo = res.data; console.log(res.data);})
         .catch(err => _userInfo = err.response);
         return _userInfo;
     }else return undefined;

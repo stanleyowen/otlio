@@ -40,7 +40,7 @@ router.post('/getUserByToken', (req,res) => {
                 const token = generateToken();
                 user.token = token;
                 user.save()
-                res.json({"message":"success", "token":token});
+                res.json({"message":"success", "email":user.email, "token":token});
             }
         })
     }

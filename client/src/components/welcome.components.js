@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import getUserToken from '../library/getUserToken';
-import cookies from 'universal-cookie';
 import axios from 'axios';
 
 const GITHUB_API = process.env.REACT_APP_GITHUB_API;
@@ -10,12 +9,11 @@ const Landing = () => {
     const [license, setLicense] = useState('');
     useEffect(() => {
         async function getToken() {
-            const token = new cookies().get('token');
+            const token = localStorage.getItem('__token');
             getUserToken(token)
             .then(res => {
                 if(res && !res.status){
-                    const token = new cookies();
-                    token.set('token', res.token, {path: '/', maxAge: 604800});
+                    localStorage.setItem('__token', res.token);
                     window.location = '/';
                 }
             })
