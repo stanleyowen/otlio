@@ -1,31 +1,35 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import getUserToken from '../library/getUserToken';
 import cookies from 'universal-cookie';
-
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 
-const Navbar = () => {
+const redirectLocation = ['/welcome', '/login', '/get-started', '/welcome/', '/login/', '/get-started/'];
+
+const Navbar = ({ location }) => {
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
+    const locations = useLocation();
     useEffect(() => {
         async function getToken() {
             const token = new cookies().get('token');
             getUserToken(token)
             .then(res => {
                 if(res && !res.status){
-                    setValue_a(['Dashboard',`${CLIENT_URL}`]);
-                    setValue_b(['Logout','#!']);
                     const token = new cookies();
                     token.set('token', res.token, {path: '/', maxAge: 604800});
-                    window.location = '/';
+                    setValue_a(['Dashboard',`${CLIENT_URL}`]);
+                    setValue_b(['Logout','#!']);
+                    if(locations.pathname === redirectLocation) window.location='/';
                 }else {
                     setValue_a(['Login',`${CLIENT_URL}/login`]);
                     setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
+                    if(locations.pathname === "/") window.location='/welcome';
                 }
             })
         }
         getToken();
-    },[]);
+    },[location]);
 
     const toggleNavbar = (e) => {
         e.preventDefault();

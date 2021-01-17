@@ -19,7 +19,7 @@ connection.once('open', () => {
 
 const usersRouter = require('./routes/users.routes');
 const todoRouter = require('./routes/todo.routes');
-app.use('/data/users/', usersRouter);
+app.use('/data/accounts/', usersRouter);
 app.use('/todo', todoRouter);
 
 app.listen(port, () => {

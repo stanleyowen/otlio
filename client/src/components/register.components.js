@@ -17,7 +17,7 @@ const Register = () => {
         e.preventDefault();
         async function submitData(){
             const registerData = { SECRET_KEY, email, password, confirmPsw }
-            await axios.post(`${SERVER_URL}/data/users/register`, registerData)
+            await axios.post(`${SERVER_URL}/data/accounts/register`, registerData)
             .then(res => {
                 if(res && res.status === 200){
                     const token = new cookies();

@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const jsonParser = require('body-parser').json();
 let User = require('../models/users.models');
 
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -29,7 +28,25 @@ router.route('/').get((req, res) => {
     .catch(err => res.status(400).json('Error :'+err));
 })
 
-router.route('/login').post((req,res) => {
+router.post('/getUserByToken', (req,res) => {
+    const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
+    const token = req.body.token;
+    if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[8]});
+    else if(SECRET_KEY === CLIENT_SECRET_KEY){
+        User.findOne({token}, (err, user) => {
+            if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+            else if(!user) return res.status(404).json({"code":404});
+            else {
+                const token = generateToken();
+                user.token = token;
+                user.save()
+                res.json({"message":"success", "token":token});
+            }
+        })
+    }
+});
+
+router.post('/login', (req,res) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
     const email = req.body.email;
     const password = req.body.password;
@@ -50,11 +67,11 @@ router.route('/login').post((req,res) => {
                     }
                 })
             }
-        });
+        })
     }
 });
 
-router.post('/register', jsonParser, (req,res) => {
+router.post('/register', (req,res) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
     const email = req.body.email;
     const password = req.body.password;
@@ -78,9 +95,9 @@ router.post('/register', jsonParser, (req,res) => {
                     .catch(err => res.status(500).json({"code":500, "message":ERR_MSG[0]}))
                 }
             }
-        });
+        })
     }
     else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
-})
+});
 
 module.exports = router;

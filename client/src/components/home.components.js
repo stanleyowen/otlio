@@ -13,19 +13,6 @@ import cookies from 'universal-cookie';
 )*/
 
 const Home = () => {
-    useEffect(() => {
-        const token = new cookies().get('token');
-        getUserToken(token)
-        .then(res => {
-            if(res){
-                if(res.status) { window.location='/landing'; }
-                else {
-                    const cookie = new cookies();
-                    cookie.set('token', res.token, {path: '/', maxAge: 604800});
-                }
-            }else { window.location='/welcome'; }
-        })
-    }, []);
     /*
     constructor(props){
         super(props);
