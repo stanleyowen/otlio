@@ -8,6 +8,7 @@ const redirectLocation = ['/welcome', '/login', '/get-started', '/welcome/', '/l
 const Navbar = ({ location }) => {
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
+    const [logout, setLogout] = useState('');
     const locations = useLocation();
     useEffect(() => {
         async function getToken() {
@@ -18,7 +19,8 @@ const Navbar = ({ location }) => {
                     localStorage.setItem('__token', res.token);
                     localStorage.setItem('__email', res.email);
                     setValue_a(['Dashboard',`${CLIENT_URL}`]);
-                    setValue_b(['Logout','#!']);
+                    setValue_b(['Logout','#!',Logout]);
+                    setLogout(true);
                     if(locations.pathname === redirectLocation) window.location='/';
                 }else {
                     setValue_a(['Login',`${CLIENT_URL}/login`]);
@@ -29,6 +31,15 @@ const Navbar = ({ location }) => {
         }
         getToken();
     },[location]);
+
+    const Logout = (e) => {
+        e.preventDefault();
+        if(logout === true){
+            let itemsToRemove = ["__token", "__email"];
+            itemsToRemove.forEach(a => localStorage.removeItem(a));
+            window.location = '/login';
+        }
+    }
 
     const toggleNavbar = (e) => {
         e.preventDefault();
@@ -47,7 +58,7 @@ const Navbar = ({ location }) => {
         if(document.body.classList.contains("dark")){
             theme = "dark";
         }
-        localStorage.setItem("theme", theme);
+        localStorage.setItem("__theme", theme);
     }
     
     return (
@@ -61,7 +72,7 @@ const Navbar = ({ location }) => {
                 <a className="navbar__logo" href="/">TodoApp</a>
                 <div className="navbar__menu" id="navbar__menu">
                     <a className="animation__underline" href={value_a[1]}>{value_a[0]}</a>
-                    <a className="animation__underline" href={value_b[1]}>{value_b[0]}</a>
+                    <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[2]}>{value_b[0]}</a>
                 </div>
                 <a href="#!" className="toggleNavbar" onClick={toggleNavbar}><i className="fa fa-bars"></i></a>
             </div>
