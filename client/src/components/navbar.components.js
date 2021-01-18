@@ -8,7 +8,6 @@ const redirectLocation = ['/welcome', '/login', '/get-started', '/welcome/', '/l
 const Navbar = ({ location }) => {
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
-    const [logout, setLogout] = useState('');
     const locations = useLocation();
     useEffect(() => {
         async function getToken() {
@@ -20,8 +19,9 @@ const Navbar = ({ location }) => {
                     localStorage.setItem('__email', res.email);
                     setValue_a(['Dashboard',`${CLIENT_URL}`]);
                     setValue_b(['Logout','#!',Logout]);
-                    setLogout(true);
-                    if(locations.pathname === redirectLocation) window.location='/';
+                    redirectLocation.forEach(a => {
+                        if(locations.pathname === a) window.location='/'; 
+                    });
                 }else {
                     setValue_a(['Login',`${CLIENT_URL}/login`]);
                     setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
@@ -34,11 +34,9 @@ const Navbar = ({ location }) => {
 
     const Logout = (e) => {
         e.preventDefault();
-        if(logout === true){
-            let itemsToRemove = ["__token", "__email"];
-            itemsToRemove.forEach(a => localStorage.removeItem(a));
-            window.location = '/login';
-        }
+        let itemsToRemove = ["__token", "__email"];
+        itemsToRemove.forEach(b => localStorage.removeItem(b));
+        window.location = '/login';
     }
 
     const toggleNavbar = (e) => {
@@ -63,11 +61,6 @@ const Navbar = ({ location }) => {
     
     return (
         <div>
-            <div id="loader-wrapper">
-                <div id="loader"></div>
-                <div className="loader-section section-left"></div>
-                <div className="loader-section section-right"></div>
-            </div>
             <div className="navbar">
                 <a className="navbar__logo" href="/">TodoApp</a>
                 <div className="navbar__menu" id="navbar__menu">
