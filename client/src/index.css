@@ -72,124 +72,6 @@ button, a { user-select: none; cursor: pointer; }
     position: relative;
     z-index: 10001;
 }
-#loader-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-}
-#loader {
-    display: block;
-    position: relative;
-    left: 50%;
-    top: 50%;
-    width: 150px;
-    height: 150px;
-    margin: -75px 0 0 -75px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    border-top-color: #3498db;
-    -webkit-animation: spin 1.5s linear infinite;
-    animation: spin 1.5s linear infinite;
-    z-index: 1001;
-}
-#loader:before {
-    content: "";
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    right: 5px;
-    bottom: 5px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    border-top-color: #e74c3c;
-    -webkit-animation: spin 3s linear infinite;
-    animation: spin 3s linear infinite;
-}
-#loader:after {
-    content: "";
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    bottom: 15px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    border-top-color: #f9c922;
-    -webkit-animation: spin 1s linear infinite;
-    animation: spin 1s linear infinite;
-}
-@-webkit-keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-        -ms-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(360deg);
-        -ms-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-@keyframes spin {
-    0%   { 
-        -webkit-transform: rotate(0deg);
-        -ms-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(360deg);
-        -ms-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-#loader-wrapper .loader-section {
-    position: fixed;
-    top: 0;
-    width: 51%;
-    height: 100%;
-    background: #222222;
-    z-index: 1000;
-    -webkit-transform: translateX(0);
-    -ms-transform: translateX(0);
-    transform: translateX(0);
-}
-#loader-wrapper .loader-section.section-left {
-    left: 0;
-}
-#loader-wrapper .loader-section.section-right {
-    right: 0;
-}
-.loaded #loader-wrapper .loader-section.section-left {
-    -webkit-transform: translateX(-100%);
-        -ms-transform: translateX(-100%);
-            transform: translateX(-100%);
-    -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);  
-            transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-}
-.loaded #loader-wrapper .loader-section.section-right {
-    -webkit-transform: translateX(100%);
-        -ms-transform: translateX(100%);
-            transform: translateX(100%);
-    -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);  
-    transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-}
-.loaded #javascript-required { opacity: 0; display: none; }
-.loaded #loader {
-    opacity: 0;
-    -webkit-transition: all 0.3s ease-out;  
-            transition: all 0.3s ease-out;
-}
-.loaded #loader-wrapper {
-    visibility: hidden;
-    -webkit-transform: translateY(-100%);
-        -ms-transform: translateY(-100%);
-            transform: translateY(-100%);
-    -webkit-transition: all 0.3s 1s ease-out;  
-            transition: all 0.3s 1s ease-out;
-}
 .navbar {
     position: fixed;
     overflow: hidden;
@@ -249,15 +131,6 @@ button, a { user-select: none; cursor: pointer; }
     transition: width 0.3s ease 0s, left 0.3s ease 0s;
     width: 0;
 }
-.btn__scrollTop {
-    position: fixed;
-    bottom: 15vh;
-    right: 2.25vw;
-    padding: 15px;
-    display: none;
-    color: #212121;
-    z-index: 1;
-}
 .btn__changeMode {
     position: fixed;
     border-radius: 100%;
@@ -275,6 +148,11 @@ button, a { user-select: none; cursor: pointer; }
 .main {
     margin: auto 30px;
     padding-top: 180px;
+    transition: all .4s;
+}
+.main__projects {
+    margin: auto 30px;
+    padding-top: 100px;
     transition: all .4s;
 }
 .main__title {
@@ -310,6 +188,22 @@ button, a { user-select: none; cursor: pointer; }
 .badges a { margin-left: 10px; }
 .badges button {
     padding: 2px;
+    transition: all .4s;
+}
+.main__table {
+    width: 100%;
+    overflow: auto;
+    margin-top: 40px;
+    border-collapse: collapse;
+    transition: margin .4s;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid;
+}
+tbody tr:hover {
+    background-color: #e7e5e5;
     transition: all .4s;
 }
 .btn__value {

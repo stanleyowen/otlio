@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import getUserToken from '../library/getUserToken';
 
 /*const Todos = props => (
@@ -12,8 +12,11 @@ import getUserToken from '../library/getUserToken';
 )*/
 
 const Home = () => {
+    const [email, setEmail] = useState('');
+
     useEffect(() => {
-        console.log(localStorage.getItem('__email'));
+        const _email = localStorage.getItem('__email');
+        setEmail(_email);
     })
     /*
     constructor(props){
@@ -103,7 +106,34 @@ const Home = () => {
             </div>
         </div>
         */
-       <div></div>
+       <div className="main__projects">
+           <p>Hi, Welcome Back {email}</p>
+           <table className="main__table">
+                <thead>
+                    <tr>
+                        <th>Activity Name</th>
+                        <th>Labels</th>
+                        <th>Due Date</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>
+                            Hii<br />hello</th>
+                        <th>Hii</th>
+                        <th>Hii</th>
+                        <th>Hii</th>
+                    </tr>
+                    <tr>
+                        <th>Hii</th>
+                        <th>Hii</th>
+                        <th>Hii</th>
+                        <th>Hii</th>
+                    </tr>
+                </tbody>
+           </table>
+       </div>
     );
 }
 

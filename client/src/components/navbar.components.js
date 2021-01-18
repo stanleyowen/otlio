@@ -8,6 +8,7 @@ const redirectLocation = ['/welcome', '/login', '/get-started', '/welcome/', '/l
 const Navbar = ({ location }) => {
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
+    const [value_c, setValue_c] = useState(false);
     const locations = useLocation();
     useEffect(() => {
         async function getToken() {
@@ -19,6 +20,7 @@ const Navbar = ({ location }) => {
                     localStorage.setItem('__email', res.email);
                     setValue_a(['Dashboard',`${CLIENT_URL}`]);
                     setValue_b(['Logout','#!',Logout]);
+                    setValue_c(<i className="fas fa-plus" style={{fontSize: "2.3em"}}></i>)
                     redirectLocation.forEach(a => {
                         if(locations.pathname === a) window.location='/'; 
                     });
@@ -69,6 +71,7 @@ const Navbar = ({ location }) => {
                 </div>
                 <a href="#!" className="toggleNavbar" onClick={toggleNavbar}><i className="fa fa-bars"></i></a>
             </div>
+            {value_c !== false ? (<button className="btn__changeMode" aria-label="Add Todo" style={{bottom: '17vh'}}>{value_c}</button>) : null}
 		    <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}><i className="fas fa-adjust" style={{fontSize: '2em'}}></i></button>
         </div>
     );
