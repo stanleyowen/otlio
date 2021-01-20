@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import getUserToken from '../library/getUserToken';
 
-const listLabel = ["Priority","Secondary","Tertiary"];
-
+const listLabel = ["Priority","Secondary","Important","Do Later"];
 const timestamps = () => {
     var today = new Date();
     var date = today.getDate();
@@ -12,6 +10,7 @@ const timestamps = () => {
     if(month < 10) month = '0'+month;
     return year+'-'+month+'-'+date;
 }
+
 /*const Todos = props => (
     <tr>
         <td>{props.todo.description}</td>
@@ -26,12 +25,11 @@ const Home = () => {
     const [email, setEmail] = useState('');
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
-    const [label, setLabel] = useState(listLabel[0].toLowerCase());
     const [description, setDescription] = useState('');
+    const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     useEffect(() => {
         setEmail(localStorage.getItem('__email'));
-
         const modal = document.getElementById('addTodoModal');
         window.onclick = function(event){
             if(event.target == modal){
@@ -39,7 +37,6 @@ const Home = () => {
                 modal.style.opacity = "0";
             }
         }
-
         document.querySelectorAll('[data-autoresize]').forEach(function (element) {
             element.style.boxSizing = 'border-box';
             var offset = element.offsetHeight - element.clientHeight;
@@ -50,6 +47,28 @@ const Home = () => {
             element.removeAttribute('data-autoresize');
         });
     })
+    
+    const notifContainer = document.getElementById('notif__container');
+    const NOTIFICATION_TYPES = {
+        SUCCESS: 'Success',
+        DANGER: 'Danger'
+    };
+
+    const addNotification = (type, text) => {
+        const newNotification = document.createElement('div');
+        newNotification.classList.add('notification', `notification-${type.toLowerCase()}`);
+        const innerNotification = `<strong>${type}:</strong> ${text}`;
+        newNotification.innerHTML = innerNotification;
+        notifContainer.appendChild(newNotification);
+        return newNotification;
+    }
+
+    const closeNotification = (notification) =>{
+        notification.classList.add('hide');
+        setTimeout(() => {
+            notifContainer.removeChild(notification);
+        }, 500);
+    }
 
     const closeModal = (e) => {
         e.preventDefault();
@@ -57,9 +76,21 @@ const Home = () => {
         modal.style.visibility = "hidden";
         modal.style.opacity = "0";
     }
+
     const submitTodo = (e) => {
         e.preventDefault();
-        console.log(label);
+        if(!title || !date || !description){
+            const required = addNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All Required Fields');
+            setTimeout(() => {
+                closeNotification(required);
+            }, 5000);
+        }
+        else {
+            const success = addNotification(NOTIFICATION_TYPES.SUCCESS, 'Todo Added Successfully');
+            setTimeout(() => {
+                closeNotification(success);
+            }, 5000);
+        }
     }
     /*
     constructor(props){
@@ -168,7 +199,7 @@ const Home = () => {
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
-                                <div className="noMargin">
+                                <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="label">Date <span className="required">*</span></label>
                                         <input type="date" className="contact__inputField datepicker" onChange={(event) => setDate(event.target.value)} value={date}></input>
@@ -195,7 +226,7 @@ const Home = () => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <button type="submit" className="contact__sendBtn">Login</button>
+                            <button type="submit" className="btn__outline" style={{outline: 'none'}}>Add</button>
                         </form>
                     </div>
                 </div>
@@ -226,6 +257,8 @@ const Home = () => {
                     </tr>
                 </tbody>
            </table>
+           <div className="notif__container" id="notif__container">
+           </div>
        </div>
     );
 }

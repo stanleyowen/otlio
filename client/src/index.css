@@ -413,6 +413,45 @@ select {
 .datepicker {
     width: 95%!important;
 }
+.notif__container {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    width: 500px;
+    max-width: calc(100% - 30px);
+}
+.notification {
+    background-color: #FFF;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    color: #FFF;
+    font-size: 16px;
+    padding: 15px 20px;
+    line-height: 20px;
+    margin-bottom: 15px;
+    animation: grow 0.5s ease-in forwards;
+}
+.notification.hide {
+    animation: shrink 0.3s ease-out forwards;
+}
+@keyframes grow {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes shrink {
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+.notification-success { background-color: #55b559; }
+.notification-danger { background-color: #f55145; }
 .contact__onFocus {
     transition: all 0.5s;
     display: inline-block;
