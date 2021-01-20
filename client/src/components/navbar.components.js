@@ -20,7 +20,7 @@ const Navbar = ({ location }) => {
                     localStorage.setItem('__email', res.email);
                     setValue_a(['Dashboard',`${CLIENT_URL}`]);
                     setValue_b(['Logout','#!',Logout]);
-                    setValue_c(<i className="fas fa-plus" style={{fontSize: "2.3em"}}></i>)
+                    setValue_c(<i className="fas fa-plus" style={{fontSize: "2.2em"}}></i>)
                     redirectLocation.forEach(a => {
                         if(locations.pathname === a) window.location='/'; 
                     });
@@ -39,6 +39,13 @@ const Navbar = ({ location }) => {
         let itemsToRemove = ["__token", "__email"];
         itemsToRemove.forEach(b => localStorage.removeItem(b));
         window.location = '/login';
+    }
+
+    const addTodo = (e) => {
+        e.preventDefault();
+        const modal = document.getElementById('addTodoModal');
+        modal.style.visibility = "visible";
+        modal.style.opacity = "1";
     }
 
     const toggleNavbar = (e) => {
@@ -71,7 +78,7 @@ const Navbar = ({ location }) => {
                 </div>
                 <a href="#!" className="toggleNavbar" onClick={toggleNavbar}><i className="fa fa-bars"></i></a>
             </div>
-            {value_c !== false ? (<button className="btn__changeMode" aria-label="Add Todo" style={{bottom: '17vh'}}>{value_c}</button>) : null}
+            {value_c !== false ? (<button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_c}</button>) : null}
 		    <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}><i className="fas fa-adjust" style={{fontSize: '2em'}}></i></button>
         </div>
     );

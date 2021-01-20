@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import getUserToken from '../library/getUserToken';
 
+const listLabel = ["Priority","Secondary","Tertiary"];
+
+const timestamps = () => {
+    var today = new Date();
+    var date = today.getDate();
+    var month = today.getMonth() + 1;
+    var year = today.getFullYear();
+    if(date < 10) date = '0'+date;
+    if(month < 10) month = '0'+month;
+    return year+'-'+month+'-'+date;
+}
 /*const Todos = props => (
     <tr>
         <td>{props.todo.description}</td>
@@ -13,11 +24,43 @@ import getUserToken from '../library/getUserToken';
 
 const Home = () => {
     const [email, setEmail] = useState('');
+    const [title, setTitle] = useState('');
+    const [date, setDate] = useState(timestamps);
+    const [label, setLabel] = useState(listLabel[0].toLowerCase());
+    const [description, setDescription] = useState('');
 
     useEffect(() => {
-        const _email = localStorage.getItem('__email');
-        setEmail(_email);
+        setEmail(localStorage.getItem('__email'));
+
+        const modal = document.getElementById('addTodoModal');
+        window.onclick = function(event){
+            if(event.target == modal){
+                modal.style.visibility = "hidden";
+                modal.style.opacity = "0";
+            }
+        }
+
+        document.querySelectorAll('[data-autoresize]').forEach(function (element) {
+            element.style.boxSizing = 'border-box';
+            var offset = element.offsetHeight - element.clientHeight;
+            element.addEventListener('input', function (event) {
+              event.target.style.height = '-10px';
+              event.target.style.height = event.target.scrollHeight + offset + 'px';
+            });
+            element.removeAttribute('data-autoresize');
+        });
     })
+
+    const closeModal = (e) => {
+        e.preventDefault();
+        const modal = document.getElementById('addTodoModal');
+        modal.style.visibility = "hidden";
+        modal.style.opacity = "0";
+    }
+    const submitTodo = (e) => {
+        e.preventDefault();
+        console.log(label);
+    }
     /*
     constructor(props){
         super(props);
@@ -108,7 +151,57 @@ const Home = () => {
         */
        <div className="main__projects">
            <p>Hi, Welcome Back {email}</p>
-           <table className="main__table">
+           
+           <div id="addTodoModal" className="modal">
+                <div className="modal__container">
+                    <div className="modal__title">
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={closeModal}>&times;</span>
+                        <h2>Add Todo</h2>
+                    </div>
+                    <div className="modal__body">
+                        <form onSubmit={submitTodo}>
+                            <div className="form__container">
+                                <div className="contact__formControl">
+                                    <div className="contact__infoField">
+                                        <label htmlFor="title">Title <span className="required">*</span></label>
+                                        <input title="Title" id="title" type="text" className="contact__inputField" onChange={(event) => setTitle(event.target.value)} value={title} required />
+                                        <span className="contact__onFocus"></span>
+                                    </div>
+                                </div>
+                                <div className="noMargin">
+                                    <div className="contact__infoField">
+                                        <label htmlFor="label">Date <span className="required">*</span></label>
+                                        <input type="date" className="contact__inputField datepicker" onChange={(event) => setDate(event.target.value)} value={date}></input>
+                                        <span className="contact__onFocus"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="contact__formControl">
+                                <div className="contact__infoField">
+                                    <label htmlFor="label">Label <span className="required">*</span></label>
+                                    <select onChange={(event) => setLabel(event.target.value)} value={label}>
+                                        { listLabel.map(c => {
+                                            return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
+                                        }) }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="contact__formControl">
+                                <div className="contact__infoField">
+                                    <label htmlFor="description">Description <span className="required">*</span></label>
+                                    <textarea id="description" className="contact__inputField" data-autoresize rows="2" onChange={(event) => setDescription(event.target.value)} value={description}></textarea>
+                                    <span className="contact__onFocus"></span>
+                                </div>
+                            </div>
+                            <button type="submit" className="contact__sendBtn">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <table className="main__table">
                 <thead>
                     <tr>
                         <th>Activity Name</th>
