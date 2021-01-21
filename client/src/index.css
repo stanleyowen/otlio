@@ -293,12 +293,12 @@ body.dark .btn__value {
 
 .modal {
     left: 0;
-    top: 50px;
+    top: 20px;
+    opacity: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
     position: fixed;
-    opacity: 0;
     visibility: hidden;
     transition: all .5s;
     background-color: rgba(255,255,255,0.5);
@@ -314,7 +314,6 @@ body.dark .btn__value {
     padding-top: 15px;
     padding-bottom: 15px;
     transition: all .4s;
-    border-radius: 100px;
     text-decoration: none;
     background-color: none;
     border: 2px solid #1a73e8;
@@ -324,9 +323,9 @@ body.dark .btn__value {
     width: 80%;
     padding: 15px;
     margin: 5% auto;
-    border-radius: 15px;
+    border-radius: 10px;
     border: 1px solid #888;
-    background-color: #F0F0F0;
+    background-color: #ffffff;
 }
 .modal__title {
     display: block;
@@ -413,11 +412,11 @@ select {
 .datepicker {
     width: 95%!important;
 }
-.notif__container {
+.notifications {
     position: fixed;
     bottom: 15px;
     left: 15px;
-    width: 500px;
+    width: 300px;
     max-width: calc(100% - 30px);
 }
 .notification {

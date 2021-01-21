@@ -2,18 +2,27 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const todoSchema = new Schema ({
-    username: {
+    email: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        minlength: 6,
+        maxlength: 40,
+    },
+    title: {
+        type: String,
+        required: true,
+        maxlength: 40,
     },
     description: {
         type: String,
         required: true,
-        maxlength: 300
+        maxlength: 100,
     },
     date: {
         type: Date,
-        required: true
+        required: true,
+        maxlength: 10,
     }
 }, {
     timestamps: true

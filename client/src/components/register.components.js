@@ -27,8 +27,8 @@ const Register = () => {
         }
         if(!email || !password || !confirmPsw){ setErrMessage('Please Make Sure to Fill Out All the Required Fields !') }
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setErrMessage('Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
-        else if(email.length < 6 || email.length > 50){ setErrMessage('Please Provide an Email between 6 ~ 50 digits !'); document.getElementById('email').focus(); }
-        else if(password.length < 6 || password.length > 30){ setErrMessage('Please Provide a Password between 6 ~ 30 digits !'); document.getElementById('password').focus(); }
+        else if(email.length < 6 || email.length > 40){ setErrMessage('Please Provide an Email between 6 ~ 40 digits !'); document.getElementById('email').focus(); }
+        else if(password.length < 6 || password.length > 40){ setErrMessage('Please Provide a Password between 6 ~ 40 digits !'); document.getElementById('password').focus(); }
         else if(password !== confirmPsw){ setErrMessage('Please Make Sure Both Password are Match !'); document.getElementById('password').focus(); }
         else { submitData(); }
     }

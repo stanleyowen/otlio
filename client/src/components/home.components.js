@@ -48,26 +48,26 @@ const Home = () => {
         });
     })
     
-    const notifContainer = document.getElementById('notif__container');
+    const notifications = document.getElementById('notifications');
     const NOTIFICATION_TYPES = {
-        SUCCESS: 'Success',
-        DANGER: 'Danger'
-    };
-
-    const addNotification = (type, text) => {
-        const newNotification = document.createElement('div');
-        newNotification.classList.add('notification', `notification-${type.toLowerCase()}`);
-        const innerNotification = `<strong>${type}:</strong> ${text}`;
-        newNotification.innerHTML = innerNotification;
-        notifContainer.appendChild(newNotification);
-        return newNotification;
+        SUCCESS: 'success',
+        DANGER: 'danger'
     }
 
-    const closeNotification = (notification) =>{
-        notification.classList.add('hide');
+    const setNotification = (type, text) => {
+        const newNotification = document.createElement('div');
+        newNotification.classList.add('notification', `notification-${type}`);
+        newNotification.innerHTML = `${text}`;
+        notifications.appendChild(newNotification);
+
         setTimeout(() => {
-            notifContainer.removeChild(notification);
-        }, 500);
+            newNotification.classList.add('hide');
+            setTimeout(() => {
+                notifications.removeChild(newNotification);
+            }, 1000);
+        }, 5000);
+        
+        return newNotification;
     }
 
     const closeModal = (e) => {
@@ -79,17 +79,10 @@ const Home = () => {
 
     const submitTodo = (e) => {
         e.preventDefault();
-        if(!title || !date || !description){
-            const required = addNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All Required Fields');
-            setTimeout(() => {
-                closeNotification(required);
-            }, 5000);
-        }
+        if(!title || !date || !label){setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All Required Fields');}
+
         else {
-            const success = addNotification(NOTIFICATION_TYPES.SUCCESS, 'Todo Added Successfully');
-            setTimeout(() => {
-                closeNotification(success);
-            }, 5000);
+            setNotification(NOTIFICATION_TYPES.SUCCESS, 'Todo Added Successfully');
         }
     }
     /*
@@ -221,7 +214,7 @@ const Home = () => {
 
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
-                                    <label htmlFor="description">Description <span className="required">*</span></label>
+                                    <label htmlFor="description">Description</label>
                                     <textarea id="description" className="contact__inputField" data-autoresize rows="2" onChange={(event) => setDescription(event.target.value)} value={description}></textarea>
                                     <span className="contact__onFocus"></span>
                                 </div>
@@ -257,8 +250,7 @@ const Home = () => {
                     </tr>
                 </tbody>
            </table>
-           <div className="notif__container" id="notif__container">
-           </div>
+           <div className="notifications" id="notifications"></div>
        </div>
     );
 }

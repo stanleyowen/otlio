@@ -11,15 +11,15 @@ const ERR_MSG = [
     'Please Make Sure to Fill Out All the Required Fields !',
     'Please Prvide a Valid Email Address !',
     'Please Make Sure Both Password are Match !',
-    'Please Provide an Email between 6 ~ 50 digits !',
-    'Please Provide a Password between 6 ~ 30 digits !',
+    'Please Provide an Email between 6 ~ 40 digits !',
+    'Please Provide a Password between 6 ~ 40 digits !',
     'No Token Provided',
     'Token Mismatch'
 ]
 
 const generateToken = () => {
     const randomToken = require('random-token').create(TOKEN_KEY);
-    return randomToken(100);
+    return randomToken(80);
 }
 
 router.route('/').get((req, res) => {
@@ -84,15 +84,15 @@ router.post('/register', (req,res) => {
             else if(!user){
                 if(!email || !password || !confirmPsw) return res.status(400).json({"code":400, "message":ERR_MSG[3]});
                 else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
-                else if(email.length < 6 || email.length > 50) return res.status(400).json({code:"400", "message":ERR_MSG[6]});
-                else if(password.length < 6 || password.length > 30) return res.status(400).json({code:"400", "message":ERR_MSG[7]});
+                else if(email.length < 6 || email.length > 40) return res.status(400).json({code:"400", "message":ERR_MSG[6]});
+                else if(password.length < 6 || password.length > 40) return res.status(400).json({code:"400", "message":ERR_MSG[7]});
                 else if(password !== confirmPsw) return res.status(400).json({"code":400, "message":ERR_MSG[5]});
                 else {
                     const token = generateToken();
                     const newUser = new User ({ email, password, token });
                     newUser.save()
                     .then(() => { res.json({"message":"success", "token":token})})
-                    .catch(err => res.status(500).json({"code":500, "message":ERR_MSG[0]}))
+                    .catch(() => res.status(500).json({"code":500, "message":ERR_MSG[0]}))
                 }
             }
         })

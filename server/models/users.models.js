@@ -11,13 +11,13 @@ const userSchema = new Schema ({
         trim: true,
         required: true,
         minlength: 6,
-        maxlength: 50,
+        maxlength: 40,
     },
     password : {
         type: String,
         required: true,
         minlength: 6,
-        maxlength: 100,
+        maxlength: 60,
     },
     token : {
         type: String,
