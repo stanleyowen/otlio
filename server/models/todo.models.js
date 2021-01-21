@@ -14,7 +14,7 @@ const todoSchema = new Schema ({
         required: true,
         maxlength: 40,
     },
-    lebel : {
+    label : {
         type: String,
         required: true,
         maxlength: 20,
