@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import cookie from 'react-cookies';
+/*import React, { Component } from 'react';
 import axios from 'axios';
-import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 const token = cookie.load('token');
@@ -123,4 +121,4 @@ export default class todo extends Component {
             </div>
         );
     }
-}
+}*/

@@ -20,7 +20,7 @@ connection.once('open', () => {
 const usersRouter = require('./routes/users.routes');
 const todoRouter = require('./routes/todo.routes');
 app.use('/data/accounts/', usersRouter);
-app.use('/todo', todoRouter);
+app.use('/data/todo/', todoRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

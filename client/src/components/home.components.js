@@ -21,7 +21,7 @@ const timestamps = () => {
     </tr>
 )*/
 
-const Home = () => {
+const Home = ({ location }) => {
     const [email, setEmail] = useState('');
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
@@ -32,7 +32,7 @@ const Home = () => {
         setEmail(localStorage.getItem('__email'));
         const modal = document.getElementById('addTodoModal');
         window.onclick = function(event){
-            if(event.target == modal){
+            if(event.target === modal){
                 modal.style.visibility = "hidden";
                 modal.style.opacity = "0";
             }
@@ -46,7 +46,7 @@ const Home = () => {
             });
             element.removeAttribute('data-autoresize');
         });
-    })
+    }, [location])
     
     const notifications = document.getElementById('notifications');
     const NOTIFICATION_TYPES = {

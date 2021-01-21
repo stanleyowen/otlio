@@ -14,10 +14,14 @@ const todoSchema = new Schema ({
         required: true,
         maxlength: 40,
     },
-    description: {
+    lebel : {
         type: String,
         required: true,
-        maxlength: 100,
+        maxlength: 20,
+    },
+    description: {
+        type: String,
+        maxlength: 120,
     },
     date: {
         type: Date,

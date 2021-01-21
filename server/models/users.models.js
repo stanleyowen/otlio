@@ -22,6 +22,7 @@ const userSchema = new Schema ({
     token : {
         type: String,
         required: true,
+        maxlength: 80,
     }
 }, {
     timestamps: true

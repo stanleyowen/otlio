@@ -24,6 +24,7 @@ const Navbar = ({ location }) => {
                     redirectLocation.forEach(a => {
                         if(locations.pathname === a) window.location='/'; 
                     });
+                    console.log(res);
                 }else {
                     setValue_a(['Login',`${CLIENT_URL}/login`]);
                     setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);

@@ -25,6 +25,7 @@ const Login = () => {
             .catch(err => { setErrMessage(err.response.data.message); });
         }
         if(!email || !password){ setErrMessage('Please Make Sure to Fill Out All the Required Fields !') }
+        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setErrMessage('Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
         else { submitData(); }
     }
 

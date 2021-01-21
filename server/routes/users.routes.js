@@ -1,5 +1,6 @@
 const router = require('express').Router();
 let User = require('../models/users.models');
+let Todo = require('../models/todo.models')
 
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -9,7 +10,7 @@ const ERR_MSG = [
     'Oops! Looks like the Email you registered has alreaady existed',
     'Oops! Username or Password is Invalid',
     'Please Make Sure to Fill Out All the Required Fields !',
-    'Please Prvide a Valid Email Address !',
+    'Please Provide a Valid Email Address !',
     'Please Make Sure Both Password are Match !',
     'Please Provide an Email between 6 ~ 40 digits !',
     'Please Provide a Password between 6 ~ 40 digits !',
@@ -22,28 +23,29 @@ const generateToken = () => {
     return randomToken(80);
 }
 
-router.route('/').get((req, res) => {
-    User.find()
-    .then(users => res.json(users))
-    .catch(err => res.status(400).json('Error :'+err));
-})
-
 router.post('/getUserByToken', (req,res) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
     const token = req.body.token;
     if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[8]});
     else if(SECRET_KEY === CLIENT_SECRET_KEY){
-        User.findOne({token}, (err, user) => {
-            if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-            else if(!user) return res.status(404).json({"code":404});
-            else {
-                const token = generateToken();
-                user.token = token;
-                user.save()
-                res.json({"message":"success", "email":user.email, "token":token});
-            }
-        })
+        if(!token) return res.status(400).json({"code":400, "message":ERR_MSG[8]});
+        else {
+            User.findOne({token}, (err, user) => {
+                if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+                else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
+                else {
+                    const token = generateToken();
+                    const email = user.email;
+                    user.token = token;
+                    user.save()
+                    Todo.find({email})
+                    .then(data => {res.json({"message":"success", "email":user.email, "token":token, "data":data})})
+                    .catch(() => res.status(500).json({"code":500, "message":ERR_MSG[0]}));
+                }
+            })
+        }
     }
+    else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
 });
 
 router.post('/login', (req,res) => {
@@ -52,23 +54,28 @@ router.post('/login', (req,res) => {
     const password = req.body.password;
     if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[8]});
     else if(SECRET_KEY === CLIENT_SECRET_KEY){
-        User.findOne({email}, (err, user) => {
-            if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-            else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
-            else if(user){
-                user.comparePassword(password, (err, isMatch) => {
-                    if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-                    else if(!isMatch) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
-                    else if(isMatch){
-                        const token = generateToken();
-                        user.token = token;
-                        user.save()
-                        res.json({"message":"success", "token":token})
-                    }
-                })
-            }
-        })
+        if(!email || !password) return res.status(400).json({"code":400, "message":ERR_MSG[3]});
+        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
+        else {
+            User.findOne({email}, (err, user) => {
+                if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+                else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
+                else if(user){
+                    user.comparePassword(password, (err, isMatch) => {
+                        if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+                        else if(!isMatch) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
+                        else if(isMatch){
+                            const token = generateToken();
+                            user.token = token;
+                            user.save()
+                            res.json({"message":"success", "token":token})
+                        }
+                    })
+                }
+            })
+        }
     }
+    else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
 });
 
 router.post('/register', (req,res) => {
@@ -91,7 +98,7 @@ router.post('/register', (req,res) => {
                     const token = generateToken();
                     const newUser = new User ({ email, password, token });
                     newUser.save()
-                    .then(() => { res.json({"message":"success", "token":token})})
+                    .then(() => {res.json({"message":"success", "token":token})})
                     .catch(() => res.status(500).json({"code":500, "message":ERR_MSG[0]}))
                 }
             }
