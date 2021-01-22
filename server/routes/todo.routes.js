@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const Exercise = require('../models/todo.models');
 let Todo = require('../models/todo.models');
 let User = require('../models/users.models');
 
@@ -18,13 +17,10 @@ const ERR_MSG = [
     'No Token Provided',
     'Token Mismatch',
     'Please Provide a Title less than 40 digits !',
-    'Please Provide a Label less than 20 digits !'
+    'Please Provide a Label less than 20 digits !',
+    'Please Provide a Description Less than 120 digits !',
+    'Please Provide a Valid Date !'
 ]
-
-const generateToken = () => {
-    const randomToken = require('random-token').create(TOKEN_KEY);
-    return randomToken(80);
-}
 
 router.post('/add', (req,res) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
@@ -39,21 +35,18 @@ router.post('/add', (req,res) => {
         if(!email || !title || !label || !date || !token ) return res.status(400).json({"code":401, "message":ERR_MSG[3]});
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
         else if(title.length > 40) return res.status(400).json({"code":400, "message":ERR_MSG[10]});
+        else if(label.length > 20) return res.status(400).json({"code":400, "message":ERR_MSG[11]});
+        else if(description && description.length > 120) return res.status(400).json({"code":400, "message":ERR_MSG[12]});
+        else if(date.length > 10) return res.status(400).json({"code":400, "message":ERR_MSG[13]});
         else {
-            User.findOne({email}, (err, user) => {
+            User.findOne({email, token}, (err, isMatch) => {
                 if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-                else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
+                else if(!isMatch) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
                 else {
-                    User.findOne({token}, (err, isMatch) => {
-                        if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-                        else if(!isMatch) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
-                        else {
-                            const newExercise = new Exercise({ email, title, label, description, date })
-                            newExercise.save()
-                            .then(() => {res.json({"message":"Todo Added Successfully !"})})
-                            .catch(() => res.status(500).json({"code":500, "message":ERR_MSG[0]}))
-                        }
-                    })
+                    const newTodo = new Todo({ email, title, label, description, date })
+                    newTodo.save()
+                    .then(() => res.json({"message":"Todo Added Successfully !"}))
+                    .catch(() => res.status(500).json({"code":500, "message":ERR_MSG[0]}));
                 }
             })
         }

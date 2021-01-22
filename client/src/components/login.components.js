@@ -17,10 +17,8 @@ const Login = () => {
             const registerData = { SECRET_KEY, email, password }
             await axios.post(`${SERVER_URL}/data/accounts/login`, registerData)
             .then(res => {
-                if(res && res.status === 200){
-                    localStorage.setItem('__token', res.data.token);
-                    window.location = '/';
-                }
+                localStorage.setItem('__token', res.data.token);
+                window.location = '/';
             })
             .catch(err => { setErrMessage(err.response.data.message); });
         }

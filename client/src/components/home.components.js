@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
+const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 const listLabel = ["Priority","Secondary","Important","Do Later"];
+
 const timestamps = () => {
     var today = new Date();
     var date = today.getDate();
@@ -79,11 +85,24 @@ const Home = ({ location }) => {
 
     const submitTodo = (e) => {
         e.preventDefault();
-        if(!title || !date || !label){setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All Required Fields');}
-
-        else {
-            setNotification(NOTIFICATION_TYPES.SUCCESS, 'Todo Added Successfully');
+        const token = localStorage.getItem('__token');
+        async function submitData() {
+            const todoData = { SECRET_KEY, email, token, title, label, description, date };
+            await axios.post(`${SERVER_URL}/data/todo/add`, todoData)
+            .then(res => {
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
+            })
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+            });
         }
+        if(!SECRET_KEY || !email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
+        else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); }
+        else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); }
+        else if(label.length > 20){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" ); }
+        else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !"); }
+        else if(date.length !== 10 || DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
+        else { submitData(); }
     }
     /*
     constructor(props){
