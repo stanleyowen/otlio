@@ -26,7 +26,7 @@ const todoSchema = new Schema ({
     date: {
         type: Date,
         required: true,
-        maxlength: 20,
+        maxlength: 10,
     }
 }, {
     timestamps: true

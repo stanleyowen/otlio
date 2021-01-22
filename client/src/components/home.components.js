@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 const listLabel = ["Priority","Secondary","Important","Do Later"];
+const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
+const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const timestamps = () => {
     var today = new Date();
@@ -28,14 +28,14 @@ const timestamps = () => {
 )*/
 
 const Home = ({ location }) => {
-    const [email, setEmail] = useState('');
+    const email = localStorage.getItem('__email');
+    const token = localStorage.getItem('__token');
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
     const [description, setDescription] = useState('');
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     useEffect(() => {
-        setEmail(localStorage.getItem('__email'));
         const modal = document.getElementById('addTodoModal');
         window.onclick = function(event){
             if(event.target === modal){
@@ -52,13 +52,13 @@ const Home = ({ location }) => {
             });
             element.removeAttribute('data-autoresize');
         });
-    }, [location])
+    }, [location]);
     
     const notifications = document.getElementById('notifications');
     const NOTIFICATION_TYPES = {
         SUCCESS: 'success',
         DANGER: 'danger'
-    }
+    };
 
     const setNotification = (type, text) => {
         const newNotification = document.createElement('div');
@@ -85,24 +85,19 @@ const Home = ({ location }) => {
 
     const submitTodo = (e) => {
         e.preventDefault();
-        const token = localStorage.getItem('__token');
         async function submitData() {
             const todoData = { SECRET_KEY, email, token, title, label, description, date };
             await axios.post(`${SERVER_URL}/data/todo/add`, todoData)
-            .then(res => {
-                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
-            })
-            .catch(err => {
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-            });
+            .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)})
+            .catch(err => {setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)});
         }
         if(!SECRET_KEY || !email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
-        else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); }
-        else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); }
-        else if(label.length > 20){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" ); }
-        else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !"); }
+        else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
+        else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !") }
+        else if(label.length > 20){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" ) }
+        else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !") }
         else if(date.length !== 10 || DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
-        else { submitData(); }
+        else { submitData() }
     }
     /*
     constructor(props){
@@ -194,7 +189,6 @@ const Home = ({ location }) => {
         */
        <div className="main__projects">
            <p>Hi, Welcome Back {email}</p>
-           
            <div id="addTodoModal" className="modal">
                 <div className="modal__container">
                     <div className="modal__title">

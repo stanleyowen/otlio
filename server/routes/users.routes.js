@@ -12,8 +12,8 @@ const ERR_MSG = [
     'Please Make Sure to Fill Out All the Required Fields !',
     'Please Provide a Valid Email Address !',
     'Please Make Sure Both Password are Match !',
-    'Please Provide an Email between 6 ~ 40 digits !',
-    'Please Provide a Password between 6 ~ 40 digits !',
+    'Please Provide an Email between 6 ~ 40 characters !',
+    'Please Provide a Password between 6 ~ 40 characters !',
     'No Token Provided',
     'Token Mismatch'
 ]
