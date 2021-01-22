@@ -1,6 +1,5 @@
 const router = require('express').Router();
 let User = require('../models/users.models');
-let Todo = require('../models/todo.models')
 
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -35,12 +34,9 @@ router.post('/getUserByToken', (req,res) => {
                 else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
                 else {
                     const token = generateToken();
-                    const email = user.email;
                     user.token = token;
-                    user.save()
-                    Todo.find({email})
-                    .then(data => {res.json({"message":"success", "email":user.email, "token":token, "data":data})})
-                    .catch(() => res.status(500).json({"code":500, "message":ERR_MSG[0]}));
+                    user.save();
+                    res.json({"message":"success", "email":user.email, "token":token})
                 }
             })
         }

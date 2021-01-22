@@ -17,23 +17,44 @@ const timestamps = () => {
     return year+'-'+month+'-'+date;
 }
 
-/*const Todos = props => (
-    <tr>
-        <td>{props.todo.description}</td>
-        <td>{props.todo.date.substring(0, 10)}</td>
-        <td>
-            <a href="#" onClick={()=> {props.deleteTodo(props.todo._id)}}><i className="fas fa-trash-alt"></i></a>
-        </td>
-    </tr>
-)*/
+const NOTIFICATION_TYPES = {
+    SUCCESS: 'success',
+    DANGER: 'danger'
+};
+
+const setNotification = (type, text) => {
+    const notifications = document.getElementById('notifications');
+    const newNotification = document.createElement('div');
+    newNotification.classList.add('notification', `notification-${type}`);
+    newNotification.innerHTML = `${text}`;
+    notifications.appendChild(newNotification);
+
+    setTimeout(() => {
+        newNotification.classList.add('hide');
+        setTimeout(() => {
+            notifications.removeChild(newNotification);
+        }, 1000);
+    }, 5000);
+    
+    return newNotification;
+}
 
 const Home = ({ location }) => {
     const email = localStorage.getItem('__email');
-    const token = localStorage.getItem('__token');
+    var token = localStorage.getItem('__token');
+    const [todoData, setTodoData] = useState([]);
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
     const [description, setDescription] = useState('');
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
+
+    useEffect(() => {
+        var token = localStorage.getItem('__token');
+        const postData = { SECRET_KEY, email, token }
+        axios.post(`${SERVER_URL}/data/todo/getData`, postData)
+        .then(res => setTodoData(res.data))
+        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+    })
 
     useEffect(() => {
         const modal = document.getElementById('addTodoModal');
@@ -53,28 +74,19 @@ const Home = ({ location }) => {
             element.removeAttribute('data-autoresize');
         });
     }, [location]);
-    
-    const notifications = document.getElementById('notifications');
-    const NOTIFICATION_TYPES = {
-        SUCCESS: 'success',
-        DANGER: 'danger'
+
+    function todoList() {
+        if(todoData){
+            return todoData.map(a => {
+                return (
+                <tr key={a._id}>
+                    <td>{a.title}</td>
+                    <td>{a.label}</td>
+                    <td>{a.date}</td>
+                </tr>)
+            })
+        }
     };
-
-    const setNotification = (type, text) => {
-        const newNotification = document.createElement('div');
-        newNotification.classList.add('notification', `notification-${type}`);
-        newNotification.innerHTML = `${text}`;
-        notifications.appendChild(newNotification);
-
-        setTimeout(() => {
-            newNotification.classList.add('hide');
-            setTimeout(() => {
-                notifications.removeChild(newNotification);
-            }, 1000);
-        }, 5000);
-        
-        return newNotification;
-    }
 
     const closeModal = (e) => {
         e.preventDefault();
@@ -89,7 +101,8 @@ const Home = ({ location }) => {
             const todoData = { SECRET_KEY, email, token, title, label, description, date };
             await axios.post(`${SERVER_URL}/data/todo/add`, todoData)
             .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)})
-            .catch(err => {setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)});
+            .catch(err => console.log(err)
+            );
         }
         if(!SECRET_KEY || !email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
         else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
@@ -166,27 +179,6 @@ const Home = ({ location }) => {
     }
     */
     return (
-        /*
-        <div className="container" style={{ marginTop: '20vh', fontFamily:'Itim' }}>
-            <div className="row">
-                <h1>Activity List</h1>
-                <a href="/add" className="btn btn-outline-primary" style={{ width: '100%', marginBottom: '10px' }}>Add Activity</a>
-                <a href="#" onClick={this.logout} className="btn btn-outline-danger" style={{ width: '100%', marginBottom: '10px' }}>Logout</a>
-                <table className="table table-stripped">
-                    <thead>
-                        <tr>
-                            <th>Activity Name</th>
-                            <th>DueDate</th>
-                            <th>Button</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.todoList()}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        */
        <div className="main__projects">
            <p>Hi, Welcome Back {email}</p>
            <div id="addTodoModal" className="modal">
@@ -248,19 +240,7 @@ const Home = ({ location }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>
-                            Hii<br />hello</th>
-                        <th>Hii</th>
-                        <th>Hii</th>
-                        <th>Hii</th>
-                    </tr>
-                    <tr>
-                        <th>Hii</th>
-                        <th>Hii</th>
-                        <th>Hii</th>
-                        <th>Hii</th>
-                    </tr>
+                    {todoList()}
                 </tbody>
            </table>
            <div className="notifications" id="notifications"></div>

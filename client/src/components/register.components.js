@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import getUserToken from '../library/getUserToken';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
