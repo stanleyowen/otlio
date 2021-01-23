@@ -28,20 +28,37 @@ const setNotification = (type, text) => {
     newNotification.classList.add('notification', `notification-${type}`);
     newNotification.innerHTML = `${text}`;
     notifications.appendChild(newNotification);
-
     setTimeout(() => {
         newNotification.classList.add('hide');
         setTimeout(() => {
             notifications.removeChild(newNotification);
         }, 1000);
     }, 5000);
-    
     return newNotification;
+}
+
+const titleCase = (a) => {
+    var sentence = a.toLowerCase().split(" ");
+    for (var i = 0; i < sentence.length; i++){ sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1); }
+    sentence.join(" ");
+    return sentence;
+}
+
+const labeling = (a) => {
+    var _label;
+    let _labelClass = null;
+    if(a[0] === listLabel[0]) _labelClass="priority"; 
+    else if(a[0] === listLabel[1]) _labelClass="secondary"; 
+    else if(a[0] === listLabel[2]) _labelClass="important"; 
+    else if(a[0] === listLabel[3]) _labelClass="do-later";
+    else _labelClass = "hello";
+    var _label = `<span class="${_labelClass}">${a}</span>`;
+    return _label;
 }
 
 const Home = ({ location }) => {
     const email = localStorage.getItem('__email');
-    var token = localStorage.getItem('__token');
+    const token = localStorage.getItem('__token');
     const [todoData, setTodoData] = useState([]);
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
@@ -49,12 +66,11 @@ const Home = ({ location }) => {
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     useEffect(() => {
-        var token = localStorage.getItem('__token');
         const postData = { SECRET_KEY, email, token }
         axios.post(`${SERVER_URL}/data/todo/getData`, postData)
         .then(res => setTodoData(res.data))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-    })
+    }, [location])
 
     useEffect(() => {
         const modal = document.getElementById('addTodoModal');
@@ -73,16 +89,16 @@ const Home = ({ location }) => {
             });
             element.removeAttribute('data-autoresize');
         });
-    }, [location]);
+    }, []);
 
     function todoList() {
         if(todoData){
             return todoData.map(a => {
                 return (
                 <tr key={a._id}>
-                    <td>{a.title}</td>
-                    <td>{a.label}</td>
-                    <td>{a.date}</td>
+                    <td>{a.title}<br/>{a.description}</td>
+                    <td>{labeling(titleCase(a.label))}</td>
+                    <td>{a.date.substring(0, 10)}</td>
                 </tr>)
             })
         }
@@ -98,11 +114,19 @@ const Home = ({ location }) => {
     const submitTodo = (e) => {
         e.preventDefault();
         async function submitData() {
+            const modal = document.getElementById('addTodoModal');
             const todoData = { SECRET_KEY, email, token, title, label, description, date };
             await axios.post(`${SERVER_URL}/data/todo/add`, todoData)
-            .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)})
-            .catch(err => console.log(err)
-            );
+            .then(res => {
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
+                modal.style.visibility = "hidden";
+                modal.style.opacity = "0";
+                setTitle('');
+                setLabel(listLabel[0].toLowerCase());
+                setDescription('');
+                setDate(timestamps);
+            })
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
         }
         if(!SECRET_KEY || !email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
         else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
