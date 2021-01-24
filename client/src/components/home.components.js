@@ -20,7 +20,7 @@ const timestamps = () => {
 const NOTIFICATION_TYPES = {
     SUCCESS: 'success',
     DANGER: 'danger'
-};
+}
 
 const setNotification = (type, text) => {
     const notifications = document.getElementById('notifications');
@@ -30,22 +30,18 @@ const setNotification = (type, text) => {
     notifications.appendChild(newNotification);
     setTimeout(() => {
         newNotification.classList.add('hide');
-        setTimeout(() => {
-            notifications.removeChild(newNotification);
-        }, 1000);
+        setTimeout(() => { notifications.removeChild(newNotification) }, 1000);
     }, 5000);
     return newNotification;
 }
 
 const labeling = (a) => {
-    var _label;
-    let _labelClass = null;
-    if(a[1]){if(a[0]+" "+a[1] === listLabel[3]) _labelClass="do-later"; }
+    var _label, _labelClass;
+    if(a[1]){if(a[0]+" "+a[1] === listLabel[3]) _labelClass="do-later"}
     else {
-        if(a[0] === listLabel[0]) _labelClass="priority"; 
-        else if(a[0] === listLabel[1]) _labelClass="secondary"; 
-        else if(a[0] === listLabel[2]) _labelClass="important"; 
-        else _labelClass = "hello";
+        if(a[0] === listLabel[0]) _labelClass="priority";
+        else if(a[0] === listLabel[1]) _labelClass="secondary";
+        else if(a[0] === listLabel[2]) _labelClass="important";
     }
     var _label = <span className={"label "+_labelClass}>{a}</span>;
     return _label;
@@ -60,19 +56,15 @@ const Home = () => {
     const [description, setDescription] = useState('');
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
-    useEffect(() => {
-        async function getTodoData(){
-            const postData = { SECRET_KEY, email, token }
-            await axios.post(`${SERVER_URL}/data/todo/getData`, postData)
-            .then(res => setTodoData(res.data))
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-        }
-        getTodoData();
-    })
+    function getTodoData(){
+        const postData = { SECRET_KEY, email, token }
+        axios.post(`${SERVER_URL}/data/todo/getData`, postData)
+        .then(res => setTodoData(res.data))
+        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+    }
 
     useEffect(() => {
         const modal = document.getElementById('addTodoModal');
-        const deleteBtn = document.getElementById('delete-btn');
         window.onclick = function(event){
             if(event.target === modal){
                 modal.style.visibility = "hidden";
@@ -88,6 +80,7 @@ const Home = () => {
             });
             element.removeAttribute('data-autoresize');
         });
+        getTodoData();
     }, []);
 
     const todoList = () => {
@@ -109,6 +102,7 @@ const Home = () => {
         await axios.post(`${SERVER_URL}/data/todo/delete`, postData)
         .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+        getTodoData();
     }
 
     const titleCase = (a) => {
@@ -146,6 +140,7 @@ const Home = () => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
                 btn.removeAttribute("disabled");
             });
+            getTodoData();
         }
         if(!SECRET_KEY || !email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
         else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
