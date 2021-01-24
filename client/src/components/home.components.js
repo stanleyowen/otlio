@@ -58,6 +58,7 @@ const Home = () => {
 
     function getTodoData(){
         const postData = { SECRET_KEY, email, token }
+        console.log(postData)
         axios.post(`${SERVER_URL}/data/todo/getData`, postData)
         .then(res => setTodoData(res.data))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
@@ -91,7 +92,7 @@ const Home = () => {
                     <td>{a.title}<br/>{a.description}</td>
                     <td>{labeling(titleCase(a.label))}</td>
                     <td>{a.date.substring(0, 10)}</td>
-                    <td><a href="#" onClick={() => deleteData(a._id)}>Delete</a></td>
+                    <td><span className="btn-config"><a href={`/edit/${a._id}`}>Edit</a></span><span><a href="#" onClick={() => deleteData(a._id)}>Delete</a></span></td>
                 </tr>)
             })
         }
@@ -219,7 +220,6 @@ const Home = () => {
                     {todoList()}
                 </tbody>
            </table>
-           <div className="notifications" id="notifications"></div>
        </div>
     );
 }

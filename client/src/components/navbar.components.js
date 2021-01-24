@@ -5,6 +5,24 @@ const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 
 const redirectLocation = ['/welcome', '/login', '/get-started', '/welcome/', '/login/', '/get-started/'];
 
+const NOTIFICATION_TYPES = {
+    SUCCESS: 'success',
+    DANGER: 'danger'
+}
+
+const setNotification = (type, text) => {
+    const notifications = document.getElementById('notifications');
+    const newNotification = document.createElement('div');
+    newNotification.classList.add('notification', `notification-${type}`);
+    newNotification.innerHTML = `${text}`;
+    notifications.appendChild(newNotification);
+    setTimeout(() => {
+        newNotification.classList.add('hide');
+        setTimeout(() => { notifications.removeChild(newNotification) }, 1000);
+    }, 5000);
+    return newNotification;
+}
+
 const Navbar = ({ location }) => {
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
@@ -60,13 +78,14 @@ const Navbar = ({ location }) => {
     }
 
     const changeMode = (e) => {
-        e.preventDefault();
+        /*e.preventDefault();
         document.body.classList.toggle("dark");
         let theme = "light";
         if(document.body.classList.contains("dark")){
             theme = "dark";
         }
-        localStorage.setItem("__theme", theme);
+        localStorage.setItem("__theme", theme);*/
+        setNotification(NOTIFICATION_TYPES.SUCCESS, "Dark Mode is Under Built! Stay Tune!")
     }
     
     return (
@@ -81,6 +100,7 @@ const Navbar = ({ location }) => {
             </div>
             {value_c !== false ? (<button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_c}</button>) : null}
 		    <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}><i className="fas fa-adjust" style={{fontSize: '2em'}}></i></button>
+            <div className="notifications" id="notifications"></div>
         </div>
     );
 }

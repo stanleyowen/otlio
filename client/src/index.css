@@ -301,6 +301,7 @@ body.dark .btn__value {
 .secondary { background-color: rgb(255, 115, 1); }
 .important { background-color: rgb(118, 44, 255); }
 .do-later { background-color: green; }
+.btn-config { margin-right: 10px; }
 .modal {
     left: 0;
     top: 20px;

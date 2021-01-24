@@ -9,7 +9,7 @@ import Register from './components/register.components';
 import Login from './components/login.components';
 import Footer from './components/footer.components';
 import Home from './components/home.components';
-import AddExercise from './components/add-todo.components';
+import EditTodo from './components/edit.components';
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
       <Route path='/welcome' component={Welcome} />
       <Route path='/get-started' component={Register} />
       <Route path='/login' component={Login} />
-      <Route path='/add' component={AddExercise} />
+      <Route path='/edit/:id' component={EditTodo} />
       <Footer />
     </Router>
   );
