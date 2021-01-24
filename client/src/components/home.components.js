@@ -37,26 +37,21 @@ const setNotification = (type, text) => {
     return newNotification;
 }
 
-const titleCase = (a) => {
-    var sentence = a.toLowerCase().split(" ");
-    for (var i = 0; i < sentence.length; i++){ sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1); }
-    sentence.join(" ");
-    return sentence;
-}
-
 const labeling = (a) => {
     var _label;
     let _labelClass = null;
-    if(a[0] === listLabel[0]) _labelClass="priority"; 
-    else if(a[0] === listLabel[1]) _labelClass="secondary"; 
-    else if(a[0] === listLabel[2]) _labelClass="important"; 
-    else if(a[0] === listLabel[3]) _labelClass="do-later";
-    else _labelClass = "hello";
-    var _label = `<span class="${_labelClass}">${a}</span>`;
+    if(a[1]){if(a[0]+" "+a[1] === listLabel[3]) _labelClass="do-later"; }
+    else {
+        if(a[0] === listLabel[0]) _labelClass="priority"; 
+        else if(a[0] === listLabel[1]) _labelClass="secondary"; 
+        else if(a[0] === listLabel[2]) _labelClass="important"; 
+        else _labelClass = "hello";
+    }
+    var _label = <span className={"label "+_labelClass}>{a}</span>;
     return _label;
 }
 
-const Home = ({ location }) => {
+const Home = () => {
     const email = localStorage.getItem('__email');
     const token = localStorage.getItem('__token');
     const [todoData, setTodoData] = useState([]);
@@ -66,14 +61,18 @@ const Home = ({ location }) => {
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     useEffect(() => {
-        const postData = { SECRET_KEY, email, token }
-        axios.post(`${SERVER_URL}/data/todo/getData`, postData)
-        .then(res => setTodoData(res.data))
-        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-    }, [location])
+        async function getTodoData(){
+            const postData = { SECRET_KEY, email, token }
+            await axios.post(`${SERVER_URL}/data/todo/getData`, postData)
+            .then(res => setTodoData(res.data))
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+        }
+        getTodoData();
+    })
 
     useEffect(() => {
         const modal = document.getElementById('addTodoModal');
+        const deleteBtn = document.getElementById('delete-btn');
         window.onclick = function(event){
             if(event.target === modal){
                 modal.style.visibility = "hidden";
@@ -91,7 +90,7 @@ const Home = ({ location }) => {
         });
     }, []);
 
-    function todoList() {
+    const todoList = () => {
         if(todoData){
             return todoData.map(a => {
                 return (
@@ -99,10 +98,25 @@ const Home = ({ location }) => {
                     <td>{a.title}<br/>{a.description}</td>
                     <td>{labeling(titleCase(a.label))}</td>
                     <td>{a.date.substring(0, 10)}</td>
+                    <td><a href="#" onClick={() => deleteData(a._id)}>Delete</a></td>
                 </tr>)
             })
         }
     };
+
+    const deleteData = async id => {
+        const postData = { SECRET_KEY, email, token, id }
+        await axios.post(`${SERVER_URL}/data/todo/delete`, postData)
+        .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
+        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+    }
+
+    const titleCase = (a) => {
+        var sentence = a.toLowerCase().split(" ");
+        for (var i = 0; i < sentence.length; i++){ sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1); }
+        sentence.join(" ");
+        return sentence;
+    }
 
     const closeModal = (e) => {
         e.preventDefault();
@@ -115,6 +129,7 @@ const Home = ({ location }) => {
         e.preventDefault();
         async function submitData() {
             const modal = document.getElementById('addTodoModal');
+            const btn = document.getElementById('btn-addTodo');
             const todoData = { SECRET_KEY, email, token, title, label, description, date };
             await axios.post(`${SERVER_URL}/data/todo/add`, todoData)
             .then(res => {
@@ -125,8 +140,12 @@ const Home = ({ location }) => {
                 setLabel(listLabel[0].toLowerCase());
                 setDescription('');
                 setDate(timestamps);
+                btn.removeAttribute("disabled");
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                btn.removeAttribute("disabled");
+            });
         }
         if(!SECRET_KEY || !email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
         else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
@@ -134,74 +153,12 @@ const Home = ({ location }) => {
         else if(label.length > 20){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" ) }
         else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !") }
         else if(date.length !== 10 || DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
-        else { submitData() }
-    }
-    /*
-    constructor(props){
-        super(props);
-
-        this.logout = this.logout.bind(this);
-        this.onChangeUsername = this.onChangeUsername.bind(this);
-        this.deleteTodo = this.deleteTodo.bind(this);
-
-        this.state = {
-            username : "",
-            todos: [],
+        else { 
+            const btn = document.getElementById('btn-addTodo');
+            btn.setAttribute("disabled", "true");
+            submitData();
         }
     }
-
-    async componentDidMount(){
-        if(!check_token){
-            window.location = "/";
-        }
-        const token = cookie.load('token');
-        await axios.get('http://localhost:5000/user')
-        .then(res => {
-            (res.data).forEach(i => {
-                if(i.token === token){
-                    this.setState({
-                        username: i.username
-                    })
-                }
-            })
-        })
-        var userdata = this.state.username;
-        await axios.get('http://localhost:5000/todo/'+userdata)
-        .then(res => {
-            this.setState({
-                todos: res.data
-            })
-        })
-        .catch((err) => {console.log(err)});
-    }
-
-    logout(e) {
-        cookie.remove('token');
-        window.location='/';
-    }
-
-    onChangeUsername(e){
-        this.setState({
-            username: e.target.value
-        })
-    }
-    deleteTodo(id){
-        axios.delete('http://localhost:5000/todo/'+id)
-        .then(res => { console.log(res.data)} );
-
-        this.setState({
-            todos: this.state.todos.filter(el => el._id !== id)
-        })
-    }
-    todoList(){
-        console.log(this.state.todos);
-        if(this.state.todos){
-            return this.state.todos.map(i => {
-                return <Todos todo={i} deleteTodo={this.deleteTodo} key={i._id} />; }
-            )
-        }
-    }
-    */
     return (
        <div className="main__projects">
            <p>Hi, Welcome Back {email}</p>
@@ -248,7 +205,7 @@ const Home = ({ location }) => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <button type="submit" className="btn__outline" style={{outline: 'none'}}>Add</button>
+                            <button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Add</button>
                         </form>
                     </div>
                 </div>

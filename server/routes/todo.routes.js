@@ -17,8 +17,33 @@ const ERR_MSG = [
     'Please Provide a Title less than 40 characters !',
     'Please Provide a Label less than 20 characters !',
     'Please Provide a Description Less than 120 characters !',
-    'No Data Found'
+    'No Data Found',
+    'Data Deleted Successfully'
 ]
+
+router.post('/delete', (req,res) => {
+    const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
+    const email = req.body.email;
+    const token = req.body.token;
+    const id = req.body.id;
+    if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[1]});
+    else if(SECRET_KEY === CLIENT_SECRET_KEY){
+        if(!id || !token) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
+        else {
+            User.findOne({email, token}, (err, user) => {
+                if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+                else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[10]});
+                else {
+                    Todo.findByIdAndDelete(id, (err, todoData) => {
+                        if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+                        else if(!todoData) return res.status(404).json({"code":404, "message":ERR_MSG[10]});
+                        else return res.json({"code":200, "message":ERR_MSG[11]});
+                    })
+                }
+            })
+        }
+    } else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
+})
 
 router.post('/getData', (req,res) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
@@ -40,8 +65,7 @@ router.post('/getData', (req,res) => {
                 }
             })
         }
-    }
-    else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
+    } else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
 })
 
 router.post('/add', (req,res) => {
@@ -73,8 +97,7 @@ router.post('/add', (req,res) => {
                 }
             })
         }
-    }
-    else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
+    } else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
 })
 
 router.route('/:id').delete((req,res) => {

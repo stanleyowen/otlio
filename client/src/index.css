@@ -290,7 +290,17 @@ body.dark .btn__value {
 .projects__card:hover .projects__detail { opacity: 1; }
 .projects__detail:hover { color: #1a73e8!important }
 .isCentered { text-align: center; }
-
+.label {
+    display: inline-block;
+    color: white;
+    font-size: 15px;
+    padding: 5px 10px;
+    border-radius: 50px;
+}
+.priority { background-color: rgb(224, 64, 64); }
+.secondary { background-color: rgb(255, 115, 1); }
+.important { background-color: rgb(118, 44, 255); }
+.do-later { background-color: green; }
 .modal {
     left: 0;
     top: 20px;
