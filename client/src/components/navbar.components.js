@@ -1,27 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import getUserToken from '../library/getUserToken';
+import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
+
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 
 const redirectLocation = ['/welcome', '/login', '/get-started', '/welcome/', '/login/', '/get-started/'];
-
-const NOTIFICATION_TYPES = {
-    SUCCESS: 'success',
-    DANGER: 'danger'
-}
-
-const setNotification = (type, text) => {
-    const notifications = document.getElementById('notifications');
-    const newNotification = document.createElement('div');
-    newNotification.classList.add('notification', `notification-${type}`);
-    newNotification.innerHTML = `${text}`;
-    notifications.appendChild(newNotification);
-    setTimeout(() => {
-        newNotification.classList.add('hide');
-        setTimeout(() => { notifications.removeChild(newNotification) }, 1000);
-    }, 5000);
-    return newNotification;
-}
 
 const Navbar = ({ location }) => {
     const [value_a, setValue_a] = useState([]);

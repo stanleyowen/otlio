@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 import axios from 'axios';
 
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
@@ -15,24 +16,6 @@ const timestamps = () => {
     if(date < 10) date = '0'+date;
     if(month < 10) month = '0'+month;
     return year+'-'+month+'-'+date;
-}
-
-const NOTIFICATION_TYPES = {
-    SUCCESS: 'success',
-    DANGER: 'danger'
-}
-
-const setNotification = (type, text) => {
-    const notifications = document.getElementById('notifications');
-    const newNotification = document.createElement('div');
-    newNotification.classList.add('notification', `notification-${type}`);
-    newNotification.innerHTML = `${text}`;
-    notifications.appendChild(newNotification);
-    setTimeout(() => {
-        newNotification.classList.add('hide');
-        setTimeout(() => { notifications.removeChild(newNotification) }, 1000);
-    }, 5000);
-    return newNotification;
 }
 
 const labeling = (a) => {
