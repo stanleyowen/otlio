@@ -41,7 +41,6 @@ const Home = () => {
 
     function getTodoData(){
         const postData = { SECRET_KEY, email, token }
-        console.log(postData)
         axios.post(`${SERVER_URL}/data/todo/getData`, postData)
         .then(res => setTodoData(res.data))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));

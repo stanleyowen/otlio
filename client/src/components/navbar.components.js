@@ -24,7 +24,7 @@ const Navbar = ({ location }) => {
                     setValue_b(['Logout','#!',Logout]);
                     setValue_c(<i className="fas fa-plus" style={{fontSize: "2.2em"}}></i>)
                     redirectLocation.forEach(a => {
-                        if(locations.pathname === a) window.location='/'; 
+                        if(locations.pathname === a) window.location='/';
                     });
                     console.log(res);
                 }else {

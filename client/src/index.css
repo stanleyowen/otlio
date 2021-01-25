@@ -461,6 +461,7 @@ select {
     }
 }
 .notification-success { background-color: #55b559; }
+.notification-warning { background-color: #ffcc00; }
 .notification-danger { background-color: #f55145; }
 .contact__onFocus {
     transition: all 0.5s;

@@ -80,7 +80,7 @@ router.post('/update', (req,res) => {
                                     todoData.description = description;
                                     todoData.date = Date.parse(unformattedDate);
                                     todoData.save();
-                                    res.json({"code":200, "email":ERR_MSG[13]})
+                                    res.json({"code":200, "message":ERR_MSG[13]})
                                 }
                                 else return res.status(400).json({"code":400, "message":ERR_MSG[12]});
                             }else {
@@ -89,7 +89,7 @@ router.post('/update', (req,res) => {
                                 todoData.description = description;
                                 todoData.date = Date.parse(unformattedDate);
                                 todoData.save();
-                                res.json({"code":200, "email":ERR_MSG[13]});
+                                res.json({"code":200, "message":ERR_MSG[13]});
                             }
                         }
                     })

@@ -64,7 +64,7 @@ router.post('/login', (req,res) => {
                             const token = generateToken();
                             user.token = token;
                             user.save()
-                            res.json({"message":"success", "token":token})
+                            res.json({"message":"success", "token":token, "email": user.email})
                         }
                     })
                 }

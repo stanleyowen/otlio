@@ -8,6 +8,8 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const listLabel = ["Priority","Secondary","Important","Do Later"];
 
 const Edit = () => {
+    const email = localStorage.getItem('__email');
+    const token = localStorage.getItem('__token');
     const {id} = useParams();
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
@@ -15,8 +17,6 @@ const Edit = () => {
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     useEffect(() => {
-        const email = localStorage.getItem('__email');
-        const token = localStorage.getItem('__token');
         if(email && token) {
             const postData = { SECRET_KEY, email, token, id }
             axios.post(`${SERVER_URL}/data/todo/getData/${id}`, postData)
@@ -26,13 +26,26 @@ const Edit = () => {
                 setDescription(res.data.description);
                 setLabel(res.data.label);
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                setTimeout(() => { window.location='/' }, 2000)
+            })
         }else window.location='/welcome';
     },[])
 
+    const updateData = (e) => {
+        e.preventDefault();
+        const postData = { SECRET_KEY, email, token, id, title, label, description, date }
+        axios.post(`${SERVER_URL}/data/todo/update/`, postData)
+        .then(res => {
+            setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
+            setTimeout(() => { window.location='/' }, 2000)
+        })
+        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+    }
     return (
         <div className="main__projects">
-            <form>
+            <form onSubmit={updateData}>
                 <div className="form__container">
                     <div className="contact__formControl">
                         <div className="contact__infoField">

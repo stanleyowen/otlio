@@ -17,6 +17,7 @@ const Login = () => {
             await axios.post(`${SERVER_URL}/data/accounts/login`, registerData)
             .then(res => {
                 localStorage.setItem('__token', res.data.token);
+                localStorage.setItem('__email', res.data.email);
                 window.location = '/';
             })
             .catch(err => { setErrMessage(err.response.data.message); });
