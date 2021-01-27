@@ -2,8 +2,10 @@
 > ## Organizing Easier, Improve Your Productivity
 [![Github Issues](https://img.shields.io/github/issues/stanleyowen/todo-application?style=flat-square)](https://github.com/stanleyowen/todo-application/issues)
 [![Github Forks](https://img.shields.io/github/forks/stanleyowen/todo-application?style=flat-square)](https://github.com/stanleyowen/todo-application/network/members)
-[![Github stars](https://img.shields.io/github/stars/stanleyowen/todo-application?style=flat-square)](https://github.com/stanleyowen/todo-application/stargazers)
-[![MIT](https://img.shields.io/github/license/stanleyowen/todo-application?style=flat-square)](https://github.com/stanleyowen/todo-application/blob/master/LICENSE)
+[![Github Stars](https://img.shields.io/github/stars/stanleyowen/todo-application?style=flat-square)](https://github.com/stanleyowen/todo-application/stargazers)
+[![MIT License](https://img.shields.io/github/license/stanleyowen/todo-application?style=flat-square)](https://github.com/stanleyowen/todo-application/blob/master/LICENSE)
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/56772f5c-0c69-41e8-a788-69ca591e70ef/deploy-status)](https://app.netlify.com/sites/todoapp-task/deploys)
 
 ![Todo Application](https://user-images.githubusercontent.com/69080584/105711593-5b11a100-5f4b-11eb-89c5-50554ebca80b.jpg)
 
@@ -49,7 +51,7 @@ Todo Application is an **open source** project which is easy to use, organize, a
       - `SECRET_KEY` stores security key (Make it secret, hard to guess, and change it regularly)<br /><br />
         > __Note__: Make sure you have the same value of `REACT_APP_SECRET_KEY` in `client` and `REACT_APP_SECRET_KEY` in `server` side is __SAME__. Otherwise, it will cause an error.
           ```
-          ATLAS_URI = mongodb+srv://<username>:<password>@cluster0.5k44j.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority
+          ATLAS_URI = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
           SECRET_KEY = YHUIEHNHOIDFU28374C897C4T843973X4843C57N8934D2987N8394NC07489BC3
           TOKEN_KEY = HGB778C34595@54290cv#$^&^#c$%C3NN2C83P9P9D54^#4CF34
           ```
