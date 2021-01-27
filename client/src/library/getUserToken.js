@@ -13,4 +13,4 @@ const getUserToken = async token => {
     }else return undefined;
 }
 
-module.exports = getUserToken;
+export default getUserToken;

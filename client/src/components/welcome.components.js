@@ -8,16 +8,6 @@ const Landing = () => {
     const [star, setStar] = useState('');
     const [license, setLicense] = useState('');
     useEffect(() => {
-        async function getToken() {
-            const token = localStorage.getItem('__token');
-            getUserToken(token)
-            .then(res => {
-                if(res && !res.status){
-                    localStorage.setItem('__token', res.token);
-                    window.location = '/';
-                }
-            })
-        }
         async function getRepoInfo() {
             await axios.get(`${GITHUB_API}`)
             .then(res => {
@@ -26,7 +16,6 @@ const Landing = () => {
             })
             .catch(err => console.log(err));
         }
-        getToken();
         getRepoInfo();
     },[]);
     
