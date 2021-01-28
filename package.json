@@ -1,11 +1,7 @@
 {
-  "name": "todoapp",
+  "name": "todo-application",
   "version": "0.1.2",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "An open source project of Todo which is easy to use and easy to organize!",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stanleyowen/TodoApp.git"

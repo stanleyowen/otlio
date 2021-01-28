@@ -19,6 +19,7 @@ const Register = () => {
             .then(res => {
                 if(res && res.status === 200){
                     localStorage.setItem('__token', res.data.token);
+                    localStorage.setItem('__email', res.data.email);
                     window.location = '/';
                 }
             })
