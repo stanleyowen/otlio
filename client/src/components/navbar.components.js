@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import getUserToken from '../library/getUserToken';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 
@@ -11,9 +10,8 @@ const Navbar = ({ location }) => {
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
     const [value_c, setValue_c] = useState(false);
-    const locations = useLocation();
     useEffect(() => {
-        async function getToken() {
+        async function getToken(location) {
             const token = localStorage.getItem('__token')
             getUserToken(token)
             .then(res => {
@@ -24,17 +22,17 @@ const Navbar = ({ location }) => {
                     setValue_b(['Logout','#!',Logout]);
                     setValue_c(<i className="fas fa-plus" style={{fontSize: "2.2em"}}></i>)
                     redirectLocation.forEach(a => {
-                        if(locations.pathname === a) window.location='/';
+                        if(location.pathname === a) window.location='/';
                     });
                     console.log(res);
                 }else {
                     setValue_a(['Login',`${CLIENT_URL}/login`]);
                     setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
-                    if(locations.pathname === "/") window.location='/welcome';
+                    if(location.pathname === "/") window.location='/welcome';
                 }
             })
         }
-        getToken();
+        getToken({location});
     },[location]);
 
     const Logout = (e) => {
@@ -62,13 +60,13 @@ const Navbar = ({ location }) => {
     }
 
     const changeMode = (e) => {
-        /*e.preventDefault();
-        document.body.classList.toggle("dark");
+        /*document.body.classList.toggle("dark");
         let theme = "light";
         if(document.body.classList.contains("dark")){
             theme = "dark";
         }
         localStorage.setItem("__theme", theme);*/
+        e.preventDefault();
         setNotification(NOTIFICATION_TYPES.SUCCESS, "Dark Mode is Under Built! Stay Tune!")
     }
     

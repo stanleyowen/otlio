@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import getUserToken from '../library/getUserToken';
 import axios from 'axios';
 
 const GITHUB_API = process.env.REACT_APP_GITHUB_API;

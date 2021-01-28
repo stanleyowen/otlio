@@ -19,7 +19,7 @@ const timestamps = () => {
 }
 
 const labeling = (a) => {
-    var _label, _labelClass;
+    var _labelClass = null;
     if(a[1]){if(a[0]+" "+a[1] === listLabel[3]) _labelClass="do-later"}
     else {
         if(a[0] === listLabel[0]) _labelClass="priority";
@@ -39,9 +39,9 @@ const Home = () => {
     const [description, setDescription] = useState('');
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
-    function getTodoData(){
+    async function getTodoData(){
         const postData = { SECRET_KEY, email, token }
-        axios.post(`${SERVER_URL}/data/todo/getData`, postData)
+        await axios.post(`${SERVER_URL}/data/todo/getData`, postData)
         .then(res => setTodoData(res.data))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
     }
