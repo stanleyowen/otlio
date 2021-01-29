@@ -8,6 +8,7 @@ const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [honeypot, setHoneypot] = useState('');
     const [confirmPsw, setConfirmPsw] = useState('');
     const [errMessage, setErrMessage] = useState('');
 
@@ -26,6 +27,7 @@ const Register = () => {
             .catch(err => { setErrMessage(err.response.data.message); });
         }
         if(!email || !password || !confirmPsw){ setErrMessage('Please Make Sure to Fill Out All the Required Fields !') }
+        else if(honeypot) { return }
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setErrMessage('Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
         else if(email.length < 6 || email.length > 40){ setErrMessage('Please Provide an Email between 6 ~ 40 characters !'); document.getElementById('email').focus(); }
         else if(password.length < 6 || password.length > 40){ setErrMessage('Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('password').focus(); }
@@ -44,7 +46,13 @@ const Register = () => {
                     <div className="form">
                         { errMessage ? (<div className="message__error">{errMessage}</div>) : null }
                         <form className="contact__form" name="contact__form" onSubmit={Submit}>
-                            <input type="hidden" name="_honeypot" />
+                            <div className="contact__formControl no-bot">
+                                <div className="contact__infoField">
+                                    <label htmlFor="email">Email <span className="required">*</span></label>
+                                    <input title="Email" id="email" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
+                                    <span className="contact__onFocus"></span>
+                                </div>
+                            </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="email">Email <span className="required">*</span></label>

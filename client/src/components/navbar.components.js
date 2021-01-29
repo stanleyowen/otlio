@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import getUserToken from '../library/getUserToken';
+import { useLocation } from 'react-router-dom';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 
 const redirectLocation = ['/welcome', '/login', '/get-started', '/welcome/', '/login/', '/get-started/'];
 
-const Navbar = ({ location }) => {
+const Navbar = () => {
+    const location = useLocation();
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
     const [value_c, setValue_c] = useState(false);
     useEffect(() => {
-        async function getToken(location) {
+        async function getToken() {
             const token = localStorage.getItem('__token')
             getUserToken(token)
             .then(res => {
@@ -24,7 +26,6 @@ const Navbar = ({ location }) => {
                     redirectLocation.forEach(a => {
                         if(location.pathname === a) window.location='/';
                     });
-                    console.log(res);
                 }else {
                     setValue_a(['Login',`${CLIENT_URL}/login`]);
                     setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
@@ -32,8 +33,8 @@ const Navbar = ({ location }) => {
                 }
             })
         }
-        getToken({location});
-    },[location]);
+        getToken();
+    },[]);
 
     const Logout = (e) => {
         e.preventDefault();

@@ -8,6 +8,7 @@ const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [honeypot, setHoneypot] = useState('');
     const [errMessage, setErrMessage] = useState('');
 
     const Submit = (e) => {
@@ -23,6 +24,7 @@ const Login = () => {
             .catch(err => { setErrMessage(err.response.data.message); });
         }
         if(!email || !password){ setErrMessage('Please Make Sure to Fill Out All the Required Fields !') }
+        else if(honeypot) { return }
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setErrMessage('Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
         else { submitData(); }
     }
@@ -38,18 +40,24 @@ const Login = () => {
                     <div className="form">
                         { errMessage ? (<div className="message__error">{errMessage}</div>) : null }
                         <form className="contact__form" name="contact__form" onSubmit={Submit}>
-                            <input type="hidden" name="_honeypot" />
-                            <div className="contact__formControl">
+                            <div className="contact__formControl no-bot">
                                 <div className="contact__infoField">
                                     <label htmlFor="email">Email <span className="required">*</span></label>
-                                    <input title="Email" id="email" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus autoComplete="username"/>
+                                    <input title="Email" id="email" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
-                                    <label htmlFor="password">Password <span className="required">*</span></label>
-                                    <input title="Password" id="password" type="password" className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required autoComplete="current-password"/>
+                                    <label htmlFor="userEmail">Email <span className="required">*</span></label>
+                                    <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus autoComplete="username"/>
+                                    <span className="contact__onFocus"></span>
+                                </div>
+                            </div>
+                            <div className="contact__formControl">
+                                <div className="contact__infoField">
+                                    <label htmlFor="userPassword">Password <span className="required">*</span></label>
+                                    <input title="Password" id="userPassword" type="password" className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required autoComplete="current-password"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
