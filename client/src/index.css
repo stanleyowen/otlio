@@ -185,6 +185,7 @@ button, a { user-select: none; cursor: pointer; }
     position: absolute;
     bottom: 10px;
     width: 100%;
+    z-index: -1;
 }
 .badges a { margin-left: 10px; }
 .badges button {

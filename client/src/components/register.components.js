@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 import axios from 'axios';
 
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
@@ -14,6 +15,7 @@ const Register = () => {
 
     const Submit = (e) => {
         e.preventDefault();
+        const btn = document.getElementById('register');
         async function submitData(){
             const registerData = { SECRET_KEY, email, password, confirmPsw }
             await axios.post(`${SERVER_URL}/data/accounts/register`, registerData)
@@ -22,17 +24,21 @@ const Register = () => {
                     localStorage.setItem('__token', res.data.token);
                     localStorage.setItem('__email', res.data.email);
                     window.location = '/';
+                    btn.removeAttribute("disabled");
                 }
             })
-            .catch(err => { setErrMessage(err.response.data.message); });
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                btn.removeAttribute("disabled");
+            });
         }
-        if(!email || !password || !confirmPsw){ setErrMessage('Please Make Sure to Fill Out All the Required Fields !') }
-        else if(honeypot) { return }
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setErrMessage('Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
-        else if(email.length < 6 || email.length > 40){ setErrMessage('Please Provide an Email between 6 ~ 40 characters !'); document.getElementById('email').focus(); }
-        else if(password.length < 6 || password.length > 40){ setErrMessage('Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('password').focus(); }
-        else if(password !== confirmPsw){ setErrMessage('Please Make Sure Both Password are Match !'); document.getElementById('password').focus(); }
-        else { submitData(); }
+        if(honeypot) { return }
+        else if(!email || !password || !confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
+        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
+        else if(email.length < 6 || email.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 40 characters !'); document.getElementById('email').focus(); }
+        else if(password.length < 6 || password.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('password').focus(); }
+        else if(password !== confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Password are Match !'); document.getElementById('password').focus(); }
+        else { btn.setAttribute("disabled", "true"); submitData(); }
     }
 
     return (
@@ -77,7 +83,7 @@ const Register = () => {
                                 </div>
                             </div>
                             <p style={{textAlign: 'center'}}>Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
-                            <button type="submit" className="contact__sendBtn">Register</button>
+                            <button type="submit" className="contact__sendBtn" id="register">Register</button>
                         </form>
                     </div>
                 </div>

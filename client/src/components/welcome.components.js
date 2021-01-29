@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 import axios from 'axios';
 
-const GITHUB_API = process.env.REACT_APP_GITHUB_API;
+const GITHUB_API = "https://api.github.com/repos/stanleyowen/todo-application";
 
 const Landing = () => {
     const [star, setStar] = useState('');
@@ -10,10 +11,20 @@ const Landing = () => {
         async function getRepoInfo() {
             await axios.get(`${GITHUB_API}`)
             .then(res => {
-                if(res && res.status <= 226){ setStar(res.data.stargazers_count); setLicense(res.data.license.spdx_id) }
-                else { setStar('Err'); setLicense('Err') };
+                if(res && res.data.stargazers_count && res.data.license.spdx_id){
+                    setStar(res.data.stargazers_count);
+                    setLicense(res.data.license.spdx_id);
+                }
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                if(err && err.response.data.message){
+                    setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message);
+                    setStar('Err'); setLicense('Err');
+                }else {
+                    setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Invalid API");
+                    setStar('Err'); setLicense('Err');
+                }
+            });
         }
         getRepoInfo();
     },[]);

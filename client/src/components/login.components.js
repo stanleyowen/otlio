@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 import axios from 'axios';
 
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
@@ -9,10 +10,10 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [honeypot, setHoneypot] = useState('');
-    const [errMessage, setErrMessage] = useState('');
 
     const Submit = (e) => {
         e.preventDefault();
+        const btn = document.getElementById('login');
         async function submitData(){
             const registerData = { SECRET_KEY, email, password }
             await axios.post(`${SERVER_URL}/data/accounts/login`, registerData)
@@ -20,13 +21,17 @@ const Login = () => {
                 localStorage.setItem('__token', res.data.token);
                 localStorage.setItem('__email', res.data.email);
                 window.location = '/';
+                btn.removeAttribute("disabled");
             })
-            .catch(err => { setErrMessage(err.response.data.message); });
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                btn.removeAttribute("disabled");
+            });
         }
-        if(!email || !password){ setErrMessage('Please Make Sure to Fill Out All the Required Fields !') }
+        if(!email || !password){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
         else if(honeypot) { return }
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setErrMessage('Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
-        else { submitData(); }
+        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
+        else { btn.setAttribute("disabled", "true"); submitData(); }
     }
 
     return (
@@ -38,7 +43,6 @@ const Login = () => {
                     </div>
 
                     <div className="form">
-                        { errMessage ? (<div className="message__error">{errMessage}</div>) : null }
                         <form className="contact__form" name="contact__form" onSubmit={Submit}>
                             <div className="contact__formControl no-bot">
                                 <div className="contact__infoField">
@@ -62,7 +66,7 @@ const Login = () => {
                                 </div>
                             </div>
                             <p style={{textAlign: 'center'}}>Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
-                            <button type="submit" className="contact__sendBtn">Login</button>
+                            <button type="submit" className="contact__sendBtn" id="login">Login</button>
                         </form>
                     </div>
                 </div>

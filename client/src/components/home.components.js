@@ -104,9 +104,9 @@ const Home = () => {
 
     const submitTodo = (e) => {
         e.preventDefault();
+        const btn = document.getElementById('btn-addTodo');
         async function submitData() {
             const modal = document.getElementById('addTodoModal');
-            const btn = document.getElementById('btn-addTodo');
             const todoData = { SECRET_KEY, email, token, title, label, description, date };
             await axios.post(`${SERVER_URL}/data/todo/add`, todoData)
             .then(res => {
@@ -131,11 +131,7 @@ const Home = () => {
         else if(label.length > 20){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" ) }
         else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !") }
         else if(date.length !== 10 || DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
-        else { 
-            const btn = document.getElementById('btn-addTodo');
-            btn.setAttribute("disabled", "true");
-            submitData();
-        }
+        else { btn.setAttribute("disabled", "true"); submitData(); }
     }
     return (
        <div className="main__projects">
