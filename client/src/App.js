@@ -7,7 +7,6 @@ import Navbar from './components/navbar.components';
 import Welcome from './components/welcome.components';
 import Register from './components/register.components';
 import Login from './components/login.components';
-import Footer from './components/footer.components';
 import Home from './components/home.components';
 import EditTodo from './components/edit.components';
 
@@ -20,7 +19,6 @@ function App() {
       <Route path='/get-started' component={Register} />
       <Route path='/login' component={Login} />
       <Route path='/edit/:id' component={EditTodo} />
-      <Footer />
     </Router>
   );
 }

@@ -110,6 +110,7 @@ const Home = () => {
     const submitTodo = (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-addTodo');
+        btn.innerHTML = "Adding";
         async function submitData() {
             const modal = document.getElementById('addTodoModal');
             const todoData = { SECRET_KEY, email, token, title, label, description, date };
@@ -122,12 +123,13 @@ const Home = () => {
                 setLabel(listLabel[0].toLowerCase());
                 setDescription('');
                 setDate(timestamps);
-                btn.removeAttribute("disabled");
             })
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-                btn.removeAttribute("disabled");
             });
+            btn.removeAttribute("disabled");
+            btn.classList.remove("disabled");
+            btn.innerHTML = "Add";
             getTodoData();
         }
         if(!SECRET_KEY || !email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
@@ -136,7 +138,7 @@ const Home = () => {
         else if(label.length > 20){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" ) }
         else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !") }
         else if(date.length !== 10 || DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
-        else { btn.setAttribute("disabled", "true"); submitData(); }
+        else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
     return (
        <div className="main__projects">

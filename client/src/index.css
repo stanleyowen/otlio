@@ -76,6 +76,11 @@ button, a { user-select: none; cursor: pointer; }
 .mt-20 { margin-top: 20px; }
 .full-width { width: 100%; }
 .no-border { border: none; }
+.disabled {
+    cursor: auto;
+    opacity: 0.7;
+}
+.disabled:hover { background-color: transparent!important; color: #1a73e8!important; }
 .loader {
     position: absolute;
     background-color: rgba(255, 255, 255, 0.61);

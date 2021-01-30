@@ -14,24 +14,26 @@ const Login = () => {
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
+        btn.innerHTML = "Logging In...";
         async function submitData(){
             const registerData = { SECRET_KEY, email, password }
-            await axios.post(`${SERVER_URL}/data/accounts/login`, registerData)
+            await axios.post(`https://todoapp-task.herokuapp.com/data/accounts/login`, registerData)
             .then(res => {
                 localStorage.setItem('__token', res.data.token);
                 localStorage.setItem('__email', res.data.email);
                 window.location = '/';
-                btn.removeAttribute("disabled");
             })
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-                btn.removeAttribute("disabled");
             });
+            btn.removeAttribute("disabled");
+            btn.classList.remove("disabled");
+            btn.innerHTML = "Login";
         }
         if(!email || !password){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
         else if(honeypot) { return }
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
-        else { btn.setAttribute("disabled", "true"); submitData(); }
+        else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
     return (
