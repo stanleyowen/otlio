@@ -74,7 +74,7 @@ const Home = () => {
                     <td>{a.title}<br/>{a.description}</td>
                     <td>{labeling(titleCase(a.label))}</td>
                     <td>{a.date.substring(0, 10)}</td>
-                    <td><span className="btn-config"><a href={`/edit/${a._id}`}>Edit</a></span><span><a href="#" onClick={() => deleteData(a._id)}>Delete</a></span></td>
+                    <td><span className="btn-config"><a href={`/edit/${a._id}`}>Edit</a></span><span><a onClick={() => deleteData(a._id)}>Delete</a></span></td>
                 </tr>)
             })
         }

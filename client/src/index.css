@@ -73,6 +73,7 @@ button, a { user-select: none; cursor: pointer; }
     position: relative;
     z-index: 10001;
 }
+.mt-20 { margin-top: 20px; }
 .navbar {
     position: fixed;
     overflow: hidden;
@@ -103,6 +104,10 @@ button, a { user-select: none; cursor: pointer; }
     position: absolute;
     top: 0;
     right: 0;
+}
+.close {
+    position: absolute;
+    right: 50px;
 }
 .message__error {
     color: #FFF;
@@ -503,6 +508,7 @@ body.dark .contact__onFocus { background: #FFFFFF; }
 .form__container {
     display: grid;
     grid-template-columns: auto auto;
+
 }
 .contact__formControl {
     margin: 10px;

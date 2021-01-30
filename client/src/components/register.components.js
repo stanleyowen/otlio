@@ -11,7 +11,6 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [honeypot, setHoneypot] = useState('');
     const [confirmPsw, setConfirmPsw] = useState('');
-    const [errMessage, setErrMessage] = useState('');
 
     const Submit = (e) => {
         e.preventDefault();
@@ -50,7 +49,6 @@ const Register = () => {
                     </div>
 
                     <div className="form">
-                        { errMessage ? (<div className="message__error">{errMessage}</div>) : null }
                         <form className="contact__form" name="contact__form" onSubmit={Submit}>
                             <div className="contact__formControl no-bot">
                                 <div className="contact__infoField">

@@ -5,33 +5,51 @@ import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification'
 
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 
-const redirectLocation = ['/welcome', '/login', '/get-started', '/welcome/', '/login/', '/get-started/'];
+const redirectRoute = ['welcome', 'login', 'get-started'];
+const privateRoute = ['', 'edit'];
 
 const Navbar = () => {
     const location = useLocation();
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
-    const [value_c, setValue_c] = useState(false);
+    const [value_c, setValue_c] = useState();
+    const [value_d, setValue_d] = useState(false);
+    
     useEffect(() => {
         async function getToken() {
-            const token = localStorage.getItem('__token')
-            getUserToken(token)
-            .then(res => {
-                if(res && !res.status){
-                    localStorage.setItem('__token', res.token);
-                    localStorage.setItem('__email', res.email);
-                    setValue_a(['Dashboard',`${CLIENT_URL}`]);
-                    setValue_b(['Logout','#!',Logout]);
-                    setValue_c(<i className="fas fa-plus" style={{fontSize: "2.2em"}}></i>)
-                    redirectLocation.forEach(a => {
-                        if(location.pathname === a) window.location='/';
-                    });
-                }else {
-                    setValue_a(['Login',`${CLIENT_URL}/login`]);
-                    setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
-                    if(location.pathname === "/") window.location='/welcome';
-                }
-            })
+            const token = localStorage.getItem('__token');
+            if(token){
+                getUserToken(token)
+                .then(res => {
+                    if(res && !res.status){
+                        localStorage.setItem('__token', res.token);
+                        localStorage.setItem('__email', res.email);
+                        setValue_a(['Dashboard',`${CLIENT_URL}`]);
+                        setValue_b(['Logout','#!',Logout]);
+                        setValue_c('/')
+                        setValue_d(<i className="fas fa-plus" style={{fontSize: "2.2em"}}></i>)
+                        redirectRoute.forEach(a => {
+                            if(location.pathname.split('/')[1] === a) window.location='/';
+                        });
+                    }else {
+                        setValue_a(['Login',`${CLIENT_URL}/login`]);
+                        setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
+                        setValue_c('/welcome');
+                        localStorage.removeItem('__email');
+                        localStorage.removeItem('__token');
+                        privateRoute.forEach(a => {
+                            if(location.pathname.split('/')[1] === a) window.location='/welcome';
+                        });
+                    }
+                })
+            }else {
+                setValue_a(['Login',`${CLIENT_URL}/login`]);
+                setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
+                setValue_c('/welcome');
+                privateRoute.forEach(a => {
+                    if(location.pathname.split('/')[1] === a) window.location='/welcome';
+                });
+            }
         }
         getToken();
     },[]);
@@ -39,7 +57,7 @@ const Navbar = () => {
     const Logout = (e) => {
         e.preventDefault();
         let itemsToRemove = ["__token", "__email"];
-        itemsToRemove.forEach(b => localStorage.removeItem(b));
+        itemsToRemove.forEach(a => localStorage.removeItem(a));
         window.location = '/login';
     }
 
@@ -53,11 +71,8 @@ const Navbar = () => {
     const toggleNavbar = (e) => {
         e.preventDefault();
         var menu = document.getElementById("navbar__menu");
-        if(menu.style.display === "block"){
-            menu.style.display = "none";
-        }else {
-            menu.style.display = "block";
-        }
+        if(menu.style.display === "block"){ menu.style.display = "none"; }
+        else{ menu.style.display = "block"; }
     }
 
     const changeMode = (e) => {
@@ -68,20 +83,20 @@ const Navbar = () => {
         }
         localStorage.setItem("__theme", theme);*/
         e.preventDefault();
-        setNotification(NOTIFICATION_TYPES.SUCCESS, "Dark Mode is Under Built! Stay Tune!")
+        setNotification(NOTIFICATION_TYPES.SUCCESS, "Dark Mode is will be available in v0.1.4! Stay Tune!");
     }
     
     return (
         <div>
             <div className="navbar">
-                <a className="navbar__logo" href="/">TodoApp</a>
+                <a className="navbar__logo" href={value_c}>TodoApp</a>
                 <div className="navbar__menu" id="navbar__menu">
                     <a className="animation__underline" href={value_a[1]}>{value_a[0]}</a>
                     <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[2]}>{value_b[0]}</a>
                 </div>
                 <a href="#!" className="toggleNavbar" onClick={toggleNavbar}><i className="fa fa-bars"></i></a>
             </div>
-            {value_c !== false ? (<button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_c}</button>) : null}
+            {value_d !== false ? (<button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button>) : null}
 		    <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}><i className="fas fa-adjust" style={{fontSize: '2em'}}></i></button>
             <div className="notifications" id="notifications"></div>
         </div>

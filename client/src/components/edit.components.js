@@ -17,20 +17,18 @@ const Edit = () => {
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     useEffect(() => {
-        if(email && token) {
-            const postData = { SECRET_KEY, email, token, id }
-            axios.post(`${SERVER_URL}/data/todo/getData/${id}`, postData)
-            .then(res => {
-                setTitle(res.data.title);
-                setDate(res.data.date.substring(0, 10));
-                setDescription(res.data.description);
-                setLabel(res.data.label);
-            })
-            .catch(err => {
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-                setTimeout(() => { window.location='/' }, 2000)
-            })
-        }else window.location='/welcome';
+        const postData = { SECRET_KEY, email, token, id }
+        axios.post(`${SERVER_URL}/data/todo/getData/${id}`, postData)
+        .then(res => {
+            setTitle(res.data.title);
+            setDate(res.data.date.substring(0, 10));
+            setDescription(res.data.description);
+            setLabel(res.data.label);
+        })
+        .catch(err => {
+            setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+            setTimeout(() => { window.location='/' }, 2000)
+        })
     },[])
 
     const updateData = (e) => {
@@ -45,7 +43,8 @@ const Edit = () => {
     }
     return (
         <div className="main__projects">
-            <form onSubmit={updateData}>
+            <a href="/" className="close"><i class="fas fa-times" style={{'fontSize': '30px'}}></i></a>
+            <form onSubmit={updateData} className="mt-20">
                 <div className="form__container">
                     <div className="contact__formControl">
                         <div className="contact__infoField">
@@ -81,7 +80,7 @@ const Edit = () => {
                         <span className="contact__onFocus"></span>
                     </div>
                 </div>
-                <button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Add</button>
+                <button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>
             </form>
         </div>
     )
