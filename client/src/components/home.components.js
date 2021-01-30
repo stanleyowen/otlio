@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 import axios from 'axios';
 
+const listLabel = ["Priority","Secondary","Important","Do Later"];
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const listLabel = ["Priority","Secondary","Important","Do Later"];
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -30,10 +30,15 @@ const labeling = (a) => {
     return _label;
 }
 
+const formatDate = (e) => {
+    var a = e.split('-');
+    return(a[2]+'-'+a[1]+'-'+a[0])
+}
+
 const Home = () => {
     const email = localStorage.getItem('__email');
     const token = localStorage.getItem('__token');
-    const [todoData, setTodoData] = useState([]);
+    const [todoData, setTodoData] = useState(null);
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
     const [description, setDescription] = useState('');
@@ -73,7 +78,7 @@ const Home = () => {
                 <tr key={a._id}>
                     <td>{a.title}<br/>{a.description}</td>
                     <td>{labeling(titleCase(a.label))}</td>
-                    <td>{a.date.substring(0, 10)}</td>
+                    <td>{formatDate(a.date.substring(10, 0))}</td>
                     <td><span className="btn-config"><a href={`/edit/${a._id}`}>Edit</a></span><span><a onClick={() => deleteData(a._id)}>Delete</a></span></td>
                 </tr>)
             })
@@ -196,8 +201,17 @@ const Home = () => {
                 </thead>
                 <tbody>
                     {todoList()}
+                    { !todoData ?
+                        (<td colSpan="5" className="no-border"><div className="full-width spin-container">
+                        <div className="shape shape-1"></div>
+                        <div className="shape shape-2"></div>
+                        <div className="shape shape-3"></div>
+                        <div className="shape shape-4"></div>
+                    </div></td>) : null }
                 </tbody>
-           </table>
+            </table>
+
+            
        </div>
     );
 }

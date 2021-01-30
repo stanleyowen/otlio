@@ -74,6 +74,167 @@ button, a { user-select: none; cursor: pointer; }
     z-index: 10001;
 }
 .mt-20 { margin-top: 20px; }
+.full-width { width: 100%; }
+.no-border { border: none; }
+.loader {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.61);
+    width: 100%;
+    height: 50%;
+    padding-top: 50vh;
+    z-index: 1000;
+}
+.spin-container {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    margin-right: auto;
+    margin-left: auto;
+    border-radius: 15px;
+    -webkit-animation: rotation 1s infinite;
+            animation: rotation 1s infinite;
+}
+.spin-container .shape {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+}
+.spin-container .shape.shape-1 {
+    left: 0;
+    background-color: #4285F4;
+}
+.spin-container .shape.shape-2 {
+    right: 0;
+    background-color: #34A853;
+}
+.spin-container .shape.shape-3 {
+    bottom: 0;
+    background-color: #FBBC05;
+}
+.spin-container .shape.shape-4 {
+    bottom: 0;
+    right: 0;
+    background-color: #EA4335;
+}
+.spin-container .shape-1 {
+    -webkit-animation: shape1 0.5s infinite alternate;
+            animation: shape1 0.5s infinite alternate;
+}
+.spin-container .shape-2 {
+    -webkit-animation: shape2 0.5s infinite alternate;
+            animation: shape2 0.5s infinite alternate;
+}
+.spin-container .shape-3 {
+    -webkit-animation: shape3 0.5s infinite alternate;
+            animation: shape3 0.5s infinite alternate;
+  }
+.spin-container .shape-4 {
+    -webkit-animation: shape4 0.5s infinite alternate;
+            animation: shape4 0.5s infinite alternate;
+}
+  
+@-webkit-keyframes rotation {
+    from {
+      -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+}
+  
+@keyframes rotation {
+    from {
+      -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes shape1 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(20px, 20px);
+              transform: translate(20px, 20px);
+    }
+}
+@keyframes shape1 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(20px, 20px);
+              transform: translate(20px, 20px);
+    }
+}
+@-webkit-keyframes shape2 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(-20px, 20px);
+              transform: translate(-20px, 20px);
+    }
+}
+@keyframes shape2 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(-20px, 20px);
+              transform: translate(-20px, 20px);
+    }
+}
+@-webkit-keyframes shape3 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(20px, -20px);
+              transform: translate(20px, -20px);
+    }
+}
+@keyframes shape3 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(20px, -20px);
+              transform: translate(20px, -20px);
+    }
+}
+@-webkit-keyframes shape4 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(-20px, -20px);
+              transform: translate(-20px, -20px);
+    }
+}
+@keyframes shape4 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(-20px, -20px);
+              transform: translate(-20px, -20px);
+    }
+}
 .navbar {
     position: fixed;
     overflow: hidden;
