@@ -17,7 +17,7 @@ const Login = () => {
         btn.innerHTML = "Logging In...";
         async function submitData(){
             const registerData = { SECRET_KEY, email, password }
-            await axios.post(`https://todoapp-task.herokuapp.com/data/accounts/login`, registerData)
+            await axios.post(`${SERVER_URL}`, registerData)
             .then(res => {
                 localStorage.setItem('__token', res.data.token);
                 localStorage.setItem('__email', res.data.email);

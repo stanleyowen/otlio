@@ -10,7 +10,7 @@ const ERR_MSG = [
     'Oops! Username or Password is Invalid',
     'Please Make Sure to Fill Out All the Required Fields !',
     'Please Provide a Valid Email Address !',
-    'Please Make Sure Both Password are Match !',
+    'Please Make Sure Both Passwords are Match !',
     'Please Provide an Email between 6 ~ 40 characters !',
     'Please Provide a Password between 6 ~ 40 characters !',
     'No Token Provided',

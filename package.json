@@ -4,12 +4,12 @@
   "description": "An open source project of Todo which is easy to use and easy to organize!",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stanleyowen/TodoApp.git"
+    "url": "git+https://github.com/stanleyowen/todo-application.git"
   },
   "author": "Stanley Owen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/stanleyowen/TodoApp/issues"
+    "url": "https://github.com/stanleyowen/todo-application/issues"
   },
-  "homepage": "https://github.com/stanleyowen/TodoApp#readme"
+  "homepage": "https://github.com/stanleyowen/todo-application#readme"
 }

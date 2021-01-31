@@ -16,6 +16,7 @@ const Edit = () => {
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [description, setDescription] = useState('');
+    const [defaultValue, setDefaultValue] = useState('');
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     useEffect(() => {
@@ -26,6 +27,7 @@ const Edit = () => {
             setDate(res.data.date.substring(0, 10));
             setDescription(res.data.description);
             setLabel(res.data.label);
+            setDefaultValue(res.data);
         })
         .catch(err => {
             setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
@@ -104,7 +106,7 @@ const Edit = () => {
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    <button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>
+                    { defaultValue.title === title && defaultValue.date.substring(0, 10) === date && defaultValue.description === description && defaultValue.label === label ? (<button type="disabled" id="btn-addTodo" className="btn__outline disabled" disabled="true" style={{outline: 'none'}}>Update</button>) : (<button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>)}
                 </form>
             </div>
         </div>
