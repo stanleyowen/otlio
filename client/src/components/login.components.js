@@ -16,8 +16,8 @@ const Login = () => {
         const btn = document.getElementById('login');
         btn.innerHTML = "Logging In...";
         async function submitData(){
-            const registerData = { SECRET_KEY, email, password }
-            await axios.post(`${SERVER_URL}`, registerData)
+            const loginData = { SECRET_KEY, email, password }
+            await axios.post(`${SERVER_URL}/data/accounts/login`, loginData)
             .then(res => {
                 localStorage.setItem('__token', res.data.token);
                 localStorage.setItem('__email', res.data.email);
