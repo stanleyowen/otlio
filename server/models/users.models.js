@@ -1,7 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-SALT_WORK_FACTOR = 10;
-
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema ({
@@ -19,6 +16,21 @@ const userSchema = new Schema ({
         minlength: 6,
         maxlength: 60,
     },
+    referral_code : {
+        type: String,
+        default: function() {
+            let hash = 0;
+            for (let i = 0; i < this.email.length; i++){
+                hash = this.email.charCodeAt(i) + ((hash << 5) - hash)
+            }
+            let res = (hash & 0x00ffffff).toString(16).toUpperCase();
+            return "00000".substring(0,6 - res.length) + res;
+        }
+    },
+    referred_by: {
+        type: String,
+        default: null,
+    },
     token : {
         type: String,
         required: true,
@@ -28,25 +40,4 @@ const userSchema = new Schema ({
     timestamps: true
 });
 
-userSchema.pre('save', function(next) {
-    var user = this;
-    if(!user.isModified('password')) return next();
-    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-        if(err) return next(err);
-        bcrypt.hash(user.password, salt, function(err, hash) {
-            if(err) return next(err);
-            user.password = hash;
-            next();
-        });
-    });
-});
-
-userSchema.methods.comparePassword = function(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-        if(err) return cb(err);
-        cb(null, isMatch);
-    });
-};
-
-const User = mongoose.model('users', userSchema);
-module.exports = User;
+module.exports = User = mongoose.model('users', userSchema);

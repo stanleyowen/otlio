@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const passport = require('passport');
 let User = require('../models/users.models');
 
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -74,7 +75,7 @@ router.post('/login', (req,res) => {
     else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
 });
 
-router.post('/register', (req,res) => {
+/*router.post('/register', (req,res) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
     const email = req.body.email;
     const password = req.body.password;
@@ -101,6 +102,24 @@ router.post('/register', (req,res) => {
         })
     }
     else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
-});
+});*/
+
+router.post('/register', (req, res, next) => {
+    const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
+    if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[8]});
+    else if(SECRET_KEY === CLIENT_SECRET_KEY){
+        passport.authenticate('local', (err, user, info) => {
+            if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]})
+            else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
+            else {
+                req.logIn(user, (err) => {
+                    if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]})
+                    else return res.status(200).json({"code":200, "message":`Logged In ${user.id}`})
+                })
+            }
+        })(req, res, next)
+    }
+    else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
+})
 
 module.exports = router;
