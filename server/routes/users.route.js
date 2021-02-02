@@ -1,6 +1,7 @@
 const router = require('express').Router();
+const e = require('express');
 const passport = require('passport');
-let User = require('../models/users.models');
+let User = require('../models/users.model');
 
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -75,48 +76,15 @@ router.post('/login', (req,res) => {
     else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
 });
 
-/*router.post('/register', (req,res) => {
-    const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
-    const email = req.body.email;
-    const password = req.body.password;
-    const confirmPsw = req.body.confirmPsw;
-    if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[8]});
-    else if(SECRET_KEY === CLIENT_SECRET_KEY){
-        User.findOne({email}, (err, user) => {
-            if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-            else if(user) return res.status(400).json({"code":400, "message":ERR_MSG[1]})
-            else if(!user){
-                if(!email || !password || !confirmPsw) return res.status(400).json({"code":400, "message":ERR_MSG[3]});
-                else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
-                else if(email.length < 6 || email.length > 40) return res.status(400).json({code:"400", "message":ERR_MSG[6]});
-                else if(password.length < 6 || password.length > 40) return res.status(400).json({code:"400", "message":ERR_MSG[7]});
-                else if(password !== confirmPsw) return res.status(400).json({"code":400, "message":ERR_MSG[5]});
-                else {
-                    const token = generateToken();
-                    const newUser = new User ({ email, password, token });
-                    newUser.save()
-                    .then(() => res.json({"message":"success", "token":token, "email": email}))
-                    .catch(() => res.status(500).json({"code":500, "message":ERR_MSG[0]}));
-                }
-            }
-        })
-    }
-    else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
-});*/
-
 router.post('/register', (req, res, next) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
     if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[8]});
     else if(SECRET_KEY === CLIENT_SECRET_KEY){
-        passport.authenticate('local', (err, user, info) => {
-            if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]})
-            else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[2]});
-            else {
-                req.logIn(user, (err) => {
-                    if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]})
-                    else return res.status(200).json({"code":200, "message":`Logged In ${user.id}`})
-                })
-            }
+        passport.authenticate('register', (err, user, info) => {
+            if(err) return res.status(500).send(info.message);
+            else if(user) return res.status(info.status ? info.status : info.status = 200).json({"statusCode": info.status, "message": info.message, "id": user.id});
+            else if(!user) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
+            else if(info) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
         })(req, res, next)
     }
     else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
