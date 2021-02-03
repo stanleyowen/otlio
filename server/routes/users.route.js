@@ -78,17 +78,27 @@ const generateToken = () => {
     else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
 });*/
 
-router.post('/findUser', (req, res, next) => {
+router.get('/getUserByToken', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        console.log(req.query.email);
         if(err) return res.status(500).send(info.message);
-        else if(info) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
-        else {
-            res.status(200).json({
-                auth: true,
-                email: user.email,
-                password: user.password
-            });
+        else if(info) return res.status(info.status ? info.status : info.status = 401).json({"statusCode": info.status, "message": info.message});
+        else if(user.email === req.query.email){
+            console.log("passed here");
+            console.log(user.email);
+            User.findOne({ email: req.query.email }, (err, userInfo) => {
+                console.log(userInfo)
+                if(err) return res.status(500).send(info.message);
+                else if(userInfo){
+                    res.status(200).json({
+                        auth: true,
+                        email: userInfo.email,
+                        password: userInfo.password
+                    });
+                }else return res.status(400).send('Not Found');
+            })
         }
+        else return res.status(400).send('Not Founds');
     })(req, res, next)
 })
 

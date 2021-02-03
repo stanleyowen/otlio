@@ -83,7 +83,8 @@ const opts = {
 };
 
 passport.use('jwt', new JWTStrategy(opts, (jwt_payload, done) => {
-    User.findOne({id: jwt_payload.id}, (err, user) => {
+    User.findOne({email: jwt_payload.id}, (err, user) => {
+        console.log(jwt_payload);
         if(err) done(null, false);
         else if(user) done(null, user);
         else done(null, false);
