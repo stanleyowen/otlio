@@ -1,6 +1,8 @@
 const router = require('express').Router();
-const e = require('express');
+const express = require('express');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const jwtSecret = require('../config/jwtConfig');
 let User = require('../models/users.model');
 
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -24,7 +26,7 @@ const generateToken = () => {
     return randomToken(80);
 }
 
-router.post('/getUserByToken', (req,res) => {
+/*router.post('/getUserByToken', (req,res) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
     const token = req.body.token;
     if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[8]});
@@ -44,9 +46,9 @@ router.post('/getUserByToken', (req,res) => {
         }
     }
     else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
-});
+});*/
 
-router.post('/login', (req,res) => {
+/*router.post('/login', (req,res) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
     const email = req.body.email;
     const password = req.body.password;
@@ -74,7 +76,21 @@ router.post('/login', (req,res) => {
         }
     }
     else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
-});
+});*/
+
+router.post('/findUser', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).send(info.message);
+        else if(info) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
+        else {
+            res.status(200).json({
+                auth: true,
+                email: user.email,
+                password: user.password
+            });
+        }
+    })(req, res, next)
+})
 
 router.post('/register', (req, res, next) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
@@ -82,12 +98,43 @@ router.post('/register', (req, res, next) => {
     else if(SECRET_KEY === CLIENT_SECRET_KEY){
         passport.authenticate('register', (err, user, info) => {
             if(err) return res.status(500).send(info.message);
-            else if(user) return res.status(info.status ? info.status : info.status = 200).json({"statusCode": info.status, "message": info.message, "id": user.id});
-            else if(!user) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
             else if(info) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
+            else {
+                req.logIn(user, err => {
+                    const userData = { email: user.email }
+                    User.findOne({ email: user.email }, (err, user) => {
+                        if(err) return res.status(500).send(ERR_MSG[0]);
+                        else {
+                            user.save()
+                            res.status(200).json({ message: 'User Created' })
+                        }
+                    })
+                })
+            }
         })(req, res, next)
     }
     else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
+})
+
+router.post('/login', (req, res, next) => {
+    passport.authenticate('login', (err, user, info) => {
+        if(err) return res.status(500).send(info.message);
+        else if(info) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
+        else if(user){
+            req.logIn(user, err => {
+                User.findOne({ email: user.email }, (err, isFound) => {
+                    if(err) return res.status(500).send(ERR_MSG[0]);
+                    else if(isFound){
+                        const token = jwt.sign({ id: user.email }, jwtSecret.secret);
+                        return res.status(200).json({
+                            auth: true,
+                            token: token
+                        })
+                    }
+                })
+            });
+        }
+    })(req, res, next)
 })
 
 module.exports = router;
