@@ -17,4 +17,9 @@ const setNotification = (type, text) => {
     return newNotification;
 }
 
-module.exports = {setNotification, NOTIFICATION_TYPES};
+const setWarning = async => {
+    console.log("%c%s","color: red; background: yellow; font-size: 24px;","WARNING!");
+    console.log("%c%s","font-size: 18px;","Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand.")
+}
+
+module.exports = {setNotification, NOTIFICATION_TYPES, setWarning};

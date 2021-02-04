@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import getUserToken from '../library/getUserToken';
 import { useLocation } from 'react-router-dom';
-import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
+import { setNotification, NOTIFICATION_TYPES, setWarning } from '../library/setNotification';
 
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 
@@ -52,6 +52,7 @@ const Navbar = () => {
             }
         }
         getToken();
+        setWarning();
     },[]);
 
     const Logout = (e) => {
