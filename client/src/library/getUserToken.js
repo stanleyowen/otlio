@@ -1,6 +1,5 @@
 const axios = require('axios');
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
 
 const getUserToken = async (token, userId) => {
     console.log(token, userId)

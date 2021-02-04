@@ -33,7 +33,7 @@ const Edit = () => {
             setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
             setTimeout(() => { window.location='/' }, 2000)
         })
-    },[])
+    }, [id, email, token])
 
     const updateData = (e) => {
         e.preventDefault();
