@@ -2,13 +2,13 @@ const axios = require('axios');
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
 
-const getUserToken = async token => {
+const getUserToken = async (token, userId) => {
+    console.log(token, userId)
     if(token){
         let _userInfo = null;
-        const userInfo = { SECRET_KEY, token }
-        await axios.post(`${SERVER_URL}/data/accounts/getUserByToken`, userInfo)
+        await axios.get(`${SERVER_URL}/data/accounts/getUserByToken`, {params: {id: userId}, headers: { Authorization: `JWT ${token}` }})
         .then(res => _userInfo = res.data)
-        .catch(err => _userInfo = err.response);
+        .catch(err => console.log(err.response));
         return _userInfo;
     }else return undefined;
 }

@@ -16,15 +16,14 @@ const Login = () => {
         const btn = document.getElementById('login');
         btn.innerHTML = "Logging In...";
         async function submitData(){
-            const registerData = { SECRET_KEY, email, password }
-            await axios.post(`${SERVER_URL}`, registerData)
+            const userData = { email, password }
+            await axios.post(`${SERVER_URL}/data/accounts/login`, userData)
             .then(res => {
+                localStorage.setItem('__id', res.data.id)
                 localStorage.setItem('__token', res.data.token);
-                localStorage.setItem('__email', res.data.email);
-                window.location = '/';
             })
             .catch(err => {
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                console.log(err.response)
             });
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");

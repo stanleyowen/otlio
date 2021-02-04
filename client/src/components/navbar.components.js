@@ -18,11 +18,11 @@ const Navbar = () => {
     useEffect(() => {
         async function getToken() {
             const token = localStorage.getItem('__token');
-            if(token){
-                getUserToken(token)
+            const userId = localStorage.getItem('__id');
+            if(token && userId){
+                getUserToken(token, userId)
                 .then(res => {
-                    if(res && !res.status){
-                        localStorage.setItem('__token', res.token);
+                    if(res){
                         localStorage.setItem('__email', res.email);
                         setValue_a(['Dashboard',`${CLIENT_URL}`]);
                         setValue_b(['Logout','#!',Logout]);
@@ -35,7 +35,7 @@ const Navbar = () => {
                         setValue_a(['Login',`${CLIENT_URL}/login`]);
                         setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
                         setValue_c('/welcome');
-                        localStorage.removeItem('__email');
+                        localStorage.removeItem('__id');
                         localStorage.removeItem('__token');
                         privateRoute.forEach(a => {
                             if(location.pathname.split('/')[1] === a) window.location='/welcome';

@@ -84,7 +84,6 @@ router.get('/getUserByToken', (req, res, next) => {
         else if(info) return res.status(info.status ? info.status : info.status = 401).json({"statusCode": info.status, "message": info.message});
         else if(user.id === req.query.id){
             User.findById(req.query.id, (err, userInfo) => {
-                console.log(userInfo)
                 if(err) return res.status(500).send(info.message);
                 else if(userInfo){
                     res.status(200).json({
@@ -138,6 +137,7 @@ router.post('/login', (req, res, next) => {
                             const token = jwt.sign({ id: user.id }, jwtSecret.secret);
                             return res.status(200).json({
                                 auth: true,
+                                id: user.id,
                                 token: token
                             })
                         }
