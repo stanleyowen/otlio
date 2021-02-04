@@ -3,8 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const mongoose = require('mongoose');
-const app = express();
 
+const app = express();
 const PORT = process.env.PORT || 5000;
 
 require('dotenv').config();

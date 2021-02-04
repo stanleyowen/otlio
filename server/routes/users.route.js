@@ -80,13 +80,10 @@ const generateToken = () => {
 
 router.get('/getUserByToken', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        console.log(req.query.email);
         if(err) return res.status(500).send(info.message);
         else if(info) return res.status(info.status ? info.status : info.status = 401).json({"statusCode": info.status, "message": info.message});
-        else if(user.email === req.query.email){
-            console.log("passed here");
-            console.log(user.email);
-            User.findOne({ email: req.query.email }, (err, userInfo) => {
+        else if(user.id === req.query.id){
+            User.findById(req.query.id, (err, userInfo) => {
                 console.log(userInfo)
                 if(err) return res.status(500).send(info.message);
                 else if(userInfo){
@@ -104,26 +101,27 @@ router.get('/getUserByToken', (req, res, next) => {
 
 router.post('/register', (req, res, next) => {
     const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
-    if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[8]});
+    if(!CLIENT_SECRET_KEY) return res.status(401).json({"statusCode":401, "message":ERR_MSG[8]});
     else if(SECRET_KEY === CLIENT_SECRET_KEY){
         passport.authenticate('register', (err, user, info) => {
-            if(err) return res.status(500).send(info.message);
-            else if(info) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
-            else {
+            if(err) return res.status(info.status ? info.status : info.status = 500).json({"statusCode": info.status, "message": info.message});
+            else if(info && info.status >= 400) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
+            else if(user) {
                 req.logIn(user, err => {
-                    const userData = { email: user.email }
-                    User.findOne({ email: user.email }, (err, user) => {
-                        if(err) return res.status(500).send(ERR_MSG[0]);
-                        else {
-                            user.save()
-                            res.status(200).json({ message: 'User Created' })
-                        }
-                    })
+                    if(err) return res.status(info.status ? info.status : info.status = 500).json({"statusCode": info.status, "message": info.message});
+                    else {
+                        User.findOne({ email: user.email }, (err, user) => {
+                            if(err) return res.status(500).send(ERR_MSG[0]);
+                            else {
+                                res.status(200).json({"statusCode": info.status, "message": info.message, "id": user.id});
+                            }
+                        })
+                    }
                 })
             }
+
         })(req, res, next)
-    }
-    else return res.status(401).json({"code":401, "message":ERR_MSG[9]});
+    } else return res.status(401).json({"statusCode":401, "message":ERR_MSG[9]});
 })
 
 router.post('/login', (req, res, next) => {
@@ -132,16 +130,19 @@ router.post('/login', (req, res, next) => {
         else if(info) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
         else if(user){
             req.logIn(user, err => {
-                User.findOne({ email: user.email }, (err, isFound) => {
-                    if(err) return res.status(500).send(ERR_MSG[0]);
-                    else if(isFound){
-                        const token = jwt.sign({ id: user.email }, jwtSecret.secret);
-                        return res.status(200).json({
-                            auth: true,
-                            token: token
-                        })
-                    }
-                })
+                if(err) return res.status(info.status ? info.status : info.status = 500).json({"statusCode": info.status, "message": info.message});
+                else {
+                    User.findOne({ email: user.email }, (err, isFound) => {
+                        if(err) return res.status(500).send(ERR_MSG[0]);
+                        else if(isFound){
+                            const token = jwt.sign({ id: user.id }, jwtSecret.secret);
+                            return res.status(200).json({
+                                auth: true,
+                                token: token
+                            })
+                        }
+                    })
+                }
             });
         }
     })(req, res, next)
