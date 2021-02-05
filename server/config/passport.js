@@ -24,6 +24,14 @@ const ERR_MSG = [
     'Login Success'
 ]
 
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+    done(null, user);
+});
+
 passport.use('register', new localStrategy({ usernameField: 'email', passwordField: 'password', session: false }, (email, password, done) => {
     if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return done(null, false, { status: 400, message: ERR_MSG[4] });
     else if(email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: ERR_MSG[6] });
@@ -66,14 +74,6 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
         }
     })
 }))
-
-passport.serializeUser((user, done) => {
-    done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-    done(null, user);
-});
 
 const opts = {
     jwtFromRequest: ExtractJWT.fromAuthHeaderWithScheme('JWT'),

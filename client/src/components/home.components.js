@@ -118,8 +118,8 @@ const Home = () => {
         btn.innerHTML = "Adding";
         async function submitData() {
             const modal = document.getElementById('addTodoModal');
-            const todoData = { SECRET_KEY, email, token, title, label, description, date };
-            await axios.post(`${SERVER_URL}/data/todo/add`, todoData)
+            const todoData = { id: userId, email, title, label, description, date };
+            await axios.post(`${SERVER_URL}/data/todo/add`, todoData, { headers: { Authorization: `JWT ${token}` } })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
                 modal.style.visibility = "hidden";
@@ -130,6 +130,7 @@ const Home = () => {
                 setDate(timestamps);
             })
             .catch(err => {
+                console.log(err.response);
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
             });
             btn.removeAttribute("disabled");
@@ -137,7 +138,7 @@ const Home = () => {
             btn.innerHTML = "Add";
             getTodoData();
         }
-        if(!SECRET_KEY || !email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
+        if(!email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
         else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
         else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !") }
         else if(label.length > 20){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" ) }
