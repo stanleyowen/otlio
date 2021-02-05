@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const passport = require('passport');
 let Todo = require('../models/todo.model');
 let User = require('../models/users.model');
 
@@ -127,27 +128,25 @@ router.post('/getData/:id', (req,res) => {
     } else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
 })
 
-router.post('/getData', (req,res) => {
-    const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
-    const email = req.body.email;
-    const token = req.body.token;
-    if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[1]});
-    else if(SECRET_KEY === CLIENT_SECRET_KEY){
-        if(!email || !token) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({"code":400, "message":ERR_MSG[6]});
-        else {
-            User.findOne({email, token}, (err, isMatch) => {
-                if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-                else if(!isMatch) return res.status(404).json({"code":404, "message":ERR_MSG[3]});
-                else {
-                    Todo.find({email}, (err, todoData) => {
-                        if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-                        else { res.json(todoData) }
-                    })
+router.get('/getData', (req,res,next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).send(info.message);
+        else if(info) return res.status(info.status ? info.status : info.status = 401).json({"statusCode": info.status, "message": info.message});
+        else if(user.id === req.query.id && user.email === req.query.email){
+            User.findById(req.query.id, (err, userInfo) => {
+                if(err) return res.status(500).send(info.message)
+                else if(userInfo){
+                    if(user.email === req.query.email){
+                        Todo.find({ email: req.query.email }, (err, todoData) => {
+                            if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+                            else { res.json(todoData) }
+                        })
+                    }else return res.status(400).send('Not Found');
                 }
             })
         }
-    } else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
+        else return res.status(400).send('Not Founds');
+    })(req, res, next)
 })
 
 router.post('/add', (req,res) => {
@@ -180,18 +179,6 @@ router.post('/add', (req,res) => {
             })
         }
     } else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
-})
-
-router.route('/:id').delete((req,res) => {
-    Exercise.findByIdAndDelete(req.params.id)
-    .then(res.json('Exercises Deleted!'))
-    .catch(err => res.status(400).json('Error: '+err));
-})
-
-router.route('/:username').get((req,res) => {
-    Exercise.find({username: req.params.username})
-    .then(exercises => res.json(exercises))
-    .catch(err => res.status(400).json('Error :'+err));
 })
 
 module.exports = router;

@@ -39,6 +39,7 @@ const formatDate = (e) => {
 const Home = () => {
     const email = localStorage.getItem('__email');
     const token = localStorage.getItem('__token');
+    const userId = localStorage.getItem('__id');
     const [todoData, setTodoData] = useState(null);
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
@@ -46,8 +47,7 @@ const Home = () => {
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     async function getTodoData(){
-        const postData = { SECRET_KEY, email, token }
-        await axios.post(`${SERVER_URL}/data/todo/getData`, postData)
+        await axios.get(`${SERVER_URL}/data/todo/getData`, {params: {id: userId, email}, headers: { Authorization: `JWT ${token}` }})
         .then(res => setTodoData(res.data))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
     }

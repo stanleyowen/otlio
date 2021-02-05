@@ -38,6 +38,7 @@ const Navbar = () => {
                         setValue_c('/welcome');
                         localStorage.removeItem('__id');
                         localStorage.removeItem('__token');
+                        localStorage.removeItem('__email');
                         privateRoute.forEach(a => {
                             if(location.pathname.split('/')[1] === a) window.location='/welcome';
                         });
@@ -58,7 +59,7 @@ const Navbar = () => {
 
     const Logout = (e) => {
         e.preventDefault();
-        let itemsToRemove = ["__token", "__email"];
+        let itemsToRemove = ["__token", "__email", "__id"];
         itemsToRemove.forEach(a => localStorage.removeItem(a));
         window.location = '/login';
     }

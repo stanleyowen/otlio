@@ -13,8 +13,8 @@ const Login = () => {
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
-        btn.innerHTML = "Logging In...";
         async function submitData(){
+            btn.innerHTML = "Logging In...";
             const userData = { email, password }
             await axios.post(`${SERVER_URL}/data/accounts/login`, userData)
             .then(res => {
