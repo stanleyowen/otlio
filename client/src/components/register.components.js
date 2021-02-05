@@ -58,7 +58,7 @@ const Register = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="email">Email <span className="required">*</span></label>
-                                    <input title="Email" id="email" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus autoComplete="username"/>
+                                    <input title="Email" id="email" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} autoFocus required autoComplete="username"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>

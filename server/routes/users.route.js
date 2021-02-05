@@ -39,8 +39,8 @@ router.get('/getUserByToken', (req, res, next) => {
 
 router.post('/register', (req, res, next) => {
     passport.authenticate('register', (err, user, info) => {
-        if(err) return res.status(info.status ? info.status : info.status = 500).json({"statusCode": info.status, "message": info.message});
-        else if(info && info.status >= 400) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
+        if(err) return res.status(500).json({"statusCode": 500, "message": ERR_MSG[0]});
+        else if(info && info.status ? info.status >= 400 : info.status = 400) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
         else if(user) {
             req.logIn(user, err => {
                 if(err) return res.status(info.status ? info.status : info.status = 500).json({"statusCode": info.status, "message": info.message});
@@ -49,7 +49,12 @@ router.post('/register', (req, res, next) => {
                         if(err) return res.status(500).send(ERR_MSG[0]);
                         else {
                             const token = jwt.sign({ id: user.id }, jwtSecret.secret);
-                            res.status(200).json({"statusCode": info.status, "message": info.message, "id": user.id, "token": token});
+                            res.json({
+                                "statusCode": info.status,
+                                "message": info.message,
+                                "id": user.id,
+                                "token": token
+                            });
                         }
                     })
                 }
@@ -60,8 +65,8 @@ router.post('/register', (req, res, next) => {
 
 router.post('/login', (req, res, next) => {
     passport.authenticate('login', (err, user, info) => {
-        if(err) return res.status(500).send(info.message);
-        else if(info) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
+        if(err) return res.status(500).json({"statusCode": 500, "message": ERR_MSG[0]});
+        else if(info && info.status ? info.status >= 400 : info.status = 400) return res.status(info.status ? info.status : info.status = 400).json({"statusCode": info.status, "message": info.message});
         else if(user){
             req.logIn(user, err => {
                 if(err) return res.status(info.status ? info.status : info.status = 500).json({"statusCode": info.status, "message": info.message});
@@ -70,8 +75,9 @@ router.post('/login', (req, res, next) => {
                         if(err) return res.status(500).json({"message": ERR_MSG[0]});
                         else if(isFound){
                             const token = jwt.sign({ id: user.id }, jwtSecret.secret);
-                            return res.status(200).json({
+                            res.json({
                                 auth: true,
+                                "message": info.message,
                                 id: user.id,
                                 token: token
                             })

@@ -47,6 +47,9 @@ const Home = () => {
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     async function getTodoData(){
+        const email = localStorage.getItem('__email');
+        const token = localStorage.getItem('__token');
+        const userId = localStorage.getItem('__id');
         await axios.get(`${SERVER_URL}/data/todo/getData`, {params: {id: userId, email}, headers: { Authorization: `JWT ${token}` }})
         .then(res => setTodoData(res.data))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
@@ -69,10 +72,11 @@ const Home = () => {
             });
             element.removeAttribute('data-autoresize');
         });
-        getTodoData();
+        if(email && userId) getTodoData();
+        else setInterval(getTodoData, 2000);
     }, []);
 
-    const todoList = () => {
+    function todoList() {
         if(todoData){
             return todoData.map(a => {
                 return (

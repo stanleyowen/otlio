@@ -20,16 +20,17 @@ const Login = () => {
             .then(res => {
                 localStorage.setItem('__id', res.data.id)
                 localStorage.setItem('__token', res.data.token);
+                window.location = '/';
             })
             .catch(err => {
-                console.log(err.response)
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             });
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Login";
         }
         if(!email || !password){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
-        else if(honeypot) { return }
+        if(honeypot) { return }
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
