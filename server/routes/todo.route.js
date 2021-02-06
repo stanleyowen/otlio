@@ -11,7 +11,7 @@ const ERR_MSG = [
     'No Token Provided',
     'Token Mismatch',
     'Oops! Username or Token is Invalid',
-    'Please Make Sure to Fill Out All the Required Fields !',
+    'Missing Credentials',
     'Please Provide a Valid Date !',
     'Please Provide a Valid Email Address !',
     'Please Provide a Title less than 40 characters !',
@@ -23,28 +23,31 @@ const ERR_MSG = [
     'Data Updated Successfully'
 ]
 
-router.post('/delete', (req,res) => {
-    const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
+router.post('/delete', (req,res,next) => {
     const email = req.body.email;
-    const token = req.body.token;
+    const objId = req.body.objId;
     const id = req.body.id;
-    if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[1]});
-    else if(SECRET_KEY === CLIENT_SECRET_KEY){
-        if(!id || !token) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
-        else {
-            User.findOne({email, token}, (err, user) => {
-                if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-                else if(!user) return res.status(404).json({"code":404, "message":ERR_MSG[10]});
-                else {
-                    Todo.findByIdAndDelete(id, (err, todoData) => {
-                        if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-                        else if(!todoData) return res.status(404).json({"code":404, "message":ERR_MSG[10]});
-                        else return res.json({"code":200, "message":ERR_MSG[11]});
-                    })
-                }
-            })
-        }
-    } else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
+    if(!email || !objId || !id) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
+    else {
+        passport.authenticate('jwt', { session: false }, (err, user, info) => {
+            if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+            else if(info) return res.status(info.status ? info.status : info.status = 401).json({statusCode: info.status, message: info.message});
+            else if(user.id === id && user.email === email){
+                User.findById(id, (err, userInfo) => {
+                    if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+                    else if(userInfo){
+                        if(user.email === email){
+                            Todo.findByIdAndDelete(objId, (err, todoData) => {
+                                if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+                                else if(!todoData) return res.status(404).json({statusCode: 404, message: ERR_MSG[10]});
+                                else if(todoData) return res.json({statusCode: 200, message: ERR_MSG[11]});
+                            })
+                        }else return res.status(401).json({message: 'Authentication Failed'});
+                    }else return res.status(401).json({message: 'Authentication Failed'});
+                })
+            }else return res.status(401).json({message: 'Authentication Failed'});
+        })(req, res, next)
+    }
 })
 
 router.post('/update', (req,res) => {

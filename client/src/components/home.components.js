@@ -91,8 +91,8 @@ const Home = () => {
     };
 
     const deleteData = async id => {
-        const postData = { SECRET_KEY, email, token, id }
-        await axios.post(`${SERVER_URL}/data/todo/delete`, postData)
+        const deleteData = { email, objId: id, id: userId }
+        await axios.post(`${SERVER_URL}/data/todo/delete`, deleteData, { headers: { Authorization: `JWT ${token}` } })
         .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
         getTodoData();
