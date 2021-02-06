@@ -45,7 +45,7 @@ router.post('/register', (req, res, next) => {
                 if(err) return res.status(info.status ? info.status : info.status = 500).json({statusCode: info.status, message: info.message});
                 else {
                     User.findOne({ email: user.email }, (err, user) => {
-                        if(err) return res.status(500).send(ERR_MSG[0]);
+                        if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                         else {
                             const token = jwt.sign({ id: user.id }, jwtSecret.secret);
                             res.json({

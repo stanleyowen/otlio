@@ -41,8 +41,8 @@ const Edit = () => {
         const btn = document.getElementById('btn-addTodo');
         btn.innerHTML = "Updating";
         async function submitData() {
-            const postData = { email, token, objId: id, id: userId, title, label, description, date }
-            await axios.post(`${SERVER_URL}/data/todo/update/`, postData)
+            const postData = { email, objId: id, id: userId, title, label, description, date }
+            await axios.post(`${SERVER_URL}/data/todo/update/`, postData, { headers: { Authorization: `JWT ${token}` } })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
                 setTimeout(() => { window.location='/' }, 2000);
