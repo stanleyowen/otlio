@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 import axios from 'axios';
 
-const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -15,16 +14,14 @@ const Register = () => {
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('register');
-        btn.innerHTML = "Registering...";
         async function submitData(){
-            const registerData = { SECRET_KEY, email, password, confirmPsw }
+            btn.innerHTML = "Registering...";
+            const registerData = { email, password }
             await axios.post(`${SERVER_URL}/data/accounts/register`, registerData)
             .then(res => {
-                if(res && res.status === 200){
-                    localStorage.setItem('__token', res.data.token);
-                    localStorage.setItem('__email', res.data.email);
-                    window.location = '/';
-                }
+                localStorage.setItem('__id', res.data.id);
+                localStorage.setItem('__token', res.data.token);
+                window.location = '/';
             })
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
@@ -61,7 +58,7 @@ const Register = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="email">Email <span className="required">*</span></label>
-                                    <input title="Email" id="email" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus autoComplete="username"/>
+                                    <input title="Email" id="email" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} autoFocus required autoComplete="username"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>

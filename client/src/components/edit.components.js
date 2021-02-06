@@ -12,6 +12,7 @@ const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(
 const Edit = () => {
     const email = localStorage.getItem('__email');
     const token = localStorage.getItem('__token');
+    const userId = localStorage.getItem('__id');
     const {id} = useParams();
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
@@ -20,8 +21,8 @@ const Edit = () => {
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     useEffect(() => {
-        const postData = { SECRET_KEY, email, token, id }
-        axios.post(`${SERVER_URL}/data/todo/getData/${id}`, postData)
+        const getData = { email, id: userId }
+        axios.get(`${SERVER_URL}/data/todo/getData/${id}`, { params: getData, headers: { Authorization: `JWT ${token}` } })
         .then(res => {
             setTitle(res.data.title);
             setDate(res.data.date.substring(0, 10));
@@ -33,15 +34,15 @@ const Edit = () => {
             setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
             setTimeout(() => { window.location='/' }, 2000)
         })
-    },[])
+    }, [id, email, token, userId])
 
     const updateData = (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-addTodo');
         btn.innerHTML = "Updating";
         async function submitData() {
-            const postData = { SECRET_KEY, email, token, id, title, label, description, date }
-            await axios.post(`${SERVER_URL}/data/todo/update/`, postData)
+            const postData = { email, objId: id, id: userId, title, label, description, date }
+            await axios.post(`${SERVER_URL}/data/todo/update/`, postData, { headers: { Authorization: `JWT ${token}` } })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
                 setTimeout(() => { window.location='/' }, 2000);

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 import axios from 'axios';
 
-const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -14,24 +13,24 @@ const Login = () => {
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
-        btn.innerHTML = "Logging In...";
         async function submitData(){
-            const loginData = { SECRET_KEY, email, password }
-            await axios.post(`${SERVER_URL}/data/accounts/login`, loginData)
+            btn.innerHTML = "Logging In...";
+            const userData = { email, password }
+            await axios.post(`${SERVER_URL}/data/accounts/login`, userData)
             .then(res => {
+                localStorage.setItem('__id', res.data.id)
                 localStorage.setItem('__token', res.data.token);
-                localStorage.setItem('__email', res.data.email);
                 window.location = '/';
             })
             .catch(err => {
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             });
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Login";
         }
-        if(!email || !password){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
-        else if(honeypot) { return }
+        if(honeypot) { return }
+        else if(!email || !password){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }

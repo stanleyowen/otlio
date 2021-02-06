@@ -1,7 +1,8 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import getUserToken from '../library/getUserToken';
 import { useLocation } from 'react-router-dom';
-import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
+import { setNotification, NOTIFICATION_TYPES, setWarning } from '../library/setNotification';
 
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 
@@ -18,11 +19,11 @@ const Navbar = () => {
     useEffect(() => {
         async function getToken() {
             const token = localStorage.getItem('__token');
-            if(token){
-                getUserToken(token)
+            const userId = localStorage.getItem('__id');
+            if(token && userId){
+                getUserToken(token, userId)
                 .then(res => {
-                    if(res && !res.status){
-                        localStorage.setItem('__token', res.token);
+                    if(res){
                         localStorage.setItem('__email', res.email);
                         setValue_a(['Dashboard',`${CLIENT_URL}`]);
                         setValue_b(['Logout','#!',Logout]);
@@ -35,8 +36,9 @@ const Navbar = () => {
                         setValue_a(['Login',`${CLIENT_URL}/login`]);
                         setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
                         setValue_c('/welcome');
-                        localStorage.removeItem('__email');
+                        localStorage.removeItem('__id');
                         localStorage.removeItem('__token');
+                        localStorage.removeItem('__email');
                         privateRoute.forEach(a => {
                             if(location.pathname.split('/')[1] === a) window.location='/welcome';
                         });
@@ -52,11 +54,12 @@ const Navbar = () => {
             }
         }
         getToken();
+        setWarning();
     },[]);
 
     const Logout = (e) => {
         e.preventDefault();
-        let itemsToRemove = ["__token", "__email"];
+        let itemsToRemove = ["__token", "__email", "__id"];
         itemsToRemove.forEach(a => localStorage.removeItem(a));
         window.location = '/login';
     }

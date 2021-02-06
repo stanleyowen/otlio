@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 import axios from 'axios';
@@ -38,6 +39,7 @@ const formatDate = (e) => {
 const Home = () => {
     const email = localStorage.getItem('__email');
     const token = localStorage.getItem('__token');
+    const userId = localStorage.getItem('__id');
     const [todoData, setTodoData] = useState(null);
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
@@ -45,8 +47,10 @@ const Home = () => {
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     async function getTodoData(){
-        const postData = { SECRET_KEY, email, token }
-        await axios.post(`${SERVER_URL}/data/todo/getData`, postData)
+        const email = localStorage.getItem('__email');
+        const token = localStorage.getItem('__token');
+        const userId = localStorage.getItem('__id');
+        await axios.get(`${SERVER_URL}/data/todo/getData`, {params: {id: userId, email}, headers: { Authorization: `JWT ${token}` }})
         .then(res => setTodoData(res.data))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
     }
@@ -68,10 +72,11 @@ const Home = () => {
             });
             element.removeAttribute('data-autoresize');
         });
-        getTodoData();
+        if(email && userId) getTodoData();
+        else setInterval(getTodoData, 2000);
     }, []);
 
-    const todoList = () => {
+    function todoList() {
         if(todoData){
             return todoData.map(a => {
                 return (
@@ -86,8 +91,8 @@ const Home = () => {
     };
 
     const deleteData = async id => {
-        const postData = { SECRET_KEY, email, token, id }
-        await axios.post(`${SERVER_URL}/data/todo/delete`, postData)
+        const deleteData = { email, objId: id, id: userId }
+        await axios.post(`${SERVER_URL}/data/todo/delete`, deleteData, { headers: { Authorization: `JWT ${token}` } })
         .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
         getTodoData();
@@ -113,8 +118,8 @@ const Home = () => {
         btn.innerHTML = "Adding";
         async function submitData() {
             const modal = document.getElementById('addTodoModal');
-            const todoData = { SECRET_KEY, email, token, title, label, description, date };
-            await axios.post(`${SERVER_URL}/data/todo/add`, todoData)
+            const todoData = { id: userId, email, title, label, description, date };
+            await axios.post(`${SERVER_URL}/data/todo/add`, todoData, { headers: { Authorization: `JWT ${token}` } })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
                 modal.style.visibility = "hidden";
@@ -125,6 +130,7 @@ const Home = () => {
                 setDate(timestamps);
             })
             .catch(err => {
+                console.log(err.response);
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
             });
             btn.removeAttribute("disabled");
@@ -132,7 +138,7 @@ const Home = () => {
             btn.innerHTML = "Add";
             getTodoData();
         }
-        if(!SECRET_KEY || !email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
+        if(!email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
         else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
         else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !") }
         else if(label.length > 20){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" ) }
