@@ -102,32 +102,30 @@ router.post('/update', (req,res) => {
     } else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
 })
 
-router.post('/getData/:id', (req,res) => {
-    const CLIENT_SECRET_KEY = req.body.SECRET_KEY;
-    const email = req.body.email;
-    const token = req.body.token;
-    const id = req.params.id;
-    if(!CLIENT_SECRET_KEY) return res.status(401).json({"code":401, "message":ERR_MSG[1]});
-    else if(SECRET_KEY === CLIENT_SECRET_KEY){
-        if(!email || !token || !id) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({"code":400, "message":ERR_MSG[6]});
-        else {
-            User.findOne({email, token}, (err, isMatch) => {
-                if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-                else if(!isMatch) return res.status(404).json({"code":404, "message":ERR_MSG[3]});
-                else {
-                    Todo.findById(id, (err, todoData) => {
-                        if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
-                        else if(!todoData) return res.status(404).json({"code":404, "message":ERR_MSG[3]});
-                        else {
-                            if(todoData.email === email) res.json(todoData)
-                            else return res.status(404).json({"code":404, "message":ERR_MSG[3]});
-                        }
-                    })
-                }
-            })
-        }
-    } else return res.status(401).json({"code":401, "message":ERR_MSG[2]});
+router.get('/getData/:id', (req,res,next) => {
+    const email = req.query.email;
+    const id = req.query.id;
+    const objId = req.params.id;
+    if(!email  || !objId || !id) return res.status(400).json({"code":400, "message":ERR_MSG[4]});
+    else {
+        passport.authenticate('jwt', { session: false }, (err, user, info) => {
+            if(err) return res.status(500).send(info.message);
+            else if(info) return res.status(info.status ? info.status : info.status = 401).json({"statusCode": info.status, "message": info.message});
+            else if(user.id === req.query.id && user.email === req.query.email){
+                User.findById(id, (err, userInfo) => {
+                    if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+                    else if(userInfo){
+                        if(user.email === email){
+                            Todo.findById(objId, (err, todoData) => {
+                                if(err) return res.status(500).json({"code":500, "message":ERR_MSG[0]});
+                                else { res.json(todoData) }
+                            })
+                        }else return res.status(401).json({message: 'Authentication Failed'});
+                    }
+                })
+            }else return res.status(401).json({message: 'Authentication Failed'});
+        })(req, res, next)
+    }
 })
 
 router.get('/getData', (req,res,next) => {
