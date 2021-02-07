@@ -13,10 +13,10 @@ const Edit = () => {
     const token = localStorage.getItem('__token');
     const userId = localStorage.getItem('__id');
     const {id} = useParams();
-    const [title, setTitle] = useState('');
-    const [date, setDate] = useState('');
-    const [description, setDescription] = useState('');
-    const [defaultValue, setDefaultValue] = useState('');
+    const [title, setTitle] = useState('loading ...');
+    const [date, setDate] = useState('loading ...');
+    const [description, setDescription] = useState('loading ...');
+    const [defaultValue, setDefaultValue] = useState('loading ...');
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     useEffect(() => {
@@ -38,8 +38,8 @@ const Edit = () => {
     const updateData = (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-addTodo');
-        btn.innerHTML = "Updating";
         async function submitData() {
+            btn.innerHTML = "Updating";
             const postData = { email, objId: id, id: userId, title, label, description, date }
             await axios.post(`${SERVER_URL}/data/todo/update/`, postData, { headers: { Authorization: `JWT ${token}` } })
             .then(res => {
@@ -61,7 +61,7 @@ const Edit = () => {
     }
     return (
         <div>
-            { !title || !date || !label ?
+            { title && label && date === "loading ..." ?
             (<div className="loader"><div className="spin-container full-width">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>
