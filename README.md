@@ -9,9 +9,7 @@
 
 ![Todo Application](https://user-images.githubusercontent.com/69080584/105711593-5b11a100-5f4b-11eb-89c5-50554ebca80b.jpg)
 
-Todo Application is an **open source** project which is easy to use, organize, and no credit card is needed!
-
-> **Even though this project covers basic security, it is not recommended to use in production though it is NOT secure enough.**
+Todo Application is an **open source** project which is easy to use and easy to organize!
 
 ## Table of Contents
 - [Getting Started](#getting-started)
@@ -27,38 +25,32 @@ Todo Application is an **open source** project which is easy to use, organize, a
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.1.3.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.1.4-alpha.zip)
 2. Install All the Dependencies
     - Open your terminal
-    - Change diretory `cd` to both client and server folder
-    - Type `npm install`
+    - Change directory `cd` to both `client` and `server` folder
+    - Type `npm install` in commmand line
 3. Create `.env` file
-    - Inside `client` directory, create a new file named `.env` which stores about sensitive data, which is `REACT_APP_CLIENT_URL`, `REACT_APP_SERVER_URL`, `REACT_APP_GITHUB_API`, and `REACT_APP_SECRET_KEY`
+    - Inside `client` directory, create a new file named `.env` which stores about sensitive information, which is `REACT_APP_CLIENT_URL`, `REACT_APP_SERVER_URL`, and `REACT_APP_GITHUB_API`
       - `REACT_APP_CLIENT_URL` stores the client side URL
       - `REACT_APP_SERVER_URL` stores the server side URL
-      - `REACT_APP_GITHUB_API` stores the GitHub current Stars and Forks
-      - `REACT_APP_SECRET_KEY` stores security key in client side (Make it secret, hard to guess, and change it regularly)<br /><br />
-        > __Note__: Make sure you have the same value of `REACT_APP_SECRET_KEY` in `client` and `REACT_APP_SECRET_KEY` in `server` side is __SAME__. Otherwise, it will cause an error.
+      - `REACT_APP_GITHUB_API` stores the GitHub current Stars and Forks<br /><br />
           ```
           REACT_APP_CLIENT_URL = http://localhost:3000
           REACT_APP_SERVER_URL = http://localhost:5000
           REACT_APP_GITHUB_API = https://api.github.com/repos/stanleyowen/todo-application
-          REACT_APP_SECRET_KEY = YHUIEHNHOIDFU28374C897C4T843973X4843C57N8934D2987N8394NC07489BC3
           ```
 
-    - Inside `server` directory, create a new file named `.env` which stores about sensitive data, which is `ATLAS_URI`, `SECRET_KEY`, and `TOKEN_KEY`
+    - Inside `server` directory, create a new file named `.env` which stores about sensitive information, which is `ATLAS_URI`, `SECRET_KEY`, and `TOKEN_KEY`
       - `ATLAS_URI` stores the Database URI provided by [MongoDB](https://www.mongodb.com/2)
-      - `TOKEN_KEY` is the value where `TOKEN` is created with
-      - `SECRET_KEY` stores security key (Make it secret, hard to guess, and change it regularly)<br /><br />
-        > __Note__: Make sure you have the same value of `REACT_APP_SECRET_KEY` in `client` and `REACT_APP_SECRET_KEY` in `server` side is __SAME__. Otherwise, it will cause an error.
+      - `SECRET_SESSION` stores JWT secret (Make it secret and hard to guess)<br /><br />
           ```
           ATLAS_URI = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
-          SECRET_KEY = YHUIEHNHOIDFU28374C897C4T843973X4843C57N8934D2987N8394NC07489BC3
-          TOKEN_KEY = HGB778C34595@54290cv#$^&^#c$%C3NN2C83P9P9D54^#4CF34
+          SECRET_SESSION = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3
           ```
   4. Run and Compile it
-      - In the `client` directory, type `npm start`
-      - In the `server` diireactory, type `nodemon`
+      - In the `client` directory, type `npm start` in command line
+      - In the `server` diireactory, type `nodemon` in command line
 
 ## Built With
   1. MongoDB Atlas Database
