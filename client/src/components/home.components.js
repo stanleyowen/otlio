@@ -114,8 +114,8 @@ const Home = () => {
     const submitTodo = (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-addTodo');
-        btn.innerHTML = "Adding";
         async function submitData() {
+            btn.innerHTML = "Adding...";
             const modal = document.getElementById('addTodoModal');
             const todoData = { id: userId, email, title, label, description, date };
             await axios.post(`${SERVER_URL}/data/todo/add`, todoData, { headers: { Authorization: `JWT ${token}` } })
@@ -137,18 +137,18 @@ const Home = () => {
             btn.innerHTML = "Add";
             getTodoData();
         }
-        if(!email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
-        else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
-        else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !") }
-        else if(label.length > 20){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" ) }
-        else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !") }
-        else if(date.length !== 10 || DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
+        if(!email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
+        else if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
+        else if(title.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !")
+        else if(label.length > 20) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" )
+        else if(description && description.length > 120) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !")
+        else if(date.length !== 10 || DATE_VAL.test(String(date)) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !")
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
     return (
-       <div className="main__projects">
-           <p>Hi, Welcome Back {email}</p>
-           <div id="addTodoModal" className="modal">
+        <div className="main__projects">
+            <p>Hi, Welcome Back {email}</p>
+            <div id="addTodoModal" className="modal">
                 <div className="modal__container">
                     <div className="modal__title">
                         <span className="modal__closeFireUI modal__closeBtn" onClick={closeModal}>&times;</span>
