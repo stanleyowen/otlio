@@ -776,10 +776,12 @@ body.dark .contact__onFocus { background: #FFFFFF; }
     #form { width: 100%; }
     .form__container { grid-template-columns: auto; }
     .footer__socialBtn { width: 75%; }
+    .btn__outline { width: 50%; }
 }
-@media only screen and (max-width: 600px) { .animation__message { width: 100%; height: auto; } }
+@media only screen and (max-width: 600px) { .animation__message { width: 100%; height: auto; } .btn__outline { width: 65%; } }
 @media only screen and (max-width: 480px) {
     .main__divider { width: 80%; }
     .main__button { width: 50%; }
     .footer__socialBtn { width: 100%; }
+    .btn__outline { width: 85%; }
 }
