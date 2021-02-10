@@ -21,7 +21,8 @@ const ERR_MSG = [
     'No Token Provided',
     'Token Mismatch',
     'Registration Success',
-    'Login Success'
+    'Login Success',
+    'Password Changed Successfully'
 ]
 
 passport.serializeUser((user, done) => {
@@ -31,6 +32,41 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
     done(null, user);
 });
+
+passport.use('changePassword', new localStrategy({ usernameField: 'email', passwordField: 'newPassword', passReqToCallback: true, session: false }, (req, email, newPassword, done) => {
+    const oldPassword = req.body.oldPassword;
+    if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return done(null, false, { status: 400, message: ERR_MSG[4] });
+    else if(email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: ERR_MSG[6] });
+    else if(oldPassword.length < 6 || newPassword.length < 6 || oldPassword.length > 40 || newPassword.length > 40) return done(null, false, { status: 400, message: ERR_MSG[7] });
+    else {
+        User.findOne({email}, (err, user) => {
+            if(err) return done(null, false, { status: 500, message: ERR_MSG[0] });
+            else if(!user) return done(null, false, { status: 400, message: ERR_MSG[1] });
+            else if(user) {
+                bcrypt.compare(oldPassword, user.password, (err, isMatch) => {
+                    if(err) return done(null, false, { status: 500, message: ERR_MSG[0] });
+                    else if(!isMatch) return done(null, false, { status: 400, message: ERR_MSG[2] });
+                    else if(isMatch){
+                        bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+                            if(err) return done(null, false, { status: 500, message: ERR_MSG[0] });
+                            else {
+                                bcrypt.hash(newPassword, salt, (err, hash) => {
+                                    if(err) return done(null, false, { status: 500, message: ERR_MSG[0] });
+                                    else {
+                                        user.password = hash;
+                                        user.save()
+                                        .then(user => { return done(null, user, { status: 200, message: ERR_MSG[12], id: user.id }) })
+                                        .catch(() => { return done(null, false, { status: 500, message: ERR_MSG[0] }) })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }else return done(null, false, { status: 400, message: ERR_MSG[2] });
+        })
+    }
+}))
 
 passport.use('register', new localStrategy({ usernameField: 'email', passwordField: 'password', session: false }, (email, password, done) => {
     if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return done(null, false, { status: 400, message: ERR_MSG[4] });
