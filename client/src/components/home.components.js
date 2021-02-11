@@ -18,6 +18,17 @@ const timestamps = () => {
     return year+'-'+month+'-'+date;
 }
 
+const validateTimestamp = (a, b) => {
+    var data = parseInt(a.split('-')[2]);
+    var yesterday = parseInt(b.split('-')[2]) - 1;
+    var today = parseInt(b.split('-')[2]);
+    var tomorrow = parseInt(b.split('-')[2]) + 1;
+    if(data === yesterday) return "Yesterday";
+    else if(data === today) return <b>Today</b>;
+    else if(data === tomorrow) return "Tomorrow";
+    else return formatDate(a);
+}
+
 const labeling = (a) => {
     var _labelClass = null;
     if(a[1]){if(a[0]+" "+a[1] === listLabel[3]) _labelClass="do-later"}
@@ -82,7 +93,7 @@ const Home = () => {
                 <tr key={a._id}>
                     <td>{a.title}<br/>{a.description}</td>
                     <td>{labeling(titleCase(a.label))}</td>
-                    <td>{formatDate(a.date.substring(10, 0))}</td>
+                    <td>{validateTimestamp(a.date.substring(10, 0), timestamps())}</td>
                     <td><span className="btn-config"><a href={`/edit/${a._id}`}>Edit</a></span><span><a onClick={() => deleteData(a._id)}>Delete</a></span></td>
                 </tr>)
             })
