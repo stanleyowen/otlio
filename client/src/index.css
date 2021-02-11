@@ -22,6 +22,8 @@ body.dark tbody tr:hover {
     background-color: #333333;
     transition: all .4s;
 }
+body.dark .modal { background-color: rgba(0, 0, 0, 0.5); }
+body.dark .modal__container { border: 1px solid rgb(17, 17, 17); }
 body.dark .btn__outline { color: #7bb4ff; border: 2px solid #7bb4ff; }
 body.dark .btn__outline:hover { background-color: #7bb4ff; color: #FFFFFF; }
 body.dark .navbar,
@@ -46,6 +48,9 @@ body.dark .contact__sendBtn,
 body.dark .modal__body a,
 body.dark .footer {
     color: #FFFFFF;
+}
+body.dark select {
+    background-color: #333;
 }
 body.dark .navbar .animation__underline:after,
 body.dark .contact__body .animation__underline:after,
