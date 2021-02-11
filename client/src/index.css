@@ -17,7 +17,13 @@ body.dark {
     background-color: #212121;
 }
 a:visited { color: #212121; }
-body.dark a:visited { color: #FFF; }
+body.dark a, body.dark a:visited { color: #FFF; }
+body.dark tbody tr:hover {
+    background-color: #333333;
+    transition: all .4s;
+}
+body.dark .btn__outline { color: #7bb4ff; border: 2px solid #7bb4ff; }
+body.dark .btn__outline:hover { background-color: #7bb4ff; color: #FFFFFF; }
 body.dark .navbar,
 body.dark .btn__changeMode,
 body.dark .about,
@@ -346,7 +352,7 @@ button, a { user-select: none; cursor: pointer; }
     transition: all .4s;
     border-radius: 100px;
     text-decoration: none;
-    background-color: none;
+    background-color: transparent;
     border: 2px solid #1a73e8;
     margin-top: 50px;
 }
