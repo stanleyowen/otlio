@@ -27,6 +27,10 @@ const Navbar = () => {
         async function getToken() {
             const token = localStorage.getItem('__token');
             const userId = localStorage.getItem('__id');
+            const theme = localStorage.getItem('__theme');
+            if(theme == "dark"){
+                document.body.classList.add("dark");
+            }
             if(token && userId){
                 getUserToken(token, userId)
                 .then(res => {
@@ -121,14 +125,13 @@ const Navbar = () => {
     }
 
     const changeMode = (e) => {
-        /*document.body.classList.toggle("dark");
+        e.preventDefault();
+        document.body.classList.toggle("dark");
         let theme = "light";
         if(document.body.classList.contains("dark")){
             theme = "dark";
         }
-        localStorage.setItem("__theme", theme);*/
-        e.preventDefault();
-        setNotification(NOTIFICATION_TYPES.SUCCESS, "Dark Mode is will be available in v0.1.4! Stay Tune!");
+        localStorage.setItem("__theme", theme);
     }
     
     return (

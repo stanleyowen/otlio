@@ -17,7 +17,15 @@ body.dark {
     background-color: #212121;
 }
 a:visited { color: #212121; }
-body.dark a:visited { color: #FFF; }
+body.dark a, body.dark a:visited { color: #FFF; }
+body.dark tbody tr:hover {
+    background-color: #333333;
+    transition: all .4s;
+}
+body.dark .modal { background-color: rgba(0, 0, 0, 0.5); }
+body.dark .modal__container { border: 1px solid rgb(17, 17, 17); }
+body.dark .btn__outline { color: #7bb4ff; border: 2px solid #7bb4ff; }
+body.dark .btn__outline:hover { background-color: #7bb4ff; color: #FFFFFF; }
 body.dark .navbar,
 body.dark .btn__changeMode,
 body.dark .about,
@@ -40,6 +48,9 @@ body.dark .contact__sendBtn,
 body.dark .modal__body a,
 body.dark .footer {
     color: #FFFFFF;
+}
+body.dark select {
+    background-color: #333;
 }
 body.dark .navbar .animation__underline:after,
 body.dark .contact__body .animation__underline:after,
@@ -346,7 +357,7 @@ button, a { user-select: none; cursor: pointer; }
     transition: all .4s;
     border-radius: 100px;
     text-decoration: none;
-    background-color: none;
+    background-color: transparent;
     border: 2px solid #1a73e8;
     margin-top: 50px;
 }
