@@ -100,6 +100,7 @@ button, a { user-select: none; cursor: pointer; }
     padding-top: 50vh;
     z-index: 1000;
 }
+body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
 .spin-container {
     position: relative;
     width: 30px;
@@ -485,7 +486,7 @@ body.dark .btn__value {
 .important { background-color: rgb(118, 44, 255); }
 .do-later { background-color: green; }
 .btn-config { margin-right: 10px; }
-.btn-config .MuiButtonBase-root { color: #333; z-index: -1; }
+.btn-config .MuiButtonBase-root { color: #333; z-index: 1; }
 body.dark .btn-config .MuiButtonBase-root { color: #e7e7e7; }
 .modal {
     left: 0;
@@ -497,6 +498,7 @@ body.dark .btn-config .MuiButtonBase-root { color: #e7e7e7; }
     position: fixed;
     visibility: hidden;
     transition: all .5s;
+    z-index: 90;
     background-color: rgba(255,255,255,0.5);
 }
 .modal__bodyBtn {
