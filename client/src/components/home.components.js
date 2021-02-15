@@ -1,6 +1,9 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
+import { IconButton } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import axios from 'axios';
 
 const listLabel = ["Priority","Secondary","Important","Do Later"];
@@ -94,7 +97,18 @@ const Home = () => {
                     <td>{a.title}<br/>{a.description}</td>
                     <td>{labeling(titleCase(a.label))}</td>
                     <td>{validateTimestamp(a.date.substring(10, 0), timestamps())}</td>
-                    <td><span className="btn-config"><a href={`/edit/${a._id}`}>Edit</a></span><span><a onClick={() => deleteData(a._id)}>Delete</a></span></td>
+                    <td>
+                        <span className="btn-config">
+                            <IconButton href={`/edit/${a._id}`}>
+                                <EditIcon/>
+                            </IconButton>
+                        </span>
+                        <span className="btn-config">
+                            <IconButton onClick={() => deleteData(a._id)}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        </span>
+                    </td>
                 </tr>)
             })
         }

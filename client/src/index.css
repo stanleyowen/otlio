@@ -485,6 +485,8 @@ body.dark .btn__value {
 .important { background-color: rgb(118, 44, 255); }
 .do-later { background-color: green; }
 .btn-config { margin-right: 10px; }
+.btn-config .MuiButtonBase-root { color: #333; }
+body.dark .btn-config .MuiButtonBase-root { color: #e7e7e7; }
 .modal {
     left: 0;
     top: 20px;
