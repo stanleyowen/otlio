@@ -232,7 +232,7 @@ const Home = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {todoList()}
+                    { todoList() }
                     { !todoData ?
                         (<td colSpan="5" className="no-border"><div className="full-width spin-container">
                         <div className="shape shape-1"></div>

@@ -47,7 +47,7 @@ router.post('/changePassword', (req, res, next) => {
                     User.findOne({ email: user.email }, (err, user) => {
                         if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                         else {
-                            const token = jwt.sign({ id: user.id }, jwtSecret.secret);
+                            const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
                             res.json({
                                 statusCode: info.status,
                                 message: info.message,
@@ -73,7 +73,7 @@ router.post('/register', (req, res, next) => {
                     User.findOne({ email: user.email }, (err, user) => {
                         if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                         else {
-                            const token = jwt.sign({ id: user.id }, jwtSecret.secret);
+                            const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
                             res.json({
                                 statusCode: info.status,
                                 message: info.message,
@@ -99,7 +99,7 @@ router.post('/login', (req, res, next) => {
                     User.findOne({ email: user.email }, (err, isFound) => {
                         if(err) return res.status(500).json({message: ERR_MSG[0]});
                         else if(isFound){
-                            const token = jwt.sign({ id: user.id }, jwtSecret.secret);
+                            const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
                             res.json({
                                 auth: true,
                                 message: info.message,

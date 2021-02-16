@@ -6,7 +6,7 @@ const getUserToken = async (token, userId) => {
         let _userInfo = null;
         await axios.get(`${SERVER_URL}/data/accounts/getUserByToken`, {params: {id: userId}, headers: { Authorization: `JWT ${token}` }})
         .then(res => _userInfo = res.data)
-        .catch(err => console.log(err.response));
+        .catch(err => console.log(err));
         return _userInfo;
     }else return undefined;
 }

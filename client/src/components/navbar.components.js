@@ -157,24 +157,25 @@ const Navbar = () => {
                     </div>
                     <div className="modal__body">
                         <form onSubmit={submitNewPassword}>
+                            <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                    <input title="Old Password" id="old-password" type="password" className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} required />
+                                    <input title="Old Password" id="old-password" type="password" className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} required autoComplete="current-password" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                    <input title="New Password" id="new-password" type="password" className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} required />
+                                    <input title="New Password" id="new-password" type="password" className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} required autoComplete="new-password" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                    <input title="Confirm New Password" id="confirm-password" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required />
+                                    <input title="Confirm New Password" id="confirm-password" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required autoComplete="new-password" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
