@@ -1,12 +1,12 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
+import { listLabel, validateLabel } from '../library/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
 import { IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import axios from 'axios';
 
-const listLabel = ["Priority","Secondary","Important","Do Later"];
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -162,10 +162,11 @@ const Home = () => {
             btn.innerHTML = "Add";
             getTodoData();
         }
+        console.log(validateLabel(label))
         if(!email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
         else if(title.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !")
-        else if(label.length > 20) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Label less than 20 characters !" )
+        else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
         else if(description && description.length > 120) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !")
         else if(date.length !== 10 || DATE_VAL.test(String(date)) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !")
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
