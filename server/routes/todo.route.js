@@ -3,6 +3,7 @@ const passport = require('passport');
 let Todo = require('../models/todo.model');
 let User = require('../models/users.model');
 
+const listLabel = ["Priority","Secondary","Important","Do Later"];
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const ERR_MSG = [
@@ -14,13 +15,20 @@ const ERR_MSG = [
     'Please Provide a Valid Date !',
     'Please Provide a Valid Email Address !',
     'Please Provide a Title less than 40 characters !',
-    'Please Provide a Label less than 20 characters !',
+    'Please Provide a Valid Label !',
     'Please Provide a Description Less than 120 characters !',
     'No Data Found',
     'Data Deleted Successfully',
     'Can\'t Update Todo: No Data Changed',
     'Data Updated Successfully'
-]
+];
+const validateLabel = (e) => {
+    for (let a=0; listLabel.length; a++){
+        if((a === listLabel.length-1) && (e === listLabel[a].toLowerCase())) return false;;
+        if((a === listLabel.length-1) && (e !== listLabel[a].toLowerCase())) return true;
+        else if(e === listLabel[a].toLowerCase()) return false;
+    }
+}
 
 router.post('/delete', (req,res,next) => {
     const email = req.body.email;
@@ -60,7 +68,7 @@ router.post('/update', (req,res,next) => {
     if(!email || !objId || !id || !title || !label || !unformattedDate) return res.status(400).json({statusCode: 400, message: ERR_MSG[4]});
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({"code":400, "message":ERR_MSG[6]});
     else if(title.length > 40) return res.status(400).json({"code":400, "message":ERR_MSG[7]});
-    else if(label.length > 20) return res.status(400).json({"code":400, "message":ERR_MSG[8]});
+    else if(validateLabel(label)) return res.status(400).json({"code":400, "message":ERR_MSG[8]});
     else if(description && description.length > 120) return res.status(400).json({"code":400, "message":ERR_MSG[9]});
     else if(unformattedDate.length !== 10 || DATE_VAL.test(String(unformattedDate)) === false) return res.status(400).json({"code":400, "message":ERR_MSG[5]});
     else {
@@ -160,7 +168,7 @@ router.post('/add', (req,res,next) => {
     if(!email || !id || !title || !label || !unformattedDate) return res.status(400).json({statusCode: 400, message: ERR_MSG[4]});
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({statusCode: 400, message: ERR_MSG[6]});
     else if(title.length > 40) return res.status(400).json({statusCode: 400, message: ERR_MSG[7]});
-    else if(label.length > 20) return res.status(400).json({statusCode: 400, message: ERR_MSG[8]});
+    else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: ERR_MSG[8]});
     else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: ERR_MSG[9]});
     else if(unformattedDate.length !== 10 || DATE_VAL.test(String(unformattedDate)) === false) return res.status(400).json({statusCode: 400, message: ERR_MSG[5]});
     else {

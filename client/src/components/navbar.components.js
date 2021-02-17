@@ -71,16 +71,22 @@ const Navbar = () => {
 
     const submitNewPassword = (e) => {
         e.preventDefault();
+        const id = localStorage.getItem('__id');
+        const token = localStorage.getItem('__token');
         const btn = document.getElementById('btn-changePassword');
         async function submitData() {
             btn.innerHTML = "Changing Password...";
-            const postData = { email, oldPassword, newPassword, confirmPsw }
+            const modal = document.getElementById('changePasswordModal');
+            const postData = { email, oldPassword, newPassword, confirmPsw, id, token }
             await axios.post(`${SERVER_URL}/data/accounts/changePassword`, postData)
             .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            modal.style.visibility = "hidden";
+            modal.style.opacity = "0";
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Change Password";
+            setOldPassword(''); setNewPassword(''); setConfirmPsw('');
         }
         if(!email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!oldPassword || !newPassword || !confirmPsw) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
@@ -89,11 +95,16 @@ const Navbar = () => {
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
-    const Logout = (e) => {
+    const Logout = async (e) => {
         e.preventDefault();
-        let itemsToRemove = ["__token", "__email", "__id"];
-        itemsToRemove.forEach(a => localStorage.removeItem(a));
-        window.location = '/login';
+        const id = localStorage.getItem('__id');
+        const token = localStorage.getItem('__token');
+        await axios.get(`${SERVER_URL}/data/accounts/logout`, {params: {id, token}, headers: { Authorization: `JWT ${token}` }})
+        .then(() => {
+            let itemsToRemove = ["__token", "__email", "__id"];
+            itemsToRemove.forEach(a => localStorage.removeItem(a));
+            window.location = '/login';
+        })
     }
 
     const addTodo = (e) => {
@@ -157,24 +168,25 @@ const Navbar = () => {
                     </div>
                     <div className="modal__body">
                         <form onSubmit={submitNewPassword}>
+                            <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                    <input title="Old Password" id="old-password" type="password" className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} required />
+                                    <input title="Old Password" id="old-password" type="password" className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} required autoComplete="current-password" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                    <input title="New Password" id="new-password" type="password" className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} required />
+                                    <input title="New Password" id="new-password" type="password" className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} required autoComplete="new-password" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                    <input title="Confirm New Password" id="confirm-password" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required />
+                                    <input title="Confirm New Password" id="confirm-password" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required autoComplete="new-password" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
