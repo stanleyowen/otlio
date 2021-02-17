@@ -71,16 +71,22 @@ const Navbar = () => {
 
     const submitNewPassword = (e) => {
         e.preventDefault();
+        const id = localStorage.getItem('__id');
+        const token = localStorage.getItem('__token');
         const btn = document.getElementById('btn-changePassword');
         async function submitData() {
             btn.innerHTML = "Changing Password...";
-            const postData = { email, oldPassword, newPassword, confirmPsw }
+            const modal = document.getElementById('changePasswordModal');
+            const postData = { email, oldPassword, newPassword, confirmPsw, id, token }
             await axios.post(`${SERVER_URL}/data/accounts/changePassword`, postData)
             .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            modal.style.visibility = "hidden";
+            modal.style.opacity = "0";
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Change Password";
+            setOldPassword(''); setNewPassword(''); setConfirmPsw('');
         }
         if(!email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!oldPassword || !newPassword || !confirmPsw) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")

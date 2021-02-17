@@ -53,7 +53,7 @@ router.get('/logout', (req, res, next) => {
                 if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                 else if(userInfo){
                     const blacklistedToken = new BlacklistedToken ({ userId: req.query.id, token: req.query.token })
-                    blacklistedToken.save()
+                    blacklistedToken.save();
                     res.json({
                         auth: true,
                         message: 'Logout Success',
@@ -76,13 +76,21 @@ router.post('/changePassword', (req, res, next) => {
                     User.findOne({ email: user.email }, (err, user) => {
                         if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                         else {
-                            const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
-                            res.json({
-                                statusCode: info.status,
-                                message: info.message,
-                                id: user.id,
-                                token: token
-                            });
+                            BlacklistedToken.findOne({ token: req.body.token }, (err, isListed) => {
+                                if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+                                else if(isListed) return res.status(401).json({statusCode: 401, message: ERR_MSG[10]});
+                                else if(!isListed){
+                                    const blacklistedToken = new BlacklistedToken ({ userId: req.body.id, token: req.body.token })
+                                    blacklistedToken.save()
+                                    const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
+                                    res.json({
+                                        statusCode: info.status,
+                                        message: info.message,
+                                        id: user.id,
+                                        token: token
+                                    });
+                                }
+                            })
                         }
                     })
                 }
