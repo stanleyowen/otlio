@@ -30,10 +30,6 @@ const userSchema = new Schema ({
     referred_by: {
         type: String,
         default: null,
-    },
-    token : {
-        type: String,
-        maxlength: 80,
     }
 }, {
     timestamps: true

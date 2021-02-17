@@ -3,6 +3,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const jwtSecret = require('../config/jwtConfig');
 let User = require('../models/users.model');
+let BlacklistedToken = require('../models/blacklisted-token.model');
 
 const ERR_MSG = [
     'Oops! Something Went Wrong, Please Try Again Later',
@@ -14,7 +15,8 @@ const ERR_MSG = [
     'Please Provide an Email between 6 ~ 40 characters !',
     'Please Provide a Password between 6 ~ 40 characters !',
     'No Token Provided',
-    'Token Mismatch'
+    'Token Mismatch',
+    'Token Expired'
 ]
 
 router.get('/getUserByToken', (req, res, next) => {
@@ -22,12 +24,39 @@ router.get('/getUserByToken', (req, res, next) => {
         if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
         else if(info) return res.status(info.status ? info.status : info.status = 401).json({statusCode: info.status, message: info.message});
         else if(user.id === req.query.id){
+            BlacklistedToken.findOne({ token: req.query.token }, (err, isListed) => {
+                if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+                else if(isListed) return res.status(401).json({statusCode: 401, message: ERR_MSG[10]});
+                else if(!isListed){
+                    User.findById(req.query.id, (err, userInfo) => {
+                        if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+                        else if(userInfo){
+                            res.json({
+                                auth: true,
+                                message: 'Authentication Success',
+                                email: userInfo.email
+                            });
+                        }else return res.status(401).json({message: 'Authentication Failed'});
+                    })
+                }
+            })
+        }else return res.status(401).json({message: 'Authentication Failed'});
+    })(req, res, next)
+})
+
+router.get('/logout', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+        else if(info) return res.status(info.status ? info.status : info.status = 401).json({statusCode: info.status, message: info.message});
+        else if(user.id === req.query.id){
             User.findById(req.query.id, (err, userInfo) => {
                 if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                 else if(userInfo){
+                    const blacklistedToken = new BlacklistedToken ({ userId: req.query.id, token: req.query.token })
+                    blacklistedToken.save()
                     res.json({
                         auth: true,
-                        message: 'Authentication Success',
+                        message: 'Logout Success',
                         email: userInfo.email
                     });
                 }else return res.status(401).json({message: 'Authentication Failed'});
