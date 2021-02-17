@@ -89,11 +89,16 @@ const Navbar = () => {
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
-    const Logout = (e) => {
+    const Logout = async (e) => {
         e.preventDefault();
-        let itemsToRemove = ["__token", "__email", "__id"];
-        itemsToRemove.forEach(a => localStorage.removeItem(a));
-        window.location = '/login';
+        const id = localStorage.getItem('__id');
+        const token = localStorage.getItem('__token');
+        await axios.get(`${SERVER_URL}/data/accounts/logout`, {params: {id, token}, headers: { Authorization: `JWT ${token}` }})
+        .then(() => {
+            let itemsToRemove = ["__token", "__email", "__id"];
+            itemsToRemove.forEach(a => localStorage.removeItem(a));
+            window.location = '/login';
+        })
     }
 
     const addTodo = (e) => {
