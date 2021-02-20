@@ -75,6 +75,7 @@ body.dark .navbar { box-shadow: none; }
 body.dark .footer { background-color: #191919; }
 body.dark .contact__onFocus { background: #FFFFFF; }
 body.dark .projects__viewMore { border-color: #79c3ff; }
+body.dark ::-webkit-calendar-picker-indicator { filter: invert(1); }
 body.dark .main__button { box-shadow: 2px 1000px 1px #212121 inset; }
 body.dark .projects__viewMore:hover { background-color: #79c3ff; color: #212121; }
 body.dark .footer__socialBtn a:hover { background-color: #FFFFFF; color: #212121; }
@@ -773,7 +774,6 @@ select {
     visibility: visible;
 }
 .message { margin: 40px auto; }
-
 @media only screen and (max-width: 1024px) {
     .body__aboutLeft, .body__aboutRight { display: none; }
     .body__about { flex: 1; }
