@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { listLabel, validateLabel } from '../library/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import axios from 'axios';
@@ -99,14 +99,18 @@ const Home = () => {
                     <td>{validateTimestamp(a.date.substring(10, 0), timestamps())}</td>
                     <td>
                         <span className="btn-config">
-                            <IconButton href={`/edit/${a._id}`}>
-                                <EditIcon/>
-                            </IconButton>
+                            <Tooltip title="Edit Task">
+                                <IconButton href={`/edit/${a._id}`}>
+                                    <EditIcon/>
+                                </IconButton>
+                            </Tooltip>
                         </span>
                         <span className="btn-config">
-                            <IconButton onClick={() => deleteData(a._id)}>
-                                <DeleteIcon/>
-                            </IconButton>
+                            <Tooltip title="Delete Task">
+                                <IconButton onClick={() => deleteData(a._id)}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </Tooltip>
                         </span>
                     </td>
                 </tr>)

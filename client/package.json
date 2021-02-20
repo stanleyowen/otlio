@@ -1,6 +1,6 @@
 {
   "name": "todo-application",
-  "version": "0.1.2",
+  "version": "0.2.3",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.2",

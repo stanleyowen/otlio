@@ -1,4 +1,4 @@
-/*! TodoApp - CSS Version 0.1.2 Copyright 2021, Stanley Owen */
+/*! TodoApp - CSS Version 0.2.3 Copyright 2021, Stanley Owen */
 var observe;
 var scrollTop_btn = document.getElementById("scrollTop");
 var currentTheme = localStorage.getItem("__theme");

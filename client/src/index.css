@@ -1,4 +1,4 @@
-/*! TodoApp - CSS Version 0.1.2 Copyright 2021, Stanley Owen */
+/*! TodoApp - CSS Version 0.2.3 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 body {
     margin: 0;
@@ -18,6 +18,10 @@ body.dark {
 }
 a:visited { color: #212121; }
 body.dark a, body.dark a:visited { color: #FFF; }
+body.dark tbody tr:nth-child(odd) {
+    background-color: #3a3a3a;
+    transition: all .4s;
+}
 body.dark tbody tr:hover {
     background-color: #333333;
     transition: all .4s;
@@ -386,6 +390,9 @@ th, td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid;
+}
+tbody tr:nth-child(odd) {
+    background: #ececec;
 }
 tbody tr:hover {
     background-color: #e7e5e5;

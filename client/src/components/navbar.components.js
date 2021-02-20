@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import getUserToken from '../library/getUserToken';
 import { useLocation } from 'react-router-dom';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../library/setNotification';
+import { IconButton, Tooltip } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
 import axios from 'axios';
 
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
@@ -154,10 +156,18 @@ const Navbar = () => {
                     {value_e !== false ? (<a className="animation__underline" onClick={changePasswordModal}>Change Password</a>) : null}
                     <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[2]}>{value_b[0]}</a>
                 </div>
-                <a href="#!" className="toggleNavbar" onClick={toggleNavbar}><i className="fa fa-bars"></i></a>
+                <div className="toggleNavbar">
+                    <Tooltip title="Menu">
+                        <IconButton onClick={toggleNavbar}>
+                            <MenuIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
             </div>
-            {value_d !== false ? (<button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button>) : null}
-		    <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}><i className="fas fa-adjust" style={{fontSize: '2em'}}></i></button>
+            {value_d !== false ? (<Tooltip title="Add Task" placement="top"><button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button></Tooltip>) : null}
+		    <Tooltip title="Change Mode">
+                <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}><i className="fas fa-adjust" style={{fontSize: '2em'}}></i></button>
+            </Tooltip>
             <div className="notifications" id="notifications"></div>
 
             <div id="changePasswordModal" className="modal">

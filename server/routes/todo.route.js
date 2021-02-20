@@ -85,7 +85,7 @@ router.post('/update', (req,res,next) => {
                                 else if(!todoData) return res.status(404).json({statusCode: 404, message: ERR_MSG[10]});
                                 else if(todoData){
                                     if(title === todoData.title && label === todoData.label && Date.parse(unformattedDate) === Date.parse(todoData.date)){
-                                        if(description && description !== todoData.description){
+                                        if((description && description !== todoData.description) || (!description && todoData.description)){
                                             todoData.title = title;
                                             todoData.label = label;
                                             todoData.description = description;
