@@ -4,7 +4,7 @@ import getUserToken from '../library/getUserToken';
 import { useLocation } from 'react-router-dom';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../library/setNotification';
 import { IconButton, Tooltip } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+import { Menu, ExitToApp, Dashboard, Lock } from '@material-ui/icons';
 import axios from 'axios';
 
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
@@ -38,8 +38,8 @@ const Navbar = () => {
                 .then(res => {
                     if(res){
                         localStorage.setItem('__email', res.email);
-                        setValue_a(['Dashboard',`${CLIENT_URL}`]);
-                        setValue_b(['Logout','#!',Logout]);
+                        setValue_a([`Dashboard`,`${CLIENT_URL}`, <Dashboard />]);
+                        setValue_b([`Logout`,'#!', <ExitToApp />, Logout]);
                         setValue_c('/')
                         setValue_d(<i className="fas fa-plus" style={{fontSize: "2.2em"}}></i>)
                         setValue_e(true)
@@ -152,14 +152,32 @@ const Navbar = () => {
             <div className="navbar">
                 <a className="navbar__logo" href={value_c}>TodoApp</a>
                 <div className="navbar__menu" id="navbar__menu">
-                    <a className="animation__underline" href={value_a[1]}>{value_a[0]}</a>
-                    {value_e !== false ? (<a className="animation__underline" onClick={changePasswordModal}>Change Password</a>) : null}
-                    <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[2]}>{value_b[0]}</a>
+                    <a className="animation__underline" href={value_a[1]}>
+                        <span className="icons">
+                            <Tooltip title={value_a[0]}><span>{value_a[2]}</span></Tooltip>
+                        </span>
+                        <span className="description">{value_a[0]}</span>
+                    </a>
+                    {value_e !== false ? (
+                        <a className="animation__underline" onClick={changePasswordModal}>
+                            <span className="icons">
+                                <Tooltip title="Change Password">
+                                    <Lock />
+                                </Tooltip>
+                            </span>
+                            <span className="description">Change Password</span>
+                        </a>) : null}
+                    <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[3]}>
+                        <span className="icons">
+                            <Tooltip title={value_b[0]}><span>{value_b[2]}</span></Tooltip>
+                        </span>
+                        <span className="description">{value_b[0]}</span>
+                    </a>
                 </div>
                 <div className="toggleNavbar">
                     <Tooltip title="Menu">
                         <IconButton onClick={toggleNavbar}>
-                            <MenuIcon />
+                            <Menu />
                         </IconButton>
                     </Tooltip>
                 </div>
