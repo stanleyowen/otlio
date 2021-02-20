@@ -4,7 +4,7 @@ import getUserToken from '../library/getUserToken';
 import { useLocation } from 'react-router-dom';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../library/setNotification';
 import { IconButton, Tooltip } from '@material-ui/core';
-import { Menu, ExitToApp, Dashboard, Lock } from '@material-ui/icons';
+import { Menu, ExitToApp, Dashboard, Lock, SupervisorAccount } from '@material-ui/icons';
 import axios from 'axios';
 
 const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
@@ -47,8 +47,8 @@ const Navbar = () => {
                             if(location.pathname.split('/')[1] === a) window.location='/';
                         });
                     }else {
-                        setValue_a(['Login',`${CLIENT_URL}/login`]);
-                        setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
+                        setValue_a(['Login',`${CLIENT_URL}/login`, <ExitToApp />]);
+                        setValue_b(['Get Started',`${CLIENT_URL}/get-started`, <SupervisorAccount />]);
                         setValue_c('/welcome');
                         localStorage.removeItem('__id');
                         localStorage.removeItem('__token');
@@ -59,8 +59,8 @@ const Navbar = () => {
                     }
                 })
             }else {
-                setValue_a(['Login',`${CLIENT_URL}/login`]);
-                setValue_b(['Get Started',`${CLIENT_URL}/get-started`]);
+                setValue_a([`Login`,`${CLIENT_URL}/login`, <ExitToApp />]);
+                setValue_b([`Get Started`,`${CLIENT_URL}/get-started`, <SupervisorAccount />]);
                 setValue_c('/welcome');
                 privateRoute.forEach(a => {
                     if(location.pathname.split('/')[1] === a) window.location='/welcome';
