@@ -14,7 +14,7 @@ const Edit = () => {
     const userId = localStorage.getItem('__id');
     const {id} = useParams();
     const [title, setTitle] = useState('loading ...');
-    const [date, setDate] = useState('loading ...');
+    const [date, setDate] = useState('2020-01-01');
     const [description, setDescription] = useState('loading ...');
     const [defaultValue, setDefaultValue] = useState('loading ...');
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
@@ -61,7 +61,7 @@ const Edit = () => {
     }
     return (
         <div>
-            { title && label && date === "loading ..." ?
+            { title && label && defaultValue === "loading ..." ?
             (<div className="loader"><div className="spin-container full-width">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>

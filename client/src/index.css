@@ -73,7 +73,9 @@ body.dark .projects__viewMore {
 }
 body.dark .navbar { box-shadow: none; }
 body.dark .footer { background-color: #191919; }
+body.dark .contact__onFocus { background: #FFFFFF; }
 body.dark .projects__viewMore { border-color: #79c3ff; }
+body.dark ::-webkit-calendar-picker-indicator { filter: invert(1); }
 body.dark .main__button { box-shadow: 2px 1000px 1px #212121 inset; }
 body.dark .projects__viewMore:hover { background-color: #79c3ff; color: #212121; }
 body.dark .footer__socialBtn a:hover { background-color: #FFFFFF; color: #212121; }
@@ -281,11 +283,15 @@ body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
     float: left;
     font-size: 17px;
 }
+.navbar .description { display: none; }
 .toggleNavbar {
     display: none;
     position: absolute;
     top: 0;
     right: 0;
+}
+body.dark .toggleNavbar button {
+    color: #FFF;
 }
 .close {
     position: absolute;
@@ -677,7 +683,6 @@ select {
     height: 2px;
     background: #1a73e8;
 }
-body.dark .contact__onFocus { background: #FFFFFF; }
 .contact__infoField .contact__inputField:focus + .contact__onFocus { left: 0; }
 #form {
     width: 60%;
@@ -784,6 +789,8 @@ body.dark .contact__onFocus { background: #FFFFFF; }
         float: none;
         text-align: center;
     }
+    .navbar .icons { display: none; }
+    .navbar .description { display: inline-flex; }
     .navbar__menu { display: none; float: none; }
     .toggleNavbar { display: block; }
     .main__divider { width: 60%; }
