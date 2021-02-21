@@ -30,9 +30,7 @@ const Navbar = () => {
             const token = localStorage.getItem('__token');
             const userId = localStorage.getItem('__id');
             const theme = localStorage.getItem('__theme');
-            if(theme == "dark"){
-                document.body.classList.add("dark");
-            }
+            if(theme == "dark") document.body.classList.add("dark");
             if(token && userId){
                 getUserToken(token, userId)
                 .then(res => {
@@ -65,6 +63,13 @@ const Navbar = () => {
                 privateRoute.forEach(a => {
                     if(location.pathname.split('/')[1] === a) window.location='/welcome';
                 });
+            }
+        }
+        const modal = document.getElementById('changePasswordModal');
+        window.onclick = function(event){
+            if(event.target === modal){
+                modal.style.visibility = "hidden";
+                modal.style.opacity = "0";
             }
         }
         getToken();
@@ -204,18 +209,20 @@ const Navbar = () => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <div className="contact__formControl">
-                                <div className="contact__infoField">
-                                    <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                    <input title="New Password" id="new-password" type="password" className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} required autoComplete="new-password" />
-                                    <span className="contact__onFocus"></span>
+                            <div className="form__container">
+                                <div className="contact__formControl">
+                                    <div className="contact__infoField">
+                                        <label htmlFor="new-password">New Password <span className="required">*</span></label>
+                                        <input title="New Password" id="new-password" type="password" className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} required autoComplete="new-password" />
+                                        <span className="contact__onFocus"></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="contact__formControl">
-                                <div className="contact__infoField">
-                                    <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                    <input title="Confirm New Password" id="confirm-password" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required autoComplete="new-password" />
-                                    <span className="contact__onFocus"></span>
+                                <div className="contact__formControl">
+                                    <div className="contact__infoField">
+                                        <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
+                                        <input title="Confirm New Password" id="confirm-password" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required autoComplete="new-password" />
+                                        <span className="contact__onFocus"></span>
+                                    </div>
                                 </div>
                             </div>
                             <button type="submit" id="btn-changePassword" className="btn__outline" style={{outline: 'none'}}>Change Password</button>
