@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { listLabel, validateLabel } from '../library/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
+import axios from 'axios';
+
+/* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import axios from 'axios';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
@@ -26,15 +28,15 @@ const validateTimestamp = (a, b) => {
     var yesterday = parseInt(b.split('-')[2]) - 1;
     var today = parseInt(b.split('-')[2]);
     var tomorrow = parseInt(b.split('-')[2]) + 1;
-    if(data === yesterday) return "Yesterday";
+    if(data === yesterday) return <b>Yesterday</b>;
     else if(data === today) return <b>Today</b>;
-    else if(data === tomorrow) return "Tomorrow";
+    else if(data === tomorrow) return <b>Tomorrow</b>;
     else return formatDate(a);
 }
 
 const labeling = (a) => {
     var _labelClass = null;
-    if(a[1]){if(a[0]+" "+a[1] === listLabel[3]) _labelClass="do-later"}
+    if(a[1]) {if(a[0]+" "+a[1] === listLabel[3]) _labelClass="do-later"}
     else {
         if(a[0] === listLabel[0]) _labelClass="priority";
         else if(a[0] === listLabel[1]) _labelClass="secondary";
@@ -53,16 +55,22 @@ const Home = () => {
     const email = localStorage.getItem('__email');
     const token = localStorage.getItem('__token');
     const userId = localStorage.getItem('__id');
+    var a;
     const [todoData, setTodoData] = useState(null);
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
     const [description, setDescription] = useState('');
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
-    async function getTodoData(){
+    async function clearData() {
+        if(a) clearInterval(a);
+    }
+
+    async function getTodoData() {
         const email = localStorage.getItem('__email');
         const token = localStorage.getItem('__token');
         const userId = localStorage.getItem('__id');
+        clearData();
         await axios.get(`${SERVER_URL}/data/todo/getData`, {params: {id: userId, email}, headers: { Authorization: `JWT ${token}` }})
         .then(res => setTodoData(res.data))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
@@ -86,7 +94,7 @@ const Home = () => {
             element.removeAttribute('data-autoresize');
         });
         if(email && userId) getTodoData();
-        else setInterval(getTodoData, 2000);
+        else a = setInterval(getTodoData, 2000);
     }, []);
 
     function todoList() {

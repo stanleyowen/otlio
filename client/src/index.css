@@ -290,6 +290,7 @@ body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
     position: absolute;
     top: 0;
     right: 0;
+    padding-top: 7px;
 }
 body.dark .toggleNavbar button {
     color: #FFF;
