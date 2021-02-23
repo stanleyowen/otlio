@@ -159,7 +159,7 @@ const Navbar = () => {
                 <div className="navbar__menu" id="navbar__menu">
                     <a className="animation__underline" href={value_a[1]}>
                         <span className="icons">
-                            <Tooltip title={value_a[0]}><span>{value_a[2]}</span></Tooltip>
+                            <Tooltip title={value_a[0] ? value_a[0]:""}><span>{value_a[2]}</span></Tooltip>
                         </span>
                         <span className="description">{value_a[0]}</span>
                     </a>
@@ -174,7 +174,7 @@ const Navbar = () => {
                         </a>) : null}
                     <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[3]}>
                         <span className="icons">
-                            <Tooltip title={value_b[0]}><span>{value_b[2]}</span></Tooltip>
+                            <Tooltip title={value_b[0] ? value_b[0]:""}><span>{value_b[2]}</span></Tooltip>
                         </span>
                         <span className="description">{value_b[0]}</span>
                     </a>

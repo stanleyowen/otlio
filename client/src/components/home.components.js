@@ -6,8 +6,7 @@ import axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { Edit, Delete } from '@material-ui/icons/';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
@@ -52,10 +51,10 @@ const formatDate = (e) => {
 }
 
 const Home = () => {
+    var intervalData;
     const email = localStorage.getItem('__email');
     const token = localStorage.getItem('__token');
     const userId = localStorage.getItem('__id');
-    var a;
     const [todoData, setTodoData] = useState(null);
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(timestamps);
@@ -63,41 +62,43 @@ const Home = () => {
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     async function clearData() {
-        if(a) clearInterval(a);
+        if(intervalData) clearInterval(intervalData);
     }
 
     async function getTodoData() {
         const email = localStorage.getItem('__email');
         const token = localStorage.getItem('__token');
         const userId = localStorage.getItem('__id');
-        clearData();
         await axios.get(`${SERVER_URL}/data/todo/getData`, {params: {id: userId, email}, headers: { Authorization: `JWT ${token}` }})
-        .then(res => setTodoData(res.data))
+        .then(res => {
+            setTodoData(res.data);
+            clearData();
+        })
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
     }
 
     useEffect(() => {
         const modal = document.getElementById('addTodoModal');
-        window.onclick = function(event){
-            if(event.target === modal){
+        window.onclick = function(e){
+            if(e.target === modal){
                 modal.style.visibility = "hidden";
                 modal.style.opacity = "0";
             }
         }
-        document.querySelectorAll('[data-autoresize]').forEach(function (element) {
-            element.style.boxSizing = 'border-box';
-            var offset = element.offsetHeight - element.clientHeight;
-            element.addEventListener('input', function (event) {
-              event.target.style.height = '-10px';
-              event.target.style.height = event.target.scrollHeight + offset + 'px';
+        document.querySelectorAll('[data-autoresize]').forEach(function (e) {
+            e.style.boxSizing = 'border-box';
+            var offset = e.offsetHeight - e.clientHeight;
+            e.addEventListener('input', function (a) {
+              a.target.style.height = '-10px';
+              a.target.style.height = a.target.scrollHeight + offset + 'px';
             });
-            element.removeAttribute('data-autoresize');
+            e.removeAttribute('data-autoresize');
         });
-        if(email && userId) getTodoData();
-        else a = setInterval(getTodoData, 2000);
+        if(email && token && userId) getTodoData();
+        else intervalData = setInterval(getTodoData, 2000);
     }, []);
 
-    function todoList() {
+    const todoList = () => {
         if(todoData){
             return todoData.map(a => {
                 return (
@@ -109,14 +110,14 @@ const Home = () => {
                         <span className="btn-config">
                             <Tooltip title="Edit Task">
                                 <IconButton href={`/edit/${a._id}`}>
-                                    <EditIcon/>
+                                    <Edit/>
                                 </IconButton>
                             </Tooltip>
                         </span>
                         <span className="btn-config">
                             <Tooltip title="Delete Task">
                                 <IconButton onClick={() => deleteData(a._id)}>
-                                    <DeleteIcon/>
+                                    <Delete/>
                                 </IconButton>
                             </Tooltip>
                         </span>
@@ -174,7 +175,6 @@ const Home = () => {
             btn.innerHTML = "Add";
             getTodoData();
         }
-        console.log(validateLabel(label))
         if(!email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
         else if(title.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !")
@@ -210,7 +210,6 @@ const Home = () => {
                                     </div>
                                 </div>
                             </div>
-
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="label">Label <span className="required">*</span></label>
@@ -221,7 +220,6 @@ const Home = () => {
                                     </select>
                                 </div>
                             </div>
-
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="description">Description</label>
@@ -234,7 +232,6 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-
             <table className="main__table">
                 <thead>
                     <tr>
@@ -247,16 +244,16 @@ const Home = () => {
                 <tbody>
                     { todoList() }
                     { !todoData ?
-                        (<td colSpan="5" className="no-border"><div className="full-width spin-container">
-                        <div className="shape shape-1"></div>
-                        <div className="shape shape-2"></div>
-                        <div className="shape shape-3"></div>
-                        <div className="shape shape-4"></div>
-                    </div></td>) : null }
+                        (<tr><td colSpan="5" className="no-border">
+                            <div className="full-width spin-container">
+                                <div className="shape shape-1"></div>
+                                <div className="shape shape-2"></div>
+                                <div className="shape shape-3"></div>
+                                <div className="shape shape-4"></div>
+                            </div>
+                        </td></tr>) : null }
                 </tbody>
             </table>
-
-            
        </div>
     );
 }
