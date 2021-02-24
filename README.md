@@ -25,18 +25,16 @@ Todo Application is an **open source** project which is easy to use and easy to 
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.2.4.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.3.1.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
     - Type `npm install` in commmand line
 3. Create `.env` file
     - Inside `client` directory, create a new file named `.env` which stores about sensitive information, which is `REACT_APP_CLIENT_URL`, `REACT_APP_SERVER_URL`, and `REACT_APP_GITHUB_API`
-      - `REACT_APP_CLIENT_URL` stores the client side URL
       - `REACT_APP_SERVER_URL` stores the server side URL
       - `REACT_APP_GITHUB_API` stores the GitHub current Stars and Forks<br /><br />
           ```
-          REACT_APP_CLIENT_URL = http://localhost:3000
           REACT_APP_SERVER_URL = http://localhost:5000
           REACT_APP_GITHUB_API = https://api.github.com/repos/stanleyowen/todo-application
           ```

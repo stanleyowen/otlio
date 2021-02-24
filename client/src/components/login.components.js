@@ -42,7 +42,6 @@ const Login = () => {
                     <div className="get_in_touch">
                         <h1>Login</h1>
                     </div>
-
                     <div className="form">
                         <form className="contact__form" name="contact__form" onSubmit={Submit}>
                             <div className="contact__formControl no-bot">
