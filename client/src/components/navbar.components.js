@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 import getUserToken from '../library/getUserToken';
 import { useLocation } from 'react-router-dom';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../library/setNotification';
-import { IconButton, Tooltip } from '@material-ui/core';
-import { Menu, ExitToApp, Dashboard, Lock, SupervisorAccount } from '@material-ui/icons';
 import axios from 'axios';
 
-const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+/* Icons */
+import { IconButton, Tooltip } from '@material-ui/core';
+import { Menu, ExitToApp, Dashboard, Lock, SupervisorAccount } from '@material-ui/icons';
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const redirectRoute = ['welcome', 'login', 'get-started'];
 const privateRoute = ['', 'edit'];
 
@@ -21,44 +21,43 @@ const Navbar = () => {
     const [value_c, setValue_c] = useState();
     const [value_d, setValue_d] = useState(false);
     const [value_e, setValue_e] = useState(false);
-    const [oldPassword, setOldPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPsw, setConfirmPsw] = useState('');
+    const [oldPassword, setOldPassword] = useState();
+    const [newPassword, setNewPassword] = useState();
+    const [confirmPsw, setConfirmPsw] = useState();
     
     useEffect(() => {
         async function getToken() {
             const token = localStorage.getItem('__token');
             const userId = localStorage.getItem('__id');
             const theme = localStorage.getItem('__theme');
-            if(theme == "dark") document.body.classList.add("dark");
+            if(theme === "dark") document.body.classList.add("dark");
             if(token && userId){
                 getUserToken(token, userId)
                 .then(res => {
                     if(res){
                         localStorage.setItem('__email', res.email);
-                        setValue_a([`Dashboard`,`${CLIENT_URL}`, <Dashboard />]);
+                        setValue_a([`Dashboard`,'/', <Dashboard />]);
                         setValue_b([`Logout`,'#!', <ExitToApp />, Logout]);
-                        setValue_c('/')
+                        setValue_c('/');
                         setValue_d(<i className="fas fa-plus" style={{fontSize: "2.2em"}}></i>)
                         setValue_e(true)
                         redirectRoute.forEach(a => {
                             if(location.pathname.split('/')[1] === a) window.location='/';
                         });
                     }else {
-                        setValue_a(['Login',`${CLIENT_URL}/login`, <ExitToApp />]);
-                        setValue_b(['Get Started',`${CLIENT_URL}/get-started`, <SupervisorAccount />]);
+                        setValue_a(['Login','/login', <ExitToApp />]);
+                        setValue_b(['Get Started','/get-started', <SupervisorAccount />]);
                         setValue_c('/welcome');
-                        localStorage.removeItem('__id');
-                        localStorage.removeItem('__token');
-                        localStorage.removeItem('__email');
+                        let itemsToRemove = ["__token", "__email", "__id"];
+                        itemsToRemove.forEach(a => localStorage.removeItem(a));
                         privateRoute.forEach(a => {
                             if(location.pathname.split('/')[1] === a) window.location='/welcome';
                         });
                     }
                 })
             }else {
-                setValue_a([`Login`,`${CLIENT_URL}/login`, <ExitToApp />]);
-                setValue_b([`Get Started`,`${CLIENT_URL}/get-started`, <SupervisorAccount />]);
+                setValue_a([`Login`,'/login', <ExitToApp />]);
+                setValue_b([`Get Started`,'/get-started', <SupervisorAccount />]);
                 setValue_c('/welcome');
                 privateRoute.forEach(a => {
                     if(location.pathname.split('/')[1] === a) window.location='/welcome';
@@ -66,15 +65,15 @@ const Navbar = () => {
             }
         }
         const modal = document.getElementById('changePasswordModal');
-        window.onclick = function(event){
-            if(event.target === modal){
+        window.onclick = function(e){
+            if(e.target === modal){
                 modal.style.visibility = "hidden";
                 modal.style.opacity = "0";
             }
         }
         getToken();
         setWarning();
-    },[]);
+    },[location]);
 
     const submitNewPassword = (e) => {
         e.preventDefault();

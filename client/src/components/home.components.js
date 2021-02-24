@@ -56,9 +56,9 @@ const Home = () => {
     const token = localStorage.getItem('__token');
     const userId = localStorage.getItem('__id');
     const [todoData, setTodoData] = useState(null);
-    const [title, setTitle] = useState('');
+    const [title, setTitle] = useState();
     const [date, setDate] = useState(timestamps);
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState();
     const [label, setLabel] = useState(listLabel[0].toLowerCase());
 
     async function clearData() {
