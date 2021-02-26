@@ -6,27 +6,43 @@ const todoSchema = new Schema ({
         type: String,
         required: true,
         trim: true,
-        minlength: 6,
-        maxlength: 40,
+        maxlength: 256,
     },
     title: {
-        type: String,
-        required: true,
-        maxlength: 40,
+        data: {
+            type: String,
+            required: true,
+        }, iv: {
+            type: String,
+            required: true,
+        }
     },
     label : {
-        type: String,
-        required: true,
-        maxlength: 20,
+        data: {
+            type: String,
+            required: true,
+        }, iv: {
+            type: String,
+            required: true,
+        }
     },
     description: {
-        type: String,
-        maxlength: 120,
+        data: {
+            type: String,
+            required: true,
+        }, iv: {
+            type: String,
+            required: true,
+        }
     },
     date: {
-        type: Date,
-        required: true,
-        maxlength: 10,
+        data: {
+            type: String,
+            required: true,
+        }, iv: {
+            type: String,
+            required: true,
+        }
     }
 }, {
     timestamps: true
