@@ -25,7 +25,8 @@ const Edit = () => {
         .then(res => {
             setTitle(res.data.title);
             setDate(res.data.date.substring(0, 10));
-            setDescription(res.data.description);
+            if(res.data.description) setDescription(res.data.description);
+            else setDescription('')
             setLabel(res.data.label);
             setDefaultValue(res.data);
         })

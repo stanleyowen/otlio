@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const passport = require('passport');
+const { encrypt, decrypt } = require('../config/crypto');
 let Todo = require('../models/todo.model');
 let User = require('../models/users.model');
 
@@ -58,7 +59,8 @@ router.post('/delete', (req,res,next) => {
 })
 
 router.post('/update', (req,res,next) => {
-    const email = req.body.email;
+    const email = encrypt(req.body.email);
+    console.log(email.content)
     const id = req.body.id;
     const objId = req.body.objId;
     const title = req.body.title;
@@ -128,7 +130,7 @@ router.get('/getData/:id', (req,res,next) => {
                         if(user.email === email){
                             Todo.findById(objId, (err, todoData) => {
                                 if(err) return res.status(500).json({statusCode:500, message: ERR_MSG[0]});
-                                else { res.json(todoData) }
+                                else { res.json(todoData); }
                             })
                         }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
                     }
@@ -149,7 +151,19 @@ router.get('/getData', (req,res,next) => {
                     if(user.email === req.query.email){
                         Todo.find({ email: req.query.email }, (err, todoData) => {
                             if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
-                            else { res.json(todoData) }
+                            else {
+                                /*if(todoData.length !== 0){
+                                    const data = [{
+                                        _id: todoData[0]._id,
+                                        email: todoData[0].email,
+                                        title: decrypt(todoData[0].title, todoData[0].iv),
+                                        label: decrypt(todoData[0].label, todoData[0].iv),
+                                        description: decrypt(todoData[0].description, todoData[0].iv),
+                                        date: decrypt(todoData[0].date, todoData[0].iv)
+                                    }];
+                                    res.json(data)
+                                }else { */res.json(todoData)
+                            }
                         })
                     }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
                 }
@@ -181,10 +195,36 @@ router.post('/add', (req,res,next) => {
                     else if(userInfo){
                         if(user.email === email){
                             const date = Date.parse(unformattedDate);
-                            const newTodo = new Todo({ email, title, label, description, date })
+                            var dataTitle = encrypt(title).then(res => {return res});
+                            const dataLabel = encrypt(label);
+                            if(description){ const dataDescription = encrypt(description) }
+                            else {dataDescription = ""; dataDescription.iv = ""}
+                            const dataDate = encrypt(String(date));
+                            const todoData = {
+                                email,
+                                title: {
+                                    data: dataTitle.then(res => {return res}),
+                                    iv: dataTitle.then(res => {return res.iv}),
+                                },
+                                label: {
+                                    data: dataLabel.content,
+                                    iv: dataLabel.iv,
+                                },
+                                description: {
+                                    data: dataDescription.content,
+                                    iv: dataDescription.iv
+                                },
+                                date: {
+                                    data: dataDate.content,
+                                    iv: dataDate.iv
+                                }
+                            }
+                            console.log(todoData)
+                            const newTodo = new Todo(todoData)
                             newTodo.save()
                             .then(() => res.json({statusCode: 200, message: "Todo Added Successfully !"}))
                             .catch(() => res.status(500).json({statusCode: 500, message: ERR_MSG[0]}));
+                            console.log(dataTitle)
                         }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
                     }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
                 })

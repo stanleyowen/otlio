@@ -17,7 +17,7 @@ const todoSchema = new Schema ({
             required: true,
         }
     },
-    label : {
+    label: {
         data: {
             type: String,
             required: true,

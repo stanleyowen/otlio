@@ -7,7 +7,8 @@ const encrypt = async (text) =>  {
     let cipher = crypto.createCipheriv(algorithm, Buffer.from(scretKey), iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return { iv: iv.toString('hex'), content: encrypted.toString('hex') };
+    const data = ({ iv: iv.toString('hex'), content: encrypted.toString('hex') });
+    return data;
 }
    
 const decrypt = (text, iv) => {
@@ -17,10 +18,5 @@ const decrypt = (text, iv) => {
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
 }
-   
-
-var hw = encrypt("Some serious stuff")
-console.log(Buffer.from(hw.iv, 'hex'))
-console.log(decrypt(hw, hw.iv))
 
 module.exports = { encrypt, decrypt };
