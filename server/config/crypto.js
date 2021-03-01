@@ -9,7 +9,7 @@ const encrypt = (text) => {
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return { iv: iv.toString('hex'), data: encrypted.toString('hex') };
 }
-   
+
 const decrypt = (hash) => {
     let decipher = crypto.createDecipheriv(algorithm, Buffer.from(secretKey), Buffer.from(hash.iv, 'hex'));
     let decrypted = Buffer.concat([decipher.update(Buffer.from(hash.data, 'hex')), decipher.final()]);;

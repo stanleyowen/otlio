@@ -59,8 +59,7 @@ router.post('/delete', (req,res,next) => {
 })
 
 router.post('/update', (req,res,next) => {
-    const email = encrypt(req.body.email);
-    console.log(email.content)
+    const email = req.body.email;
     const id = req.body.id;
     const objId = req.body.objId;
     const title = req.body.title;
@@ -86,24 +85,12 @@ router.post('/update', (req,res,next) => {
                                 if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                                 else if(!todoData) return res.status(404).json({statusCode: 404, message: ERR_MSG[10]});
                                 else if(todoData){
-                                    if(title === todoData.title && label === todoData.label && Date.parse(unformattedDate) === Date.parse(todoData.date)){
-                                        if((description && description !== todoData.description) || (!description && todoData.description)){
-                                            todoData.title = title;
-                                            todoData.label = label;
-                                            todoData.description = description;
-                                            todoData.date = Date.parse(unformattedDate);
-                                            todoData.save();
-                                            res.json({statusCode: 200, message: ERR_MSG[13]})
-                                        }
-                                        else return res.status(400).json({statusCode: 400, message: ERR_MSG[12]});
-                                    }else {
-                                        todoData.title = title;
-                                        todoData.label = label;
-                                        todoData.description = description;
-                                        todoData.date = Date.parse(unformattedDate);
-                                        todoData.save();
-                                        res.json({statusCode: 200, message: ERR_MSG[13]});
-                                    }
+                                    todoData.title = encrypt(title);
+                                    todoData.label = encrypt(label);
+                                    todoData.description = description ? encrypt(description) : { data: '', iv: '' };
+                                    todoData.date = encrypt(String(Date.parse(unformattedDate)));
+                                    todoData.save();
+                                    res.json({statusCode: 200, message: ERR_MSG[13]})
                                 }
                             })
                         }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
@@ -130,7 +117,17 @@ router.get('/getData/:id', (req,res,next) => {
                         if(user.email === email){
                             Todo.findById(objId, (err, todoData) => {
                                 if(err) return res.status(500).json({statusCode:500, message: ERR_MSG[0]});
-                                else { res.json(todoData); }
+                                else {
+                                    const data = {
+                                        _id: todoData._id,
+                                        email: todoData.email,
+                                        title: decrypt(todoData.title),
+                                        label: decrypt(todoData.label),
+                                        description: todoData.description.data === '' ? '' : decrypt(todoData[x].description),
+                                        date: decrypt(todoData.date)
+                                    };
+                                    res.json(data);
+                                }
                             })
                         }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
                     }
@@ -152,21 +149,19 @@ router.get('/getData', (req,res,next) => {
                         Todo.find({ email: req.query.email }, (err, todoData) => {
                             if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                             else {
-                                if(todoData){
-                                    let data = [];
-                                    for (let x=0; x<todoData.length; x++){
-                                        const loopData = {
-                                            _id: todoData[x]._id,
-                                            email: todoData[x].email,
-                                            title: decrypt(todoData[x].title),
-                                            label: decrypt(todoData[x].label),
-                                            description: '',
-                                            date: decrypt(todoData[x].date)
-                                        };
-                                        data.push(loopData)
-                                    }
-                                    res.json(data)
-                                }else { res.json(todoData) }
+                                let data = [];
+                                for (let x=0; x<todoData.length; x++){
+                                    const loopData = {
+                                        _id: todoData[x]._id,
+                                        email: todoData[x].email,
+                                        title: decrypt(todoData[x].title),
+                                        label: decrypt(todoData[x].label),
+                                        description: todoData[x].description.data === '' ? '' : decrypt(todoData[x].description),
+                                        date: decrypt(todoData[x].date)
+                                    };
+                                    data.push(loopData)
+                                }
+                                res.json(data);
                             }
                         })
                     }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
@@ -223,12 +218,10 @@ router.post('/add', (req,res,next) => {
                                     iv: dataDate.iv,
                                 }
                             }
-                            console.log(todoData)
                             const newTodo = new Todo(todoData)
                             newTodo.save()
                             .then(() => res.json({statusCode: 200, message: "Todo Added Successfully !"}))
                             .catch(err => res.status(500).json({statusCode: 500, message: err}));
-                            console.log(dataTitle)
                         }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
                     }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
                 })
