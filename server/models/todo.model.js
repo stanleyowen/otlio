@@ -28,11 +28,9 @@ const todoSchema = new Schema ({
     },
     description: {
         data: {
-            type: String,
-            required: true,
+            type: String
         }, iv: {
-            type: String,
-            required: true,
+            type: String
         }
     },
     date: {

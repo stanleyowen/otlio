@@ -152,17 +152,21 @@ router.get('/getData', (req,res,next) => {
                         Todo.find({ email: req.query.email }, (err, todoData) => {
                             if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                             else {
-                                /*if(todoData.length !== 0){
-                                    const data = [{
-                                        _id: todoData[0]._id,
-                                        email: todoData[0].email,
-                                        title: decrypt(todoData[0].title, todoData[0].iv),
-                                        label: decrypt(todoData[0].label, todoData[0].iv),
-                                        description: decrypt(todoData[0].description, todoData[0].iv),
-                                        date: decrypt(todoData[0].date, todoData[0].iv)
-                                    }];
+                                if(todoData){
+                                    let data = [];
+                                    for (let x=0; x<todoData.length; x++){
+                                        const loopData = {
+                                            _id: todoData[x]._id,
+                                            email: todoData[x].email,
+                                            title: decrypt(todoData[x].title),
+                                            label: decrypt(todoData[x].label),
+                                            description: '',
+                                            date: decrypt(todoData[x].date)
+                                        };
+                                        data.push(loopData)
+                                    }
                                     res.json(data)
-                                }else { */res.json(todoData)
+                                }else { res.json(todoData) }
                             }
                         })
                     }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
@@ -194,36 +198,36 @@ router.post('/add', (req,res,next) => {
                     if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                     else if(userInfo){
                         if(user.email === email){
+                            let dataDescription = { data: '', iv: '' };
                             const date = Date.parse(unformattedDate);
-                            var dataTitle = encrypt(title).then(res => {return res});
+                            const dataTitle = encrypt(title);
                             const dataLabel = encrypt(label);
-                            if(description){ const dataDescription = encrypt(description) }
-                            else {dataDescription = ""; dataDescription.iv = ""}
+                            if(description){ dataDescription = encrypt(description) }
                             const dataDate = encrypt(String(date));
                             const todoData = {
                                 email,
                                 title: {
-                                    data: dataTitle.then(res => {return res}),
-                                    iv: dataTitle.then(res => {return res.iv}),
+                                    data: dataTitle.data,
+                                    iv: dataTitle.iv,
                                 },
                                 label: {
-                                    data: dataLabel.content,
+                                    data: dataLabel.data,
                                     iv: dataLabel.iv,
                                 },
                                 description: {
-                                    data: dataDescription.content,
-                                    iv: dataDescription.iv
+                                    data: dataDescription.data,
+                                    iv: dataDescription.iv,
                                 },
                                 date: {
-                                    data: dataDate.content,
-                                    iv: dataDate.iv
+                                    data: dataDate.data,
+                                    iv: dataDate.iv,
                                 }
                             }
                             console.log(todoData)
                             const newTodo = new Todo(todoData)
                             newTodo.save()
                             .then(() => res.json({statusCode: 200, message: "Todo Added Successfully !"}))
-                            .catch(() => res.status(500).json({statusCode: 500, message: ERR_MSG[0]}));
+                            .catch(err => res.status(500).json({statusCode: 500, message: err}));
                             console.log(dataTitle)
                         }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
                     }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});

@@ -23,14 +23,21 @@ const timestamps = () => {
 }
 
 const validateTimestamp = (a, b) => {
-    var data = parseInt(a.split('-')[2]);
+    var e = new Date(a * 1000);
+    var date = parseInt(e.getDate());
+    var month = parseInt(e.getMonth() + 1);
+    var year = e.getFullYear();
+    if(date < 10) date = '0'+date;
+    if(month < 10) month = '0'+month;
+    date = year+'-'+month+'-'+date;
+    var data = parseInt(date.split('-')[2]);
     var yesterday = parseInt(b.split('-')[2]) - 1;
     var today = parseInt(b.split('-')[2]);
     var tomorrow = parseInt(b.split('-')[2]) + 1;
     if(data === yesterday) return <b>Yesterday</b>;
     else if(data === today) return <b>Today</b>;
     else if(data === tomorrow) return <b>Tomorrow</b>;
-    else return formatDate(a);
+    else return formatDate(date);
 }
 
 const labeling = (a) => {
@@ -71,6 +78,7 @@ const Home = () => {
         const userId = localStorage.getItem('__id');
         await axios.get(`${SERVER_URL}/data/todo/getData`, {params: {id: userId, email}, headers: { Authorization: `JWT ${token}` }})
         .then(res => {
+            console.log(res.data)
             setTodoData(res.data);
             clearData();
         })

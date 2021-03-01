@@ -1,21 +1,18 @@
 const crypto = require('crypto');
 const algorithm = 'aes-256-cbc';
-const scretKey = crypto.randomBytes(32);
+const secretKey = process.env.SECRET_KEY;
 const iv = crypto.randomBytes(16);
 
-const encrypt = async (text) =>  {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(scretKey), iv);
+const encrypt = (text) => {
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey), iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-    const data = ({ iv: iv.toString('hex'), content: encrypted.toString('hex') });
-    return data;
+    return { iv: iv.toString('hex'), data: encrypted.toString('hex') };
 }
    
-const decrypt = (text, iv) => {
-    let encryptedText = Buffer.from(text, 'hex');
-    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(scretKey), Buffer.from(iv, 'hex'));
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
+const decrypt = (hash) => {
+    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(secretKey), Buffer.from(hash.iv, 'hex'));
+    let decrypted = Buffer.concat([decipher.update(Buffer.from(hash.data, 'hex')), decipher.final()]);;
     return decrypted.toString();
 }
 
