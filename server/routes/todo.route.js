@@ -123,7 +123,7 @@ router.get('/getData/:id', (req,res,next) => {
                                         email: todoData.email,
                                         title: decrypt(todoData.title),
                                         label: decrypt(todoData.label),
-                                        description: todoData.description.data === '' ? '' : decrypt(todoData[x].description),
+                                        description: todoData.description.data === '' ? '' : decrypt(todoData.description),
                                         date: decrypt(todoData.date)
                                     };
                                     res.json(data);

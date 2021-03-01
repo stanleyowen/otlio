@@ -29,7 +29,6 @@ const Edit = () => {
             else setDescription('')
             setLabel(res.data.label);
             setDefaultValue(res.data);
-            console.log(res)
         })
         .catch(err => {
             setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
@@ -118,7 +117,7 @@ const Edit = () => {
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    { defaultValue.title === title && formatDate(defaultValue.date.substring(10, 0)) === date && defaultValue.description === description && defaultValue.label === label ? (<button type="disabled" id="btn-addTodo" className="btn__outline disabled" disabled="true" style={{outline: 'none'}}>Update</button>) : (<button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>)}
+                    { defaultValue.title === title && formatDate(defaultValue.date.substring(10, 0)) === date && defaultValue.description === description && defaultValue.label === label ? (<button type="disabled" id="btn-addTodo" className="btn__outline disabled" disabled={true} style={{outline: 'none'}}>Update</button>) : (<button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>)}
                 </form>
             </div>
         </div>
