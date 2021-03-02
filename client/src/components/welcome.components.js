@@ -51,7 +51,7 @@ const Landing = () => {
             <div className="isCentered badges">
                 <a href="https://github.com/stanleyowen/TodoApp/"><button className="btn__label">License</button><button className="btn__value">{license}</button></a>
                 <a href="https://github.com/stanleyowen/TodoApp/stargazers"><button className="btn__label">Stars</button><button className="btn__value">{star}</button></a>
-                {/* <a href="https://github.com/stanleyowen/todo-application/releases"><button className="btn__label">Version</button><button className="btn__value">{process.env.REACT_APP_VERSION}</button></a> */}
+                <a href="https://github.com/stanleyowen/todo-application/releases"><button className="btn__label">Version</button><button className="btn__value">{process.env.REACT_APP_VERSION}</button></a>
             </div>
         </div>
     );
