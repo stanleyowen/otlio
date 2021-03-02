@@ -24,8 +24,9 @@ const Edit = () => {
         axios.get(`${SERVER_URL}/data/todo/getData/${id}`, { params: getData, headers: { Authorization: `JWT ${token}` } })
         .then(res => {
             setTitle(res.data.title);
-            setDate(res.data.date.substring(0, 10));
-            setDescription(res.data.description);
+            setDate(formatDate(res.data.date));
+            if(res.data.description) setDescription(res.data.description);
+            else setDescription('')
             setLabel(res.data.label);
             setDefaultValue(res.data);
         })
@@ -34,6 +35,16 @@ const Edit = () => {
             setTimeout(() => { window.location='/' }, 2000)
         })
     }, [id, email, token, userId])
+
+    const formatDate = (a) => {
+        var e = new Date((a.substring(10, 0)) * 1000);
+        var date = parseInt(e.getDate());
+        var month = parseInt(e.getMonth() + 1);
+        var year = e.getFullYear();
+        if(date < 10) date = '0'+date;
+        if(month < 10) month = '0'+month;
+        return year+'-'+month+'-'+date;
+    }
 
     const updateData = (e) => {
         e.preventDefault();
@@ -106,7 +117,7 @@ const Edit = () => {
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    { defaultValue.title === title && defaultValue.date.substring(0, 10) === date && defaultValue.description === description && defaultValue.label === label ? (<button type="disabled" id="btn-addTodo" className="btn__outline disabled" disabled="true" style={{outline: 'none'}}>Update</button>) : (<button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>)}
+                    { defaultValue.title === title && formatDate(defaultValue.date.substring(10, 0)) === date && defaultValue.description === description && defaultValue.label === label ? (<button type="disabled" id="btn-addTodo" className="btn__outline disabled" disabled={true} style={{outline: 'none'}}>Update</button>) : (<button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>)}
                 </form>
             </div>
         </div>

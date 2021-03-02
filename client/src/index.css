@@ -1,4 +1,4 @@
-/*! TodoApp - CSS Version 0.2.3 Copyright 2021, Stanley Owen */
+/*! TodoApp - CSS Version 0.3.2 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 body {
     margin: 0;
@@ -151,12 +151,24 @@ body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
 .spin-container .shape-3 {
     -webkit-animation: shape3 0.5s infinite alternate;
             animation: shape3 0.5s infinite alternate;
-  }
+}
 .spin-container .shape-4 {
     -webkit-animation: shape4 0.5s infinite alternate;
             animation: shape4 0.5s infinite alternate;
 }
-  
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
 @-webkit-keyframes rotation {
     from {
       -webkit-transform: rotate(0deg);

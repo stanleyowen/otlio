@@ -31,20 +31,24 @@ Todo Application is an **open source** project which is easy to use and easy to 
     - Change directory `cd` to both `client` and `server` folder
     - Type `npm install` in commmand line
 3. Create `.env` file
-    - Inside `client` directory, create a new file named `.env` which stores about sensitive information, which is `REACT_APP_CLIENT_URL`, `REACT_APP_SERVER_URL`, and `REACT_APP_GITHUB_API`
+    - Inside `client` directory, create a new file named `.env` which stores about sensitive information, which is `REACT_APP_SERVER_URL`, `REACT_APP_GITHUB_API`, and `REACT_APP_VERSION`
       - `REACT_APP_SERVER_URL` stores the server side URL
-      - `REACT_APP_GITHUB_API` stores the GitHub current Stars and Forks<br /><br />
+      - `REACT_APP_GITHUB_API` stores the GitHub current Stars and Forks
+      - `REACT_APP_VERSION` stores the Todo Application's current version<br /><br />
           ```
-          REACT_APP_SERVER_URL = http://localhost:5000
-          REACT_APP_GITHUB_API = https://api.github.com/repos/stanleyowen/todo-application
+          REACT_APP_SERVER_URL    = http://localhost:5000
+          REACT_APP_GITHUB_API    = https://api.github.com/repos/stanleyowen/todo-application
+          REACT_APP_VERSION       = $npm_package_version
           ```
 
     - Inside `server` directory, create a new file named `.env` which stores about sensitive information, which is `ATLAS_URI`, `SECRET_KEY`, and `TOKEN_KEY`
       - `ATLAS_URI` stores the Database URI provided by [MongoDB](https://www.mongodb.com/2)
-      - `SECRET_SESSION` stores JWT secret (Make it secret and hard to guess)<br /><br />
+      - `SECRET_SESSION` stores JWT secret (Make it secret and hard to guess)
+      - `SECRET_KEY` stores secret key for encyption method (Approximately 32 chars)<br /><br />
           ```
-          ATLAS_URI = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
-          SECRET_SESSION = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3
+          ATLAS_URI       = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
+          SECRET_SESSION  = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3
+          SECRET_KEY      = SpFcG29lKzfx9SxjLRjujaYxzSswhihd
           ```
   4. Run and Compile it
       - In the `client` directory, type `npm start` in command line
