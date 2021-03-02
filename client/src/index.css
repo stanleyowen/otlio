@@ -1,4 +1,4 @@
-/*! TodoApp - CSS Version 0.2.3 Copyright 2021, Stanley Owen */
+/*! TodoApp - CSS Version 0.3.2 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 body {
     margin: 0;
@@ -685,7 +685,7 @@ select {
     }
 }
 .notification-success { background-color: #55b559; }
-.notification-warning { background-color: #ffcc00; }
+.notification-warning { background-color: #ffcc00; color: black; }
 .notification-danger { background-color: #f55145; }
 .contact__onFocus {
     transition: all 0.5s;

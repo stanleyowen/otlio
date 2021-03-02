@@ -16,6 +16,7 @@ const privateRoute = ['', 'edit'];
 const Navbar = () => {
     const location = useLocation();
     const email = localStorage.getItem('__email');
+    const releaseNotification = localStorage.getItem('__release');
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
     const [value_c, setValue_c] = useState();
@@ -141,6 +142,13 @@ const Navbar = () => {
         else{ menu.style.display = "block"; }
     }
 
+    const closeWarning = (e) => {
+        e.preventDefault;
+        const notification = document.getElementById('release-notification');
+        localStorage.setItem('__release', true)
+        notification.classList.add('hide');
+    }
+
     const changeMode = (e) => {
         e.preventDefault();
         document.body.classList.toggle("dark");
@@ -190,7 +198,15 @@ const Navbar = () => {
 		    <Tooltip title="Change Mode">
                 <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}><i className="fas fa-adjust" style={{fontSize: '2em'}}></i></button>
             </Tooltip>
-            <div className="notifications" id="notifications"></div>
+            <div className="notifications" id="notifications">
+                { releaseNotification !== "true" ?
+                (
+                    <div className="notification notification-warning" id="release-notification"><b>
+                        Dear Users, starting from 2<sup>nd</sup> March 2021, Todo Application will implement Encryption Feature for Security Reason. As a result, all users which have registered before v0.3.2 will lost Todo's Data. We are sorry for the inconvenience.
+                        <br/><br/><a onClick={closeWarning}>Got It</a>
+                    </b></div>
+                ) : '' }
+            </div>
 
             <div id="changePasswordModal" className="modal">
                 <div className="modal__container">

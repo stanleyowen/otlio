@@ -26,7 +26,20 @@ const Landing = () => {
                 }
             });
         }
+        // async function getRepoVersion() {
+        //     await axios.get(`${GITHUB_API}/releases`)
+        //     .then(res => {
+        //         if(res && res.data[0].tag_name) setVersion(res.data[0].tag_name)
+        //     })
+        //     .catch(err => {
+        //         if(err && err.response.data.message){
+        //             setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message);
+        //             setVersion('Err');
+        //         }
+        //     });
+        // }
         getRepoInfo();
+        // getRepoVersion();
     },[]);
     
     return (
@@ -38,6 +51,7 @@ const Landing = () => {
             <div className="isCentered badges">
                 <a href="https://github.com/stanleyowen/TodoApp/"><button className="btn__label">License</button><button className="btn__value">{license}</button></a>
                 <a href="https://github.com/stanleyowen/TodoApp/stargazers"><button className="btn__label">Stars</button><button className="btn__value">{star}</button></a>
+                {/* <a href="https://github.com/stanleyowen/todo-application/releases"><button className="btn__label">Version</button><button className="btn__value">{process.env.REACT_APP_VERSION}</button></a> */}
             </div>
         </div>
     );
