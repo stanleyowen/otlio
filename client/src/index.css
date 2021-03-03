@@ -788,6 +788,31 @@ select {
     visibility: visible;
 }
 .message { margin: 40px auto; }
+input[type='checkbox']{
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+}
+input[type="checkbox"]:checked {
+    -webkit-animation: animate .25s ease-out;
+    animation: animate .25s ease-out;
+}
+
+@keyframes animate {
+    0% {
+      opacity: .4;
+      -webkit-transform: scale(3);
+      transform: scale(2.5); }
+    10% {
+      -webkit-transform: scale(2.5);
+      transform: scale(2); }
+    90% {
+      -webkit-transform: scale(1);
+      transform: scale(1); }
+    100% {
+      -webkit-transform: none;
+      transform: none; }
+}
 @media only screen and (max-width: 1024px) {
     .body__aboutLeft, .body__aboutRight { display: none; }
     .body__about { flex: 1; }
@@ -828,7 +853,5 @@ select {
     .main__button { width: 50%; }
     .footer__socialBtn { width: 100%; }
     .btn__outline { width: 85%; }
-}
-@media only screen and (max-width: 360px) {
     .badges { position: relative; margin-top: 20px; }
 }
