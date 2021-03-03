@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import getUserToken from '../library/getUserToken';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../library/setNotification';
 import axios from 'axios';
-
+import Brightness1Icon from '@material-ui/icons/Brightness1';
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
 import { Menu, ExitToApp, Dashboard, Lock, SupervisorAccount } from '@material-ui/icons';

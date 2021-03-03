@@ -46,21 +46,21 @@ const Login = () => {
                         <form className="contact__form" name="contact__form" onSubmit={Submit}>
                             <div className="contact__formControl no-bot">
                                 <div className="contact__infoField">
-                                    <label htmlFor="email">Email <span className="required">*</span></label>
+                                    <label htmlFor="email">Email</label>
                                     <input title="Email" id="email" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
-                                    <label htmlFor="userEmail">Email <span className="required">*</span></label>
+                                    <label htmlFor="userEmail">Email</label>
                                     <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus autoComplete="username"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
-                                    <label htmlFor="userPassword">Password <span className="required">*</span></label>
+                                    <label htmlFor="userPassword">Password</label>
                                     <input title="Password" id="userPassword" type="password" className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required autoComplete="current-password"/>
                                     <span className="contact__onFocus"></span>
                                 </div>

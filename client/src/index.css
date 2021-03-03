@@ -706,9 +706,9 @@ select {
     transition: all .4s;
 }
 .form__contact {
-    margin: 20px;
+    margin: 0 20px;
     margin-bottom: 40px;
-    padding: 40px 10px;
+    padding: 40px 10px 10px 20px;
     border-radius: 10px;
     transition: all .4s;
     background-color: #F0F0F0;
@@ -820,7 +820,7 @@ select {
     #form { width: 100%; }
     .form__container { grid-template-columns: auto; }
     .footer__socialBtn { width: 75%; }
-    .btn__outline { width: 50%; }
+    .btn__outline { width: 50%; margin-top: 20px; }
 }
 @media only screen and (max-width: 600px) { .animation__message { width: 100%; height: auto; } .btn__outline { width: 65%; } }
 @media only screen and (max-width: 480px) {
@@ -828,4 +828,7 @@ select {
     .main__button { width: 50%; }
     .footer__socialBtn { width: 100%; }
     .btn__outline { width: 85%; }
+}
+@media only screen and (max-width: 360px) {
+    .badges { position: relative; margin-top: 20px; }
 }
