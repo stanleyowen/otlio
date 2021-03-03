@@ -7,6 +7,7 @@ const GITHUB_API = "https://api.github.com/repos/stanleyowen/todo-application";
 const Landing = () => {
     const [star, setStar] = useState('');
     const [license, setLicense] = useState('');
+    const currentversion = process.env.REACT_APP_VERSION;
     useEffect(() => {
         async function getRepoInfo() {
             await axios.get(`${GITHUB_API}`)
@@ -26,21 +27,23 @@ const Landing = () => {
                 }
             });
         }
-        // async function getRepoVersion() {
-        //     await axios.get(`${GITHUB_API}/releases`)
-        //     .then(res => {
-        //         if(res && res.data[0].tag_name) setVersion(res.data[0].tag_name)
-        //     })
-        //     .catch(err => {
-        //         if(err && err.response.data.message){
-        //             setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message);
-        //             setVersion('Err');
-        //         }
-        //     });
-        // }
+        async function getLatestVersion() {
+            await axios.get(`${GITHUB_API}/releases`)
+            .then(res => {
+                if(res && res.data[0].tag_name){
+                    let latestVersion =  res.data[0].tag_name.substring(1);
+                    if(currentversion !== latestVersion) setNotification(NOTIFICATION_TYPES.WARNING, `Version ${latestVersion} is available`)
+                }
+            })
+            .catch(err => {
+                if(err && err.response.data.message){
+                    setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message);
+                }
+            });
+        }
         getRepoInfo();
-        // getRepoVersion();
-    },[]);
+        getLatestVersion();
+    },[currentversion]);
     
     return (
         <div>
@@ -51,7 +54,7 @@ const Landing = () => {
             <div className="isCentered badges">
                 <a href="https://github.com/stanleyowen/TodoApp/"><button className="btn__label">License</button><button className="btn__value">{license}</button></a>
                 <a href="https://github.com/stanleyowen/TodoApp/stargazers"><button className="btn__label">Stars</button><button className="btn__value">{star}</button></a>
-                <a href="https://github.com/stanleyowen/todo-application/releases"><button className="btn__label">Version</button><button className="btn__value">{process.env.REACT_APP_VERSION}</button></a>
+                <a href="https://github.com/stanleyowen/todo-application/releases"><button className="btn__label">Version</button><button className="btn__value">{currentversion}</button></a>
             </div>
         </div>
     );
