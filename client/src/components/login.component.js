@@ -63,7 +63,7 @@ const Login = () => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <div className="contact__formControl">
+                            <div className="contact__formControl show-password">
                                 <input id="show-password" onClick={() => setVisible(!visible)} checked={visible} type="checkbox" /> <label for="show-password">Show Pasword</label>
                             </div>
                             <p style={{textAlign: 'center'}}>Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
