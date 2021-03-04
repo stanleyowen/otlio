@@ -33,7 +33,16 @@ const Edit = () => {
         .catch(err => {
             setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
             setTimeout(() => { window.location='/' }, 2000)
-        })
+        });
+        document.querySelectorAll('[data-autoresize]').forEach(function (e) {
+            e.style.boxSizing = 'border-box';
+            var offset = e.offsetHeight - e.clientHeight;
+            e.addEventListener('input', function (a) {
+              a.target.style.height = '-10px';
+              a.target.style.height = a.target.scrollHeight + offset + 'px';
+            });
+            e.removeAttribute('data-autoresize');
+        });
     }, [id, email, token, userId])
 
     const formatDate = (a) => {

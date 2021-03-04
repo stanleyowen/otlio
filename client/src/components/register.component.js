@@ -10,6 +10,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [honeypot, setHoneypot] = useState('');
     const [confirmPsw, setConfirmPsw] = useState('');
+    const [visible, setVisible] = useState(false);
 
     const Submit = (e) => {
         e.preventDefault();
@@ -66,16 +67,19 @@ const Register = () => {
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="password">Password <span className="required">*</span></label>
-                                        <input title="Password" id="password" type="password" className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required autoComplete="new-password"/>
+                                        <input title="Password" id="password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="confirm_psw">Confirm Password <span className="required">*</span></label>
-                                        <input title="Confirm Password" id="confirm_psw" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required autoComplete="new-password"/>
+                                        <input title="Confirm Password" id="confirm_psw" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
                                         <span className="contact__onFocus"></span>
                                     </div>
+                                </div>
+                                <div className="contact__formControl">
+                                    <input id="show-password" onClick={() => setVisible(!visible)} checked={visible} type="checkbox" /> <label for="show-password">Show Pasword</label>
                                 </div>
                             </div>
                             <p style={{textAlign: 'center'}}>Already have an Account? <a className="animation__underline" href="/login">Login</a></p>

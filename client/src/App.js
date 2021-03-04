@@ -1,14 +1,14 @@
 import React from 'react';
-import "./App.css";
+import "./App.min.css";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import "@fortawesome/fontawesome-free/css/all.css";
-import Navbar from './components/navbar.components';
-import Welcome from './components/welcome.components';
-import Register from './components/register.components';
-import Login from './components/login.components';
-import Home from './components/home.components';
-import EditTodo from './components/edit.components';
+import Navbar from './components/navbar.component';
+import Welcome from './components/welcome.component';
+import Register from './components/register.component';
+import Login from './components/login.component';
+import Home from './components/home.component';
+import EditTodo from './components/edit.component';
 
 function App() {
   return (
