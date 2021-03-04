@@ -801,7 +801,12 @@ input[type="checkbox"]:checked {
     -webkit-animation: animate .25s ease-out;
     animation: animate .25s ease-out;
 }
-
+.github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
+@keyframes octocat-wave{
+    0%,100%{transform:rotate(0)}
+    20%,60%{transform:rotate(-25deg)}
+    40%,80%{transform:rotate(10deg)}
+}
 @keyframes animate {
     0% {
       opacity: .4;
@@ -852,6 +857,10 @@ input[type="checkbox"]:checked {
     .btn__outline { width: 50%; margin-top: 20px; }
 }
 @media only screen and (max-width: 600px) { .animation__message { width: 100%; height: auto; } .btn__outline { width: 65%; } }
+@media (max-width:500px){
+    .github-corner:hover .octo-arm{animation:none}
+    .github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}
+}
 @media only screen and (max-width: 480px) {
     .main__divider { width: 80%; }
     .main__button { width: 50%; }
