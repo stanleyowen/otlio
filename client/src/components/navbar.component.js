@@ -1,10 +1,10 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import getUserToken from '../library/getUserToken';
+import getUserToken from '../libraries/getUserToken';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust, faPlus, faSignOutAlt, faKey, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
-import { setNotification, NOTIFICATION_TYPES, setWarning } from '../library/setNotification';
+import { setNotification, NOTIFICATION_TYPES, setWarning } from '../libraries/setNotification';
 import axios from 'axios';
 
 /* Icons */

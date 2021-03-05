@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { listLabel, validateLabel } from '../library/validation';
-import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
+import { listLabel, validateLabel } from '../libraries/validation';
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import axios from 'axios';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;

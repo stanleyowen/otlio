@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
-import { listLabel, validateLabel } from '../library/validation';
-import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
+import { listLabel, validateLabel } from '../libraries/validation';
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import axios from 'axios';
 
 /* Icons */
