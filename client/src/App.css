@@ -196,7 +196,7 @@ body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
 .navbar__logo {
     float: left;
     font-size: 17px;
-    padding: 23.5px 20px!important;
+    padding: 20px 20px!important;
 }
 .navbar .description { display: none; }
 .toggleNavbar {
