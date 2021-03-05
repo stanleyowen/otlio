@@ -1,11 +1,10 @@
-const listLabel = ["Priority","Secondary","Important","Do Later"];
+const labels = ["Priority", "Secondary", "Important", "Do Later"];
 
 const validateLabel = (e) => {
-    for (let a=0; listLabel.length; a++){
-        if((a === listLabel.length-1) && (e === listLabel[a].toLowerCase())) return false;;
-        if((a === listLabel.length-1) && (e !== listLabel[a].toLowerCase())) return true;
-        else if(e === listLabel[a].toLowerCase()) return false;
+    for (let a=0; labels.length; a++){
+        if(((a === labels.length-1) && (e === labels[a].toLowerCase())) || e === labels[a].toLowerCase()) return false;
+        else if((a === labels.length-1) && (e !== labels[a].toLowerCase())) return true;
     }
 }
 
-module.exports = {listLabel, validateLabel};
+module.exports = {labels, validateLabel};

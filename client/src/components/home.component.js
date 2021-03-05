@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
-import { listLabel, validateLabel } from '../libraries/validation';
+import { labels, validateLabel } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import axios from 'axios';
 
@@ -42,11 +42,11 @@ const validateTimestamp = (a, b) => {
 
 const labeling = (a) => {
     var _labelClass = null;
-    if(a[1]) {if(a[0]+" "+a[1] === listLabel[3]) _labelClass="do-later"}
+    if(a[1]) {if(a[0]+" "+a[1] === labels[3]) _labelClass="do-later"}
     else {
-        if(a[0] === listLabel[0]) _labelClass="priority";
-        else if(a[0] === listLabel[1]) _labelClass="secondary";
-        else if(a[0] === listLabel[2]) _labelClass="important";
+        if(a[0] === labels[0]) _labelClass="priority";
+        else if(a[0] === labels[1]) _labelClass="secondary";
+        else if(a[0] === labels[2]) _labelClass="important";
     }
     var _label = <span className={"label "+_labelClass}>{a}</span>;
     return _label;
@@ -66,7 +66,8 @@ const Home = () => {
     const [title, setTitle] = useState();
     const [date, setDate] = useState(timestamps);
     const [description, setDescription] = useState();
-    const [label, setLabel] = useState(listLabel[0].toLowerCase());
+    const [label, setLabel] = useState(labels[0].toLowerCase());
+    const wrapper = React.createRef();
 
     async function clearData() {
         if(intervalData) clearInterval(intervalData);
@@ -169,7 +170,7 @@ const Home = () => {
                 modal.style.visibility = "hidden";
                 modal.style.opacity = "0";
                 setTitle('');
-                setLabel(listLabel[0].toLowerCase());
+                setLabel(labels[0].toLowerCase());
                 setDescription('');
                 setDate(timestamps);
             })
@@ -191,7 +192,7 @@ const Home = () => {
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
     return (
-        <div className="main__projects">
+        <div className="main__projects" ref={wrapper}>
             <p>Hi, Welcome Back {email}</p>
             <div id="addTodoModal" className="modal">
                 <div className="modal__container">
@@ -221,7 +222,7 @@ const Home = () => {
                                 <div className="contact__infoField">
                                     <label htmlFor="label">Label <span className="required">*</span></label>
                                     <select onChange={(event) => setLabel(event.target.value)} value={label}>
-                                        { listLabel.map(c => {
+                                        { labels.map(c => {
                                             return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
                                         }) }
                                     </select>

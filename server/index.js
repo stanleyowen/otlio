@@ -12,6 +12,8 @@ require('./config/passport');
 
 app.use(cors());
 app.use(helmet());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(passport.initialize());
 
 const usersRouter = require('./routes/users.route');
