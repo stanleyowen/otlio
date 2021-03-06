@@ -10,8 +10,8 @@ const validateLabel = (e) => {
     }
 }
 
-const createRequest = async (e) => {
-    await axios.get(`${SERVER_URL}/status`)
+const createRequest = (e) => {
+    axios.get(`${SERVER_URL}/status`)
     .then().catch(err => console.log(err.response.data));
 }
 
