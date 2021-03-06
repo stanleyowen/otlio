@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
+import { createRequest } from '../libraries/validation';
 import axios from 'axios';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -10,6 +11,8 @@ const Login = () => {
     const [password, setPassword] = useState();
     const [honeypot, setHoneypot] = useState();
     const [visible, setVisible] = useState(false);
+
+    useEffect(() => { createRequest(); },[])
 
     const Submit = (e) => {
         e.preventDefault();

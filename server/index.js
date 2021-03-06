@@ -18,8 +18,10 @@ app.use(passport.initialize());
 
 const usersRouter = require('./routes/users.route');
 const todoRouter = require('./routes/todo.route');
+const statusRouter = require('./routes/status.route');
 app.use('/data/accounts/', usersRouter);
 app.use('/data/todo/', todoRouter);
+app.use('/', statusRouter);
 
 const URI = process.env.ATLAS_URI;
 mongoose.connect(URI, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology:true } );

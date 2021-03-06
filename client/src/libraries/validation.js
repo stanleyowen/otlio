@@ -1,3 +1,6 @@
+const axios = require("axios");
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
 const labels = ["Priority", "Secondary", "Important", "Do Later"];
 
 const validateLabel = (e) => {
@@ -7,4 +10,9 @@ const validateLabel = (e) => {
     }
 }
 
-module.exports = {labels, validateLabel};
+const createRequest = async (e) => {
+    await axios.get(`${SERVER_URL}/status`)
+    .then().catch(err => console.log(err.response.data));
+}
+
+module.exports = {labels, validateLabel, createRequest};
