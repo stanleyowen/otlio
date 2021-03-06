@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { listLabel, validateLabel } from '../library/validation';
-import { setNotification, NOTIFICATION_TYPES } from '../library/setNotification';
+import { labels, validateLabel } from '../libraries/validation';
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import axios from 'axios';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -17,7 +17,7 @@ const Edit = () => {
     const [date, setDate] = useState('2020-01-01');
     const [description, setDescription] = useState('loading ...');
     const [defaultValue, setDefaultValue] = useState('loading ...');
-    const [label, setLabel] = useState(listLabel[0].toLowerCase());
+    const [label, setLabel] = useState(labels[0].toLowerCase());
 
     useEffect(() => {
         const getData = { email, id: userId }
@@ -62,10 +62,7 @@ const Edit = () => {
             btn.innerHTML = "Updating";
             const postData = { email, objId: id, id: userId, title, label, description, date }
             await axios.post(`${SERVER_URL}/data/todo/update/`, postData, { headers: { Authorization: `JWT ${token}` } })
-            .then(res => {
-                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
-                setTimeout(() => { window.location='/' }, 2000);
-            })
+            .then(() => window.location='/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
@@ -112,7 +109,7 @@ const Edit = () => {
                         <div className="contact__infoField">
                             <label htmlFor="label">Label <span className="required">*</span></label>
                             <select onChange={(event) => setLabel(event.target.value)} value={label}>
-                                { listLabel.map(c => {
+                                { labels.map(c => {
                                     return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
                                 }) }
                             </select>

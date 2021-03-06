@@ -1,4 +1,4 @@
-/*! TodoApp - CSS Version 0.3.3 Copyright 2021, Stanley Owen */
+/*! TodoApp - CSS Version 0.3.4 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 * {
     margin: 0;
@@ -172,108 +172,6 @@ body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
 ::-webkit-scrollbar-thumb:hover {
     background: #555; 
 }
-
-@-webkit-keyframes rotation {
-    from {
-      -webkit-transform: rotate(0deg);
-              transform: rotate(0deg);
-    }
-    to {
-      -webkit-transform: rotate(360deg);
-              transform: rotate(360deg);
-    }
-}
-  
-@keyframes rotation {
-    from {
-      -webkit-transform: rotate(0deg);
-              transform: rotate(0deg);
-    }
-    to {
-      -webkit-transform: rotate(360deg);
-              transform: rotate(360deg);
-    }
-}
-@-webkit-keyframes shape1 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(20px, 20px);
-              transform: translate(20px, 20px);
-    }
-}
-@keyframes shape1 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(20px, 20px);
-              transform: translate(20px, 20px);
-    }
-}
-@-webkit-keyframes shape2 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(-20px, 20px);
-              transform: translate(-20px, 20px);
-    }
-}
-@keyframes shape2 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(-20px, 20px);
-              transform: translate(-20px, 20px);
-    }
-}
-@-webkit-keyframes shape3 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(20px, -20px);
-              transform: translate(20px, -20px);
-    }
-}
-@keyframes shape3 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(20px, -20px);
-              transform: translate(20px, -20px);
-    }
-}
-@-webkit-keyframes shape4 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(-20px, -20px);
-              transform: translate(-20px, -20px);
-    }
-}
-@keyframes shape4 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(-20px, -20px);
-              transform: translate(-20px, -20px);
-    }
-}
 .navbar {
     position: fixed;
     overflow: hidden;
@@ -298,7 +196,7 @@ body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
 .navbar__logo {
     float: left;
     font-size: 17px;
-    padding: 23.5px 20px!important;
+    padding: 20px 20px!important;
 }
 .navbar .description { display: none; }
 .toggleNavbar {
@@ -672,22 +570,6 @@ select {
     width: 0;
     z-index: -1;
 }
-@keyframes grow {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-@keyframes shrink {
-    to {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-}
 .notification-success { background-color: #55b559; }
 .notification-warning { background-color: #ffcc00; color: black; }
 .notification-danger { background-color: #f55145; }
@@ -801,7 +683,13 @@ input[type="checkbox"]:checked {
     -webkit-animation: animate .25s ease-out;
     animation: animate .25s ease-out;
 }
-
+.github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
+.show-password { user-select: none; }
+@keyframes octocat-wave{
+    0%,100%{transform:rotate(0)}
+    20%,60%{transform:rotate(-25deg)}
+    40%,80%{transform:rotate(10deg)}
+}
 @keyframes animate {
     0% {
       opacity: .4;
@@ -816,6 +704,122 @@ input[type="checkbox"]:checked {
     100% {
       -webkit-transform: none;
       transform: none; }
+}
+@keyframes grow {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes shrink {
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+@-webkit-keyframes rotation {
+    from {
+      -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+}
+@keyframes rotation {
+    from {
+      -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes shape1 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(20px, 20px);
+              transform: translate(20px, 20px);
+    }
+}
+@keyframes shape1 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(20px, 20px);
+              transform: translate(20px, 20px);
+    }
+}
+@-webkit-keyframes shape2 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(-20px, 20px);
+              transform: translate(-20px, 20px);
+    }
+}
+@keyframes shape2 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(-20px, 20px);
+              transform: translate(-20px, 20px);
+    }
+}
+@-webkit-keyframes shape3 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(20px, -20px);
+              transform: translate(20px, -20px);
+    }
+}
+@keyframes shape3 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(20px, -20px);
+              transform: translate(20px, -20px);
+    }
+}
+@-webkit-keyframes shape4 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(-20px, -20px);
+              transform: translate(-20px, -20px);
+    }
+}
+@keyframes shape4 {
+    from {
+      -webkit-transform: translate(0, 0);
+              transform: translate(0, 0);
+    }
+    to {
+      -webkit-transform: translate(-20px, -20px);
+              transform: translate(-20px, -20px);
+    }
 }
 @media only screen and (max-width: 1024px) {
     .body__aboutLeft, .body__aboutRight { display: none; }
@@ -852,6 +856,11 @@ input[type="checkbox"]:checked {
     .btn__outline { width: 50%; margin-top: 20px; }
 }
 @media only screen and (max-width: 600px) { .animation__message { width: 100%; height: auto; } .btn__outline { width: 65%; } }
+@media (max-width:500px){
+    .github-corner:hover .octo-arm{animation:none}
+    .github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}
+    .show-password { text-align: center; }
+}
 @media only screen and (max-width: 480px) {
     .main__divider { width: 80%; }
     .main__button { width: 50%; }

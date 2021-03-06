@@ -1,13 +1,15 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import getUserToken from '../library/getUserToken';
-import { setNotification, NOTIFICATION_TYPES, setWarning } from '../library/setNotification';
+import getUserToken from '../libraries/getUserToken';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAdjust, faPlus, faSignOutAlt, faKey, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
+import { setNotification, NOTIFICATION_TYPES, setWarning } from '../libraries/setNotification';
 import axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
-import { Menu, ExitToApp, Dashboard, Lock, SupervisorAccount } from '@material-ui/icons';
+import { Menu } from '@material-ui/icons';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const redirectRoute = ['welcome', 'login', 'get-started'];
@@ -21,7 +23,6 @@ const Navbar = () => {
     const [value_b, setValue_b] = useState([]);
     const [value_c, setValue_c] = useState();
     const [value_d, setValue_d] = useState(false);
-    const [value_e, setValue_e] = useState(false);
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
@@ -39,18 +40,16 @@ const Navbar = () => {
                 .then(res => {
                     if(res){
                         localStorage.setItem('__email', res.email);
-                        setValue_a([`Dashboard`,'/', <Dashboard />]);
-                        setValue_b([`Logout`,'#!', <ExitToApp />, Logout]);
-                        setValue_c('/');
-                        setValue_d(<i className="fas fa-plus" style={{fontSize: "2.2em"}}></i>)
-                        setValue_e(true)
+                        setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faHome} style={{ fontSize: "1.5em" }} />]);
+                        setValue_b([`Logout`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, Logout]);
+                        setValue_c([`Change Password`,'#!', <FontAwesomeIcon icon={faKey} style={{ fontSize: "1.4em" }} />, changePasswordModal]);
+                        setValue_d(<FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />)
                         redirectRoute.forEach(a => {
                             if(location.pathname.split('/')[1] === a) window.location='/';
                         });
                     }else {
-                        setValue_a(['Login','/login', <ExitToApp />]);
-                        setValue_b(['Get Started','/get-started', <SupervisorAccount />]);
-                        setValue_c('/welcome');
+                        setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
+                        setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
                         let itemsToRemove = ["__token", "__email", "__id"];
                         itemsToRemove.forEach(a => localStorage.removeItem(a));
                         privateRoute.forEach(a => {
@@ -59,9 +58,8 @@ const Navbar = () => {
                     }
                 })
             }else {
-                setValue_a([`Login`,'/login', <ExitToApp />]);
-                setValue_b([`Get Started`,'/get-started', <SupervisorAccount />]);
-                setValue_c('/welcome');
+                setValue_a([`Login`,'/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
+                setValue_b([`Get Started`,'/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
                 privateRoute.forEach(a => {
                     if(location.pathname.split('/')[1] === a) window.location='/welcome';
                 });
@@ -160,11 +158,11 @@ const Navbar = () => {
         }
         localStorage.setItem("__theme", theme);
     }
-    
+
     return (
         <div>
             <div className="navbar">
-                <a className="navbar__logo" href={value_c}>TodoApp</a>
+                <a className="navbar__logo" href={ value_c ? '/' : '/welcome' }>TodoApp</a>
                 <div className="navbar__menu" id="navbar__menu">
                     <a className="animation__underline" href={value_a[1]}>
                         <span className="icons">
@@ -172,15 +170,13 @@ const Navbar = () => {
                         </span>
                         <span className="description">{value_a[0]}</span>
                     </a>
-                    {value_e !== false ? (
-                        <a className="animation__underline" onClick={changePasswordModal}>
-                            <span className="icons">
-                                <Tooltip title="Change Password">
-                                    <Lock />
-                                </Tooltip>
-                            </span>
-                            <span className="description">Change Password</span>
-                        </a>) : null}
+                    {value_c ? (
+                        <a className="animation__underline" id={value_c[0]} href={value_c[1]} onClick={value_c[3]}>
+                        <span className="icons">
+                            <Tooltip title={value_c[0] ? value_c[0]:""}><span>{value_c[2]}</span></Tooltip>
+                        </span>
+                        <span className="description">{value_c[0]}</span>
+                    </a>) : null}
                     <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[3]}>
                         <span className="icons">
                             <Tooltip title={value_b[0] ? value_b[0]:""}><span>{value_b[2]}</span></Tooltip>
@@ -198,7 +194,9 @@ const Navbar = () => {
             </div>
             {value_d !== false ? (<Tooltip title="Add Task" placement="top"><button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button></Tooltip>) : null}
 		    <Tooltip title="Change Mode">
-                <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}><i className="fas fa-adjust" style={{fontSize: '2em'}}></i></button>
+                <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}>
+                    <FontAwesomeIcon icon={faAdjust} size="2x"/>
+                </button>
             </Tooltip>
             <div className="notifications" id="notifications">
                 { releaseNotification !== "true" ?

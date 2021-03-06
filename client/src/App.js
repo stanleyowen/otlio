@@ -2,7 +2,6 @@ import React from 'react';
 import "./App.min.css";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import "@fortawesome/fontawesome-free/css/all.css";
 import Navbar from './components/navbar.component';
 import Welcome from './components/welcome.component';
 import Register from './components/register.component';
