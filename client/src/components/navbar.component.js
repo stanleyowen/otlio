@@ -26,6 +26,7 @@ const Navbar = () => {
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
+    const [visible, setVisible] = useState(false);
     
     useEffect(() => {
         async function getToken() {
@@ -220,7 +221,7 @@ const Navbar = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                    <input title="Old Password" id="old-password" type="password" className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} required autoComplete="current-password" />
+                                    <input title="Old Password" id="old-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="current-password" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
@@ -228,16 +229,19 @@ const Navbar = () => {
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                        <input title="New Password" id="new-password" type="password" className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} required autoComplete="new-password" />
+                                        <input title="New Password" id="new-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                        <input title="Confirm New Password" id="confirm-password" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required autoComplete="new-password" />
+                                        <input title="Confirm New Password" id="confirm-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
                                         <span className="contact__onFocus"></span>
                                     </div>
+                                </div>
+                                <div className="contact__formControl show-password">
+                                    <input id="show-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-password">Show Pasword</label>
                                 </div>
                             </div>
                             <button type="submit" id="btn-changePassword" className="btn__outline" style={{outline: 'none'}}>Change Password</button>
