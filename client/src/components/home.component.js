@@ -6,7 +6,8 @@ import axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
-import { Edit, Delete } from '@material-ui/icons/';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons/';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
@@ -118,14 +119,14 @@ const Home = () => {
                         <span className="btn-config">
                             <Tooltip title="Edit Task">
                                 <IconButton href={`/edit/${a._id}`}>
-                                    <Edit/>
+                                    <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
                                 </IconButton>
                             </Tooltip>
                         </span>
                         <span className="btn-config">
                             <Tooltip title="Delete Task">
                                 <IconButton onClick={() => deleteData(a._id)}>
-                                    <Delete/>
+                                    <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
                                 </IconButton>
                             </Tooltip>
                         </span>
