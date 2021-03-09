@@ -109,7 +109,7 @@ const Navbar = () => {
         const token = localStorage.getItem('__token');
         await axios.get(`${SERVER_URL}/data/accounts/logout`, {params: {id, token}, headers: { Authorization: `JWT ${token}` }})
         .then(() => {
-            let itemsToRemove = ["__token", "__email", "__id"];
+            let itemsToRemove = ["__token", "__email", "__id", "todoData"];
             itemsToRemove.forEach(a => localStorage.removeItem(a));
             window.location = '/login';
         })
@@ -221,7 +221,7 @@ const Navbar = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                    <input title="Old Password" id="old-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="current-password" />
+                                    <input title="Old Password" id="old-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="none" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
