@@ -135,7 +135,7 @@ const Home = () => {
                         </td>
                     </tr>)
             })
-        }else {
+        }else if(cacheTodo) {
             getTodoData();
             return cacheTodo.map(a => {
             return (
@@ -281,7 +281,7 @@ const Home = () => {
                 </thead>
                 <tbody>
                     { todoList() }
-                    { !cacheTodo ?
+                    { !cacheTodo && !todoData ?
                         (<tr><td colSpan="5" className="no-border">
                             <div className="full-width spin-container">
                                 <div className="shape shape-1"></div>

@@ -9,7 +9,6 @@ import axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
-import { Menu } from '@material-ui/icons';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const redirectRoute = ['welcome', 'login', 'get-started'];
@@ -139,8 +138,10 @@ const Navbar = () => {
     const toggleNavbar = (e) => {
         e.preventDefault();
         var menu = document.getElementById("navbar__menu");
+        var icon = document.getElementById("navbar-icon");
         if(menu.style.display === "block"){ menu.style.display = "none"; }
         else{ menu.style.display = "block"; }
+        icon.classList.toggle("closeIcon");
     }
 
     const closeWarning = (e) => {
@@ -188,7 +189,11 @@ const Navbar = () => {
                 <div className="toggleNavbar">
                     <Tooltip title="Menu">
                         <IconButton onClick={toggleNavbar}>
-                            <Menu />
+                            <div className="container-bar" id="navbar-icon">
+                                <div className="bar1"></div>
+                                <div className="bar2"></div>
+                                <div className="bar3"></div>
+                            </div>
                         </IconButton>
                     </Tooltip>
                 </div>
