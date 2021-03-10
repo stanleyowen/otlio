@@ -6,7 +6,8 @@ import axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
-import { Edit, Delete } from '@material-ui/icons/';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons/';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
@@ -62,6 +63,7 @@ const Home = () => {
     const email = localStorage.getItem('__email');
     const token = localStorage.getItem('__token');
     const userId = localStorage.getItem('__id');
+    const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
     const [todoData, setTodoData] = useState(null);
     const [title, setTitle] = useState();
     const [date, setDate] = useState(timestamps);
@@ -80,6 +82,7 @@ const Home = () => {
         await axios.get(`${SERVER_URL}/data/todo/getData`, {params: {id: userId, email}, headers: { Authorization: `JWT ${token}` }})
         .then(res => {
             setTodoData(res.data);
+            localStorage.setItem('todoData', JSON.stringify(res.data));
             clearData();
         })
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
@@ -107,9 +110,35 @@ const Home = () => {
     }, []);
 
     const todoList = () => {
-        if(todoData){
+        if(todoData && cacheTodo !== todoData){
             return todoData.map(a => {
                 return (
+                    <tr key={a._id}>
+                        <td>{a.title}<br/>{a.description}</td>
+                        <td>{labeling(titleCase(a.label))}</td>
+                        <td>{validateTimestamp(a.date.substring(10, 0), timestamps())}</td>
+                        <td>
+                            <span className="btn-config">
+                                <Tooltip title="Edit Task">
+                                    <IconButton href={`/edit/${a._id}`}>
+                                        <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
+                                    </IconButton>
+                                </Tooltip>
+                            </span>
+                            <span className="btn-config">
+                                <Tooltip title="Delete Task">
+                                    <IconButton onClick={() => deleteData(a._id)}>
+                                        <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
+                                    </IconButton>
+                                </Tooltip>
+                            </span>
+                        </td>
+                    </tr>)
+            })
+        }else if(cacheTodo) {
+            getTodoData();
+            return cacheTodo.map(a => {
+            return (
                 <tr key={a._id}>
                     <td>{a.title}<br/>{a.description}</td>
                     <td>{labeling(titleCase(a.label))}</td>
@@ -118,14 +147,14 @@ const Home = () => {
                         <span className="btn-config">
                             <Tooltip title="Edit Task">
                                 <IconButton href={`/edit/${a._id}`}>
-                                    <Edit/>
+                                    <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
                                 </IconButton>
                             </Tooltip>
                         </span>
                         <span className="btn-config">
                             <Tooltip title="Delete Task">
                                 <IconButton onClick={() => deleteData(a._id)}>
-                                    <Delete/>
+                                    <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
                                 </IconButton>
                             </Tooltip>
                         </span>
@@ -133,7 +162,7 @@ const Home = () => {
                 </tr>)
             })
         }
-    };
+    }
 
     const deleteData = async id => {
         const deleteData = { email, objId: id, id: userId }
@@ -191,6 +220,7 @@ const Home = () => {
         else if(date.length !== 10 || DATE_VAL.test(String(date)) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !")
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
+
     return (
         <div className="main__projects" ref={wrapper}>
             <p>Hi, Welcome Back {email}</p>
@@ -251,7 +281,7 @@ const Home = () => {
                 </thead>
                 <tbody>
                     { todoList() }
-                    { !todoData ?
+                    { !cacheTodo && !todoData ?
                         (<tr><td colSpan="5" className="no-border">
                             <div className="full-width spin-container">
                                 <div className="shape shape-1"></div>

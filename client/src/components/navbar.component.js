@@ -9,7 +9,6 @@ import axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
-import { Menu } from '@material-ui/icons';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const redirectRoute = ['welcome', 'login', 'get-started'];
@@ -26,6 +25,7 @@ const Navbar = () => {
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
+    const [visible, setVisible] = useState(false);
     
     useEffect(() => {
         async function getToken() {
@@ -108,7 +108,7 @@ const Navbar = () => {
         const token = localStorage.getItem('__token');
         await axios.get(`${SERVER_URL}/data/accounts/logout`, {params: {id, token}, headers: { Authorization: `JWT ${token}` }})
         .then(() => {
-            let itemsToRemove = ["__token", "__email", "__id"];
+            let itemsToRemove = ["__token", "__email", "__id", "todoData"];
             itemsToRemove.forEach(a => localStorage.removeItem(a));
             window.location = '/login';
         })
@@ -138,8 +138,10 @@ const Navbar = () => {
     const toggleNavbar = (e) => {
         e.preventDefault();
         var menu = document.getElementById("navbar__menu");
+        var icon = document.getElementById("navbar-icon");
         if(menu.style.display === "block"){ menu.style.display = "none"; }
         else{ menu.style.display = "block"; }
+        icon.classList.toggle("closeIcon");
     }
 
     const closeWarning = (e) => {
@@ -187,7 +189,11 @@ const Navbar = () => {
                 <div className="toggleNavbar">
                     <Tooltip title="Menu">
                         <IconButton onClick={toggleNavbar}>
-                            <Menu />
+                            <div className="container-bar" id="navbar-icon">
+                                <div className="bar1"></div>
+                                <div className="bar2"></div>
+                                <div className="bar3"></div>
+                            </div>
                         </IconButton>
                     </Tooltip>
                 </div>
@@ -220,7 +226,7 @@ const Navbar = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                    <input title="Old Password" id="old-password" type="password" className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} required autoComplete="current-password" />
+                                    <input title="Old Password" id="old-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="none" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
@@ -228,16 +234,19 @@ const Navbar = () => {
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                        <input title="New Password" id="new-password" type="password" className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} required autoComplete="new-password" />
+                                        <input title="New Password" id="new-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                        <input title="Confirm New Password" id="confirm-password" type="password" className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required autoComplete="new-password" />
+                                        <input title="Confirm New Password" id="confirm-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
                                         <span className="contact__onFocus"></span>
                                     </div>
+                                </div>
+                                <div className="contact__formControl show-password">
+                                    <input id="show-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-password">Show Pasword</label>
                                 </div>
                             </div>
                             <button type="submit" id="btn-changePassword" className="btn__outline" style={{outline: 'none'}}>Change Password</button>

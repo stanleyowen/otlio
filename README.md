@@ -7,7 +7,7 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/56772f5c-0c69-41e8-a788-69ca591e70ef/deploy-status)](https://app.netlify.com/sites/todoapp-task/deploys)
 
-![Todo Application](https://user-images.githubusercontent.com/69080584/108624818-cc287380-7479-11eb-8934-a66e92e7ff7a.png)
+![Todo Application](https://user-images.githubusercontent.com/69080584/110568127-1ea9a580-8185-11eb-8db3-0d5156118aed.png)
 
 Todo Application is an **open source** project which is easy to use and easy to organize!
 
@@ -25,7 +25,7 @@ Todo Application is an **open source** project which is easy to use and easy to 
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.3.4.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.3.5.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder

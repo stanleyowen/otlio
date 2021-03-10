@@ -1,4 +1,4 @@
-/*! TodoApp - CSS Version 0.3.4 Copyright 2021, Stanley Owen */
+/*! TodoApp - CSS Version 0.3.5 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 * {
     margin: 0;
@@ -685,6 +685,24 @@ input[type="checkbox"]:checked {
 }
 .github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
 .show-password { user-select: none; }
+.container-bar { display: inline-block; }
+.bar1, .bar2, .bar3 {
+    width: 20px;
+    height: 1.75px;
+    background-color: #333;
+    margin: 4.5px 0;
+    transition: .4s;
+}
+.bar1 { margin-top: 0; }
+.closeIcon .bar1 {
+    -webkit-transform: rotate(-45deg) translate(-9px, 6px) ;
+    transform: rotate(-45deg) translate(-9px, 6px) ;
+}
+.closeIcon .bar2 { opacity: 0; }
+.closeIcon .bar3 {
+    -webkit-transform: rotate(45deg) translate(-2px, -3px) ;
+    transform: rotate(45deg) translate(-1.5px, 0px) ;
+}
 @keyframes octocat-wave{
     0%,100%{transform:rotate(0)}
     20%,60%{transform:rotate(-25deg)}
