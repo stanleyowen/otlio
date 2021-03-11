@@ -151,4 +151,29 @@ router.post('/login', (req, res, next) => {
     })(req, res, next)
 })
 
+router.post('/register/oauth/:provider', (req, res, next) => {
+    passport.authenticate('registerOAuth', (err, user, info) => {
+        if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+        else if(info && info.status ? info.status >= 400 : info.status = 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+        else if(user) {
+            req.logIn(user, err => {
+                if(err) return res.status(info.status ? info.status : info.status = 500).json({statusCode: info.status, message: info.message});
+                else {
+                    User.findOne({ email: user.email }, (err, user) => {
+                        if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+                        else {
+                            const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
+                            res.json({
+                                statusCode: info.status,
+                                message: info.message,
+                                id: user.id,
+                                token: token
+                            });
+                        }
+                    })
+                }
+            })
+        }
+    })(req, res, next)
+})
 module.exports = router;
