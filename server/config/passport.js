@@ -112,6 +112,22 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
     })
 }))
 
+passport.use('getOAuthData', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, password, done) => {
+    const provider = req.params.provider;
+    if(!provider) return done(null, false, { status: 400, message: ERR_MSG[3] });
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return done(null, false, { status: 400, message: ERR_MSG[4] });
+    else if(email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: ERR_MSG[6] });
+    User.findOne({email, 'thirdParty.provider': provider }, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: ERR_MSG[0] });
+        else if(!user) done(null, false, { status: 400, message: ERR_MSG[13] });
+        else if(user){
+            if(user.thirdParty.isThirdParty && user.thirdParty.status === "Pending"){
+                return done(null, user, { status: 200, message: true })
+            }else done(null, false, { status: 400, message: ERR_MSG[13] });
+        }
+    })
+}))
+
 passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
     const provider = req.params.provider;
     if(!provider) return done(null, false, { status: 400, message: ERR_MSG[3] });

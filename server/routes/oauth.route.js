@@ -8,6 +8,23 @@ let User = require('../models/users.model');
 const CLIENT_ID = process.env.GITHUB_ID;
 const CLIENT_SECRET = process.env.GITHUB_SECRET;
 
+const ERR_MSG = [
+    'Oops! Something Went Wrong, Please Try Again Later',
+    'Oops! Looks like the Email you registered has alreaady existed',
+    'Invalid Credentials',
+    'Missing Credentials',
+    'Please Provide a Valid Email Address !',
+    'Please Make Sure Both Passwords are Match !',
+    'Please Provide an Email between 6 ~ 40 characters !',
+    'Please Provide a Password between 6 ~ 40 characters !',
+    'No Token Provided',
+    'Token Mismatch',
+    'Registration Success',
+    'Login Success',
+    'Password Changed Successfully',
+    'User Not Exists',
+]
+
 router.get('/github', async (req, res) => {
     const code = req.query.code;
     await axios({
@@ -34,15 +51,22 @@ router.get('/github', async (req, res) => {
                         status: 'Pending'
                     }
                 });
-                console.log(dataModel)
                 dataModel.save()
-                .then(() => res.redirect(`http://localhost:3000/register/oauth?service=github&email=${email}`))
+                .then(() => res.redirect(`http://localhost:3000/oauth/github/${encodeURIComponent(email)}`))
                 .catch(() => res.json('Error in Registering Due to Duplicate Email Address'))
             })
             .catch(err => console.log(err))
         }else res.json(result.data);
     })
     .catch(err => console.log(err))
+})
+
+router.post('/:provider/validate', (req, res, next) => {
+    passport.authenticate('getOAuthData', (err, user, info) => {
+        if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+        else if(info && info.status ? info.status >= 400 : info.status = 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+        else if(user) return res.status(200).json({statusCode: info.status, userExists: info.message})
+    })(req, res, next)
 })
 
 router.post('/:provider/register', (req, res, next) => {

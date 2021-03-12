@@ -16,7 +16,14 @@ const OAuth = () => {
     const [honeypot, setHoneypot] = useState();
     const [visible, setVisible] = useState(false);
 
-    useEffect(() => { createRequest(); },[])
+    useEffect(() => {
+        async function validateData() {
+            await axios.post(`${SERVER_URL}/oauth/${service}/validate`, { email: validatedEmail })
+            .then().catch(() => window.location = '/login');
+        }
+        createRequest();
+        validateData();
+    },[service, validatedEmail])
 
     const Submit = (e) => {
         e.preventDefault();
@@ -24,7 +31,7 @@ const OAuth = () => {
         async function submitData(){
             btn.innerHTML = "Registering...";
             const registerData = { email: validatedEmail, password }
-            await axios.post(`${SERVER_URL}/oauth/github/register`, registerData)
+            await axios.post(`${SERVER_URL}/oauth/${service}/register`, registerData)
             .then(res => {
                 localStorage.setItem('__id', res.data.id);
                 localStorage.setItem('__token', res.data.token);
