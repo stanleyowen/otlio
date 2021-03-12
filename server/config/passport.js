@@ -138,7 +138,7 @@ passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwo
                         })
                     }
                 })
-            }
+            }else done(null, false, { status: 400, message: ERR_MSG[13] });
         }
     })
 }))
