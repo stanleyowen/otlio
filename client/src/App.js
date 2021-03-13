@@ -9,6 +9,7 @@ import Login from './components/login.component';
 import Home from './components/home.component';
 import EditTodo from './components/edit.component';
 import OAuth from './components/register-oauth.component';
+import ReqOAuth from './components/req-oauth.component';
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
       <Route path='/get-started' component={Register} />
       <Route path='/login' component={Login} />
       <Route path='/edit/:id' component={EditTodo} />
-      <Route path='/oauth/:service/:email' component={OAuth} />
+      <Route path='/auth/:service' exact component={ReqOAuth} />
+      <Route path='/oauth/:service/:email' exact component={OAuth} />
     </Router>
   );
 }

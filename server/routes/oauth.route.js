@@ -56,12 +56,22 @@ router.get('/github', async (req, res) => {
                             }
                         });
                         dataModel.save()
-                        res.redirect(`${CLIENT_URL}/oauth/github/${encodeURIComponent(email)}`);
+                        res.status(302).json({
+                            statusCode: 302,
+                            type: 'redirect',
+                            url: `${CLIENT_URL}/oauth/github/${encodeURIComponent(email)}`
+                        });
                     }else if(user){
-                        if (user.thirdParty.status === "Pending") res.redirect(`${CLIENT_URL}/oauth/github/${encodeURIComponent(email)}`);
+                        if (user.thirdParty.status === "Pending"){
+                            res.status(302).json({
+                                statusCode: 302,
+                                type: 'redirect',
+                                url: `${CLIENT_URL}/oauth/github/${encodeURIComponent(email)}`
+                            });
+                        }
                         else {
                             const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
-                            res.json({
+                            res.status(200).json({
                                 statusCode: 200,
                                 status: ERR_MSG[11],
                                 id: user.id,
@@ -72,7 +82,7 @@ router.get('/github', async (req, res) => {
                 })
             })
             .catch(err => console.log(err))
-        }else res.json(result.data);
+        }else res.status(400).json(result.data);
     })
     .catch(err => console.log(err))
 })
