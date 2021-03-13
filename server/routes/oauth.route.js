@@ -1,11 +1,12 @@
-const router = require('express').Router();
 const axios = require('axios');
-const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const router = require('express').Router();
 const jwtSecret = require('../config/jwtConfig');
 let User = require('../models/users.model');
 
 const CLIENT_ID = process.env.GITHUB_ID;
+const CLIENT_URL = process.env.CLIENT_URL;
 const CLIENT_SECRET = process.env.GITHUB_SECRET;
 
 const ERR_MSG = [
@@ -42,18 +43,33 @@ router.get('/github', async (req, res) => {
             })
             .then(user => {
                 const email = user.data.email;
-                const dataModel = new User ({
-                    email,
-                    password: null,
-                    thirdParty: {
-                        isThirdParty: true,
-                        provider: 'github',
-                        status: 'Pending'
+                User.findOne({ email }, (err, user) => {
+                    if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
+                    else if(!user){
+                        const dataModel = new User ({
+                            email,
+                            password: null,
+                            thirdParty: {
+                                isThirdParty: true,
+                                provider: 'github',
+                                status: 'Pending'
+                            }
+                        });
+                        dataModel.save()
+                        res.redirect(`${CLIENT_URL}/oauth/github/${encodeURIComponent(email)}`);
+                    }else if(user){
+                        if (user.thirdParty.status === "Pending") res.redirect(`${CLIENT_URL}/oauth/github/${encodeURIComponent(email)}`);
+                        else {
+                            const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
+                            res.json({
+                                statusCode: 200,
+                                status: ERR_MSG[11],
+                                id: user.id,
+                                token: token
+                            });
+                        }
                     }
-                });
-                dataModel.save()
-                .then(() => res.redirect(`http://localhost:3000/oauth/github/${encodeURIComponent(email)}`))
-                .catch(() => res.json('Error in Registering Due to Duplicate Email Address'))
+                })
             })
             .catch(err => console.log(err))
         }else res.json(result.data);
