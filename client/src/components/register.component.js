@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { createRequest } from '../libraries/validation';
+import { createRequest, OAuthGitHub } from '../libraries/validation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -47,6 +49,11 @@ const Register = () => {
         <div id="form">
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Register</h1></div>
+                <div className="oauth-container">
+                    <button className="oauth-box" onClick={OAuthGitHub}>
+                        <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Join Us with GitHub</p>
+                    </button>
+                </div>
                 <div className="form">
                     <form className="contact__form" name="contact__form" onSubmit={Submit}>
                         <div className="contact__formControl no-bot">

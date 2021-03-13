@@ -88,6 +88,40 @@ body.dark .projects__viewMore:hover { background-color: #79c3ff; color: #212121;
 body.dark .footer__socialBtn a:hover { background-color: #FFFFFF; color: #212121; }
 body.dark .main__divider { background-image: linear-gradient(315deg, #0cbaba 0%, #f400eb 74%); }
 button, a { user-select: none; cursor: pointer; }
+.oauth-container {
+    display: relative;
+    width: 100%;
+    text-align: center;
+    margin: 20px 0;
+}
+.oauth-box {
+    display: flex;
+    width: 100%;
+    outline: none;
+    border: none;
+    opacity: 0.9;
+    color: #FFF;
+    border-radius: 5px;
+    transition: all .3s;
+    text-decoration: none;
+    background-color: black;
+}
+.oauth-box:hover { opacity: 1; }
+.oauth-box:visited { color: #FFF; }
+.oauth-box svg {
+    display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 10px;
+}
+.oauth-box p {
+    font-family: sans-serif;
+    font-size: 18px;
+    display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 100%;
+}
 #javascript__required {
     text-align: center;
     color: #a6d400;
@@ -597,7 +631,7 @@ select {
 .form__contact {
     margin: 0 20px;
     margin-bottom: 40px;
-    padding: 40px 10px 10px 20px;
+    padding: 40px 20px 10px 20px;
     border-radius: 10px;
     transition: all .4s;
     background-color: #F0F0F0;

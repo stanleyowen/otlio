@@ -10,9 +10,14 @@ const validateLabel = (e) => {
     }
 }
 
+const OAuthGitHub = (e) => {
+    e.preventDefault();
+    window.location = 'https://github.com/login/oauth/authorize?client_id=f16f43122ef61cc75963';
+}
+
 const createRequest = (e) => {
     axios.get(`${SERVER_URL}/status`)
     .then().catch(err => console.log(err.response.data));
 }
 
-module.exports = {labels, validateLabel, createRequest};
+module.exports = {labels, validateLabel, OAuthGitHub, createRequest};
