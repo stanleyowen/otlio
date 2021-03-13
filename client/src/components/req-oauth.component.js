@@ -9,7 +9,6 @@ const ReqOAuth = () => {
     var code = new URLSearchParams(useLocation().search);
 
     useEffect(() => {
-        let message;
         async function validateData() {
             await axios.get(`${SERVER_URL}/oauth/${service}?${code}`)
             .then(res => {

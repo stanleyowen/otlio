@@ -57,17 +57,23 @@ const OAuth = () => {
         <div id="form">
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Register</h1></div>
-                <h3 className="isCentered mt-20">Hi {validatedEmail}</h3>
                 <div className="form">
                     <form className="contact__form" name="contact__form" onSubmit={Submit}>
-                        <div className="form__container">
-                            <div className="contact__formControl no-bot">
-                                <div className="contact__infoField">
-                                    <label htmlFor="bot-validatedEmail">Email <span className="required">*</span></label>
-                                    <input title="Email" id="bot-validatedEmail" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
-                                    <span className="contact__onFocus"></span>
-                                </div>
+                        <div className="contact__formControl no-bot">
+                            <div className="contact__infoField">
+                                <label htmlFor="bot-validatedEmail">Email <span className="required">*</span></label>
+                                <input title="Email" id="bot-validatedEmail" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
+                                <span className="contact__onFocus"></span>
                             </div>
+                        </div>
+                        <div className="contact__formControl">
+                            <div className="contact__infoField">
+                                <label htmlFor="email">Email <span className="required">*</span></label>
+                                <input title="Email" id="email" type="email" className="contact__inputField" value={validatedEmail} autoFocus required disabled="true" autoComplete="username"/>
+                                <span className="contact__onFocus"></span>
+                            </div>
+                        </div>
+                        <div className="form__container">
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="password">Password <span className="required">*</span></label>

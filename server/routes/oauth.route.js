@@ -59,14 +59,14 @@ router.get('/github', async (req, res) => {
                         res.status(302).json({
                             statusCode: 302,
                             type: 'redirect',
-                            url: `${CLIENT_URL}/oauth/github/${encodeURIComponent(email)}`
+                            url: `/oauth/github/${encodeURIComponent(email)}`
                         });
                     }else if(user){
                         if (user.thirdParty.status === "Pending"){
                             res.status(302).json({
                                 statusCode: 302,
                                 type: 'redirect',
-                                url: `${CLIENT_URL}/oauth/github/${encodeURIComponent(email)}`
+                                url: `/oauth/github/${encodeURIComponent(email)}`
                             });
                         }
                         else {
