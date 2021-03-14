@@ -7,6 +7,10 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/56772f5c-0c69-41e8-a788-69ca591e70ef/deploy-status)](https://app.netlify.com/sites/todoapp-task/deploys)
 
+## Login Freely with GitHub OAuth
+![Login with GitHub](https://user-images.githubusercontent.com/69080584/111054818-4ad56700-84a2-11eb-80ff-fc31f0acedcf.png)
+
+## User Interface
 ![Todo Application](https://user-images.githubusercontent.com/69080584/110568127-1ea9a580-8185-11eb-8db3-0d5156118aed.png)
 
 Todo Application is an **open source** project which is easy to use and easy to organize!
@@ -25,7 +29,7 @@ Todo Application is an **open source** project which is easy to use and easy to 
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.3.6.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.3.7.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
@@ -42,11 +46,15 @@ Todo Application is an **open source** project which is easy to use and easy to 
     - Inside `server` directory, create a new file named `.env` which stores about sensitive information, which is `ATLAS_URI`, `SECRET_KEY`, and `TOKEN_KEY`
       - `ATLAS_URI` stores the Database URI provided by [MongoDB](https://www.mongodb.com/2)
       - `SECRET_SESSION` stores JWT secret (Make it secret and hard to guess)
-      - `SECRET_KEY` stores secret key for encyption method (Approximately 32 chars)<br /><br />
+      - `SECRET_KEY` stores secret key for encyption method (Approximately 32 chars)
+      - `GITHUB_ID` stores the client url for GitHub OAuth
+      - `GITHUB_SECRET` stores the secret key for GitHub OAuth<br /><br />
           ```
           ATLAS_URI       = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
           SECRET_SESSION  = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3
           SECRET_KEY      = SpFcG29lKzfx9SxjLRjujaYxzSswhihd
+          GITHUB_ID       = /* Your GitHub Client ID */
+          GITHUB_SECRET   = /* Your GitHub Client Secret */
           ```
   4. Run and Compile it
       - In the `client` directory, type `npm start` in command line
