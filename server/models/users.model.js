@@ -12,9 +12,6 @@ const userSchema = new Schema ({
     },
     password : {
         type: String,
-        required: true,
-        minlength: 6,
-        maxlength: 60,
     },
     referral_code : {
         type: String,
@@ -27,10 +24,18 @@ const userSchema = new Schema ({
             return "00000".substring(0,6 - res.length) + res;
         }
     },
-    referred_by: {
-        type: String,
-        default: null,
-    }
+    thirdParty: {
+        isThirdParty: {
+            type: Boolean,
+            default: false,
+        }, provider: {
+            type: String,
+            default: null,
+        }, status: {
+            type: String,
+            default: null,
+        }
+    },
 }, {
     timestamps: true
 });

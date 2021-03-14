@@ -10,9 +10,16 @@ const validateLabel = (e) => {
     }
 }
 
-const createRequest = (e) => {
-    axios.get(`${SERVER_URL}/status`)
-    .then().catch(err => console.log(err.response.data));
+const OAuthGitHub = (e) => {
+    e.preventDefault();
+    window.location = 'https://github.com/login/oauth/authorize?scope=user:email&client_id=f16f43122ef61cc75963';
 }
 
-module.exports = {labels, validateLabel, createRequest};
+const createRequest = (e) => {
+    setInterval(function(){
+        axios.get(`${SERVER_URL}/status`)
+        .then().catch(err => console.log(err.response.data));
+    }, 5000);
+}
+
+module.exports = {labels, validateLabel, OAuthGitHub, createRequest};

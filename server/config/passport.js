@@ -22,7 +22,8 @@ const ERR_MSG = [
     'Token Mismatch',
     'Registration Success',
     'Login Success',
-    'Password Changed Successfully'
+    'Password Changed Successfully',
+    'User Not Exists',
 ]
 
 passport.serializeUser((user, done) => {
@@ -107,6 +108,53 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
                 else if(isMatch) return done(null, user, { status: 200, message: ERR_MSG[11], id: user.id });
                 else if(!isMatch) return done(null, false, { status: 400, message: ERR_MSG[2] });
             })
+        }
+    })
+}))
+
+passport.use('getOAuthData', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, password, done) => {
+    const provider = req.params.provider;
+    if(!provider) return done(null, false, { status: 400, message: ERR_MSG[3] });
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return done(null, false, { status: 400, message: ERR_MSG[4] });
+    else if(email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: ERR_MSG[6] });
+    User.findOne({email, 'thirdParty.provider': provider }, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: ERR_MSG[0] });
+        else if(!user) done(null, false, { status: 400, message: ERR_MSG[13] });
+        else if(user){
+            if(user.thirdParty.isThirdParty && user.thirdParty.status === "Pending"){
+                return done(null, user, { status: 200, message: true })
+            }else done(null, false, { status: 400, message: ERR_MSG[13] });
+        }
+    })
+}))
+
+passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
+    const provider = req.params.provider;
+    if(!provider) return done(null, false, { status: 400, message: ERR_MSG[3] });
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return done(null, false, { status: 400, message: ERR_MSG[4] });
+    else if(email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: ERR_MSG[6] });
+    else if(password.length < 6 || password.length > 40) return done(null, false, { status: 400, message: ERR_MSG[7] });
+    User.findOne({email, 'thirdParty.provider': provider }, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: ERR_MSG[0] });
+        else if(!user) done(null, false, { status: 400, message: ERR_MSG[13] });
+        else if(user){
+            if(user.thirdParty.isThirdParty && user.thirdParty.status === "Pending"){
+                bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+                    if(err) return done(null, false, { status: 500, message: ERR_MSG[0] });
+                    else {
+                        bcrypt.hash(password, salt, (err, hash) => {
+                            if(err) return done(null, false, { status: 500, message: ERR_MSG[0] });
+                            else {
+                                user.password = hash;
+                                user.thirdParty.status = "Success";
+                                user.save()
+                                .then(user => { return done(null, user, { status: 200, message: ERR_MSG[10], id: user.id }) })
+                                .catch(() => { return done(null, false, { status: 500, message: ERR_MSG[0] }) })
+                            }
+                        })
+                    }
+                })
+            }else done(null, false, { status: 400, message: ERR_MSG[13] });
         }
     })
 }))
