@@ -71,7 +71,7 @@ const Login = () => {
                             </div>
                         </div>
                         <div className="contact__formControl show-password">
-                            <input id="show-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-password">Show Pasword</label>
+                            <input id="show-login-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-login-password">Show Pasword</label>
                         </div>
                         <p className="isCentered">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
                         <button type="submit" className="contact__sendBtn" id="login">Login</button>

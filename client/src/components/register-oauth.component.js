@@ -89,7 +89,7 @@ const OAuth = () => {
                                 </div>
                             </div>
                             <div className="contact__formControl show-password">
-                                <input id="show-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-password">Show Pasword</label>
+                                <input id="show-oauth-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-oauth-password">Show Pasword</label>
                             </div>
                         </div>
                         <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>

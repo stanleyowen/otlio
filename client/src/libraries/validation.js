@@ -16,8 +16,10 @@ const OAuthGitHub = (e) => {
 }
 
 const createRequest = (e) => {
-    axios.get(`${SERVER_URL}/status`)
-    .then().catch(err => console.log(err.response.data));
+    setInterval(function(){
+        axios.get(`${SERVER_URL}/status`)
+        .then().catch(err => console.log(err.response.data));
+    }, 5000);
 }
 
 module.exports = {labels, validateLabel, OAuthGitHub, createRequest};
