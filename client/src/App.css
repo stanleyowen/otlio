@@ -582,7 +582,7 @@ select {
     left: 15px;
     width: 300px;
     max-width: calc(100% - 30px);
-    z-index: 99;
+    z-index: 1001;
 }
 .notification {
     background-color: #FFF;

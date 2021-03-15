@@ -110,26 +110,25 @@ router.get('/getData/:id', (req,res,next) => {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
             else if(info) return res.status(info.status ? info.status : info.status = 401).json({statusCode: info.status, message: info.message});
-            else if(user.id === req.query.id && user.email === req.query.email){
+            else if(user.id === id && user.email === email){
                 User.findById(id, (err, userInfo) => {
                     if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                     else if(userInfo){
-                        if(user.email === email){
-                            Todo.findById(objId, (err, todoData) => {
-                                if(err) return res.status(500).json({statusCode:500, message: ERR_MSG[0]});
-                                else {
-                                    const data = {
-                                        _id: todoData._id,
-                                        email: todoData.email,
-                                        title: decrypt(todoData.title),
-                                        label: decrypt(todoData.label),
-                                        description: todoData.description.data === '' ? '' : decrypt(todoData.description),
-                                        date: decrypt(todoData.date)
-                                    };
-                                    res.json(data);
-                                }
-                            })
-                        }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
+                        Todo.findById(objId, (err, todoData) => {
+                            if(err) return res.status(500).json({statusCode:500, message: ERR_MSG[0]});
+                            else if(!todoData) return res.status(404).json({statusCode:404, message: ERR_MSG[10]});
+                            else if(todoData) {
+                                const data = {
+                                    _id: todoData._id,
+                                    email: todoData.email,
+                                    title: decrypt(todoData.title),
+                                    label: decrypt(todoData.label),
+                                    description: todoData.description.data === '' ? '' : decrypt(todoData.description),
+                                    date: decrypt(todoData.date)
+                                };
+                                res.json(data);
+                            }
+                        })
                     }
                 })
             }else return res.status(401).json({statusCode: 401, message: 'Authentication Failed'});
