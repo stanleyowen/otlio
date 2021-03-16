@@ -28,7 +28,7 @@ router.post('/register', (req, res, next) => {
             req.logIn(user, err => {
                 if(err) return res.status(500).json({statusCode: 500, message: err});
                 else {
-                    const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
+                    const token = jwt.sign({ id: user.id, email: user.email }, jwtSecret.secret, { expiresIn: '1d' });
                     res.json({
                         statusCode: info.status,
                         message: info.message,
@@ -49,7 +49,7 @@ router.post('/login', (req, res, next) => {
             req.logIn(user, err => {
                 if(err) return res.status(500).json({statusCode: 500, message: err});
                 else {
-                    const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
+                    const token = jwt.sign({ id: user.id, email: user.email }, jwtSecret.secret, { expiresIn: '1d' });
                     res.json({
                         statusCode: info.status,
                         message: info.message,
@@ -66,21 +66,16 @@ router.get('/user', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
         else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
-        else if(user.id === req.query.id){
+        else if(user){
             BlacklistedToken.findOne({ token: req.query.token }, (err, isListed) => {
                 if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
                 else if(isListed) return res.status(401).json({statusCode: 401, message: ERR_MSG[10]});
                 else if(!isListed){
-                    User.findById(req.query.id, (err, userInfo) => {
-                        if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
-                        else if(userInfo){
-                            res.json({
-                                auth: true,
-                                message: 'Authentication Success',
-                                email: userInfo.email
-                            });
-                        }else return res.status(401).json({message: 'Authentication Failed'});
-                    })
+                    res.json({
+                        message: 'Authentication Success',
+                        email: user.email,
+                        id: user._id
+                    });
                 }
             })
         }else return res.status(401).json({message: 'Authentication Failed'});
@@ -101,7 +96,7 @@ router.put('/user', (req, res, next) => {
                         else if(!isListed){
                             const blacklistedToken = new BlacklistedToken ({ userId: req.body.id, token: req.body.token })
                             blacklistedToken.save()
-                            const token = jwt.sign({ id: user.id }, jwtSecret.secret, { expiresIn: '1d' });
+                            const token = jwt.sign({ id: user.id, email: user.email }, jwtSecret.secret, { expiresIn: '1d' });
                             res.json({
                                 statusCode: info.status,
                                 message: info.message,

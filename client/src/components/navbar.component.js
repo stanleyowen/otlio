@@ -35,11 +35,12 @@ const Navbar = () => {
                 theme: localStorage.getItem('__theme')
             }
             if(userData.theme === "dark") document.body.classList.add("dark");
-            if(userData.token && userData.userId){
-                getUserToken(userData.token, userData.userId)
+            if(userData.token){
+                getUserToken(userData.token)
                 .then(res => {
                     if(res){
                         localStorage.setItem('__email', res.email);
+                        localStorage.setItem('__id', res.id);
                         setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faHome} style={{ fontSize: "1.5em" }} />]);
                         setValue_b([`Logout`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, Logout]);
                         setValue_c([`Change Password`,'#!', <FontAwesomeIcon icon={faKey} style={{ fontSize: "1.4em" }} />, changePasswordModal]);

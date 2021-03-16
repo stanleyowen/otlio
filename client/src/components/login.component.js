@@ -23,7 +23,6 @@ const Login = () => {
             btn.innerHTML = "Logging In...";
             await axios.post(`${SERVER_URL}/account/login`, { email, password })
             .then(res => {
-                localStorage.setItem('__id', res.data.id);
                 localStorage.setItem('__token', res.data.token);
                 window.location = '/';
             })
