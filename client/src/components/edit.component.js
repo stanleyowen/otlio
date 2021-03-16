@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+
 import { labels, validateLabel } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import axios from 'axios';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
@@ -20,8 +21,7 @@ const Edit = () => {
     const [label, setLabel] = useState(labels[0].toLowerCase());
 
     useEffect(() => {
-        const getData = { email, id: userId }
-        axios.get(`${SERVER_URL}/data/todo/getData/${id}`, { params: getData, headers: { Authorization: `JWT ${token}` } })
+        axios.get(`${SERVER_URL}/data/todo/data`, { params: {id, userId, specific: true}, headers: { Authorization: `JWT ${token}` } })
         .then(res => {
             setTitle(res.data.title);
             setDate(formatDate(res.data.date));
@@ -60,8 +60,8 @@ const Edit = () => {
         const btn = document.getElementById('btn-addTodo');
         async function submitData() {
             btn.innerHTML = "Updating";
-            const postData = { email, objId: id, id: userId, title, label, description, date }
-            await axios.post(`${SERVER_URL}/data/todo/update/`, postData, { headers: { Authorization: `JWT ${token}` } })
+            const postData = { email, id, title, label, description, date }
+            await axios.put(`${SERVER_URL}/data/todo/data`, postData, { headers: { Authorization: `JWT ${token}` } })
             .then(() => window.location='/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");

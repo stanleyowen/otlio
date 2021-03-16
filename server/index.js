@@ -20,16 +20,16 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
 
-app.use(csrfProtection, (req, res, next) => {
-    var token = req.csrfToken();
-    res.cookie('XSRF-TOKEN', token);
-    res.locals.csrfToken = token;
-    next();
-});
+// app.use(csrfProtection, (req, res, next) => {
+//     var token = req.csrfToken();
+//     res.cookie('XSRF-TOKEN', token);
+//     res.locals.csrfToken = token;
+//     next();
+// });
 
-app.get('/csrf', csrfProtection, (req, res) => {
-    res.json({'XSRF-TOKEN': req.csrfToken()});
-});
+// app.get('/csrf', csrfProtection, (req, res) => {
+//     res.json({'XSRF-TOKEN': req.csrfToken()});
+// });
 
 const usersRouter = require('./routes/users.route');
 const todoRouter = require('./routes/todo.route');
@@ -41,7 +41,7 @@ app.use('/oauth/', oauthRouter);
 app.use('/', statusRouter);
 
 const URI = process.env.ATLAS_URI;
-mongoose.connect(URI, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology:true } );
+mongoose.connect(URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology:true } );
 const connection = mongoose.connection;
 connection.once('open', () => {
     console.log('MongoDB Database Extablished Successfully');
