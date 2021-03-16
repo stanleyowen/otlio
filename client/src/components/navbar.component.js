@@ -85,7 +85,7 @@ const Navbar = () => {
             btn.innerHTML = "Changing Password...";
             const modal = document.getElementById('changePasswordModal');
             const postData = { email, oldPassword, newPassword, confirmPsw, id, token }
-            await axios.post(`${SERVER_URL}/data/accounts/changePassword`, postData)
+            await axios.put(`${SERVER_URL}/account/user`, postData)
             .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             modal.style.visibility = "hidden";
@@ -105,8 +105,9 @@ const Navbar = () => {
     const Logout = async (e) => {
         e.preventDefault();
         const id = localStorage.getItem('__id');
+        const email = localStorage.getItem('__email');
         const token = localStorage.getItem('__token');
-        await axios.get(`${SERVER_URL}/data/accounts/logout`, {params: {id, token}, headers: { Authorization: `JWT ${token}` }})
+        await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { Authorization: `JWT ${token}` }})
         .then(() => {
             let itemsToRemove = ["__token", "__email", "__id", "todoData"];
             itemsToRemove.forEach(a => localStorage.removeItem(a));

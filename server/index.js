@@ -35,8 +35,8 @@ const usersRouter = require('./routes/users.route');
 const todoRouter = require('./routes/todo.route');
 const statusRouter = require('./routes/status.route');
 const oauthRouter = require('./routes/oauth.route');
-app.use('/data/accounts/', usersRouter);
-app.use('/data/todo/', todoRouter);
+app.use('/account/', usersRouter);
+app.use('/todo/', todoRouter);
 app.use('/oauth/', oauthRouter);
 app.use('/', statusRouter);
 

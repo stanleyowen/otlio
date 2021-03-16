@@ -35,7 +35,7 @@ router.get('/data', (req,res,next) => {
     const {userId, id, specific} = req.query;
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
-        else if(info) return res.status(info.status >= 400 ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+        else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
         else if(user.id === userId){
             if(specific && userId && id){
                 Todo.findOne({_id: id, email: user.email}, (err, data) => {
@@ -88,7 +88,7 @@ router.put('/data', (req,res,next) => {
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
-            else if(info) return res.status(info.status ? info.status : info.status = 401).json({statusCode: info.status, message: info.message});
+            else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
             else if(user.email === email){
                 const updateData = {
                     title: encrypt(title),
@@ -112,7 +112,7 @@ router.delete('/data', (req,res,next) => {
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
-            else if(info) return res.status(info.status ? info.status : info.status = 401).json({statusCode: info.status, message: info.message});
+            else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
             else if(user.id === id && user.email === email){
                 Todo.findByIdAndDelete(objId, (err, todoData) => {
                     if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
@@ -135,7 +135,7 @@ router.post('/data', (req,res,next) => {
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             if(err) return res.status(500).json({statusCode: 500, message: ERR_MSG[0]});
-            else if(info) return res.status(info.status >= 400 ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+            else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
             else if(user.id === id && user.email === email){
                 let dataDescription = { data: '', iv: '' };
                 const date = Date.parse(unformattedDate);

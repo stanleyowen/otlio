@@ -21,7 +21,7 @@ const Edit = () => {
     const [label, setLabel] = useState(labels[0].toLowerCase());
 
     useEffect(() => {
-        axios.get(`${SERVER_URL}/data/todo/data`, { params: {id, userId, specific: true}, headers: { Authorization: `JWT ${token}` } })
+        axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId, specific: true}, headers: { Authorization: `JWT ${token}` } })
         .then(res => {
             setTitle(res.data.title);
             setDate(formatDate(res.data.date));
@@ -61,7 +61,7 @@ const Edit = () => {
         async function submitData() {
             btn.innerHTML = "Updating";
             const postData = { email, id, title, label, description, date }
-            await axios.put(`${SERVER_URL}/data/todo/data`, postData, { headers: { Authorization: `JWT ${token}` } })
+            await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { Authorization: `JWT ${token}` } })
             .then(() => window.location='/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");

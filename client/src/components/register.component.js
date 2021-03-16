@@ -23,7 +23,7 @@ const Register = () => {
         async function submitData(){
             btn.innerHTML = "Registering...";
             const registerData = { email, password }
-            await axios.post(`${SERVER_URL}/data/accounts/register`, registerData)
+            await axios.post(`${SERVER_URL}/account/register`, registerData)
             .then(res => {
                 localStorage.setItem('__id', res.data.id);
                 localStorage.setItem('__token', res.data.token);
