@@ -17,7 +17,19 @@ const OAuthGitHub = (e) => {
 
 const createRequest = (e) => {
     axios.get(`${SERVER_URL}/status`)
-    .then().catch(err => console.log(err));
+    .then(res => {
+        localStorage.setItem('X-XSRF-TOKEN', res.data.X_XSRF_TOKEN)
+        localStorage.setItem('X-CSRF-TOKEN', res.data.X_CSRF_TOKEN)
+    })
+    .catch(err => console.log(err));
 }
 
-module.exports = {labels, validateLabel, OAuthGitHub, createRequest};
+const getCSRFToken = (e) => {
+    const token = [];
+    const a = localStorage.getItem('X-XSRF-TOKEN');
+    const b = localStorage.getItem('X-CSRF-TOKEN');
+    token.push(a);token.push(b);
+    return token;
+}
+
+module.exports = {labels, validateLabel, OAuthGitHub, createRequest, getCSRFToken};

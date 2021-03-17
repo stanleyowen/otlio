@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { createRequest, OAuthGitHub } from '../libraries/validation';
+import { createRequest, OAuthGitHub, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Axios from 'axios';
@@ -22,7 +22,7 @@ const Login = () => {
         const btn = document.getElementById('login');
         async function submitData(){
             btn.innerHTML = "Logging In...";
-            await axios.post(`${SERVER_URL}/account/login`, { email, password })
+            await axios.post(`${SERVER_URL}/account/login`, { email, password }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {
                 localStorage.setItem('__token', res.data.token);
                 window.location = '/';

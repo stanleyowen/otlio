@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Axios from 'axios';
 
-import { labels, validateLabel } from '../libraries/validation';
+import { labels, validateLabel, getCSRFToken } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 
 const axios = Axios.create({ withCredentials: true });
@@ -62,7 +62,7 @@ const Edit = () => {
         async function submitData() {
             btn.innerHTML = "Updating";
             const postData = { email, id, title, label, description, date }
-            await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { Authorization: `JWT ${token}` } })
+            await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(() => window.location='/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");

@@ -34,7 +34,7 @@ app.use((req, res, next) => {
     res.cookie('XSRF-TOKEN', token, {
         maxAge: 24 * 60 * 60,
         sameSite: 'none',
-        secure: process.env.NODE_ENV === 'production' ? true : false
+        secure: process.env.NODE_ENV === 'production' ? true : false,
     });
     res.locals.csrfToken = token;
     next();

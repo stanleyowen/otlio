@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
-import { labels, validateLabel } from '../libraries/validation';
+import { labels, validateLabel, getCSRFToken } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import Axios from 'axios';
 
@@ -167,7 +167,7 @@ const Home = () => {
 
     const deleteData = async id => {
         const data = { email, objId: id, id: userId }
-        await axios.delete(`${SERVER_URL}/todo/data`, { data, headers: { Authorization: `JWT ${token}` } })
+        await axios.delete(`${SERVER_URL}/todo/data`, { data, headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
         .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
         getTodoData();
@@ -194,7 +194,7 @@ const Home = () => {
             btn.innerHTML = "Adding...";
             const modal = document.getElementById('addTodoModal');
             const todoData = { id: userId, email, title, label, description, date };
-            await axios.post(`${SERVER_URL}/todo/data`, todoData, { headers: { Authorization: `JWT ${token}` } })
+            await axios.post(`${SERVER_URL}/todo/data`, todoData, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
                 modal.style.visibility = "hidden";

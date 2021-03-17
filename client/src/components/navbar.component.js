@@ -5,6 +5,7 @@ import getUserToken from '../libraries/getUserToken';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust, faPlus, faSignOutAlt, faKey, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../libraries/setNotification';
+import { getCSRFToken } from '../libraries/validation';
 import Axios from 'axios';
 
 /* Icons */
@@ -87,7 +88,7 @@ const Navbar = () => {
             btn.innerHTML = "Changing Password...";
             const modal = document.getElementById('changePasswordModal');
             const postData = { email, oldPassword, newPassword, confirmPsw, id, token }
-            await axios.put(`${SERVER_URL}/account/user`, postData)
+            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             modal.style.visibility = "hidden";
@@ -109,7 +110,7 @@ const Navbar = () => {
         const id = localStorage.getItem('__id');
         const email = localStorage.getItem('__email');
         const token = localStorage.getItem('__token');
-        await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { Authorization: `JWT ${token}` }})
+        await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }})
         .then(() => {
             let itemsToRemove = ["__token", "__email", "__id", "todoData"];
             itemsToRemove.forEach(a => localStorage.removeItem(a));

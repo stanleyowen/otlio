@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { createRequest } from '../libraries/validation';
+import { createRequest, getCSRFToken } from '../libraries/validation';
 import Axios from 'axios';
 
 const axios = Axios.create({ withCredentials: true });
@@ -19,7 +19,7 @@ const OAuth = () => {
 
     useEffect(() => {
         async function validateData() {
-            await axios.post(`${SERVER_URL}/oauth/${service}/validate`, { email: validatedEmail })
+            await axios.post(`${SERVER_URL}/oauth/${service}/validate`, { email: validatedEmail }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then().catch(() => window.location = '/login');
         }
         createRequest();
@@ -32,7 +32,7 @@ const OAuth = () => {
         async function submitData(){
             btn.innerHTML = "Registering...";
             const registerData = { email: validatedEmail, password }
-            await axios.post(`${SERVER_URL}/oauth/${service}/register`, registerData)
+            await axios.post(`${SERVER_URL}/oauth/${service}/register`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {
                 localStorage.setItem('__id', res.data.id);
                 localStorage.setItem('__token', res.data.token);

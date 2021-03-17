@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { createRequest, OAuthGitHub } from '../libraries/validation';
+import { createRequest, OAuthGitHub, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Axios from 'axios';
@@ -24,7 +24,7 @@ const Register = () => {
         async function submitData(){
             btn.innerHTML = "Registering...";
             const registerData = { email, password }
-            await axios.post(`${SERVER_URL}/account/register`, registerData)
+            await axios.post(`${SERVER_URL}/account/register`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {
                 localStorage.setItem('__id', res.data.id);
                 localStorage.setItem('__token', res.data.token);
