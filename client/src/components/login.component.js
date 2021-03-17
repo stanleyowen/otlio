@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { createRequest, OAuthGitHub, getCookie } from '../libraries/validation';
+import { createRequest, OAuthGitHub } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Axios from 'axios';

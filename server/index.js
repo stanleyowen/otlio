@@ -13,7 +13,11 @@ const csrfProtection = csrf({ cookie: true })
 require('dotenv').config();
 require('./config/passport');
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    optionsSuccessStatus: 200,
+    credentials: true
+}));
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
