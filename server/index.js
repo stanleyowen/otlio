@@ -19,17 +19,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
+app.use(csrfProtection);
 
-// app.use(csrfProtection, (req, res, next) => {
-//     var token = req.csrfToken();
-//     res.cookie('XSRF-TOKEN', token);
-//     res.locals.csrfToken = token;
-//     next();
-// });
-
-// app.get('/csrf', csrfProtection, (req, res) => {
-//     res.json({'XSRF-TOKEN': req.csrfToken()});
-// });
+app.use((req, res, next) => {
+    var token = req.csrfToken();
+    res.cookie('XSRF-TOKEN', token, {
+        maxAge: 24 * 60 * 60,
+        secure: process.env.NODE_ENV === 'production' ? true : false
+    });
+    res.locals.csrfToken = token;
+    next();
+});
 
 const usersRouter = require('./routes/users.route');
 const todoRouter = require('./routes/todo.route');

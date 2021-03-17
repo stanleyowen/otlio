@@ -6,7 +6,6 @@ const jwtSecret = require('../config/jwtConfig');
 let User = require('../models/users.model');
 
 const CLIENT_ID = process.env.GITHUB_ID;
-const CLIENT_URL = process.env.CLIENT_URL;
 const CLIENT_SECRET = process.env.GITHUB_SECRET;
 
 const ERR_MSG = [

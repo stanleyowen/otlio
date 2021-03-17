@@ -5,11 +5,12 @@ import getUserToken from '../libraries/getUserToken';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust, faPlus, faSignOutAlt, faKey, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../libraries/setNotification';
-import axios from 'axios';
+import Axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
 
+const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const redirectRoute = ['welcome', 'login', 'get-started'];
 const privateRoute = ['', 'edit'];

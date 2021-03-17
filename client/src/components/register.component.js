@@ -3,8 +3,9 @@ import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotificatio
 import { createRequest, OAuthGitHub } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import axios from 'axios';
+import Axios from 'axios';
 
+const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 

@@ -1,4 +1,4 @@
-const axios = require("axios");
+const axios = require("axios").create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const labels = ["Priority", "Secondary", "Important", "Do Later"];
@@ -16,10 +16,14 @@ const OAuthGitHub = (e) => {
 }
 
 const createRequest = (e) => {
-    setInterval(function(){
-        axios.get(`${SERVER_URL}/status`)
-        .then().catch(err => console.log(err.response.data));
-    }, 5000);
+    axios.get(`${SERVER_URL}/status`)
+    .then().catch(err => console.log(err));
 }
 
-module.exports = {labels, validateLabel, OAuthGitHub, createRequest};
+const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+module.exports = {labels, validateLabel, OAuthGitHub, createRequest, getCookie};
