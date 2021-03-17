@@ -8,7 +8,6 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const csrfProtection = csrf({ cookie: true })
 
 require('dotenv').config();
 require('./config/passport');
@@ -23,12 +22,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
-app.use(csrfProtection);
-
+app.use(csrf({
+    cookie: true,
+    cookie: {
+        sameSite: 'none',
+        secure: process.env.NODE_ENV === 'production' ? true : false
+    }
+}));
 app.use((req, res, next) => {
     var token = req.csrfToken();
     res.cookie('XSRF-TOKEN', token, {
         maxAge: 24 * 60 * 60,
+        sameSite: 'none',
         secure: process.env.NODE_ENV === 'production' ? true : false
     });
     res.locals.csrfToken = token;

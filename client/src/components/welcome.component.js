@@ -11,7 +11,7 @@ const Landing = () => {
 
     useEffect(() => {
         async function getRepoInfo() {
-            await axios.get(GITHUB_API)
+            await Axios.get(GITHUB_API)
             .then(res => setRepoInfo([res.data.stargazers_count, res.data.license.spdx_id]))
             .catch(err => {
                 if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message)
@@ -19,7 +19,7 @@ const Landing = () => {
             });
         }
         async function getLatestVersion() {
-            await axios.get(`${GITHUB_API}/releases`)
+            await Axios.get(`${GITHUB_API}/releases`)
             .then(res => {
                 if(res.data[0].tag_name){
                     let latestVersion =  res.data[0].tag_name.substring(1);
