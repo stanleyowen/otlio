@@ -5,7 +5,7 @@ import getUserToken from '../libraries/getUserToken';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust, faPlus, faSignOutAlt, faKey, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../libraries/setNotification';
-import { getCSRFToken } from '../libraries/validation';
+import { getCSRFToken, createRequest } from '../libraries/validation';
 import Axios from 'axios';
 
 /* Icons */
@@ -75,6 +75,7 @@ const Navbar = () => {
                 modal.style.opacity = "0";
             }
         }
+        createRequest();
         getToken();
         setWarning();
     },[location]);

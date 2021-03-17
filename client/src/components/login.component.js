@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { createRequest, OAuthGitHub, getCSRFToken } from '../libraries/validation';
+import { OAuthGitHub, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Axios from 'axios';
@@ -14,8 +14,6 @@ const Login = () => {
     const [password, setPassword] = useState();
     const [honeypot, setHoneypot] = useState();
     const [visible, setVisible] = useState(false);
-
-    useEffect(() => { createRequest(); },[])
 
     const Submit = (e) => {
         e.preventDefault();

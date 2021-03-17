@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { createRequest, getCSRFToken } from '../libraries/validation';
+import { getCSRFToken } from '../libraries/validation';
 import Axios from 'axios';
 
 const axios = Axios.create({ withCredentials: true });
@@ -22,7 +22,6 @@ const OAuth = () => {
             await axios.post(`${SERVER_URL}/oauth/${service}/validate`, { email: validatedEmail }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then().catch(() => window.location = '/login');
         }
-        createRequest();
         validateData();
     },[service, validatedEmail])
 
