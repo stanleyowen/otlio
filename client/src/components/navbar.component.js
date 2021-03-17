@@ -5,11 +5,12 @@ import getUserToken from '../libraries/getUserToken';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust, faPlus, faSignOutAlt, faKey, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../libraries/setNotification';
-import axios from 'axios';
+import Axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
 
+const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const redirectRoute = ['welcome', 'login', 'get-started'];
 const privateRoute = ['', 'edit'];
@@ -35,11 +36,12 @@ const Navbar = () => {
                 theme: localStorage.getItem('__theme')
             }
             if(userData.theme === "dark") document.body.classList.add("dark");
-            if(userData.token && userData.userId){
-                getUserToken(userData.token, userData.userId)
+            if(userData.token){
+                getUserToken(userData.token)
                 .then(res => {
                     if(res){
                         localStorage.setItem('__email', res.email);
+                        localStorage.setItem('__id', res.id);
                         setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faHome} style={{ fontSize: "1.5em" }} />]);
                         setValue_b([`Logout`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, Logout]);
                         setValue_c([`Change Password`,'#!', <FontAwesomeIcon icon={faKey} style={{ fontSize: "1.4em" }} />, changePasswordModal]);
@@ -85,7 +87,7 @@ const Navbar = () => {
             btn.innerHTML = "Changing Password...";
             const modal = document.getElementById('changePasswordModal');
             const postData = { email, oldPassword, newPassword, confirmPsw, id, token }
-            await axios.post(`${SERVER_URL}/data/accounts/changePassword`, postData)
+            await axios.put(`${SERVER_URL}/account/user`, postData)
             .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             modal.style.visibility = "hidden";
@@ -105,8 +107,9 @@ const Navbar = () => {
     const Logout = async (e) => {
         e.preventDefault();
         const id = localStorage.getItem('__id');
+        const email = localStorage.getItem('__email');
         const token = localStorage.getItem('__token');
-        await axios.get(`${SERVER_URL}/data/accounts/logout`, {params: {id, token}, headers: { Authorization: `JWT ${token}` }})
+        await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { Authorization: `JWT ${token}` }})
         .then(() => {
             let itemsToRemove = ["__token", "__email", "__id", "todoData"];
             itemsToRemove.forEach(a => localStorage.removeItem(a));

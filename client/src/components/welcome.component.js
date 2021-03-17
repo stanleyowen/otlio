@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import axios from 'axios';
+import Axios from 'axios';
 
+const axios = Axios.create({ withCredentials: true });
 const GITHUB_API = "https://api.github.com/repos/stanleyowen/todo-application";
 
 const Landing = () => {

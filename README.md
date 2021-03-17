@@ -29,7 +29,7 @@ Todo Application is an **open source** project which is easy to use and easy to 
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.3.7.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.3.8.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
@@ -47,12 +47,16 @@ Todo Application is an **open source** project which is easy to use and easy to 
       - `ATLAS_URI` stores the Database URI provided by [MongoDB](https://www.mongodb.com/2)
       - `SECRET_SESSION` stores JWT secret (Make it secret and hard to guess)
       - `SECRET_KEY` stores secret key for encyption method (Approximately 32 chars)
+      - `CLIENT_URL` stores the whitelisted domain for `CORS` Policy
+      - `NODE_ENV` stores the status of an application, whether it is in `development` or `production` status.
       - `GITHUB_ID` stores the client url for GitHub OAuth
       - `GITHUB_SECRET` stores the secret key for GitHub OAuth<br /><br />
           ```
           ATLAS_URI       = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
           SECRET_SESSION  = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3
           SECRET_KEY      = SpFcG29lKzfx9SxjLRjujaYxzSswhihd
+          CLIENT_URL      = http://localhost:3000
+          NODE_ENV        = development
           GITHUB_ID       = /* Your GitHub Client ID */
           GITHUB_SECRET   = /* Your GitHub Client Secret */
           ```
