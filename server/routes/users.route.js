@@ -2,7 +2,6 @@ const router = require('express').Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const jwtSecret = require('../config/jwtConfig');
-let User = require('../models/users.model');
 let BlacklistedToken = require('../models/blacklisted-token.model');
 
 const ERR_MSG = [

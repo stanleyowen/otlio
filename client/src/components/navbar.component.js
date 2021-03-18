@@ -68,11 +68,11 @@ const Navbar = () => {
                 });
             }
         }
-        const modal = document.getElementById('changePasswordModal');
+        const passwordModal = document.getElementById('changePasswordModal');
         window.onclick = function(e){
-            if(e.target === modal){
-                modal.classList.remove('showModal');
-                modal.classList.add('closeModal');
+            if(e.target === passwordModal){
+                passwordModal.classList.remove('showModal');
+                passwordModal.classList.add('closeModal');
             }
         }
         createRequest();
@@ -131,8 +131,6 @@ const Navbar = () => {
         const modal = document.getElementById('changePasswordModal');
         modal.classList.add('showModal');
         modal.classList.remove('closeModal', 'hiddenModal');
-        document.getElementById("navbar__menu").style.display = "none";
-        document.getElementById("navbar-icon").classList.toggle("closeIcon");
     }
 
     const closeModal = (e) => {
