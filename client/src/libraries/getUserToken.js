@@ -1,4 +1,4 @@
-const axios = require('axios').create({ withCredentials: true });
+const axios = require('axios');
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const getUserToken = async token => {

@@ -8,33 +8,32 @@ import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotificatio
 const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
-const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Edit = () => {
-    const email = localStorage.getItem('__email');
     const token = localStorage.getItem('__token');
     const userId = localStorage.getItem('__id');
     const {id} = useParams();
     const [title, setTitle] = useState('loading ...');
     const [date, setDate] = useState('2020-01-01');
     const [description, setDescription] = useState('loading ...');
-    const [defaultValue, setDefaultValue] = useState('loading ...');
+    const [data, setData] = useState('loading ...');
     const [label, setLabel] = useState(labels[0].toLowerCase());
 
     useEffect(() => {
-        axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId, specific: true}, headers: { Authorization: `JWT ${token}` } })
-        .then(res => {
-            setTitle(res.data.title);
-            setDate(formatDate(res.data.date));
-            if(res.data.description) setDescription(res.data.description);
-            else setDescription('')
-            setLabel(res.data.label);
-            setDefaultValue(res.data);
-        })
-        .catch(err => {
-            setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-            setTimeout(() => { window.location='/' }, 2000)
-        });
+        async function requestData() {
+            await Axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId}, headers: { Authorization: `JWT ${token}` } })
+            .then(res => {
+                setTitle(res.data.title);
+                setDate(formatDate(res.data.date));
+                setDescription(res.data.description);
+                setLabel(res.data.label);
+                setData(res.data);
+            })
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                setTimeout(() => { window.location='/' }, 2000)
+            });
+        }
         document.querySelectorAll('[data-autoresize]').forEach(function (e) {
             e.style.boxSizing = 'border-box';
             var offset = e.offsetHeight - e.clientHeight;
@@ -44,7 +43,8 @@ const Edit = () => {
             });
             e.removeAttribute('data-autoresize');
         });
-    }, [id, email, token, userId])
+        requestData();
+    }, [id, token, userId])
 
     const formatDate = (a) => {
         var e = new Date((a.substring(10, 0)) * 1000);
@@ -61,7 +61,7 @@ const Edit = () => {
         const btn = document.getElementById('btn-addTodo');
         async function submitData() {
             btn.innerHTML = "Updating";
-            const postData = { email, id, title, label, description, date }
+            const postData = { userId, id, title, label, description, date }
             await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(() => window.location='/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
@@ -69,7 +69,7 @@ const Edit = () => {
             btn.classList.remove("disabled");
             btn.innerHTML = "Update";
         }
-        if(!email || !token || !userId || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
+        if(!token || !userId){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
         else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
         else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !") }
         else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
@@ -79,7 +79,7 @@ const Edit = () => {
     }
     return (
         <div>
-            { title && label && defaultValue === "loading ..." ?
+            { title && label && data === "loading ..." ?
             (<div className="loader"><div className="spin-container full-width">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>
@@ -87,7 +87,7 @@ const Edit = () => {
                 <div className="shape shape-4"></div>
             </div></div>) : null }
             <div className="main__projects">
-                <a href="/" className="close"><i className="fas fa-times" style={{'fontSize': '30px'}}></i></a>
+                <a href="/" className="close" style={{fontSize: '30px', textDecoration: 'none'}}>x</a>
                 <form onSubmit={updateData} className="mt-20">
                     <div className="form__container">
                         <div className="contact__formControl">
@@ -105,7 +105,6 @@ const Edit = () => {
                             </div>
                         </div>
                     </div>
-
                     <div className="contact__formControl">
                         <div className="contact__infoField">
                             <label htmlFor="label">Label <span className="required">*</span></label>
@@ -116,7 +115,6 @@ const Edit = () => {
                             </select>
                         </div>
                     </div>
-
                     <div className="contact__formControl">
                         <div className="contact__infoField">
                             <label htmlFor="description">Description</label>
@@ -124,7 +122,7 @@ const Edit = () => {
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    { defaultValue.title === title && formatDate(defaultValue.date.substring(10, 0)) === date && defaultValue.description === description && defaultValue.label === label ? (<button type="disabled" id="btn-addTodo" className="btn__outline disabled" disabled={true} style={{outline: 'none'}}>Update</button>) : (<button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>)}
+                    { data.title === title && formatDate(data.date.substring(10, 0)) === date && data.description === description && data.label === label ? (<button type="disabled" id="btn-addTodo" className="btn__outline disabled" disabled={true} style={{outline: 'none'}}>Update</button>) : (<button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>)}
                 </form>
             </div>
         </div>

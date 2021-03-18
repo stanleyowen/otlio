@@ -77,7 +77,6 @@ const Home = () => {
     }
 
     async function getTodoData() {
-        const email = localStorage.getItem('__email');
         const token = localStorage.getItem('__token');
         const userId = localStorage.getItem('__id');
         await axios.get(`${SERVER_URL}/todo/data`, {params: {userId}, headers: { Authorization: `JWT ${token}` }})

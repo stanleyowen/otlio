@@ -730,15 +730,15 @@ input[type="checkbox"]:checked {
     margin: 4.5px 0;
     transition: .4s;
 }
-.bar1 { margin-top: 0; }
+.bar1 { margin-top: none!important; }
 .closeIcon .bar1 {
     -webkit-transform: rotate(-45deg) translate(-9px, 6px);
-    transform: rotate(-45deg) translate(-9px, 6px);
+    transform: rotate(-45deg) translate(-5px, 5.8px);
 }
 .closeIcon .bar2 { opacity: 0; }
 .closeIcon .bar3 {
     -webkit-transform: rotate(45deg) translate(-2px, 0px);
-    transform: rotate(45deg) translate(-2px, 0px);
+    transform: rotate(045deg) translate(-2px, -4.5px);
 }
 @keyframes octocat-wave {
     0%,100%{transform:rotate(0)}
