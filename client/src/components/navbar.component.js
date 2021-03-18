@@ -203,7 +203,7 @@ const Navbar = () => {
                     </Tooltip>
                 </div>
             </div>
-            {value_d !== false ? (<Tooltip title="Add Task" placement="top"><button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button></Tooltip>) : null}
+            {value_d !== false && location.pathname === '/' ? (<Tooltip title="Add Task" placement="top"><button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button></Tooltip>) : null}
 		    <Tooltip title="Change Mode">
                 <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}>
                     <FontAwesomeIcon icon={faAdjust} size="2x"/>
