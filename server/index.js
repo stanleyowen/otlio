@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 
 const app = express();
+const status = process.env.NODE_ENV;
 const PORT = process.env.PORT || 5000;
 
 require('dotenv').config();
@@ -25,7 +26,7 @@ app.use(passport.initialize());
 app.use(csrf({
     cookie: true,
     cookie: {
-        sameSite: 'none',
+        sameSite: status === 'production' ? 'none' : false,
         secure: process.env.NODE_ENV === 'production' ? true : false
     }
 }));
@@ -33,8 +34,8 @@ app.use((req, res, next) => {
     var token = req.csrfToken();
     res.cookie('XSRF-TOKEN', token, {
         maxAge: 24 * 60 * 60,
-        sameSite: 'none',
-        secure: process.env.NODE_ENV === 'production' ? true : false,
+        sameSite: status === 'production' ? 'none' : false,
+        secure: process.env.NODE_ENV === 'production' ? true : false
     });
     res.locals.csrfToken = token;
     next();
