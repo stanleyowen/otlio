@@ -71,8 +71,8 @@ const Navbar = () => {
         const modal = document.getElementById('changePasswordModal');
         window.onclick = function(e){
             if(e.target === modal){
-                modal.style.visibility = "hidden";
-                modal.style.opacity = "0";
+                modal.classList.remove('showModal');
+                modal.classList.add('closeModal');
             }
         }
         createRequest();
@@ -122,22 +122,24 @@ const Navbar = () => {
     const addTodo = (e) => {
         e.preventDefault();
         const modal = document.getElementById('addTodoModal');
-        modal.style.visibility = "visible";
-        modal.style.opacity = "1";
+        modal.classList.add('showModal');
+        modal.classList.remove('closeModal', 'hiddenModal');
     }
 
     const changePasswordModal = (e) => {
         e.preventDefault();
         const modal = document.getElementById('changePasswordModal');
-        modal.style.visibility = "visible";
-        modal.style.opacity = "1";
+        modal.classList.add('showModal');
+        modal.classList.remove('closeModal', 'hiddenModal');
+        document.getElementById("navbar__menu").style.display = "none";
+        document.getElementById("navbar-icon").classList.toggle("closeIcon");
     }
 
     const closeModal = (e) => {
         e.preventDefault();
         const modal = document.getElementById('changePasswordModal');
-        modal.style.visibility = "hidden";
-        modal.style.opacity = "0";
+        modal.classList.remove('showModal');
+        modal.classList.add('closeModal');
     }
 
     const toggleNavbar = (e) => {
@@ -219,7 +221,7 @@ const Navbar = () => {
                 ) : '' }
             </div>
 
-            <div id="changePasswordModal" className="modal">
+            <div id="changePasswordModal" className="modal hiddenModal">
                 <div className="modal__container">
                     <div className="modal__title">
                         <span className="modal__closeFireUI modal__closeBtn" onClick={closeModal}>&times;</span>
