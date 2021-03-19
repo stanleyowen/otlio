@@ -53,7 +53,7 @@ router.get('/user', (req, res, next) => {
         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
         else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
         else if(user){
-            BlacklistedToken.findOne({ token: req.query.token }, (err, isListed) => {
+            BlacklistedToken.findOne({ token: req.get('Authorization').slice(4) }, (err, isListed) => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                 else if(isListed) return res.status(401).json({statusCode: 401, message: MSG_DESC[15]});
                 else if(!isListed){
@@ -93,11 +93,12 @@ router.put('/user', (req, res, next) => {
                                         bcrypt.hash(newPassword, salt, (err, hash) => {
                                             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                                             else {
-                                                BlacklistedToken.findOne({ token: req.body.token }, (err, isListed) => {
+                                                const token = req.get('Authorization').slice(4)
+                                                BlacklistedToken.findOne({ token }, (err, isListed) => {
                                                     if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                                                     else if(isListed) return res.status(401).json({statusCode: 401, message: MSG_DESC[15]});
                                                     else if(!isListed){
-                                                        const blacklistedToken = new BlacklistedToken ({ userId: req.body.id, token: req.body.token })
+                                                        const blacklistedToken = new BlacklistedToken ({ userId: id, token })
                                                         blacklistedToken.save()
                                                         user.password = hash;
                                                         user.save()

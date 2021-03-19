@@ -40,15 +40,21 @@ app.use((req, res, next) => {
     res.locals.csrfToken = token;
     next();
 });
+app.get('/status', (req, res) => {
+    res.json({
+        statusCode: 200,
+        message: 'Server is up and running',
+        'X_CSRF_TOKEN': req.cookies['_csrf'],
+        'X_XSRF_TOKEN': res.locals.csrfToken,
+    });
+})
 
 const usersRouter = require('./routes/users.route');
 const todoRouter = require('./routes/todo.route');
-const statusRouter = require('./routes/status.route');
 const oauthRouter = require('./routes/oauth.route');
 app.use('/account/', usersRouter);
 app.use('/todo/', todoRouter);
 app.use('/oauth/', oauthRouter);
-app.use('/', statusRouter);
 
 const URI = process.env.ATLAS_URI;
 mongoose.connect(URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology:true } );
