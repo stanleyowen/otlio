@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import { OAuthGitHub, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

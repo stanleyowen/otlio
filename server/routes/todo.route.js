@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const passport = require('passport');
 const { encrypt, decrypt } = require('../config/crypto');
-const MSG_DESC = require('../config/libraries');
+const { MSG_DESC } = require('../config/libraries');
 let Todo = require('../models/todo.model');
 
 const listLabel = ["Priority","Secondary","Important","Do Later"];

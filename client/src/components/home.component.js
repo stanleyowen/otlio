@@ -196,8 +196,8 @@ const Home = () => {
             await axios.post(`${SERVER_URL}/todo/data`, todoData, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
-                modal.style.visibility = "hidden";
-                modal.style.opacity = "0";
+                modal.classList.remove('showModal');
+                modal.classList.add('closeModal');
                 setTitle('');
                 setLabel(labels[0].toLowerCase());
                 setDescription('');

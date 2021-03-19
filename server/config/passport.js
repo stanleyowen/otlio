@@ -4,7 +4,7 @@ const localStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const jwtSecret = require('./jwtConfig');
-const MSG_DESC = require('../config/libraries');
+const { MSG_DESC } = require('./libraries');
 let User = require('../models/users.model');
 
 const SALT_WORK_FACTOR = 12;

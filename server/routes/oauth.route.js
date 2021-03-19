@@ -2,7 +2,7 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = require('express').Router();
-const MSG_DESC = require('../config/libraries');
+const { MSG_DESC } = require('../config/libraries');
 const jwtSecret = require('../config/jwtConfig');
 let User = require('../models/users.model');
 

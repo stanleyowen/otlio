@@ -92,8 +92,8 @@ const Navbar = () => {
             await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'Authorization': `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            modal.style.visibility = "hidden";
-            modal.style.opacity = "0";
+            modal.classList.remove('showModal');
+            modal.classList.add('closeModal');
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Change Password";

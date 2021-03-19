@@ -23,6 +23,6 @@ const MSG_DESC = [
     'Data Updated Successfully',
     'Data Deleted Successfully',
     'Data Added Successfully'
-]
+];
 
 module.exports = {MSG_DESC}
