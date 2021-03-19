@@ -86,10 +86,10 @@ const Navbar = () => {
         const token = localStorage.getItem('__token');
         const btn = document.getElementById('btn-changePassword');
         async function submitData() {
-            btn.innerHTML = "Changing Password...";
+            btn.innerHTML = "Changing Password";
             const modal = document.getElementById('changePasswordModal');
-            const postData = { email, oldPassword, newPassword, confirmPsw, id, token }
-            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
+            const postData = { id, oldPassword, newPassword, confirmPassword: confirmPsw }
+            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'Authorization': `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             modal.style.visibility = "hidden";
