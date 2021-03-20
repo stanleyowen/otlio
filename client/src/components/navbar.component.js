@@ -68,11 +68,11 @@ const Navbar = () => {
                 });
             }
         }
-        const modal = document.getElementById('changePasswordModal');
+        const passwordModal = document.getElementById('changePasswordModal');
         window.onclick = function(e){
-            if(e.target === modal){
-                modal.style.visibility = "hidden";
-                modal.style.opacity = "0";
+            if(e.target === passwordModal){
+                passwordModal.classList.remove('showModal');
+                passwordModal.classList.add('closeModal');
             }
         }
         createRequest();
@@ -86,14 +86,14 @@ const Navbar = () => {
         const token = localStorage.getItem('__token');
         const btn = document.getElementById('btn-changePassword');
         async function submitData() {
-            btn.innerHTML = "Changing Password...";
+            btn.innerHTML = "Changing Password";
             const modal = document.getElementById('changePasswordModal');
-            const postData = { email, oldPassword, newPassword, confirmPsw, id, token }
-            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
+            const postData = { id, oldPassword, newPassword, confirmPassword: confirmPsw }
+            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'Authorization': `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            modal.style.visibility = "hidden";
-            modal.style.opacity = "0";
+            modal.classList.remove('showModal');
+            modal.classList.add('closeModal');
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Change Password";
@@ -122,22 +122,22 @@ const Navbar = () => {
     const addTodo = (e) => {
         e.preventDefault();
         const modal = document.getElementById('addTodoModal');
-        modal.style.visibility = "visible";
-        modal.style.opacity = "1";
+        modal.classList.add('showModal');
+        modal.classList.remove('closeModal', 'hiddenModal');
     }
 
     const changePasswordModal = (e) => {
         e.preventDefault();
         const modal = document.getElementById('changePasswordModal');
-        modal.style.visibility = "visible";
-        modal.style.opacity = "1";
+        modal.classList.add('showModal');
+        modal.classList.remove('closeModal', 'hiddenModal');
     }
 
     const closeModal = (e) => {
         e.preventDefault();
         const modal = document.getElementById('changePasswordModal');
-        modal.style.visibility = "hidden";
-        modal.style.opacity = "0";
+        modal.classList.remove('showModal');
+        modal.classList.add('closeModal');
     }
 
     const toggleNavbar = (e) => {
@@ -203,7 +203,7 @@ const Navbar = () => {
                     </Tooltip>
                 </div>
             </div>
-            {value_d !== false ? (<Tooltip title="Add Task" placement="top"><button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button></Tooltip>) : null}
+            {value_d !== false && location.pathname === '/' ? (<Tooltip title="Add Task" placement="top"><button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button></Tooltip>) : null}
 		    <Tooltip title="Change Mode">
                 <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}>
                     <FontAwesomeIcon icon={faAdjust} size="2x"/>
@@ -219,7 +219,7 @@ const Navbar = () => {
                 ) : '' }
             </div>
 
-            <div id="changePasswordModal" className="modal">
+            <div id="changePasswordModal" className="modal hiddenModal">
                 <div className="modal__container">
                     <div className="modal__title">
                         <span className="modal__closeFireUI modal__closeBtn" onClick={closeModal}>&times;</span>

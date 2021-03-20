@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import { OAuthGitHub, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,7 +21,7 @@ const Register = () => {
         const btn = document.getElementById('register');
         async function submitData(){
             btn.innerHTML = "Registering...";
-            const registerData = { email, password }
+            const registerData = { email, password, confirmPassword: confirmPsw }
             await axios.post(`${SERVER_URL}/account/register`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {
                 localStorage.setItem('__id', res.data.id);

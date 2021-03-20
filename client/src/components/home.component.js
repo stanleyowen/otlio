@@ -77,7 +77,6 @@ const Home = () => {
     }
 
     async function getTodoData() {
-        const email = localStorage.getItem('__email');
         const token = localStorage.getItem('__token');
         const userId = localStorage.getItem('__id');
         await axios.get(`${SERVER_URL}/todo/data`, {params: {userId}, headers: { Authorization: `JWT ${token}` }})
@@ -93,8 +92,8 @@ const Home = () => {
         const modal = document.getElementById('addTodoModal');
         window.onclick = function(e){
             if(e.target === modal){
-                modal.style.visibility = "hidden";
-                modal.style.opacity = "0";
+                modal.classList.remove('showModal');
+                modal.classList.add('closeModal');
             }
         }
         document.querySelectorAll('[data-autoresize]').forEach(function (e) {
@@ -183,8 +182,8 @@ const Home = () => {
     const closeModal = (e) => {
         e.preventDefault();
         const modal = document.getElementById('addTodoModal');
-        modal.style.visibility = "hidden";
-        modal.style.opacity = "0";
+        modal.classList.remove('showModal');
+        modal.classList.add('closeModal');
     }
 
     const submitTodo = (e) => {
@@ -197,8 +196,8 @@ const Home = () => {
             await axios.post(`${SERVER_URL}/todo/data`, todoData, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
-                modal.style.visibility = "hidden";
-                modal.style.opacity = "0";
+                modal.classList.remove('showModal');
+                modal.classList.add('closeModal');
                 setTitle('');
                 setLabel(labels[0].toLowerCase());
                 setDescription('');
@@ -225,7 +224,7 @@ const Home = () => {
     return (
         <div className="main__projects" ref={wrapper}>
             <p>Hi, Welcome Back {email}</p>
-            <div id="addTodoModal" className="modal">
+            <div id="addTodoModal" className="modal hiddenModal">
                 <div className="modal__container">
                     <div className="modal__title">
                         <span className="modal__closeFireUI modal__closeBtn" onClick={closeModal}>&times;</span>

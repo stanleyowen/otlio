@@ -30,7 +30,7 @@ const OAuth = () => {
         const btn = document.getElementById('register');
         async function submitData(){
             btn.innerHTML = "Registering...";
-            const registerData = { email: validatedEmail, password }
+            const registerData = { email: validatedEmail, password, confirmPassword: confirmPsw }
             await axios.post(`${SERVER_URL}/oauth/${service}/register`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {
                 localStorage.setItem('__id', res.data.id);
