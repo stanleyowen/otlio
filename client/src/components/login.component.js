@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { OAuthGitHub, getCSRFToken } from '../libraries/validation';
+import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import Axios from 'axios';
 
 const axios = Axios.create({ withCredentials: true });
@@ -41,7 +41,10 @@ const Login = () => {
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Login</h1></div>
                 <div className="oauth-container">
-                    <button className="oauth-box" onClick={OAuthGitHub}>
+                    <button className="oauth-box google" onClick={OAuthGoogle}>
+                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
+                    </button><br />
+                    <button className="oauth-box github" onClick={OAuthGitHub}>
                         <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
                     </button>
                 </div>

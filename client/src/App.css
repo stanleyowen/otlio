@@ -100,11 +100,17 @@ button, a { user-select: none; cursor: pointer; }
     outline: none;
     border: none;
     opacity: 0.9;
-    color: #FFF;
     border-radius: 5px;
     transition: all .3s;
     text-decoration: none;
+}
+.github {
+    color: #FFF;
     background-color: black;
+}
+.google {
+    color: #FFF;
+    background-color: rgb(66 133 244);
 }
 .oauth-box:hover { opacity: 1; }
 .oauth-box:visited { color: #FFF; }
