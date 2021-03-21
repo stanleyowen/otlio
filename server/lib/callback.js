@@ -1,6 +1,6 @@
 const MSG_DESC = [
     'Oops! Something went wrong. Please try again later',               // 0
-    'Oops! Looks like the Email you registered has alreaady existed',   // 1
+    'Oops! Looks like the email you registered has alreaady existed',   // 1
     'Login Success',                                                    // 2
     'Logout Success',                                                   // 3
     'Registration Success',                                             // 4
@@ -22,7 +22,8 @@ const MSG_DESC = [
     'Invalid Date Format',                                              // 20
     'Data Updated Successfully',                                        // 21
     'Data Deleted Successfully',                                        // 22
-    'Data Added Successfully'                                           // 23
+    'Data Added Successfully',                                          // 23
+    'Oops! Looks like the email you registered has already existed. Enable OAuth with existing account feature will be available soon in v0.4.1' // 24
 ];
 
 module.exports = MSG_DESC;

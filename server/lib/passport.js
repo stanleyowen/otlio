@@ -83,7 +83,7 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
             if(user.thirdParty.isThirdParty && user.thirdParty.status === "Pending") return done(null, user, { status: 200, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
             else if(user.thirdParty.isThirdParty && user.thirdParty.status === "Success"){
                 return done(null, user, { status: 200 })
-            }else return done(null, false, { status: 400, message: MSG_DESC[13] });
+            }else return done(null, false, { status: 400, message: MSG_DESC[24] });
         }
     })
 }))
