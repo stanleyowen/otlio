@@ -45,20 +45,20 @@ router.get('/github', async (req, res) => {
                             url: `/oauth/github/${encodeURIComponent(email)}`
                         });
                     }else if(user){
-                        if (user.thirdParty.status === "Pending"){
+                        if (user.thirdParty.isThirdParty && user.thirdParty.status === "Pending"){
                             res.status(302).json({
                                 statusCode: 302,
                                 type: 'redirect',
                                 url: `/oauth/github/${encodeURIComponent(email)}`
                             });
-                        }else {
+                        }else if(user.thirdParty.isThirdParty && user.thirdParty.status === "Success") {
                             res.status(200).json({
                                 statusCode: 200,
                                 status: MSG_DESC[2],
                                 id: user.id,
                                 token: jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '1d' })
                             });
-                        }
+                        }else return done(null, false, { status: 400, message: MSG_DESC[13] });
                     }
                 })
             })
