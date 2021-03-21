@@ -2,11 +2,11 @@ const bcrypt = require('bcrypt');
 const router = require('express').Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const jwtSecret = require('../config/jwtConfig');
-const { MSG_DESC } = require('../config/libraries');
+const MSG_DESC = require('../lib/callback');
 let User = require('../models/users.model');
 let BlacklistedToken = require('../models/blacklisted-token.model');
 const SALT_WORK_FACTOR = 12;
+const jwtSecret = process.env.JWT_SECRET;
 
 router.post('/register', (req, res, next) => {
     passport.authenticate('register', (err, user, info) => {
@@ -20,7 +20,7 @@ router.post('/register', (req, res, next) => {
                         statusCode: info.status,
                         message: info.message,
                         id: user.id,
-                        token: jwt.sign({ id: user.id, email: user.email }, jwtSecret.secret, { expiresIn: '1d' })
+                        token: jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '1d' })
                     })
                 }
             })
@@ -40,7 +40,7 @@ router.post('/login', (req, res, next) => {
                         statusCode: info.status,
                         message: info.message,
                         id: user.id,
-                        token: jwt.sign({ id: user.id, email: user.email }, jwtSecret.secret, { expiresIn: '1d' })
+                        token: jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '1d' })
                     })
                 }
             });
@@ -104,9 +104,9 @@ router.put('/user', (req, res, next) => {
                                                         user.save()
                                                         res.json({
                                                             statusCode: 200,
-                                                            message: MSG_DESC[5],
+                                                            message: MSG_DESC[6],
                                                             id: user.id,
-                                                            token: jwt.sign({ id: user.id, email: user.email }, jwtSecret.secret, { expiresIn: '1d' })
+                                                            token: jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '1d' })
                                                         });
                                                     }
                                                 })

@@ -43,8 +43,8 @@ const Login = () => {
                 <div className="oauth-container">
                     <button className="oauth-box google" onClick={OAuthGoogle}>
                         <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
-                    </button><br />
-                    <button className="oauth-box github" onClick={OAuthGitHub}>
+                    </button>
+                    <button className="oauth-box github mt-20" onClick={OAuthGitHub}>
                         <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
                     </button>
                 </div>

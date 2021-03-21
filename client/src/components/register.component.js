@@ -50,9 +50,9 @@ const Register = () => {
                 <div className="get_in_touch"><h1>Register</h1></div>
                 <div className="oauth-container">
                     <button className="oauth-box google" onClick={OAuthGoogle}>
-                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Join Us with GitHub</p>
-                    </button><br />
-                    <button className="oauth-box github" onClick={OAuthGitHub}>
+                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Join Us with Google</p>
+                    </button>
+                    <button className="oauth-box github mt-20" onClick={OAuthGitHub}>
                         <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Join Us with GitHub</p>
                     </button>
                 </div>
