@@ -11,7 +11,7 @@ const status = process.env.NODE_ENV;
 const PORT = process.env.PORT || 5000;
 
 require('dotenv').config();
-require('./config/passport');
+require('./lib/passport');
 
 app.use(cors({
     origin: process.env.CLIENT_URL,

@@ -15,6 +15,11 @@ const OAuthGitHub = (e) => {
     window.location = 'https://github.com/login/oauth/authorize?scope=user:email&client_id=f16f43122ef61cc75963';
 }
 
+const OAuthGoogle = (e) => {
+    e.preventDefault();
+    window.location = `${SERVER_URL}/oauth/google/auth`;
+}
+
 const createRequest = (e) => {
     axios.get(`${SERVER_URL}/status`)
     .then(res => {
@@ -32,4 +37,4 @@ const getCSRFToken = (e) => {
     return token;
 }
 
-module.exports = {labels, validateLabel, OAuthGitHub, createRequest, getCSRFToken};
+module.exports = {labels, validateLabel, OAuthGitHub, OAuthGoogle, createRequest, getCSRFToken};

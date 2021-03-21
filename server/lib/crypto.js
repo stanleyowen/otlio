@@ -5,8 +5,7 @@ const iv = crypto.randomBytes(16);
 
 const encrypt = (text) => {
     let cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    let encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
     return { iv: iv.toString('hex'), data: encrypted.toString('hex') };
 }
    

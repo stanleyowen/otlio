@@ -3,11 +3,12 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
-const jwtSecret = require('./jwtConfig');
-const { MSG_DESC } = require('./libraries');
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const MSG_DESC = require('./callback');
 let User = require('../models/users.model');
 
 const SALT_WORK_FACTOR = 12;
+const jwtSecret = process.env.JWT_SECRET;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 passport.serializeUser((user, done) => {
@@ -29,14 +30,13 @@ passport.use('register', new localStrategy({ usernameField: 'email', passwordFie
             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] })
             else if(user) return done(null, false, { status: 400, message: MSG_DESC[1] })
             else if(!user) {
-                const newUser = new User ({ email, password })
                 bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
                     if(err) return done(null, false, { status: 500, message: MSG_DESC[0] })
                     else {
-                        bcrypt.hash(newUser.password, salt, (err, hash) => {
+                        bcrypt.hash(password, salt, (err, hash) => {
                             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] })
                             else {
-                                newUser.password = hash;
+                                const newUser = new User ({ email, password: hash })
                                 newUser.save()
                                 .then(user => { return done(null, user, { status: 200, message: MSG_DESC[4] }) })
                                 .catch(() => { return done(null, false, { status: 500, message: MSG_DESC[0] }) })
@@ -59,6 +59,31 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
                 else if(!isMatch) return done(null, false, { status: 400, message: MSG_DESC[10] });
                 else if(isMatch) return done(null, user, { status: 200, message: MSG_DESC[2] });
             })
+        }
+    })
+}))
+
+passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: process.env.GOOGLE_CALLBACK }, (accessToken, refreshToken, profile, done) => {
+    const email = profile._json.email;
+    User.findOne({email}, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+        else if(!user){
+            const dataModel = new User ({
+                email,
+                password: null,
+                thirdParty: {
+                    isThirdParty: true,
+                    provider: 'google',
+                    status: 'Pending'
+                }
+            });
+            dataModel.save()
+            return done(null, user, { status: 302, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
+        }else if(user){
+            if(user.thirdParty.isThirdParty && user.thirdParty.status === "Pending") return done(null, user, { status: 200, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
+            else if(user.thirdParty.isThirdParty && user.thirdParty.status === "Success"){
+                return done(null, user, { status: 200 })
+            }else return done(null, false, { status: 400, message: MSG_DESC[24] });
         }
     })
 }))
@@ -111,7 +136,7 @@ passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwo
 
 const opts = {
     jwtFromRequest: ExtractJWT.fromAuthHeaderWithScheme('JWT'),
-    secretOrKey: jwtSecret.secret,
+    secretOrKey: jwtSecret,
 };
 
 passport.use('jwt', new JWTStrategy(opts, (jwt_payload, done) => {
