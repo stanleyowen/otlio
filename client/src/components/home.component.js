@@ -72,17 +72,15 @@ const Home = ({ userData }) => {
     }
 
     async function getTodoData() {
-        if(userId){
-            await axios.get(`${SERVER_URL}/todo/data`, {params: {userId}, withCredentials: true})
-            .then(res => {
-                setTodoData(res.data);
-                localStorage.setItem('todoData', JSON.stringify(res.data));
-                clearData()
-            })
-            .catch(err => {
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-            });
-        }
+        await axios.get(`${SERVER_URL}/todo/data`, {params: {userId}, withCredentials: true})
+        .then(res => {
+            setTodoData(res.data);
+            localStorage.setItem('todoData', JSON.stringify(res.data));
+            clearData()
+        })
+        .catch(err => {
+            setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+        });
     }
 
     useEffect(() => {
@@ -102,7 +100,7 @@ const Home = ({ userData }) => {
             });
             e.removeAttribute('data-autoresize');
         });
-        if(!isLoading && authenticated){ getTodoData(); }
+        if(!isLoading && authenticated){ getTodoData() }
         else if(!isLoading && authenticated && !todoData) setInterval(getTodoData(), 2000)
     }, [userData]);
 
@@ -133,7 +131,7 @@ const Home = ({ userData }) => {
                     </tr>)
             })
         }else if(cacheTodo) {
-            getTodoData();
+            if(!isLoading && authenticated){ getTodoData() }
             return cacheTodo.map(a => {
             return (
                 <tr key={a._id}>

@@ -40,20 +40,20 @@ router.get('/github', async (req, res) => {
                             }
                         });
                         dataModel.save()
-                        res.status(302).json({
+                        return res.status(302).json({
                             statusCode: 302,
                             type: 'redirect',
                             url: `/oauth/github/${encodeURIComponent(email)}`
                         });
                     }else if(user){
-                        if (user.thirdParty.isThirdParty && user.thirdParty.status === "Pending"){
-                            res.status(302).json({
+                        if (user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Pending"){
+                            return res.status(302).json({
                                 statusCode: 302,
                                 type: 'redirect',
                                 url: `/oauth/github/${encodeURIComponent(email)}`
                             });
-                        }else if(user.thirdParty.isThirdParty && user.thirdParty.status === "Success") {
-                            res.status(200).cookie('jwt-token', jwt.sign({
+                        }else if(user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Success") {
+                            return res.status(200).cookie('jwt-token', jwt.sign({
                                 id: user.id,
                                 email: user.email
                             }, jwtSecret, { expiresIn: '1d' }), {

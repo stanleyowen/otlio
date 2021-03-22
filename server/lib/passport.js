@@ -79,8 +79,8 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
             dataModel.save()
             return done(null, user, { status: 302, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
         }else if(user){
-            if(user.thirdParty.isThirdParty && user.thirdParty.status === "Pending") return done(null, user, { status: 200, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
-            else if(user.thirdParty.isThirdParty && user.thirdParty.status === "Success"){
+            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
+            else if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Success"){
                 return done(null, user, { status: 200 })
             }else return done(null, false, { status: 400, message: MSG_DESC[24] });
         }
