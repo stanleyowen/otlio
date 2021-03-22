@@ -7,7 +7,7 @@ let User = require('../models/users.model');
 let BlacklistedToken = require('../models/blacklisted-token.model');
 const SALT_WORK_FACTOR = 12;
 const jwtSecret = process.env.JWT_SECRET;
-
+const status = process.env.NODE_ENV;
 router.post('/register', (req, res, next) => {
     passport.authenticate('register', (err, user, info) => {
         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
@@ -16,11 +16,18 @@ router.post('/register', (req, res, next) => {
             req.logIn(user, err => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                 else {
-                    res.json({
+                    res.cookie('jwt-token', jwt.sign({
+                        id: user.id,
+                        email: user.email
+                    }, jwtSecret, { expiresIn: '1d' }), {
+                        maxAge: 86400000,
+                        httpOnly: true,
+                        secure: status === 'production' ? true : false,
+                        sameSite: status === 'production' ? 'none' : false
+                    }).json({
                         statusCode: info.status,
                         message: info.message,
-                        id: user.id,
-                        token: jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '1d' })
+                        id: user.id
                     })
                 }
             })
@@ -35,14 +42,19 @@ router.post('/login', (req, res, next) => {
         else if(user){
             req.logIn(user, err => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-                else {
-                    res.json({
+                else return res.cookie('jwt-token', jwt.sign({
+                        id: user.id,
+                        email: user.email
+                    }, jwtSecret, { expiresIn: '1d' }), {
+                        maxAge: 86400000,
+                        httpOnly: true,
+                        secure: status === 'production' ? true : false,
+                        sameSite: status === 'production' ? 'none' : false
+                    }).json({
                         statusCode: info.status,
                         message: info.message,
-                        id: user.id,
-                        token: jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '1d' })
+                        id: user.id
                     })
-                }
             });
         }
     })(req, res, next)
@@ -53,12 +65,13 @@ router.get('/user', (req, res, next) => {
         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
         else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
         else if(user){
-            BlacklistedToken.findOne({ token: req.get('Authorization').slice(4) }, (err, isListed) => {
+            BlacklistedToken.findOne({ token: req.cookies['jwt-token'] }, (err, isListed) => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                 else if(isListed) return res.status(401).json({statusCode: 401, message: MSG_DESC[15]});
                 else if(!isListed){
-                    res.json({
+                    return res.json({
                         statusCode: 200,
+                        authenticated: true,
                         message: MSG_DESC[5],
                         id: user._id,
                         email: user.email
@@ -93,7 +106,7 @@ router.put('/user', (req, res, next) => {
                                         bcrypt.hash(newPassword, salt, (err, hash) => {
                                             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                                             else {
-                                                const token = req.get('Authorization').slice(4)
+                                                const token = req.cookies['jwt-token']
                                                 BlacklistedToken.findOne({ token }, (err, isListed) => {
                                                     if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                                                     else if(isListed) return res.status(401).json({statusCode: 401, message: MSG_DESC[15]});
@@ -102,11 +115,18 @@ router.put('/user', (req, res, next) => {
                                                         blacklistedToken.save()
                                                         user.password = hash;
                                                         user.save()
-                                                        res.json({
+                                                        return res.cookie('jwt-token', jwt.sign({
+                                                            id: user.id,
+                                                            email: user.email
+                                                        }, jwtSecret, { expiresIn: '1d' }), {
+                                                            maxAge: 86400000,
+                                                            httpOnly: true,
+                                                            secure: status === 'production' ? true : false,
+                                                            sameSite: status === 'production' ? 'none' : false
+                                                        }).json({
                                                             statusCode: 200,
                                                             message: MSG_DESC[6],
-                                                            id: user.id,
-                                                            token: jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '1d' })
+                                                            id: user.id
                                                         });
                                                     }
                                                 })
@@ -131,9 +151,14 @@ router.post('/logout', (req, res, next) => {
             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
             else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
             else if(user.id === id && user.email === email){
-                const blacklistedToken = new BlacklistedToken ({ userId: id, token: req.get('Authorization').slice(4) })
+                const blacklistedToken = new BlacklistedToken ({ userId: id, token: req.cookies['jwt-token'] })
                 blacklistedToken.save();
-                res.json({ statusCode: 200, message: MSG_DESC[3] });
+                return res.cookie('jwt-token', '', {
+                    maxAge: 0,
+                    httpOnly: true,
+                    secure: status === 'production' ? true : false,
+                    sameSite: status === 'production' ? 'none' : false
+                }).json({ statusCode: 200, message: MSG_DESC[3] });
             }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
         })(req, res, next)
     }

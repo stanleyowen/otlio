@@ -20,9 +20,7 @@ const Login = ({ userData }) => {
         async function submitData(){
             btn.innerHTML = "Logging In...";
             await axios.post(`${SERVER_URL}/account/login`, { email, password }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
-            .then(res => {
-                window.location = '/'
-            })
+            .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");

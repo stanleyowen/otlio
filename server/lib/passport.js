@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const MSG_DESC = require('./callback');
 let User = require('../models/users.model');
@@ -134,8 +133,14 @@ passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwo
     })
 }))
 
+const extractJWT = (req) => {
+    var token = null;
+    if(req.cookies) token = req.cookies['jwt-token'];
+    return token;
+}
+
 const opts = {
-    jwtFromRequest: ExtractJWT.fromAuthHeaderWithScheme('JWT'),
+    jwtFromRequest: extractJWT,
     secretOrKey: jwtSecret,
 };
 

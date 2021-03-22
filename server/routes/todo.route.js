@@ -24,8 +24,8 @@ router.get('/data', (req,res,next) => {
         else if(user.id === userId){
             if(userId && id){
                 Todo.findOne({_id: id, email: user.email}, (err, data) => {
-                    if(err) return res.status(500).json({statusCode:500, message: MSG_DESC[0]});
-                    else if(!data) return res.status(404).json({statusCode:404, message: MSG_DESC[13]});
+                    if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                    else if(!data) return res.status(404).json({statusCode: 404, message: MSG_DESC[13]});
                     else if(data){
                         const todoData = {
                             _id: data._id,

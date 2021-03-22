@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import Axios from 'axios';
+import axios from 'axios';
 
 const GITHUB_API = "https://api.github.com/repos/stanleyowen/todo-application";
 
@@ -10,7 +10,7 @@ const Landing = () => {
 
     useEffect(() => {
         async function getRepoInfo() {
-            await Axios.get(GITHUB_API)
+            await axios.get(GITHUB_API)
             .then(res => setRepoInfo([res.data.stargazers_count, res.data.license.spdx_id]))
             .catch(err => {
                 if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message)
@@ -18,7 +18,7 @@ const Landing = () => {
             });
         }
         async function getLatestVersion() {
-            await Axios.get(`${GITHUB_API}/releases`)
+            await axios.get(`${GITHUB_API}/releases`)
             .then(res => {
                 if(res.data[0].tag_name){
                     let latestVersion =  res.data[0].tag_name.substring(1);
