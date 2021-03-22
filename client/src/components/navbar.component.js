@@ -1,7 +1,5 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import getUserToken from '../libraries/getUserToken';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust, faPlus, faSignOutAlt, faKey, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
 import { setNotification, NOTIFICATION_TYPES, setWarning } from '../libraries/setNotification';
@@ -13,12 +11,9 @@ import { IconButton, Tooltip } from '@material-ui/core';
 
 const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const redirectRoute = ['welcome', 'login', 'get-started'];
-const privateRoute = ['', 'edit'];
 
-const Navbar = () => {
-    const location = useLocation();
-    const email = localStorage.getItem('__email');
+const Navbar = ({ userData }) => {
+    const {email, id, authenticated, isLoading} = userData;
     const releaseNotification = localStorage.getItem('__release');
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
@@ -30,43 +25,16 @@ const Navbar = () => {
     const [visible, setVisible] = useState(false);
     
     useEffect(() => {
-        async function getToken() {
-            const userData = {
-                token: localStorage.getItem('__token'),
-                userId: localStorage.getItem('__id'),
-                theme: localStorage.getItem('__theme')
-            }
-            if(userData.theme === "dark") document.body.classList.add("dark");
-            if(userData.token){
-                getUserToken(userData.token)
-                .then(res => {
-                    if(res){
-                        localStorage.setItem('__email', res.email);
-                        localStorage.setItem('__id', res.id);
-                        setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faHome} style={{ fontSize: "1.5em" }} />]);
-                        setValue_b([`Logout`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, Logout]);
-                        setValue_c([`Change Password`,'#!', <FontAwesomeIcon icon={faKey} style={{ fontSize: "1.4em" }} />, changePasswordModal]);
-                        setValue_d(<FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />)
-                        redirectRoute.forEach(a => {
-                            if(location.pathname.split('/')[1] === a) window.location='/';
-                        });
-                    }else {
-                        setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
-                        setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
-                        let itemsToRemove = ["__token", "__email", "__id"];
-                        itemsToRemove.forEach(a => localStorage.removeItem(a));
-                        privateRoute.forEach(a => {
-                            if(location.pathname.split('/')[1] === a) window.location='/welcome';
-                        });
-                    }
-                })
-            }else {
-                setValue_a([`Login`,'/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
-                setValue_b([`Get Started`,'/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
-                privateRoute.forEach(a => {
-                    if(location.pathname.split('/')[1] === a) window.location='/welcome';
-                });
-            }
+        const theme = localStorage.getItem('__theme')
+        if(theme === "dark") document.body.classList.add("dark");
+        if(!isLoading && authenticated){
+            setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faHome} style={{ fontSize: "1.5em" }} />]);
+            setValue_b([`Logout`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, Logout]);
+            setValue_c([`Change Password`,'#!', <FontAwesomeIcon icon={faKey} style={{ fontSize: "1.4em" }} />, changePasswordModal]);
+            setValue_d(<FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />)
+        }else if(!isLoading && !authenticated) {
+            setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
+            setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
         }
         const passwordModal = document.getElementById('changePasswordModal');
         window.onclick = function(e){
@@ -76,21 +44,18 @@ const Navbar = () => {
             }
         }
         createRequest();
-        getToken();
         setWarning();
-    },[location]);
+    },[userData]);
 
     const submitNewPassword = (e) => {
         e.preventDefault();
-        const id = localStorage.getItem('__id');
-        const token = localStorage.getItem('__token');
         const btn = document.getElementById('btn-changePassword');
         async function submitData() {
             btn.innerHTML = "Changing Password";
             const modal = document.getElementById('changePasswordModal');
             const postData = { id, oldPassword, newPassword, confirmPassword: confirmPsw }
-            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'Authorization': `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
-            .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
+            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
+            .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             modal.classList.remove('showModal');
             modal.classList.add('closeModal');
@@ -108,13 +73,8 @@ const Navbar = () => {
 
     const Logout = async (e) => {
         e.preventDefault();
-        const id = localStorage.getItem('__id');
-        const email = localStorage.getItem('__email');
-        const token = localStorage.getItem('__token');
-        await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }})
+        await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }})
         .then(() => {
-            let itemsToRemove = ["__token", "__email", "__id", "todoData"];
-            itemsToRemove.forEach(a => localStorage.removeItem(a));
             window.location = '/login';
         })
     }

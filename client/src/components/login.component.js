@@ -9,12 +9,11 @@ const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const Login = () => {
+const Login = ({ userData }) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [honeypot, setHoneypot] = useState();
     const [visible, setVisible] = useState(false);
-
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
@@ -22,8 +21,7 @@ const Login = () => {
             btn.innerHTML = "Logging In...";
             await axios.post(`${SERVER_URL}/account/login`, { email, password }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
             .then(res => {
-                localStorage.setItem('__token', res.data.token);
-                window.location = '/';
+                window.location = '/'
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");

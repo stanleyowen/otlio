@@ -52,7 +52,8 @@ Todo Application is an **open source** project, completed with standard security
       - `GITHUB_ID` stores the client id for GitHub OAuth provided by [GitHub OAuth](https://github.com/settings/applications/new)
       - `GITHUB_SECRET` stores the secret key for GitHub OAuth provided by [GitHub OAuth](https://github.com/settings/applications/new)
       - `GOOGLE_ID` stores the client id fot Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
-      - `GOOGLE_SECRET` stores the client secret for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)<br /><br />
+      - `GOOGLE_SECRET` stores the client secret for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
+      - `GOOGLE_CALLBACK` stores the Callbak URL for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)<br /><br />
           ```
           ATLAS_URI       = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
           JWT_SECRET      = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3
@@ -63,6 +64,7 @@ Todo Application is an **open source** project, completed with standard security
           GITHUB_SECRET   = /* Your GitHub Client Secret */
           GOOGLE_ID       = /* Your Google Client ID */
           GOOGLE_SECRET   = /* Your Google Client Secret */
+          GOOGLE_CALLBACK = http://localhost:3000/auth/google
           ```
   4. Run and Compile it
       - In the `client` directory, type `npm start` in command line

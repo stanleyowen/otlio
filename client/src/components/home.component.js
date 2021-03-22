@@ -1,15 +1,13 @@
-/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { labels, validateLabel, getCSRFToken } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import Axios from 'axios';
+import axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons/';
 
-const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -59,11 +57,9 @@ const formatDate = (e) => {
     return(a[2]+'-'+a[1]+'-'+a[0])
 }
 
-const Home = () => {
+const Home = ({ userData }) => {
     var intervalData;
-    const email = localStorage.getItem('__email');
-    const token = localStorage.getItem('__token');
-    const userId = localStorage.getItem('__id');
+    const {email, id: userId, authenticated, isLoading} = userData;
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
     const [todoData, setTodoData] = useState(null);
     const [title, setTitle] = useState();
@@ -71,21 +67,22 @@ const Home = () => {
     const [description, setDescription] = useState();
     const [label, setLabel] = useState(labels[0].toLowerCase());
     const wrapper = React.createRef();
-
     async function clearData() {
         if(intervalData) clearInterval(intervalData);
     }
 
     async function getTodoData() {
-        const token = localStorage.getItem('__token');
-        const userId = localStorage.getItem('__id');
-        await axios.get(`${SERVER_URL}/todo/data`, {params: {userId}, headers: { Authorization: `JWT ${token}` }})
-        .then(res => {
-            setTodoData(res.data);
-            localStorage.setItem('todoData', JSON.stringify(res.data));
-            clearData();
-        })
-        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+        if(userId){
+            await axios.get(`${SERVER_URL}/todo/data`, {params: {userId}, withCredentials: true})
+            .then(res => {
+                setTodoData(res.data);
+                localStorage.setItem('todoData', JSON.stringify(res.data));
+                clearData()
+            })
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+            });
+        }
     }
 
     useEffect(() => {
@@ -105,9 +102,9 @@ const Home = () => {
             });
             e.removeAttribute('data-autoresize');
         });
-        if(email && token && userId) getTodoData();
-        else intervalData = setInterval(getTodoData, 2000);
-    }, []);
+        if(!isLoading && authenticated){ getTodoData(); }
+        else if(!isLoading && authenticated && !todoData) setInterval(getTodoData(), 2000)
+    }, [userData]);
 
     const todoList = () => {
         if(todoData && cacheTodo !== todoData){
@@ -166,7 +163,7 @@ const Home = () => {
 
     const deleteData = async id => {
         const data = { email, objId: id, id: userId }
-        await axios.delete(`${SERVER_URL}/todo/data`, { data, headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
+        await axios.delete(`${SERVER_URL}/todo/data`, { data, headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
         .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
         getTodoData();
@@ -193,7 +190,7 @@ const Home = () => {
             btn.innerHTML = "Adding...";
             const modal = document.getElementById('addTodoModal');
             const todoData = { id: userId, email, title, label, description, date };
-            await axios.post(`${SERVER_URL}/todo/data`, todoData, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
+            await axios.post(`${SERVER_URL}/todo/data`, todoData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
                 modal.classList.remove('showModal');
@@ -212,7 +209,7 @@ const Home = () => {
             btn.innerHTML = "Add";
             getTodoData();
         }
-        if(!email || !token || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
+        if(!email || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
         else if(title.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !")
         else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
