@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const MSG_DESC = require('./callback');
 let User = require('../models/users.model');
@@ -80,11 +79,20 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
             dataModel.save()
             return done(null, user, { status: 302, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
         }else if(user){
-            if(user.thirdParty.isThirdParty && user.thirdParty.status === "Pending") return done(null, user, { status: 200, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
-            else if(user.thirdParty.isThirdParty && user.thirdParty.status === "Success"){
+            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
+            else if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Success"){
                 return done(null, user, { status: 200 })
             }else return done(null, false, { status: 400, message: MSG_DESC[24] });
         }
+    })
+}))
+
+passport.use('connectViaGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: `${process.env.GOOGLE_CALLBACK}?connect=true` }, (accessToken, refreshToken, profile, done) => {
+    const email = profile._json.email;
+    User.findOne({email}, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+        else if(!user) return done(null, false, { status: 401, message: MSG_DESC[16] });
+        else if(user) return done(null, user, { status: 200 })
     })
 }))
 
@@ -134,8 +142,14 @@ passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwo
     })
 }))
 
+const extractJWT = (req) => {
+    var token = null;
+    if(req.cookies) token = req.cookies['jwt-token'];
+    return token;
+}
+
 const opts = {
-    jwtFromRequest: ExtractJWT.fromAuthHeaderWithScheme('JWT'),
+    jwtFromRequest: extractJWT,
     secretOrKey: jwtSecret,
 };
 

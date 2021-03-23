@@ -1,120 +1,43 @@
-/* eslint-disable */
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import getUserToken from '../libraries/getUserToken';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdjust, faPlus, faSignOutAlt, faKey, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
-import { setNotification, NOTIFICATION_TYPES, setWarning } from '../libraries/setNotification';
+import { faAdjust, faPlus, faSignOutAlt, faUser, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
+import { setWarning } from '../libraries/setNotification';
 import { getCSRFToken, createRequest } from '../libraries/validation';
-import Axios from 'axios';
+import axios from 'axios';
 
 /* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
 
-const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const redirectRoute = ['welcome', 'login', 'get-started'];
-const privateRoute = ['', 'edit'];
 
-const Navbar = () => {
-    const location = useLocation();
-    const email = localStorage.getItem('__email');
+const Navbar = ({ userData }) => {
+    const {email, id, authenticated, isLoading} = userData;
     const releaseNotification = localStorage.getItem('__release');
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
     const [value_c, setValue_c] = useState();
     const [value_d, setValue_d] = useState(false);
-    const [oldPassword, setOldPassword] = useState();
-    const [newPassword, setNewPassword] = useState();
-    const [confirmPsw, setConfirmPsw] = useState();
-    const [visible, setVisible] = useState(false);
     
     useEffect(() => {
-        async function getToken() {
-            const userData = {
-                token: localStorage.getItem('__token'),
-                userId: localStorage.getItem('__id'),
-                theme: localStorage.getItem('__theme')
-            }
-            if(userData.theme === "dark") document.body.classList.add("dark");
-            if(userData.token){
-                getUserToken(userData.token)
-                .then(res => {
-                    if(res){
-                        localStorage.setItem('__email', res.email);
-                        localStorage.setItem('__id', res.id);
-                        setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faHome} style={{ fontSize: "1.5em" }} />]);
-                        setValue_b([`Logout`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, Logout]);
-                        setValue_c([`Change Password`,'#!', <FontAwesomeIcon icon={faKey} style={{ fontSize: "1.4em" }} />, changePasswordModal]);
-                        setValue_d(<FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />)
-                        redirectRoute.forEach(a => {
-                            if(location.pathname.split('/')[1] === a) window.location='/';
-                        });
-                    }else {
-                        setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
-                        setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
-                        let itemsToRemove = ["__token", "__email", "__id"];
-                        itemsToRemove.forEach(a => localStorage.removeItem(a));
-                        privateRoute.forEach(a => {
-                            if(location.pathname.split('/')[1] === a) window.location='/welcome';
-                        });
-                    }
-                })
-            }else {
-                setValue_a([`Login`,'/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
-                setValue_b([`Get Started`,'/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
-                privateRoute.forEach(a => {
-                    if(location.pathname.split('/')[1] === a) window.location='/welcome';
-                });
-            }
-        }
-        const passwordModal = document.getElementById('changePasswordModal');
-        window.onclick = function(e){
-            if(e.target === passwordModal){
-                passwordModal.classList.remove('showModal');
-                passwordModal.classList.add('closeModal');
-            }
+        const theme = localStorage.getItem('__theme')
+        if(theme === "dark") document.body.classList.add("dark");
+        if(!isLoading && authenticated){
+            setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faHome} style={{ fontSize: "1.5em" }} />]);
+            setValue_b([`Logout`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, Logout]);
+            setValue_c([`Account`,'/account', <FontAwesomeIcon icon={faUser} style={{ fontSize: "1.4em" }} />]);
+            setValue_d(<FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />)
+        }else if(!isLoading && !authenticated) {
+            setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
+            setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
         }
         createRequest();
-        getToken();
         setWarning();
-    },[location]);
-
-    const submitNewPassword = (e) => {
-        e.preventDefault();
-        const id = localStorage.getItem('__id');
-        const token = localStorage.getItem('__token');
-        const btn = document.getElementById('btn-changePassword');
-        async function submitData() {
-            btn.innerHTML = "Changing Password";
-            const modal = document.getElementById('changePasswordModal');
-            const postData = { id, oldPassword, newPassword, confirmPassword: confirmPsw }
-            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'Authorization': `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
-            .then(res => {setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message); localStorage.setItem('__token', res.data.token)})
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            modal.classList.remove('showModal');
-            modal.classList.add('closeModal');
-            btn.removeAttribute("disabled");
-            btn.classList.remove("disabled");
-            btn.innerHTML = "Change Password";
-            setOldPassword(''); setNewPassword(''); setConfirmPsw('');
-        }
-        if(!email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        else if(!oldPassword || !newPassword || !confirmPsw) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
-        else if(oldPassword.length < 6 || newPassword.length < 6 || oldPassword.length > 40 || newPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('old-password').focus(); }
-        else if(newPassword !== confirmPsw) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('new-password').focus(); }
-        else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
-    }
+    },[userData]);
 
     const Logout = async (e) => {
         e.preventDefault();
-        const id = localStorage.getItem('__id');
-        const email = localStorage.getItem('__email');
-        const token = localStorage.getItem('__token');
-        await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }})
+        await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true})
         .then(() => {
-            let itemsToRemove = ["__token", "__email", "__id", "todoData"];
-            itemsToRemove.forEach(a => localStorage.removeItem(a));
             window.location = '/login';
         })
     }
@@ -124,20 +47,6 @@ const Navbar = () => {
         const modal = document.getElementById('addTodoModal');
         modal.classList.add('showModal');
         modal.classList.remove('closeModal', 'hiddenModal');
-    }
-
-    const changePasswordModal = (e) => {
-        e.preventDefault();
-        const modal = document.getElementById('changePasswordModal');
-        modal.classList.add('showModal');
-        modal.classList.remove('closeModal', 'hiddenModal');
-    }
-
-    const closeModal = (e) => {
-        e.preventDefault();
-        const modal = document.getElementById('changePasswordModal');
-        modal.classList.remove('showModal');
-        modal.classList.add('closeModal');
     }
 
     const toggleNavbar = (e) => {
@@ -178,7 +87,7 @@ const Navbar = () => {
                         <span className="description">{value_a[0]}</span>
                     </a>
                     {value_c ? (
-                        <a className="animation__underline" id={value_c[0]} href={value_c[1]} onClick={value_c[3]}>
+                        <a className="animation__underline" id={value_c[0]} href={value_c[1]}>
                         <span className="icons">
                             <Tooltip title={value_c[0] ? value_c[0]:""}><span>{value_c[2]}</span></Tooltip>
                         </span>
@@ -203,7 +112,7 @@ const Navbar = () => {
                     </Tooltip>
                 </div>
             </div>
-            {value_d !== false && location.pathname === '/' ? (<Tooltip title="Add Task" placement="top"><button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button></Tooltip>) : null}
+            {value_d !== false && window.location.pathname === '/' ? (<Tooltip title="Add Task" placement="top"><button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button></Tooltip>) : null}
 		    <Tooltip title="Change Mode">
                 <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}>
                     <FontAwesomeIcon icon={faAdjust} size="2x"/>
@@ -218,48 +127,6 @@ const Navbar = () => {
                     </b></div>
                 ) : '' }
             </div>
-
-            <div id="changePasswordModal" className="modal hiddenModal">
-                <div className="modal__container">
-                    <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={closeModal}>&times;</span>
-                        <h2>Change Password</h2>
-                    </div>
-                    <div className="modal__body">
-                        <form onSubmit={submitNewPassword}>
-                            <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
-                            <div className="contact__formControl">
-                                <div className="contact__infoField">
-                                    <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                    <input title="Old Password" id="old-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="none" />
-                                    <span className="contact__onFocus"></span>
-                                </div>
-                            </div>
-                            <div className="form__container">
-                                <div className="contact__formControl">
-                                    <div className="contact__infoField">
-                                        <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                        <input title="New Password" id="new-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
-                                        <span className="contact__onFocus"></span>
-                                    </div>
-                                </div>
-                                <div className="contact__formControl">
-                                    <div className="contact__infoField">
-                                        <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                        <input title="Confirm New Password" id="confirm-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
-                                        <span className="contact__onFocus"></span>
-                                    </div>
-                                </div>
-                                <div className="contact__formControl show-password">
-                                    <input id="show-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-password">Show Pasword</label>
-                                </div>
-                            </div>
-                            <button type="submit" id="btn-changePassword" className="btn__outline" style={{outline: 'none'}}>Change Password</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
             <a href="https://github.com/stanleyowen/todo-application" target="_blank" rel="noreferrer noopener" className="github-corner" aria-label="View Source Code on GitHub">
                 <svg width="80" height="80" viewBox="0 0 250 250" style={{ fill: '#64CEAA', color: '#fff', position: 'fixed', bottom: '0', border: '0', left: '0', transform: 'scale(-1, -1)' }} aria-hidden="true">
                     <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>

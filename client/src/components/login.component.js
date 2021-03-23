@@ -3,9 +3,8 @@ import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotificatio
 import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import Axios from 'axios';
+import axios from 'axios';
 
-const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -14,17 +13,13 @@ const Login = () => {
     const [password, setPassword] = useState();
     const [honeypot, setHoneypot] = useState();
     const [visible, setVisible] = useState(false);
-
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
         async function submitData(){
             btn.innerHTML = "Logging In...";
-            await axios.post(`${SERVER_URL}/account/login`, { email, password }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
-            .then(res => {
-                localStorage.setItem('__token', res.data.token);
-                window.location = '/';
-            })
+            await axios.post(`${SERVER_URL}/account/login`, { email, password }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");

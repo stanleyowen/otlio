@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Axios from 'axios';
+import axios from 'axios';
 
 import { labels, validateLabel, getCSRFToken } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 
-const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 
-const Edit = () => {
-    const token = localStorage.getItem('__token');
-    const userId = localStorage.getItem('__id');
+const Edit = ({ userData }) => {
+    const {id: userId, authenticated, isLoading} = userData;
     const {id} = useParams();
     const [title, setTitle] = useState('loading ...');
     const [date, setDate] = useState('2020-01-01');
@@ -21,7 +19,7 @@ const Edit = () => {
 
     useEffect(() => {
         async function requestData() {
-            await Axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId}, headers: { Authorization: `JWT ${token}` } })
+            await axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId}, withCredentials: true })
             .then(res => {
                 setTitle(res.data.title);
                 setDate(formatDate(res.data.date));
@@ -43,8 +41,8 @@ const Edit = () => {
             });
             e.removeAttribute('data-autoresize');
         });
-        requestData();
-    }, [id, token, userId])
+        if(!isLoading && authenticated) requestData();
+    }, [userData])
 
     const formatDate = (a) => {
         var e = new Date((a.substring(10, 0)) * 1000);
@@ -62,14 +60,14 @@ const Edit = () => {
         async function submitData() {
             btn.innerHTML = "Updating";
             const postData = { userId, id, title, label, description, date }
-            await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { Authorization: `JWT ${token}`, 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
+            await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => window.location='/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Update";
         }
-        if(!token || !userId){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
+        if(!userId){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
         else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
         else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !") }
         else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
@@ -93,7 +91,7 @@ const Edit = () => {
                         <div className="contact__formControl">
                             <div className="contact__infoField">
                                 <label htmlFor="title">Title <span className="required">*</span></label>
-                                <input title="Title" id="title" type="text" className="contact__inputField" onChange={(event) => setTitle(event.target.value)} value={title} required autoComplete="off" />
+                                <input title="Title" id="title" type="text" className="contact__inputField" onChange={(event) => setTitle(event.target.value)} value={title} required />
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>

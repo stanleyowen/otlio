@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import { getCSRFToken } from '../libraries/validation';
-import Axios from 'axios';
+import axios from 'axios';
 
-const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -19,7 +18,7 @@ const OAuth = () => {
 
     useEffect(() => {
         async function validateData() {
-            await axios.post(`${SERVER_URL}/oauth/${service}/validate`, { email: validatedEmail }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
+            await axios.post(`${SERVER_URL}/oauth/${service}/validate`, { email: validatedEmail }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then().catch(() => window.location = '/login');
         }
         validateData();
@@ -31,12 +30,8 @@ const OAuth = () => {
         async function submitData(){
             btn.innerHTML = "Registering...";
             const registerData = { email: validatedEmail, password, confirmPassword: confirmPsw }
-            await axios.post(`${SERVER_URL}/oauth/${service}/register`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
-            .then(res => {
-                localStorage.setItem('__id', res.data.id);
-                localStorage.setItem('__token', res.data.token);
-                window.location = '/';
-            })
+            await axios.post(`${SERVER_URL}/oauth/${service}/register`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            .then(() => window.location = '/')
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
             });

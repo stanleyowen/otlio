@@ -4,9 +4,10 @@ const Schema = mongoose.Schema;
 const todoSchema = new Schema ({
     email: {
         type: String,
-        required: true,
         trim: true,
-        maxlength: 256,
+        required: true,
+        minlength: 6,
+        maxlength: 40,
     },
     title: {
         data: {

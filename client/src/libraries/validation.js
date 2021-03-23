@@ -20,6 +20,11 @@ const OAuthGoogle = (e) => {
     window.location = `${SERVER_URL}/oauth/google/auth`;
 }
 
+const ConnectOAuthGoogle = (e) => {
+    e.preventDefault();
+    window.location = `${SERVER_URL}/oauth/google/auth/connect`;
+}
+
 const createRequest = (e) => {
     axios.get(`${SERVER_URL}/status`)
     .then(res => {
@@ -37,4 +42,4 @@ const getCSRFToken = (e) => {
     return token;
 }
 
-module.exports = {labels, validateLabel, OAuthGitHub, OAuthGoogle, createRequest, getCSRFToken};
+module.exports = {labels, validateLabel, OAuthGitHub, OAuthGoogle, ConnectOAuthGoogle, createRequest, getCSRFToken};
