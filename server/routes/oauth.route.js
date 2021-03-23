@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = require('express').Router();
 const MSG_DESC = require('../lib/callback');
+let BlacklistedToken = require('../models/blacklisted-token.model');
 let User = require('../models/users.model');
 
 const status = process.env.NODE_ENV;
@@ -77,28 +78,56 @@ router.get('/github', async (req, res) => {
 })
 
 router.get('/google/auth', passport.authenticate('google', { scope : ['email'] }));
+router.get('/google/auth/connect', passport.authenticate('googleConnect', { scope : ['email'] }));
 
 router.get('/google', (req, res, next) => {
-    passport.authenticate('google', { failureRedirect: '/error' }, (err, user, info) => {
-        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-        else if(info && info.status ? info.status >= 400 : info.status = 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
-        else if(info && info.status === 302) return res.status(info.status).json({statusCode: info.status, type: info.type, url: info.url});
-        else if(user && info.status === 200){
-            return res.cookie('jwt-token', jwt.sign({
-                id: user.id,
-                email: user.email
-            }, jwtSecret, { expiresIn: '1d' }), {
-                maxAge: 86400000,
-                httpOnly: true,
-                secure: status === 'production' ? true : false,
-                sameSite: status === 'production' ? 'none' : false
-            }).json({
-                statusCode: 200,
-                status: MSG_DESC[2],
-                id: user.id
-            });
-        }
-    })(req, res, next)
+    const connect = req.query.connect;
+    if(!connect){
+        passport.authenticate('google', { failureRedirect: '/error' }, (err, user, info) => {
+            if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+            else if(info && info.status ? info.status >= 400 : info.status = 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+            else if(info && info.status === 302) return res.status(info.status).json({statusCode: info.status, type: info.type, url: info.url});
+            else if(user && info.status === 200){
+                return res.cookie('jwt-token', jwt.sign({
+                    id: user.id,
+                    email: user.email
+                }, jwtSecret, { expiresIn: '1d' }), {
+                    maxAge: 86400000,
+                    httpOnly: true,
+                    secure: status === 'production' ? true : false,
+                    sameSite: status === 'production' ? 'none' : false
+                }).json({
+                    statusCode: 200,
+                    message: MSG_DESC[2],
+                    id: user.id
+                });
+            }
+        })(req, res, next)
+    }else {
+        passport.authenticate('jwt', { session: false }, (err, user, info) => {
+            if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+            else if(info) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+            else if(user){
+                BlacklistedToken.findOne({ token: req.cookies['jwt-token'] }, (err, isListed) => {
+                    if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                    else if(isListed) res.status(401).json({statusCode: 401, message: MSG_DESC[15]});
+                    else if(!isListed){
+                        passport.authenticate('googleConnect', { failureRedirect: '/error' }, (err, user, info) => {                            
+                            if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                            else if(info && info.status ? info.status >= 400 : info.status = 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+                            else if(user && info.status === 200){
+                                return res.json({
+                                    statusCode: 200,
+                                    message: info.message,
+                                    id: user.id
+                                });
+                            }
+                        })(req, res, next)
+                    }
+                })
+            }
+        })(req, res, next)
+    }
 });
 
 router.post('/:provider/validate', (req, res, next) => {

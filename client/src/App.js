@@ -17,7 +17,7 @@ function App() {
   const [userData, setUserData] = useState({ isLoading: true });
   const SERVER_URL = process.env.REACT_APP_SERVER_URL;
   const redirectRoute = ['welcome', 'login', 'get-started'];
-  const privateRoute = ['', 'edit'];
+  const privateRoute = ['', 'edit', 'account'];
 
   if(!userData.isLoading && userData.authenticated){
     redirectRoute.forEach(a => {

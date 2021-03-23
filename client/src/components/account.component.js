@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation';
+import { OAuthGitHub, ConnectOAuthGoogle, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
@@ -80,7 +80,7 @@ const Account = ({ userData }) => {
                     <button className="oauth-box change-password" onClick={changePasswordModal}>
                         <FontAwesomeIcon icon={faKey} size='2x'/> <p> Change Your Password</p>
                     </button>
-                    <button className="oauth-box google mt-20" onClick={OAuthGoogle}>
+                    <button className="oauth-box google mt-20" onClick={ConnectOAuthGoogle}>
                         <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Connect with Google</p>
                     </button>
                     <button className="oauth-box github mt-20" onClick={OAuthGitHub}>
