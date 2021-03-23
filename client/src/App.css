@@ -112,6 +112,10 @@ button, a { user-select: none; cursor: pointer; }
     color: #FFF;
     background-color: rgb(66 133 244);
 }
+.change-password {
+    color: #FFF;
+    background-color: rgb(73, 81, 185);
+}
 .oauth-box:hover { opacity: 1; }
 .oauth-box:visited { color: #FFF; }
 .oauth-box svg {
@@ -121,7 +125,7 @@ button, a { user-select: none; cursor: pointer; }
     padding: 10px;
 }
 .oauth-box p {
-    font-family: sans-serif;
+    font-family: cursive;
     font-size: 18px;
     display: inline-block;
     margin-top: auto;

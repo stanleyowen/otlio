@@ -42,11 +42,10 @@ function App() {
     .catch(() => {
       setUserData({
         isLoading: false,
-        authenticated: false,
-        isLoading: false
+        authenticated: false
       })
     })
-  },[])
+  },[SERVER_URL])
 
   return (
     <Router>
@@ -58,7 +57,7 @@ function App() {
       <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
       <Route path='/auth/:service' component={ReqOAuth} />
       <Route path='/oauth/:service/:email' component={OAuth} />
-      <Route path='/account' component={Account} />
+      <Route path='/account' component={() => <Account userData={userData} />} />
     </Router>
   );
 }
