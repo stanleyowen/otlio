@@ -63,6 +63,11 @@ const Account = ({ userData }) => {
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
+    const notify = (e) => {
+        e.preventDefault();
+        setNotification(NOTIFICATION_TYPES.WARNING, 'Connecting Existing Account with GitHub OAuth Feature will be available soon in v0.4.2')
+    }
+
     return (
         <div id="form">
             <div className="form__contact">
@@ -83,7 +88,7 @@ const Account = ({ userData }) => {
                     <button className="oauth-box google mt-20" onClick={ConnectOAuthGoogle}>
                         <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Connect with Google</p>
                     </button>
-                    <button className="oauth-box github mt-20" onClick={OAuthGitHub}>
+                    <button className="oauth-box github mt-20" onClick={notify}>
                         <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Connect with GitHub</p>
                     </button>
                 </div>
