@@ -8,12 +8,12 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/56772f5c-0c69-41e8-a788-69ca591e70ef/deploy-status)](https://app.netlify.com/sites/todoapp-task/deploys)
 
 ## Login Freely with OAuth
-![Login with OAuth](https://user-images.githubusercontent.com/69080584/111895534-d1131f80-8a45-11eb-9c4e-a995137309bd.png)
+![Login with OAuth](https://user-images.githubusercontent.com/69080584/112158119-741c9280-8c1a-11eb-9545-cca2537e2073.png)
 
 ## User Interface
-![Todo Application](https://user-images.githubusercontent.com/69080584/110568127-1ea9a580-8185-11eb-8db3-0d5156118aed.png)
+![Todo Application](https://user-images.githubusercontent.com/69080584/112157665-0708fd00-8c1a-11eb-99fb-0f6a5f5cf29f.png)
 
-Todo Application is an **open source** project, completed with standard security, which is easy to use and easy to organize!
+Todo Application is an **open source** project, completed with highest standard security, which is easy to use and easy to organize!
 
 ## Table of Contents
 - [Getting Started](#getting-started)
@@ -29,7 +29,7 @@ Todo Application is an **open source** project, completed with standard security
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.0.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.1.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder

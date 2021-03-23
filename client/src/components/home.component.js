@@ -231,7 +231,7 @@ const Home = ({ userData }) => {
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="title">Title <span className="required">*</span></label>
-                                        <input title="Title" id="title" type="text" className="contact__inputField" onChange={(event) => setTitle(event.target.value)} value={title} required autoComplete="off" />
+                                        <input title="Title" id="title" type="text" className="contact__inputField" onChange={(event) => setTitle(event.target.value)} value={title} required />
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
