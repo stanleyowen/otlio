@@ -87,27 +87,12 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
     })
 }))
 
-passport.use('googleConnect', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: `${process.env.GOOGLE_CALLBACK}?connect=true` }, (accessToken, refreshToken, profile, done) => {
+passport.use('connectViaGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: `${process.env.GOOGLE_CALLBACK}?connect=true` }, (accessToken, refreshToken, profile, done) => {
     const email = profile._json.email;
     User.findOne({email}, (err, user) => {
         if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
         else if(!user) return done(null, false, { status: 401, message: MSG_DESC[16] });
-        else if(user){
-            if(!user.thirdParty.isThirdParty){
-                const userData = {
-                    thirdParty: {
-                        isThirdParty: true,
-                        provider: 'google',
-                        status: 'Success'
-                    }
-                }
-                User.findOneAndUpdate({email}, userData, (err, updated) => {
-                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                    else if(updated) return done(null, user, { status: 200, message: MSG_DESC[25] });
-                    else if(!updated) return done(null, false, { status: 400, message: MSG_DESC[26] })
-                })
-            }else return done(null, false, { status: 401, message: MSG_DESC[16] });
-        }
+        else if(user) return done(null, user, { status: 200 })
     })
 }))
 
