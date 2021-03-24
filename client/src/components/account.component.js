@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { OAuthGitHub, ConnectOAuthGoogle, getCSRFToken } from '../libraries/validation';
+import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
@@ -46,7 +46,7 @@ const Account = ({ userData }) => {
             btn.innerHTML = "Changing Password";
             const modal = document.getElementById('changePasswordModal');
             const postData = { id, oldPassword, newPassword, confirmPassword: confirmPsw }
-            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
+            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             modal.classList.remove('showModal');
@@ -61,11 +61,6 @@ const Account = ({ userData }) => {
         else if(oldPassword.length < 6 || newPassword.length < 6 || oldPassword.length > 40 || newPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('old-password').focus(); }
         else if(newPassword !== confirmPsw) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('new-password').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
-    }
-
-    const notify = (e) => {
-        e.preventDefault();
-        setNotification(NOTIFICATION_TYPES.WARNING, 'Connecting Existing Account with GitHub OAuth Feature will be available soon in v0.4.2')
     }
 
     return (
@@ -88,7 +83,7 @@ const Account = ({ userData }) => {
                     <button className="oauth-box google mt-20" onClick={ConnectOAuthGoogle}>
                         <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Connect with Google</p>
                     </button>
-                    <button className="oauth-box github mt-20" onClick={notify}>
+                    <button className="oauth-box github mt-20" onClick={ConnectOAuthGitHub}>
                         <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Connect with GitHub</p>
                     </button>
                 </div>

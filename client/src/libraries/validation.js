@@ -15,6 +15,11 @@ const OAuthGitHub = (e) => {
     window.location = `${SERVER_URL}/oauth/github/auth`;
 }
 
+const ConnectOAuthGitHub = (e) => {
+    e.preventDefault();
+    window.location = `${SERVER_URL}/oauth/github/auth/connect`;
+}
+
 const OAuthGoogle = (e) => {
     e.preventDefault();
     window.location = `${SERVER_URL}/oauth/google/auth`;
@@ -42,4 +47,4 @@ const getCSRFToken = (e) => {
     return token;
 }
 
-module.exports = {labels, validateLabel, OAuthGitHub, OAuthGoogle, ConnectOAuthGoogle, createRequest, getCSRFToken};
+module.exports = {labels, validateLabel, OAuthGitHub, ConnectOAuthGitHub, OAuthGoogle, ConnectOAuthGoogle, createRequest, getCSRFToken};
