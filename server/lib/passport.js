@@ -3,6 +3,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 const MSG_DESC = require('./callback');
 let User = require('../models/users.model');
 
@@ -58,6 +59,31 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
                 else if(!isMatch) return done(null, false, { status: 400, message: MSG_DESC[10] });
                 else if(isMatch) return done(null, user, { status: 200, message: MSG_DESC[2] });
             })
+        }
+    })
+}))
+
+passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: process.env.GITHUB_CALLBACK }, (accessToken, refreshToken, profile, done) => {
+    const email = profile._json.email;
+    User.findOne({email}, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+        else if(!user){
+            const dataModel = new User ({
+                email,
+                password: null,
+                thirdParty: {
+                    isThirdParty: true,
+                    provider: 'github',
+                    status: 'Pending'
+                }
+            });
+            dataModel.save()
+            return done(null, user, { status: 302, type: 'redirect', url: `/oauth/github/${encodeURIComponent(email)}` })
+        }else if(user){
+            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/oauth/github/${encodeURIComponent(email)}` })
+            else if(user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Success"){
+                return done(null, user, { status: 200 })
+            }else return done(null, false, { status: 400, message: MSG_DESC[24] });
         }
     })
 }))

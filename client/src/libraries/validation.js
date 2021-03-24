@@ -12,7 +12,7 @@ const validateLabel = (e) => {
 
 const OAuthGitHub = (e) => {
     e.preventDefault();
-    window.location = 'https://github.com/login/oauth/authorize?scope=user:email&client_id=f16f43122ef61cc75963';
+    window.location = `${SERVER_URL}/oauth/github/auth`;
 }
 
 const OAuthGoogle = (e) => {
