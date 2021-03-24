@@ -78,13 +78,23 @@ passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, cl
                 }
             });
             dataModel.save()
-            return done(null, user, { status: 302, type: 'redirect', url: `/oauth/github/${encodeURIComponent(email)}` })
+            return done(null, user, { status: 302, type: 'redirect', url: `/auth/github/${encodeURIComponent(email)}` })
         }else if(user){
-            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/oauth/github/${encodeURIComponent(email)}` })
+            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/auth/github/${encodeURIComponent(email)}` })
             else if(user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Success"){
                 return done(null, user, { status: 200 })
-            }else return done(null, false, { status: 400, message: MSG_DESC[24] });
+            }else if(user.thirdParty.isThirdParty) return done(null, false, { status: 400, message: MSG_DESC[28] });
+            else return done(null, false, { status: 400, message: MSG_DESC[16] });
         }
+    })
+}))
+
+passport.use('connectViaGithub', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: `${process.env.GITHUB_CALLBACK}/connect` }, (accessToken, refreshToken, profile, done) => {
+    const email = profile._json.email;
+    User.findOne({email}, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+        else if(!user) return done(null, false, { status: 401, message: MSG_DESC[16] });
+        else if(user) return done(null, user, { status: 200 })
     })
 }))
 
@@ -103,12 +113,13 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
                 }
             });
             dataModel.save()
-            return done(null, user, { status: 302, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
+            return done(null, user, { status: 302, type: 'redirect', url: `/auth/google/${encodeURIComponent(email)}` })
         }else if(user){
-            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
+            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/auth/google/${encodeURIComponent(email)}` })
             else if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Success"){
                 return done(null, user, { status: 200 })
-            }else return done(null, false, { status: 400, message: MSG_DESC[24] });
+            }else if(user.thirdParty.isThirdParty) return done(null, false, { status: 400, message: MSG_DESC[28] });
+            else return done(null, false, { status: 400, message: MSG_DESC[16] });
         }
     })
 }))

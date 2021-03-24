@@ -55,8 +55,8 @@ function App() {
       <Route path='/get-started' component={Register} />
       <Route path='/login' component={() => <Login userData={userData} />} />
       <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
-      <Route path='/auth/:service' component={ReqOAuth} />
-      <Route path='/oauth/:service/:email' component={OAuth} />
+      <Route path='/oauth' component={ReqOAuth} />
+      <Route path='/auth/:service/:email' component={OAuth} />
       <Route path='/account' component={() => <Account userData={userData} />} />
     </Router>
   );
