@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken } from '../libraries/validation';
+import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
@@ -25,32 +25,16 @@ const Account = ({ userData }) => {
         }
     })
 
-    const changePasswordModal = (e) => {
-        e.preventDefault();
-        const modal = document.getElementById('changePasswordModal');
-        modal.classList.add('showModal');
-        modal.classList.remove('closeModal', 'hiddenModal');
-    }
-
-    const closeModal = (e) => {
-        e.preventDefault();
-        const modal = document.getElementById('changePasswordModal');
-        modal.classList.remove('showModal');
-        modal.classList.add('closeModal');
-    }
-
     const submitNewPassword = (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-changePassword');
         async function submitData() {
             btn.innerHTML = "Changing Password";
-            const modal = document.getElementById('changePasswordModal');
             const postData = { id, oldPassword, newPassword, confirmPassword: confirmPsw }
             await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            modal.classList.remove('showModal');
-            modal.classList.add('closeModal');
+            closeModal('changePasswordModal');
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Change Password";
@@ -77,7 +61,7 @@ const Account = ({ userData }) => {
                     </div>
                 </div>
                 <div className="oauth-container">
-                    <button className="oauth-box change-password" onClick={changePasswordModal}>
+                    <button className="oauth-box change-password" onClick={() => openModal('changePasswordModal')}>
                         <FontAwesomeIcon icon={faKey} size='2x'/> <p> Change Your Password</p>
                     </button>
                     <button className="oauth-box google mt-20" onClick={ConnectOAuthGoogle}>
@@ -91,7 +75,7 @@ const Account = ({ userData }) => {
             <div id="changePasswordModal" className="modal hiddenModal">
                 <div className="modal__container">
                     <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={closeModal}>&times;</span>
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('changePasswordModal')}>&times;</span>
                         <h2>Change Password</h2>
                     </div>
                     <div className="modal__body">

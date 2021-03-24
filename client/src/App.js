@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
+
+import { createRequest } from './libraries/validation'
+import { setWarning } from './libraries/setNotification';
+import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification';
 import "./App.min.css";
 
 import Navbar from './components/navbar.component';
@@ -13,7 +17,7 @@ import OAuth from './components/register-oauth.component';
 import ReqOAuth from './components/req-oauth.component';
 import Account from './components/account.component';
 
-function App() {
+export default function App() {
   const [userData, setUserData] = useState({ isLoading: true });
   const SERVER_URL = process.env.REACT_APP_SERVER_URL;
   const redirectRoute = ['welcome', 'login', 'get-started'];
@@ -39,12 +43,15 @@ function App() {
         authenticated: res.data.authenticated
       })
     })
-    .catch(() => {
+    .catch(err => {
+      if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
       setUserData({
         isLoading: false,
         authenticated: false
       })
     })
+    createRequest();
+    setWarning();
   },[SERVER_URL])
 
   return (
@@ -61,5 +68,3 @@ function App() {
     </Router>
   );
 }
-
-export default App;

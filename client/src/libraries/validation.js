@@ -47,4 +47,28 @@ const getCSRFToken = (e) => {
     return token;
 }
 
-module.exports = {labels, validateLabel, OAuthGitHub, ConnectOAuthGitHub, OAuthGoogle, ConnectOAuthGoogle, createRequest, getCSRFToken};
+const formatDate = (e) => {
+    var a = new Date((e.substring(10, 0)) * 1000);
+    var date = parseInt(a.getDate());
+    var month = parseInt(a.getMonth() + 1);
+    var year = a.getFullYear();
+    if(date < 10) date = '0'+date;
+    if(month < 10) month = '0'+month;
+    return year+'-'+month+'-'+date;
+}
+
+const openModal = (a) => {
+    const modal = document.getElementById(a);
+    modal.classList.add('showModal');
+    modal.classList.remove('closeModal', 'hiddenModal');
+    return false;
+}
+
+const closeModal = (e) => {
+    const modal = document.getElementById(e);
+    modal.classList.remove('showModal');
+    modal.classList.add('closeModal');
+    return false;
+}
+
+module.exports = {labels, validateLabel, OAuthGitHub, ConnectOAuthGitHub, OAuthGoogle, ConnectOAuthGoogle, createRequest, getCSRFToken, formatDate, openModal, closeModal};
