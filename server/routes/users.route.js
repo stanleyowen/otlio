@@ -74,7 +74,8 @@ router.get('/user', (req, res, next) => {
                         authenticated: true,
                         message: MSG_DESC[5],
                         id: user._id,
-                        email: user.email
+                        email: user.email,
+                        thirdParty: user.thirdParty
                     });
                 }
             })

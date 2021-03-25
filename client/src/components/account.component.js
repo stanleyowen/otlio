@@ -9,7 +9,7 @@ import { faKey } from '@fortawesome/free-solid-svg-icons';
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
-    const {email, id} = userData;
+    const {email, id, thirdParty } = userData;
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
@@ -23,7 +23,8 @@ const Account = ({ userData }) => {
                 passwordModal.classList.add('closeModal');
             }
         }
-    })
+        console.log(userData)
+    }, [userData])
 
     const submitNewPassword = (e) => {
         e.preventDefault();
@@ -47,6 +48,10 @@ const Account = ({ userData }) => {
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
+    const notify = (e) => {
+        e.preventDefault();
+        setNotification(NOTIFICATION_TYPES.WARNING, 'Connecting Existing Account with GitHub OAuth Feature will be available soon in v0.4.2')
+    }
     return (
         <div id="form">
             <div className="form__contact">
@@ -64,11 +69,11 @@ const Account = ({ userData }) => {
                     <button className="oauth-box change-password" onClick={() => openModal('changePasswordModal')}>
                         <FontAwesomeIcon icon={faKey} size='2x'/> <p> Change Your Password</p>
                     </button>
-                    <button className="oauth-box google mt-20" onClick={ConnectOAuthGoogle}>
-                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Connect with Google</p>
+                    <button className="oauth-box google mt-20" onClick={thirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
+                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> { thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
                     </button>
-                    <button className="oauth-box github mt-20" onClick={ConnectOAuthGitHub}>
-                        <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Connect with GitHub</p>
+                    <button className="oauth-box github mt-20" onClick={thirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
+                        <FontAwesomeIcon icon={faGithub} size='2x'/> <p> { thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
                     </button>
                 </div>
             </div>

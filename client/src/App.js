@@ -40,7 +40,8 @@ export default function App() {
         isLoading: false,
         id: res.data.id,
         email: res.data.email,
-        authenticated: res.data.authenticated
+        authenticated: res.data.authenticated,
+        thirdParty: res.data.thirdParty
       })
     })
     .catch(err => {
@@ -51,6 +52,7 @@ export default function App() {
       })
     })
     createRequest();
+    console.log(userData)
     setWarning();
   },[SERVER_URL])
 
