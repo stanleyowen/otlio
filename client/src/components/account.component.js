@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { OAuthGitHub, ConnectOAuthGoogle, getCSRFToken } from '../libraries/validation';
+import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
@@ -9,7 +9,7 @@ import { faKey } from '@fortawesome/free-solid-svg-icons';
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
-    const {email, id} = userData;
+    const {email, id, thirdParty } = userData;
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
@@ -23,34 +23,19 @@ const Account = ({ userData }) => {
                 passwordModal.classList.add('closeModal');
             }
         }
-    })
-
-    const changePasswordModal = (e) => {
-        e.preventDefault();
-        const modal = document.getElementById('changePasswordModal');
-        modal.classList.add('showModal');
-        modal.classList.remove('closeModal', 'hiddenModal');
-    }
-
-    const closeModal = (e) => {
-        e.preventDefault();
-        const modal = document.getElementById('changePasswordModal');
-        modal.classList.remove('showModal');
-        modal.classList.add('closeModal');
-    }
+        console.log(userData)
+    }, [userData])
 
     const submitNewPassword = (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-changePassword');
         async function submitData() {
             btn.innerHTML = "Changing Password";
-            const modal = document.getElementById('changePasswordModal');
             const postData = { id, oldPassword, newPassword, confirmPassword: confirmPsw }
-            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] } })
+            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            modal.classList.remove('showModal');
-            modal.classList.add('closeModal');
+            closeModal('changePasswordModal');
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Change Password";
@@ -67,7 +52,6 @@ const Account = ({ userData }) => {
         e.preventDefault();
         setNotification(NOTIFICATION_TYPES.WARNING, 'Connecting Existing Account with GitHub OAuth Feature will be available soon in v0.4.2')
     }
-
     return (
         <div id="form">
             <div className="form__contact">
@@ -82,21 +66,21 @@ const Account = ({ userData }) => {
                     </div>
                 </div>
                 <div className="oauth-container">
-                    <button className="oauth-box change-password" onClick={changePasswordModal}>
+                    <button className="oauth-box change-password" onClick={() => openModal('changePasswordModal')}>
                         <FontAwesomeIcon icon={faKey} size='2x'/> <p> Change Your Password</p>
                     </button>
-                    <button className="oauth-box google mt-20" onClick={ConnectOAuthGoogle}>
-                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Connect with Google</p>
+                    <button className="oauth-box google mt-20" onClick={thirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
+                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> { thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
                     </button>
-                    <button className="oauth-box github mt-20" onClick={notify}>
-                        <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Connect with GitHub</p>
+                    <button className="oauth-box github mt-20" onClick={thirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
+                        <FontAwesomeIcon icon={faGithub} size='2x'/> <p> { thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
                     </button>
                 </div>
             </div>
             <div id="changePasswordModal" className="modal hiddenModal">
                 <div className="modal__container">
                     <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={closeModal}>&times;</span>
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('changePasswordModal')}>&times;</span>
                         <h2>Change Password</h2>
                     </div>
                     <div className="modal__body">

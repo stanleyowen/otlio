@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import { labels, validateLabel, getCSRFToken } from '../libraries/validation';
+import { labels, validateLabel, getCSRFToken, formatDate } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -18,7 +18,7 @@ const Edit = ({ userData }) => {
     const [label, setLabel] = useState(labels[0].toLowerCase());
 
     useEffect(() => {
-        async function requestData() {
+        async function getData() {
             await axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId}, withCredentials: true })
             .then(res => {
                 setTitle(res.data.title);
@@ -41,18 +41,8 @@ const Edit = ({ userData }) => {
             });
             e.removeAttribute('data-autoresize');
         });
-        if(!isLoading && authenticated) requestData();
+        if(!isLoading && authenticated) getData();
     }, [userData])
-
-    const formatDate = (a) => {
-        var e = new Date((a.substring(10, 0)) * 1000);
-        var date = parseInt(e.getDate());
-        var month = parseInt(e.getMonth() + 1);
-        var year = e.getFullYear();
-        if(date < 10) date = '0'+date;
-        if(month < 10) month = '0'+month;
-        return year+'-'+month+'-'+date;
-    }
 
     const updateData = (e) => {
         e.preventDefault();
@@ -67,12 +57,11 @@ const Edit = ({ userData }) => {
             btn.classList.remove("disabled");
             btn.innerHTML = "Update";
         }
-        if(!userId){ setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.") }
-        else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !") }
+        if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !") }
         else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !") }
         else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
         else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !") }
-        else if(date.length !== 10 || DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
+        else if(DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }        
     }
     return (

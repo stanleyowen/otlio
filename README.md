@@ -29,7 +29,7 @@ Todo Application is an **open source** project, completed with highest standard 
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.1.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.2.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
@@ -53,7 +53,7 @@ Todo Application is an **open source** project, completed with highest standard 
       - `GITHUB_SECRET` stores the secret key for GitHub OAuth provided by [GitHub OAuth](https://github.com/settings/applications/new)
       - `GOOGLE_ID` stores the client id fot Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
       - `GOOGLE_SECRET` stores the client secret for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
-      - `GOOGLE_CALLBACK` stores the Callbak URL for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)<br /><br />
+      - `GOOGLE_CALLBACK` stores the callback URL for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)<br /><br />
           ```
           ATLAS_URI       = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
           JWT_SECRET      = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3

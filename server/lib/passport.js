@@ -3,8 +3,10 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 const MSG_DESC = require('./callback');
 let User = require('../models/users.model');
+let BlacklistedToken = require('../models/blacklisted-token.model');
 
 const SALT_WORK_FACTOR = 12;
 const jwtSecret = process.env.JWT_SECRET;
@@ -62,6 +64,82 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
     })
 }))
 
+passport.use('editAccount', new localStrategy({ usernameField: 'id', passwordField: 'oldPassword', passReqToCallback: true, session: false }, (req, id, password, done) => {
+    const {newPassword, confirmPassword} = req.body;
+    if(!password || !newPassword || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] });
+    else if(password.length < 6 || password.length > 40 || newPassword.length < 6 || newPassword.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] });
+    else if(newPassword !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] });
+    else {
+        User.findById(id, (err, user) => {
+            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+            else if(!user) return done(null, false, { status: 400, message: MSG_DESC[8] });
+            else if(user) {
+                bcrypt.compare(password, user.password, (err, isMatch) => {
+                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                    else if(!isMatch) return done(null, false, { status: 400, message: MSG_DESC[10] });
+                    else if(isMatch){
+                        bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+                            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                            else {
+                                bcrypt.hash(newPassword, salt, (err, hash) => {
+                                    if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                                    else {
+                                        const token = req.cookies['jwt-token']
+                                        BlacklistedToken.findOne({ token }, (err, isListed) => {
+                                            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                                            else if(isListed) return done(null, false, { status: 401, message: MSG_DESC[15] });
+                                            else if(!isListed){
+                                                user.password = hash;
+                                                user.save()
+                                                return done(null, user, { status: 200, message: MSG_DESC[6] });
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
+}))
+
+passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: process.env.GITHUB_CALLBACK }, (accessToken, refreshToken, profile, done) => {
+    const email = profile._json.email;
+    User.findOne({email}, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+        else if(!user){
+            const dataModel = new User ({
+                email,
+                password: null,
+                thirdParty: {
+                    isThirdParty: true,
+                    provider: 'github',
+                    status: 'Pending'
+                }
+            });
+            dataModel.save()
+            return done(null, user, { status: 302, type: 'redirect', url: `/auth/github/${encodeURIComponent(email)}` })
+        }else if(user){
+            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/auth/github/${encodeURIComponent(email)}` })
+            else if(user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Success"){
+                return done(null, user, { status: 200 })
+            }else if(user.thirdParty.isThirdParty) return done(null, false, { status: 400, message: MSG_DESC[28] });
+            else return done(null, false, { status: 400, message: MSG_DESC[16] });
+        }
+    })
+}))
+
+passport.use('connectViaGithub', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: `${process.env.GITHUB_CALLBACK}/connect` }, (accessToken, refreshToken, profile, done) => {
+    const email = profile._json.email;
+    User.findOne({email}, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+        else if(!user) return done(null, false, { status: 401, message: MSG_DESC[16] });
+        else if(user) return done(null, user, { status: 200 })
+    })
+}))
+
 passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: process.env.GOOGLE_CALLBACK }, (accessToken, refreshToken, profile, done) => {
     const email = profile._json.email;
     User.findOne({email}, (err, user) => {
@@ -77,12 +155,13 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
                 }
             });
             dataModel.save()
-            return done(null, user, { status: 302, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
+            return done(null, user, { status: 302, type: 'redirect', url: `/auth/google/${encodeURIComponent(email)}` })
         }else if(user){
-            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/oauth/google/${encodeURIComponent(email)}` })
+            if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Pending") return done(null, user, { status: 302, type: 'redirect', url: `/auth/google/${encodeURIComponent(email)}` })
             else if(user.thirdParty.isThirdParty && user.thirdParty.provider === "google" && user.thirdParty.status === "Success"){
                 return done(null, user, { status: 200 })
-            }else return done(null, false, { status: 400, message: MSG_DESC[24] });
+            }else if(user.thirdParty.isThirdParty) return done(null, false, { status: 400, message: MSG_DESC[28] });
+            else return done(null, false, { status: 400, message: MSG_DESC[16] });
         }
     })
 }))

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdjust, faPlus, faSignOutAlt, faUser, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
-import { setWarning } from '../libraries/setNotification';
-import { getCSRFToken, createRequest } from '../libraries/validation';
+import { faAdjust, faSignOutAlt, faUser, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
 import axios from 'axios';
 
-/* Icons */
+import { getCSRFToken } from '../libraries/validation';
 import { IconButton, Tooltip } from '@material-ui/core';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -13,49 +11,36 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const Navbar = ({ userData }) => {
     const {email, id, authenticated, isLoading} = userData;
     const releaseNotification = localStorage.getItem('__release');
+    const theme = localStorage.getItem('__theme')
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
     const [value_c, setValue_c] = useState();
-    const [value_d, setValue_d] = useState(false);
     
     useEffect(() => {
-        const theme = localStorage.getItem('__theme')
         if(theme === "dark") document.body.classList.add("dark");
         if(!isLoading && authenticated){
             setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faHome} style={{ fontSize: "1.5em" }} />]);
             setValue_b([`Logout`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, Logout]);
             setValue_c([`Account`,'/account', <FontAwesomeIcon icon={faUser} style={{ fontSize: "1.4em" }} />]);
-            setValue_d(<FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />)
-        }else if(!isLoading && !authenticated) {
+        }else {
             setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
             setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
         }
-        createRequest();
-        setWarning();
-    },[userData]);
+    },[userData, theme]);
 
     const Logout = async (e) => {
         e.preventDefault();
         await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true})
-        .then(() => {
-            window.location = '/login';
-        })
-    }
-
-    const addTodo = (e) => {
-        e.preventDefault();
-        const modal = document.getElementById('addTodoModal');
-        modal.classList.add('showModal');
-        modal.classList.remove('closeModal', 'hiddenModal');
+        .then(() => window.location = '/login')
     }
 
     const toggleNavbar = (e) => {
         e.preventDefault();
         var menu = document.getElementById("navbar__menu");
         var icon = document.getElementById("navbar-icon");
-        if(menu.style.display === "block"){ menu.style.display = "none"; }
-        else{ menu.style.display = "block"; }
         icon.classList.toggle("closeIcon");
+        if(menu.style.display === "block") menu.style.display = "none";
+        else menu.style.display = "block";
     }
 
     const closeWarning = (e) => {
@@ -67,18 +52,16 @@ const Navbar = ({ userData }) => {
 
     const changeMode = (e) => {
         e.preventDefault();
-        document.body.classList.toggle("dark");
         let theme = "light";
-        if(document.body.classList.contains("dark")){
-            theme = "dark";
-        }
+        document.body.classList.toggle("dark");
+        if(document.body.classList.contains("dark")) theme = "dark";
         localStorage.setItem("__theme", theme);
     }
 
     return (
         <div>
             <div className="navbar">
-                <a className="navbar__logo" href={ value_c ? '/' : '/welcome' }>TodoApp</a>
+                <a className="navbar__logo" href={ authenticated ? '/' : '/welcome' }>TodoApp</a>
                 <div className="navbar__menu" id="navbar__menu">
                     <a className="animation__underline" href={value_a[1]}>
                         <span className="icons">
@@ -112,7 +95,6 @@ const Navbar = ({ userData }) => {
                     </Tooltip>
                 </div>
             </div>
-            {value_d !== false && window.location.pathname === '/' ? (<Tooltip title="Add Task" placement="top"><button className="btn__changeMode" aria-label="Add Todo" onClick={addTodo} id="addTodo" style={{bottom: '17vh'}}>{value_d}</button></Tooltip>) : null}
 		    <Tooltip title="Change Mode">
                 <button className="btn__changeMode" aria-label="Change Mode" onClick={changeMode}>
                     <FontAwesomeIcon icon={faAdjust} size="2x"/>

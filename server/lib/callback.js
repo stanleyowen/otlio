@@ -23,11 +23,11 @@ const MSG_DESC = [
     'Data Updated Successfully',                                        // 21
     'Data Deleted Successfully',                                        // 22
     'Data Added Successfully',                                          // 23
-    'Oops! Looks like the email you registered has already existed. Enable GitHub OAuth with existing account feature will be available soon in v0.4.2', // 24
-    'Account Successfuly Connected to Google',                          // 25
-    'Account Failed to Connect to Google',                              // 26
-    'Account Connected with GitHub',                                    // 27
-    'Account Failed to Connect to GitHub'                               // 28
+    'Account Successfuly Connected to Google',                          // 24
+    'Account Failed to Connect to Google',                              // 25
+    'Account Connected with GitHub',                                    // 26
+    'Account Failed to Connect to GitHub',                              // 27
+    'Connecting Account with Multiple Third Parties Feature will be available in the Future Release' // 28
 ];
 
 module.exports = MSG_DESC;

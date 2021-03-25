@@ -8,73 +8,67 @@ let User = require('../models/users.model');
 
 const status = process.env.NODE_ENV;
 const jwtSecret = process.env.JWT_SECRET;
-const GITHUB_CLIENT_ID = process.env.GITHUB_ID;
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_SECRET;
 
-router.get('/github', async (req, res) => {
-    const code = req.query.code;
-    await axios({
-        method: 'post',
-        url: `https://github.com/login/oauth/access_token?client_id=${GITHUB_CLIENT_ID}&client_secret=${GITHUB_CLIENT_SECRET}&code=${code}`,
-        headers: { accept: 'application/json' }
-    })
-    .then(async result => {
-        const token = result.data.access_token;
-        if(token){
-            await axios({
-                method: 'get',
-                url: `https://api.github.com/user`,
-                headers: { Authorization: 'token ' + token }
+router.get('/github/auth', passport.authenticate('github', { scope : ['user:email'] }));
+router.get('/github/auth/connect', passport.authenticate('connectViaGithub', { scope : ['user:email'] }));
+
+router.get('/github', async (req, res, next) => {
+    passport.authenticate('github', { failureRedirect: '/error' }, (err, user, info) => {
+        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+        else if(info && info.status ? info.status >= 400 : info.status = 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+        else if(info && info.status === 302) return res.status(info.status).json({statusCode: info.status, type: info.type, url: info.url});
+        else if(user && info.status === 200){
+            return res.cookie('jwt-token', jwt.sign({
+                id: user.id,
+                email: user.email
+            }, jwtSecret, { expiresIn: '1d' }), {
+                maxAge: 86400000,
+                httpOnly: true,
+                secure: status === 'production' ? true : false,
+                sameSite: status === 'production' ? 'none' : false
+            }).json({
+                statusCode: 200,
+                message: MSG_DESC[2],
+                id: user.id
+            });
+        }
+    })(req, res, next)
+})
+
+router.get('/github/connect', async (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+        else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+        else if(user){
+            BlacklistedToken.findOne({ token: req.cookies['jwt-token'] }, (err, isListed) => {
+                if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                else if(isListed) res.status(401).json({statusCode: 401, message: MSG_DESC[15]});
+                else if(!isListed){
+                    passport.authenticate('connectViaGithub', { failureRedirect: '/error' }, (err, userGithub, info) => {
+                        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                        else if(info && info.status ? info.status >= 400 : info.status = 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+                        else if(userGithub && info.status === 200){
+                            if(!userGithub.thirdParty.isThirdParty && userGithub.email === user.email){
+                                const userData = {
+                                    thirdParty: {
+                                        isThirdParty: true,
+                                        provider: 'github',
+                                        status: 'Success'
+                                    }
+                                }
+                                User.findOneAndUpdate({email: user.email}, userData, (err, updated) => {
+                                    if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                                    else if(updated) return res.status(200).json({statusCode: 200, message: MSG_DESC[26]});
+                                    else if(!updated) return res.status(400).json({statusCode: 400, message: MSG_DESC[27]});
+                                })
+                            }else if(userGithub.thirdParty.isThirdParty) return res.status(400).json({statusCode: 400, message: MSG_DESC[28]});
+                            else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
+                        }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
+                    })(req, res, next)
+                }
             })
-            .then(user => {
-                const email = user.data.email;
-                User.findOne({ email }, (err, user) => {
-                    if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-                    else if(!user){
-                        const dataModel = new User ({
-                            email,
-                            password: null,
-                            thirdParty: {
-                                isThirdParty: true,
-                                provider: 'github',
-                                status: 'Pending'
-                            }
-                        });
-                        dataModel.save()
-                        return res.status(302).json({
-                            statusCode: 302,
-                            type: 'redirect',
-                            url: `/oauth/github/${encodeURIComponent(email)}`
-                        });
-                    }else if(user){
-                        if (user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Pending"){
-                            return res.status(302).json({
-                                statusCode: 302,
-                                type: 'redirect',
-                                url: `/oauth/github/${encodeURIComponent(email)}`
-                            });
-                        }else if(user.thirdParty.isThirdParty && user.thirdParty.provider === "github" && user.thirdParty.status === "Success") {
-                            return res.status(200).cookie('jwt-token', jwt.sign({
-                                id: user.id,
-                                email: user.email
-                            }, jwtSecret, { expiresIn: '1d' }), {
-                                maxAge: 86400000,
-                                httpOnly: true,
-                                secure: status === 'production' ? true : false,
-                                sameSite: status === 'production' ? 'none' : false
-                            }).json({
-                                statusCode: 200,
-                                status: MSG_DESC[2],
-                                id: user.id
-                            });
-                        }else return res.status(400).json({statusCode: 400, message: MSG_DESC[24] });
-                    }
-                })
-            })
-            .catch(() => {return res.status(500).json({statusCode: 500, message: MSG_DESC[0]})})
-        }else res.status(400).json(result.data);
-    })
-    .catch(() => { return res.status(500).json({statusCode: 500, message: MSG_DESC[0]})})
+        }
+    })(req, res, next)
 })
 
 router.get('/google/auth', passport.authenticate('google', { scope : ['email'] }));
@@ -126,10 +120,11 @@ router.get('/google', (req, res, next) => {
                                     }
                                     User.findOneAndUpdate({email: user.email}, userData, (err, updated) => {
                                         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-                                        else if(updated) return res.status(200).json({statusCode: 200, message: MSG_DESC[25]});
-                                        else if(!updated) return res.status(400).json({statusCode: 400, message: MSG_DESC[26]});
+                                        else if(updated) return res.status(200).json({statusCode: 200, message: MSG_DESC[24]});
+                                        else if(!updated) return res.status(400).json({statusCode: 400, message: MSG_DESC[25]});
                                     })
-                                }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
+                                }else if(userGoogle.thirdParty.isThirdParty) return res.status(400).json({statusCode: 400, message: MSG_DESC[28]});
+                                else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
                             }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
                         })(req, res, next)
                     }

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
+
+import { createRequest } from './libraries/validation'
+import { setWarning } from './libraries/setNotification';
+import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification';
 import "./App.min.css";
 
 import Navbar from './components/navbar.component';
@@ -13,7 +17,7 @@ import OAuth from './components/register-oauth.component';
 import ReqOAuth from './components/req-oauth.component';
 import Account from './components/account.component';
 
-function App() {
+export default function App() {
   const [userData, setUserData] = useState({ isLoading: true });
   const SERVER_URL = process.env.REACT_APP_SERVER_URL;
   const redirectRoute = ['welcome', 'login', 'get-started'];
@@ -36,15 +40,20 @@ function App() {
         isLoading: false,
         id: res.data.id,
         email: res.data.email,
-        authenticated: res.data.authenticated
+        authenticated: res.data.authenticated,
+        thirdParty: res.data.thirdParty
       })
     })
-    .catch(() => {
+    .catch(err => {
+      if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
       setUserData({
         isLoading: false,
         authenticated: false
       })
     })
+    createRequest();
+    console.log(userData)
+    setWarning();
   },[SERVER_URL])
 
   return (
@@ -55,11 +64,9 @@ function App() {
       <Route path='/get-started' component={Register} />
       <Route path='/login' component={() => <Login userData={userData} />} />
       <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
-      <Route path='/auth/:service' component={ReqOAuth} />
-      <Route path='/oauth/:service/:email' component={OAuth} />
+      <Route path='/oauth' component={ReqOAuth} />
+      <Route path='/auth/:service/:email' component={OAuth} />
       <Route path='/account' component={() => <Account userData={userData} />} />
     </Router>
   );
 }
-
-export default App;

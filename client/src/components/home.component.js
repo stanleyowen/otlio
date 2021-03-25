@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { labels, validateLabel, getCSRFToken } from '../libraries/validation';
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import axios from 'axios';
-
-/* Icons */
 import { IconButton, Tooltip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons/';
+import { faPen, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons/';
+import axios from 'axios';
+
+import { labels, validateLabel, getCSRFToken, formatDate, openModal, closeModal } from '../libraries/validation';
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
@@ -23,13 +22,7 @@ const timestamps = () => {
 }
 
 const validateTimestamp = (a, b) => {
-    var e = new Date(a * 1000);
-    var date = parseInt(e.getDate());
-    var month = parseInt(e.getMonth() + 1);
-    var year = e.getFullYear();
-    if(date < 10) date = '0'+date;
-    if(month < 10) month = '0'+month;
-    date = year+'-'+month+'-'+date;
+    var date = formatDate(a)
     var data = parseInt(date.split('-')[2]);
     var yesterday = parseInt(b.split('-')[2]) - 1;
     var today = parseInt(b.split('-')[2]);
@@ -37,7 +30,12 @@ const validateTimestamp = (a, b) => {
     if(data === yesterday) return <b>Yesterday</b>;
     else if(data === today) return <b>Today</b>;
     else if(data === tomorrow) return <b>Tomorrow</b>;
-    else return formatDate(date);
+    else return reverseDateFormat(date);
+}
+
+const reverseDateFormat = (e) => {
+    var a = e.split('-');
+    return(a[2]+'-'+a[1]+'-'+a[0])
 }
 
 const labeling = (a) => {
@@ -50,11 +48,6 @@ const labeling = (a) => {
     }
     var _label = <span className={"label "+_labelClass}>{a}</span>;
     return _label;
-}
-
-const formatDate = (e) => {
-    var a = e.split('-');
-    return(a[2]+'-'+a[1]+'-'+a[0])
 }
 
 const Home = ({ userData }) => {
@@ -174,25 +167,16 @@ const Home = ({ userData }) => {
         return sentence;
     }
 
-    const closeModal = (e) => {
-        e.preventDefault();
-        const modal = document.getElementById('addTodoModal');
-        modal.classList.remove('showModal');
-        modal.classList.add('closeModal');
-    }
-
     const submitTodo = (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-addTodo');
         async function submitData() {
             btn.innerHTML = "Adding...";
-            const modal = document.getElementById('addTodoModal');
             const todoData = { id: userId, email, title, label, description, date };
             await axios.post(`${SERVER_URL}/todo/data`, todoData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
-                modal.classList.remove('showModal');
-                modal.classList.add('closeModal');
+                closeModal('addTodoModal')
                 setTitle('');
                 setLabel(labels[0].toLowerCase());
                 setDescription('');
@@ -207,8 +191,7 @@ const Home = ({ userData }) => {
             btn.innerHTML = "Add";
             getTodoData();
         }
-        if(!email || EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        else if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
+        if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !")
         else if(title.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !")
         else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
         else if(description && description.length > 120) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !")
@@ -222,7 +205,7 @@ const Home = ({ userData }) => {
             <div id="addTodoModal" className="modal hiddenModal">
                 <div className="modal__container">
                     <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={closeModal}>&times;</span>
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('addTodoModal')}>&times;</span>
                         <h2>Add Todo</h2>
                     </div>
                     <div className="modal__body">
@@ -287,6 +270,11 @@ const Home = ({ userData }) => {
                         </td></tr>) : null }
                 </tbody>
             </table>
+            <Tooltip title="Add Task" placement="top">
+                <button className="btn__changeMode" aria-label="Add Todo" onClick={() => openModal('addTodoModal')} id="addTodo" style={{bottom: '17vh'}}>
+                    <FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />
+                </button>
+            </Tooltip>
        </div>
     );
 }
