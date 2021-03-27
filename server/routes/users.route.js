@@ -114,6 +114,14 @@ router.put('/user', (req, res, next) => {
     
 })
 
+router.post('/forget-password', (req, res, next) => {
+    passport.authenticate('forgetPassword', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+        else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message})
+        else res.json({statusCode: info.status, message: info.message})
+    })(req, res, next)
+})
+
 router.post('/logout', (req, res, next) => {
     const {id, email} = req.body;
     if(!id || !email) return res.status(400).json({statusCode: 400, message: MSG_DESC[3]});

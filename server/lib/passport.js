@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const passport = require('passport');
+const crypto = require('crypto');
+var nodemailer = require('nodemailer');
 const localStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -7,10 +9,19 @@ const GitHubStrategy = require('passport-github').Strategy;
 const MSG_DESC = require('./callback');
 let User = require('../models/users.model');
 let BlacklistedToken = require('../models/blacklisted-token.model');
+let Token = require('../models/token.model');
 
 const SALT_WORK_FACTOR = 12;
 const jwtSecret = process.env.JWT_SECRET;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+var transporter = nodemailer.createTransport({
+    service: process.env.MAIL_SERVICE,
+    auth: {
+      user: process.env.MAIL_EMAIL,
+      pass: process.env.MAIl_PASSWORD
+    }
+});
 
 passport.serializeUser((user, done) => {
     done(null, user);
@@ -103,6 +114,27 @@ passport.use('editAccount', new localStrategy({ usernameField: 'id', passwordFie
             }
         })
     }
+}))
+
+passport.use('forgetPassword', new localStrategy({ usernameField: 'email', passwordField: 'email', session: false }, (email, password, done) => {
+    User.findOne({email}, (err, user) => {
+        if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+        else if(!user) return done(null, false, { status: 400, message: MSG_DESC[15] });
+        else {
+            const token = crypto.randomBytes(64).toString("hex");
+            const createToken = new Token({ userId: user.id, token  })
+            createToken.save();
+            var mailOptions = {
+                to: email,
+                subject: 'Password Recovery',
+                text: token
+            };
+            transporter.sendMail(mailOptions, (err, info) => {
+                if(err) done(null, false, { status: 500, message: MSG_DESC[0] });
+                else done(null, false, { status: 200, message: MSG_DESC[29] });
+            });
+        }
+    })
 }))
 
 passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: process.env.GITHUB_CALLBACK }, (accessToken, refreshToken, profile, done) => {
