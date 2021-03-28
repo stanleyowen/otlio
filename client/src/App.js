@@ -52,7 +52,6 @@ export default function App() {
       })
     })
     createRequest();
-    console.log(userData)
     setWarning();
   },[SERVER_URL])
 

@@ -23,7 +23,6 @@ const Account = ({ userData }) => {
                 passwordModal.classList.add('closeModal');
             }
         }
-        console.log(userData)
     }, [userData])
 
     const submitNewPassword = (e) => {

@@ -182,10 +182,7 @@ const Home = ({ userData }) => {
                 setDescription('');
                 setDate(timestamps);
             })
-            .catch(err => {
-                console.log(err.response);
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-            });
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Add";
