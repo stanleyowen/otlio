@@ -95,7 +95,7 @@ passport.use('editAccount', new localStrategy({ usernameField: 'id', passwordFie
                             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
                             else {
                                 bcrypt.hash(newPassword, salt, (err, hash) => {
-                                    if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
                                     else {
                                         const token = req.cookies['jwt-token']
                                         BlacklistedToken.findOne({ token }, (err, isListed) => {
