@@ -111,7 +111,6 @@ router.put('/user', (req, res, next) => {
 
         }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
     })(req, res, next)
-    
 })
 
 router.get('/forget-password', (req, res, next) => {
@@ -128,6 +127,27 @@ router.post('/forget-password', (req, res, next) => {
         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
         else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message})
         else res.json({statusCode: info.status, message: info.message})
+    })(req, res, next)
+})
+
+router.post('/reset-password', (req, res, next) => {
+    passport.authenticate('resetPassword', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+        else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+        else if(user) {
+            return res.cookie('jwt-token', jwt.sign({
+                id: user._id,
+                email: user.email
+            }, jwtSecret, { expiresIn: '1d' }), {
+                maxAge: 86400000,
+                httpOnly: true,
+                secure: status === 'production' ? true : false,
+                sameSite: status === 'production' ? 'none' : false
+            }).json({
+                statusCode: info.status,
+                message: info.message
+            });
+        }
     })(req, res, next)
 })
 

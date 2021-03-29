@@ -7,7 +7,9 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const ResetPassword = () => {
-    const token = window.location.search;
+    const parameter = window.location.search.slice(1).split('&');
+    const token = parameter[0].split('=')[1];
+    const id = parameter[1].split('=')[1];
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
@@ -16,7 +18,7 @@ const ResetPassword = () => {
 
     useEffect(() => {
         async function validateData() {
-            await axios.get(`${SERVER_URL}/account/forget-password/${token}`)
+            await axios.get(`${SERVER_URL}/account/forget-password`, { params: { token, id } })
             .then(res => setEmail(res.data.email))
             .catch(err => {
                 if(err.response.data.message || err.response.data.error_description){
@@ -26,20 +28,17 @@ const ResetPassword = () => {
             })
         }
         validateData();
-        console.log(email)
     },[email])
 
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('register');
         async function submitData(){
-            btn.innerHTML = "Registering...";
-            const registerData = { email, password, confirmPassword: confirmPsw }
-            await axios.post(`${SERVER_URL}/oauth/register`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            btn.innerHTML = "Resetting Password ...";
+            const registerData = { token, id, email, password, confirmPassword: confirmPsw }
+            await axios.post(`${SERVER_URL}/account/reset-password`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => window.location = '/')
-            .catch(err => {
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-            });
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Register";
@@ -56,7 +55,7 @@ const ResetPassword = () => {
     return(
         <div id="form">
             <div className="form__contact">
-                <div className="get_in_touch"><h1>Register</h1></div>
+                <div className="get_in_touch"><h1>Reset Password</h1></div>
                 <div className="form">
                     <form className="contact__form" name="contact__form" onSubmit={Submit}>
                         <div className="contact__formControl no-bot">
@@ -92,8 +91,7 @@ const ResetPassword = () => {
                                 <input id="show-oauth-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-oauth-password">Show Pasword</label>
                             </div>
                         </div>
-                        <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
-                        <button type="submit" className="contact__sendBtn" id="register">Register</button>
+                        <button type="submit" className="contact__sendBtn" id="register">Reset Password</button>
                     </form>
                 </div>
             </div>

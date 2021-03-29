@@ -153,6 +153,40 @@ passport.use('getForgetPasswordData', new localStrategy({ usernameField: 'token'
     })
 }))
 
+passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
+    const {id, token, confirmPassword} = req.body;
+    if(!id || !token || !email || !password || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] });
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
+    else if(password.length < 6 || password.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] });
+    else {
+        Token.findOneAndDelete({token, userId: id}, (err, token) => {
+            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+            else if(!token) return done(null, false, { status: 400, message: MSG_DESC[10] });
+            else if(token){
+                User.findOne({_id: id, email}, (err, user) => {
+                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                    else if(!user) return done(null, false, { status: 400, message: MSG_DESC[8] });
+                    else if(user) {
+                        bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+                            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                            else {
+                                bcrypt.hash(password, salt, (err, hash) => {
+                                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                                    else {
+                                        user.password = hash;
+                                        user.save()
+                                        return done(null, user, { status: 200, message: MSG_DESC[6] });
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
+}))
+
 passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: process.env.GITHUB_CALLBACK }, (accessToken, refreshToken, profile, done) => {
     const email = profile._json.email;
     User.findOne({email}, (err, user) => {
