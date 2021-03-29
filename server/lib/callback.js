@@ -28,7 +28,7 @@ const MSG_DESC = [
     'Account Connected with GitHub',                                    // 26
     'Account Failed to Connect to GitHub',                              // 27
     'Connecting Account with Multiple Third Parties Feature will be available in the Future Release', // 28
-    'Recovery Codes sent Successfully'                                  // 29
+    'Recovery Codes Sent Successfully'                                  // 29
 ];
 
 module.exports = MSG_DESC;

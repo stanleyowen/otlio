@@ -89,7 +89,7 @@ router.put('/user', (req, res, next) => {
         else if(user.id === id){
             passport.authenticate('editAccount', { session: false }, (err, account, info) => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-                else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+                else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
                 else {
                     const token = req.cookies['jwt-token']
                     const blacklistedToken = new BlacklistedToken ({ userId: id, token })
@@ -112,6 +112,15 @@ router.put('/user', (req, res, next) => {
         }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
     })(req, res, next)
     
+})
+
+router.get('/forget-password', (req, res, next) => {
+    req.params = req.query;
+    passport.authenticate('getForgetPasswordData', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+        else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message})
+        else return res.json({statusCode: info.status, message: info.message, email: user.email})
+    })(req, res, next)
 })
 
 router.post('/forget-password', (req, res, next) => {
