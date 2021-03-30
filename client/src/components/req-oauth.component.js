@@ -11,7 +11,6 @@ const ReqOAuth = () => {
 
     useEffect(() => {
         async function validateData() {
-            console.log(`${SERVER_URL}${pathname}${code}`)
             await axios.get(`${SERVER_URL}${pathname}${code}`)
             .then(() => window.location = '/')
             .catch(err => {
@@ -20,7 +19,7 @@ const ReqOAuth = () => {
                     if(err.response.data.message || err.response.data.error_description){
                         setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message ? err.response.data.message : err.response.data.error_description);
                         setTimeout(() => { window.location='/' }, 5000)
-                    }else console.log(err)
+                    }else window.location='/'
                 };
             })
         }

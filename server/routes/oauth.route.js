@@ -2,9 +2,10 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = require('express').Router();
-const MSG_DESC = require('../lib/callback');
+
 let BlacklistedToken = require('../models/blacklisted-token.model');
 let User = require('../models/users.model');
+const MSG_DESC = require('../lib/callback');
 
 const status = process.env.NODE_ENV;
 const jwtSecret = process.env.JWT_SECRET;

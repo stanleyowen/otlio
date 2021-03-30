@@ -8,7 +8,7 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/56772f5c-0c69-41e8-a788-69ca591e70ef/deploy-status)](https://app.netlify.com/sites/todoapp-task/deploys)
 
 ## Login Freely with OAuth
-![Login with OAuth](https://user-images.githubusercontent.com/69080584/112158119-741c9280-8c1a-11eb-9545-cca2537e2073.png)
+![Login with OAuth](https://user-images.githubusercontent.com/69080584/112946431-b3d60380-915f-11eb-9bd3-b138fe13cf86.png)
 
 ## User Interface
 ![Todo Application](https://user-images.githubusercontent.com/69080584/112157665-0708fd00-8c1a-11eb-99fb-0f6a5f5cf29f.png)
@@ -29,7 +29,7 @@ Todo Application is an **open source** project, completed with highest standard 
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.2.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.3.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
@@ -51,20 +51,28 @@ Todo Application is an **open source** project, completed with highest standard 
       - `NODE_ENV` stores the status of an application, whether it is in `development` or `production` status.
       - `GITHUB_ID` stores the client id for GitHub OAuth provided by [GitHub OAuth](https://github.com/settings/applications/new)
       - `GITHUB_SECRET` stores the secret key for GitHub OAuth provided by [GitHub OAuth](https://github.com/settings/applications/new)
+      - `GITHUB_CALLBACK` stores the callback URL for GitHub OAuth provided by [GitHub OAuth](https://github.com/settings/applications/new)
       - `GOOGLE_ID` stores the client id fot Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
       - `GOOGLE_SECRET` stores the client secret for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
-      - `GOOGLE_CALLBACK` stores the callback URL for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)<br /><br />
+      - `GOOGLE_CALLBACK` stores the callback URL for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
+      - `MAIL_SERVICE`, `MAIL_EMAIL`, and `MAIL_PASSWORD` are configured for sending email to users<br /><br />
           ```
           ATLAS_URI       = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
           JWT_SECRET      = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3
           SECRET_KEY      = SpFcG29lKzfx9SxjLRjujaYxzSswhihd
-          CLIENT_URL      = http://localhost:3000
           NODE_ENV        = development
+          CLIENT_URL      = http://localhost:3000
+
           GITHUB_ID       = /* Your GitHub Client ID */
           GITHUB_SECRET   = /* Your GitHub Client Secret */
+          GITHUB_CALLBACK = http://localhost:3000/oauth/github
           GOOGLE_ID       = /* Your Google Client ID */
           GOOGLE_SECRET   = /* Your Google Client Secret */
           GOOGLE_CALLBACK = http://localhost:3000/auth/google
+
+          MAIL_SERVICE    = /* Your Email Service Provider */
+          MAIL_EMAIL      = /* Your Email Address */
+          MAIL_PASSWORD   = /* Your Email Password */
           ```
   4. Run and Compile it
       - In the `client` directory, type `npm start` in command line
