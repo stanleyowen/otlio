@@ -29,8 +29,8 @@ const Account = ({ userData }) => {
         e.preventDefault();
         const btn = document.getElementById('btn-changePassword');
         async function submitData() {
-            btn.innerHTML = "Changing Password";
-            const postData = { id, oldPassword, newPassword, confirmPassword: confirmPsw }
+            btn.innerHTML = "Changing...";
+            const postData = { id, email, oldPassword, newPassword, confirmPassword: confirmPsw }
             await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));

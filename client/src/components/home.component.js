@@ -65,7 +65,7 @@ const Home = ({ userData }) => {
     }
 
     async function getTodoData() {
-        await axios.get(`${SERVER_URL}/todo/data`, {params: {userId}, withCredentials: true})
+        await axios.get(`${SERVER_URL}/todo/data`, {params: {userId, email}, withCredentials: true})
         .then(res => {
             setTodoData(res.data);
             localStorage.setItem('todoData', JSON.stringify(res.data));

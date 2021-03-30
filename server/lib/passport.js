@@ -1,13 +1,12 @@
 const bcrypt = require('bcrypt');
-const passport = require('passport');
 const crypto = require('crypto');
-var nodemailer = require('nodemailer');
-const localStrategy = require('passport-local').Strategy;
+const passport = require('passport');
+const nodemailer = require('nodemailer');
 const JWTStrategy = require('passport-jwt').Strategy;
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const localStrategy = require('passport-local').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-const CLIENT_URL = process.env.CLIENT_URL;
 const MSG_DESC = require('./callback');
 let User = require('../models/users.model');
 let Token = require('../models/token.model');
@@ -15,23 +14,19 @@ let BlacklistedToken = require('../models/blacklisted-token.model');
 
 const SALT_WORK_FACTOR = 12;
 const jwtSecret = process.env.JWT_SECRET;
+const CLIENT_URL = process.env.CLIENT_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-var transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: process.env.MAIL_SERVICE,
     auth: {
       user: process.env.MAIL_EMAIL,
-      pass: process.env.MAIl_PASSWORD
+      pass: process.env.MAIL_PASSWORD
     }
 });
 
-passport.serializeUser((user, done) => {
-    done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-    done(null, user);
-});
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
 
 passport.use('register', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
     const {confirmPassword} = req.body;
@@ -44,18 +39,13 @@ passport.use('register', new localStrategy({ usernameField: 'email', passwordFie
             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] })
             else if(user) return done(null, false, { status: 400, message: MSG_DESC[1] })
             else if(!user) {
-                bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+                bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
                     if(err) return done(null, false, { status: 500, message: MSG_DESC[0] })
                     else {
-                        bcrypt.hash(password, salt, (err, hash) => {
-                            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] })
-                            else {
-                                const newUser = new User ({ email, password: hash })
-                                newUser.save()
-                                .then(user => { return done(null, user, { status: 200, message: MSG_DESC[4] }) })
-                                .catch(() => { return done(null, false, { status: 500, message: MSG_DESC[0] }) })
-                            }
-                        })
+                        const newUser = new User ({ email, password: hash })
+                        newUser.save()
+                        .then(user => { return done(null, user, { status: 200, message: MSG_DESC[4] }) })
+                        .catch(() => { return done(null, false, { status: 500, message: MSG_DESC[0] }) })
                     }
                 })
             }
@@ -77,36 +67,34 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
     })
 }))
 
-passport.use('editAccount', new localStrategy({ usernameField: 'id', passwordField: 'oldPassword', passReqToCallback: true, session: false }, (req, id, password, done) => {
-    const {newPassword, confirmPassword} = req.body;
-    if(!password || !newPassword || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] });
+passport.use('editAccount', new localStrategy({ usernameField: 'email', passwordField: 'oldPassword', passReqToCallback: true, session: false }, (req, email, password, done) => {
+    const {id, newPassword, confirmPassword} = req.body;
+    if(!id || !password || !newPassword || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] });
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(password.length < 6 || password.length > 40 || newPassword.length < 6 || newPassword.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] });
     else if(newPassword !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] });
     else {
-        User.findById(id, (err, user) => {
+        User.findOne({_id: id, email}, (err, user) => {
             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-            else if(!user) return done(null, false, { status: 400, message: MSG_DESC[8] });
+            else if(!user) return done(null, false, { status: 401, message: MSG_DESC[10] });
             else if(user) {
                 bcrypt.compare(password, user.password, (err, isMatch) => {
                     if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                    else if(!isMatch) return done(null, false, { status: 400, message: MSG_DESC[10] });
+                    else if(!isMatch) return done(null, false, { status: 401, message: MSG_DESC[10] });
                     else if(isMatch){
-                        bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+                        bcrypt.hash(newPassword, SALT_WORK_FACTOR, (err, hash) => {
                             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
                             else {
-                                bcrypt.hash(newPassword, salt, (err, hash) => {
+                                const token = req.cookies['jwt-token']
+                                BlacklistedToken.findOne({ token }, (err, isListed) => {
                                     if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                                    else {
-                                        const token = req.cookies['jwt-token']
-                                        BlacklistedToken.findOne({ token }, (err, isListed) => {
-                                            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                                            else if(isListed) return done(null, false, { status: 401, message: MSG_DESC[15] });
-                                            else if(!isListed){
-                                                user.password = hash;
-                                                user.save()
-                                                return done(null, user, { status: 200, message: MSG_DESC[6] });
-                                            }
-                                        })
+                                    else if(isListed) return done(null, false, { status: 401, message: MSG_DESC[15] });
+                                    else if(!isListed){
+                                        const blacklistedToken = new BlacklistedToken ({ userId: id, token })
+                                        user.password = hash;
+                                        user.save()
+                                        blacklistedToken.save()
+                                        return done(null, user, { status: 200, message: MSG_DESC[6] });
                                     }
                                 })
                             }
