@@ -1,4 +1,4 @@
-const axios = require("axios").create({ withCredentials: true });
+const axios = require("axios");
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const labels = ["Priority", "Secondary", "Important", "Do Later"];
@@ -30,8 +30,8 @@ const ConnectOAuthGoogle = (e) => {
     window.location = `${SERVER_URL}/oauth/google/auth/connect`;
 }
 
-const createRequest = (e) => {
-    axios.get(`${SERVER_URL}/status`)
+const createRequest = async (e) => {
+    await axios.get(`${SERVER_URL}/status`, { withCredentials: true })
     .then(res => {
         localStorage.setItem('X-XSRF-TOKEN', res.data.X_XSRF_TOKEN)
         localStorage.setItem('X-CSRF-TOKEN', res.data.X_CSRF_TOKEN)
@@ -77,4 +77,9 @@ const closeModal = (a, b) => {
     return false;
 }
 
-module.exports = {labels, validateLabel, OAuthGitHub, ConnectOAuthGitHub, OAuthGoogle, ConnectOAuthGoogle, createRequest, getCSRFToken, formatDate, openModal, closeModal};
+const Logout = async (id, email) => {
+    await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true})
+    .then(() => window.location = '/login')
+}
+
+module.exports = {labels, validateLabel, OAuthGitHub, ConnectOAuthGitHub, OAuthGoogle, ConnectOAuthGoogle, createRequest, getCSRFToken, formatDate, openModal, closeModal, Logout};
