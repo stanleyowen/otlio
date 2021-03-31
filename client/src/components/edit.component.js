@@ -49,7 +49,7 @@ const Edit = ({ userData }) => {
         const btn = document.getElementById('btn-addTodo');
         async function submitData() {
             btn.innerHTML = "Updating";
-            const postData = { userId, id, title, label, description, date }
+            const postData = { userId, email, id, title, label, description, date }
             await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => window.location='/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
