@@ -129,6 +129,10 @@ button, a { user-select: none; cursor: pointer; }
     color: #FFF;
     background-color: rgb(73, 81, 185);
 }
+.logout {
+    color: #FFF;
+    background-color: rgb(252, 52, 52);
+}
 .oauth-box:hover { opacity: 1; }
 .oauth-box:visited { color: #FFF; }
 .oauth-box svg {
@@ -461,7 +465,6 @@ tbody tr:hover {
 .do-later { background-color: green; }
 .btn-config { margin-right: 10px; }
 .btn-config .MuiButtonBase-root { color: #333; z-index: 1; }
-.no-margin { margin: 0; }
 .modal {
     left: 0;
     top: 0;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal } from '../libraries/validation';
+import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal, Logout } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
+import { faKey, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
 
@@ -70,20 +70,25 @@ const Account = ({ userData }) => {
                 <div className="oauth-container">
                     <div className="contact__formControl">
                         <button className="oauth-box change-password" onClick={() => openModal('background', 'modal')}>
-                            <FontAwesomeIcon icon={faKey} size='2x'/> <p> Change Your Password</p>
+                            <FontAwesomeIcon icon={faKey} size='2x'/> <p>Change Your Password</p>
+                        </button>
+                    </div>
+                    <div className="contact__formControl">
+                        <button className="oauth-box logout" onClick={() => Logout(id, email)}>
+                            <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
                         </button>
                     </div>
                 </div>
                 <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
                 <div className="form__container">
-                    <div className="contact__formControl no-margin">
-                        <button className="oauth-box google mt-20" onClick={thirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
-                            <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> { thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
+                    <div className="contact__formControl">
+                        <button className="oauth-box google" onClick={thirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
+                            <FontAwesomeIcon icon={faGoogle} size='2x'/> <p>{ thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
                         </button>
                     </div>
-                    <div className="contact__formControl no-margin">
-                        <button className="oauth-box github mt-20" onClick={thirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
-                            <FontAwesomeIcon icon={faGithub} size='2x'/> <p> { thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
+                    <div className="contact__formControl">
+                        <button className="oauth-box github" onClick={thirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
+                            <FontAwesomeIcon icon={faGithub} size='2x'/> <p>{ thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
                         </button>
                     </div>
                 </div>

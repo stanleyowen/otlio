@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdjust, faSignOutAlt, faUser, faHome, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
-import axios from 'axios';
+import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/';
 
-import { getCSRFToken } from '../libraries/validation';
+import { Logout } from '../libraries/validation';
 import { IconButton, Tooltip } from '@material-ui/core';
-
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Navbar = ({ userData }) => {
     const {email, id, authenticated, isLoading} = userData;
@@ -19,20 +16,14 @@ const Navbar = ({ userData }) => {
     useEffect(() => {
         if(theme === "dark") document.body.classList.add("dark");
         if(!isLoading && authenticated){
-            setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faHome} style={{ fontSize: "1.5em" }} />]);
-            setValue_b([`Logout`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, Logout]);
-            setValue_c([`Account`,'/account', <FontAwesomeIcon icon={faUser} style={{ fontSize: "1.4em" }} />]);
+            setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faListUl} style={{ fontSize: "1.5em" }} />]);
+            setValue_b([`Sign Out`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, () => Logout(id, email)]);
+            setValue_c([`Account Settings`,'/account', <FontAwesomeIcon icon={faUser} style={{ fontSize: "1.4em" }} />]);
         }else {
             setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
             setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
         }
     },[userData, theme]);
-
-    const Logout = async (e) => {
-        e.preventDefault();
-        await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true})
-        .then(() => window.location = '/login')
-    }
 
     const toggleNavbar = (e) => {
         e.preventDefault();
