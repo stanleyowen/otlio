@@ -77,11 +77,14 @@ const Home = ({ userData }) => {
     }
 
     useEffect(() => {
-        const modal = document.getElementById('addTodoModal');
+        const background = document.getElementById('background');
+        const modal = document.getElementById('modal');
         window.onclick = function(e){
-            if(e.target === modal){
+            if(e.target === modal || e.target === background){
                 modal.classList.remove('showModal');
                 modal.classList.add('closeModal');
+                background.classList.remove('showBackground');
+                background.classList.add('hideBackground');
             }
         }
         document.querySelectorAll('[data-autoresize]').forEach(function (e) {
@@ -176,7 +179,7 @@ const Home = ({ userData }) => {
             await axios.post(`${SERVER_URL}/todo/data`, todoData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
-                closeModal('addTodoModal')
+                closeModal('background','modal')
                 setTitle('');
                 setLabel(labels[0].toLowerCase());
                 setDescription('');
@@ -199,10 +202,10 @@ const Home = ({ userData }) => {
     return (
         <div className="main__projects" ref={wrapper}>
             <p>Hi, Welcome Back {email}</p>
-            <div id="addTodoModal" className="modal hiddenModal">
-                <div className="modal__container">
+            <div id="background" className="modal hiddenModal">
+                <div id="modal" className="modal__container hiddenModal">
                     <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('addTodoModal')}>&times;</span>
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('background','modal')}>&times;</span>
                         <h2>Add Todo</h2>
                     </div>
                     <div className="modal__body">
@@ -268,7 +271,7 @@ const Home = ({ userData }) => {
                 </tbody>
             </table>
             <Tooltip title="Add Task" placement="top">
-                <button className="btn__changeMode" aria-label="Add Todo" onClick={() => openModal('addTodoModal')} id="addTodo" style={{bottom: '17vh'}}>
+                <button className="btn__changeMode" aria-label="Add Todo" onClick={() => openModal('background','modal')} id="addTodo" style={{bottom: '17vh'}}>
                     <FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />
                 </button>
             </Tooltip>

@@ -19,7 +19,7 @@ const Edit = ({ userData }) => {
 
     useEffect(() => {
         async function getData() {
-            await axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId}, withCredentials: true })
+            await axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId, email}, withCredentials: true })
             .then(res => {
                 setTitle(res.data.title);
                 setDate(formatDate(res.data.date));

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -16,11 +16,14 @@ const Account = ({ userData }) => {
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        const passwordModal = document.getElementById('changePasswordModal');
+        const background = document.getElementById('background');
+        const modal = document.getElementById('modal');
         window.onclick = function(e){
-            if(e.target === passwordModal){
-                passwordModal.classList.remove('showModal');
-                passwordModal.classList.add('closeModal');
+            if(e.target === modal || e.target === background){
+                modal.classList.remove('showModal');
+                modal.classList.add('closeModal');
+                background.classList.remove('showBackground');
+                background.classList.add('hideBackground');
             }
         }
     }, [userData])
@@ -34,7 +37,7 @@ const Account = ({ userData }) => {
             await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            closeModal('changePasswordModal');
+            closeModal('modal');
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Change Password";
@@ -65,21 +68,30 @@ const Account = ({ userData }) => {
                     </div>
                 </div>
                 <div className="oauth-container">
-                    <button className="oauth-box change-password" onClick={() => openModal('changePasswordModal')}>
-                        <FontAwesomeIcon icon={faKey} size='2x'/> <p> Change Your Password</p>
-                    </button>
-                    <button className="oauth-box google mt-20" onClick={thirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
-                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> { thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
-                    </button>
-                    <button className="oauth-box github mt-20" onClick={thirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
-                        <FontAwesomeIcon icon={faGithub} size='2x'/> <p> { thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
-                    </button>
+                    <div className="contact__formControl">
+                        <button className="oauth-box change-password" onClick={() => openModal('background', 'modal')}>
+                            <FontAwesomeIcon icon={faKey} size='2x'/> <p> Change Your Password</p>
+                        </button>
+                    </div>
+                </div>
+                <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
+                <div className="form__container">
+                    <div className="contact__formControl no-margin">
+                        <button className="oauth-box google mt-20" onClick={thirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
+                            <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> { thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
+                        </button>
+                    </div>
+                    <div className="contact__formControl no-margin">
+                        <button className="oauth-box github mt-20" onClick={thirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
+                            <FontAwesomeIcon icon={faGithub} size='2x'/> <p> { thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div id="changePasswordModal" className="modal hiddenModal">
-                <div className="modal__container">
+            <div id="background" className="modal hiddenModal">
+                <div id="modal" className="modal__container hiddenModal">
                     <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('changePasswordModal')}>&times;</span>
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('background', 'modal')}>&times;</span>
                         <h2>Change Password</h2>
                     </div>
                     <div className="modal__body">

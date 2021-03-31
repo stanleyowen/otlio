@@ -57,17 +57,23 @@ const formatDate = (e) => {
     return year+'-'+month+'-'+date;
 }
 
-const openModal = (a) => {
-    const modal = document.getElementById(a);
+const openModal = (a, b) => {
+    const background = document.getElementById(a);
+    const modal = document.getElementById(b);
     modal.classList.add('showModal');
     modal.classList.remove('closeModal', 'hiddenModal');
+    background.classList.add('showBackground');
+    background.classList.remove('hideBackground', 'hiddenModal');
     return false;
 }
 
-const closeModal = (e) => {
-    const modal = document.getElementById(e);
+const closeModal = (a, b) => {
+    const background = document.getElementById(a);
+    const modal = document.getElementById(b);
     modal.classList.remove('showModal');
     modal.classList.add('closeModal');
+    background.classList.remove('showBackground');
+    background.classList.add('hideBackground');
     return false;
 }
 
