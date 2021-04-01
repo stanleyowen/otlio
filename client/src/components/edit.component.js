@@ -48,8 +48,8 @@ const Edit = ({ userData }) => {
         e.preventDefault();
         const btn = document.getElementById('btn-addTodo');
         async function submitData() {
-            btn.innerHTML = "Updating";
-            const postData = { userId, id, title, label, description, date }
+            btn.innerHTML = "Updating...";
+            const postData = { userId, email, id, title, label, description, date }
             await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => window.location='/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
@@ -74,7 +74,7 @@ const Edit = ({ userData }) => {
                 <div className="shape shape-4"></div>
             </div></div>) : null }
             <div className="main__projects">
-                <a href="/" className="close" style={{fontSize: '30px', textDecoration: 'none'}}>x</a>
+                <a href="/" className="close" style={{fontSize: '40px', textDecoration: 'none'}}>&times;</a>
                 <form onSubmit={updateData} className="mt-20">
                     <div className="form__container">
                         <div className="contact__formControl">

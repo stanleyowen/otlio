@@ -82,9 +82,9 @@ const Register = () => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <div className="contact__formControl show-password">
-                                <input id="show-register-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-register-password">Show Pasword</label>
-                            </div>
+                        </div>
+                        <div className="contact__formControl show-password">
+                            <input id="show-register-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-register-password">Show Pasword</label>
                         </div>
                         <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
                         <button type="submit" className="contact__sendBtn" id="register">Register</button>

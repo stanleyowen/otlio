@@ -73,7 +73,7 @@ const Navbar = ({ userData }) => {
                                 <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.5em" }} />
                             </span></Tooltip>
                         </span>
-                        <span className="description">{value_b[0]}</span>
+                        <span className="description">Status</span>
                     </a>
                     <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[3]}>
                         <span className="icons">

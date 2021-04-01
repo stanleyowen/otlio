@@ -34,14 +34,14 @@ const ResetPassword = () => {
         e.preventDefault();
         const btn = document.getElementById('register');
         async function submitData(){
-            btn.innerHTML = "Resetting Password ...";
+            btn.innerHTML = "Resetting...";
             const registerData = { token, id, email, password, confirmPassword: confirmPsw }
             await axios.post(`${SERVER_URL}/account/reset-password`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
-            btn.innerHTML = "Register";
+            btn.innerHTML = "Reset";
         }
         if(honeypot) { return }
         else if(!email || !password || !confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
@@ -91,7 +91,7 @@ const ResetPassword = () => {
                                 <input id="show-oauth-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-oauth-password">Show Pasword</label>
                             </div>
                         </div>
-                        <button type="submit" className="contact__sendBtn" id="register">Reset Password</button>
+                        <button type="submit" className="contact__sendBtn" id="register">Reset</button>
                     </form>
                 </div>
             </div>
