@@ -45,7 +45,7 @@ app.get('/status', (req, res) => {
         statusCode: 200,
         message: 'Server is up and running',
         'X_CSRF_TOKEN': req.cookies['_csrf'],
-        'X_XSRF_TOKEN': res.locals.csrfToken,
+        'X_XSRF_TOKEN': res.locals.csrfToken
     });
 })
 

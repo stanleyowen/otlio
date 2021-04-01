@@ -28,7 +28,8 @@ const MSG_DESC = [
     'Account Connected with GitHub',                                    // 26
     'Account Failed to Connect to GitHub',                              // 27
     'Connecting Account with Multiple Third Parties Feature will be available in the Future Release', // 28
-    'Recovery Codes Sent Successfully'                                  // 29
+    'Recovery Codes Sent Successfully',                                 // 29
+    'You have excedeed the maximum number of request verification allowed. Please try again in another hour' // 30
 ];
 
 module.exports = MSG_DESC;
