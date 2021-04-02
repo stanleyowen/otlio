@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import { getCSRFToken } from '../libraries/validation';
 import axios from 'axios';
@@ -13,15 +13,15 @@ const ResetPassword = () => {
 
     const Submit = (e) => {
         e.preventDefault();
-        const btn = document.getElementById('register');
+        const btn = document.getElementById('reset-password');
         async function submitData(){
-            btn.innerHTML = "Sending ...";
+            btn.innerHTML = "Sending...";
             await axios.post(`${SERVER_URL}/account/forget-password`, { email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => setSent(true))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
-            btn.innerHTML = "Register";
+            btn.innerHTML = "Send";
         }
         if(honeypot) { return }
         else if(!email){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
@@ -29,34 +29,40 @@ const ResetPassword = () => {
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
-    return(
+    if(sent) return(
         <div id="form">
             <div className="form__contact">
-                <div className="get_in_touch"><h1>{ sent ? 'Password Reset Request Sent' : 'Forget Password ?' }</h1></div>
+                <div className="get_in_touch"><h1>Password Reset Request Sent</h1></div>
                 <div className="form">
-                    <form className="contact__form" name="contact__form" onSubmit={ sent ? null : Submit}>
-                        <h3 className="mt-20">{ sent ? `Password Reset Recovery has been sent to ${email} which contains the password reset link. The link will only be available for 1 hour and ONCE.` : null }</h3>
-                        <h4 className="mt-20">{ sent ? `If it hasn't arrived after a few minutes, check your spam folder, and, if still nothing,`:null} <a onClick={() => window.location.reload()}>{ sent ? `try again.` : null }</a></h4>
+                    <h4 className="mt-20">Password Reset Recovery has been sent to your email for reset your password. If it hasn't arrived after a few minutes, check your spam folder.</h4>
+                </div>
+            </div>
+        </div>);
+    else return (
+        <div id="form">
+            <div className="form__contact">
+                <div className="get_in_touch"><h1>Reset Password</h1></div>
+                <div className="form">
+                    <form className="contact__form" name="contact__form" onSubmit={Submit}>
                         <div className="contact__formControl no-bot">
                             <div className="contact__infoField">
-                                <label htmlFor="bot-validatedEmail">Email <span className="required">*</span></label>
+                                <label htmlFor="bot-validatedEmail">Email</label>
                                 <input title="Email" id="bot-validatedEmail" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
                         <div className="contact__formControl">
                             <div className="contact__infoField">
-                                <label htmlFor="userEmail">{ sent ? null : 'Email' }</label>
-                                <input title="Email" id="userEmail" type="email" className="contact__inputField" style={{ display: sent ? 'none':null }} onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
+                                <label htmlFor="userEmail">Enter your user account's verified email address and we will send you a password reset link.</label>
+                                <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
-                        <button type="submit" className="contact__sendBtn" id="register" style={{ display: sent ? 'none':null }}>Send</button>
+                        <button type="submit" className="contact__sendBtn" id="reset-password">Send</button>
                     </form>
                 </div>
             </div>
-        </div>
-    )
+        </div>)
 }
 
 export default ResetPassword;

@@ -1,37 +1,37 @@
-const axios = require("axios").create({ withCredentials: true });
+const axios = require("axios");
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
-const labels = ["Priority", "Secondary", "Important", "Do Later"];
+export const labels = ["Priority", "Secondary", "Important", "Do Later"];
 
-const validateLabel = (e) => {
+export const validateLabel = (e) => {
     for (let a=0; labels.length; a++){
         if(((a === labels.length-1) && (e === labels[a].toLowerCase())) || e === labels[a].toLowerCase()) return false;
         else if((a === labels.length-1) && (e !== labels[a].toLowerCase())) return true;
     }
 }
 
-const OAuthGitHub = (e) => {
+export const OAuthGitHub = (e) => {
     e.preventDefault();
     window.location = `${SERVER_URL}/oauth/github/auth`;
 }
 
-const ConnectOAuthGitHub = (e) => {
+export const ConnectOAuthGitHub = (e) => {
     e.preventDefault();
     window.location = `${SERVER_URL}/oauth/github/auth/connect`;
 }
 
-const OAuthGoogle = (e) => {
+export const OAuthGoogle = (e) => {
     e.preventDefault();
     window.location = `${SERVER_URL}/oauth/google/auth`;
 }
 
-const ConnectOAuthGoogle = (e) => {
+export const ConnectOAuthGoogle = (e) => {
     e.preventDefault();
     window.location = `${SERVER_URL}/oauth/google/auth/connect`;
 }
 
-const createRequest = (e) => {
-    axios.get(`${SERVER_URL}/status`)
+export const createRequest = async (e) => {
+    await axios.get(`${SERVER_URL}/status`, { withCredentials: true })
     .then(res => {
         localStorage.setItem('X-XSRF-TOKEN', res.data.X_XSRF_TOKEN)
         localStorage.setItem('X-CSRF-TOKEN', res.data.X_CSRF_TOKEN)
@@ -39,7 +39,7 @@ const createRequest = (e) => {
     .catch(err => console.log(err));
 }
 
-const getCSRFToken = (e) => {
+export const getCSRFToken = (e) => {
     const token = [];
     const a = localStorage.getItem('X-XSRF-TOKEN');
     const b = localStorage.getItem('X-CSRF-TOKEN');
@@ -47,7 +47,7 @@ const getCSRFToken = (e) => {
     return token;
 }
 
-const formatDate = (e) => {
+export const formatDate = e => {
     var a = new Date((e.substring(10, 0)) * 1000);
     var date = parseInt(a.getDate());
     var month = parseInt(a.getMonth() + 1);
@@ -57,18 +57,27 @@ const formatDate = (e) => {
     return year+'-'+month+'-'+date;
 }
 
-const openModal = (a) => {
-    const modal = document.getElementById(a);
+export const openModal = (a, b) => {
+    const background = document.getElementById(a);
+    const modal = document.getElementById(b);
     modal.classList.add('showModal');
     modal.classList.remove('closeModal', 'hiddenModal');
+    background.classList.add('showBackground');
+    background.classList.remove('hideBackground', 'hiddenModal');
     return false;
 }
 
-const closeModal = (e) => {
-    const modal = document.getElementById(e);
+export const closeModal = (a, b) => {
+    const background = document.getElementById(a);
+    const modal = document.getElementById(b);
     modal.classList.remove('showModal');
     modal.classList.add('closeModal');
+    background.classList.remove('showBackground');
+    background.classList.add('hideBackground');
     return false;
 }
 
-module.exports = {labels, validateLabel, OAuthGitHub, ConnectOAuthGitHub, OAuthGoogle, ConnectOAuthGoogle, createRequest, getCSRFToken, formatDate, openModal, closeModal};
+export const Logout = async (id, email) => {
+    await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true})
+    .then(() => window.location = '/login')
+}

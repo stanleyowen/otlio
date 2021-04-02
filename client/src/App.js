@@ -12,7 +12,7 @@ import Welcome from './components/welcome.component';
 import Register from './components/register.component';
 import Login from './components/login.component';
 import ResetPassword from './components/reset-password.component';
-import ForgetPassword from './components/forget-password.component';
+import ReqResetPassword from './components/forget-password.component';
 import Home from './components/home.component';
 import EditTodo from './components/edit.component';
 import OAuth from './components/register-oauth.component';
@@ -68,8 +68,8 @@ export default function App() {
       <Route path='/oauth' component={ReqOAuth} />
       <Route path='/auth/:service/:email' component={OAuth} />
       <Route path='/account' component={() => <Account userData={userData} />} />
-      <Route path='/forget-password' component={ForgetPassword} />
-      <Route path='/reset-password' component={ResetPassword} />
+      <Route path='/reset-password/' exact component={ReqResetPassword} />
+      <Route path='/reset-password/:id/:token' component={ResetPassword} />
     </Router>
   );
 }

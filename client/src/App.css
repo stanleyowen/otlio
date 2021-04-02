@@ -1,4 +1,4 @@
-/*! Todo Application - CSS Version 0.4.3 Copyright 2021, Stanley Owen */
+/*! Todo Application - CSS Version 0.4.4 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 * {
     margin: 0;
@@ -30,10 +30,9 @@ body.dark tbody tr:hover {
     background-color: #333333;
     transition: all .4s;
 }
-body.dark .modal { background-color: rgba(0, 0, 0, 0.5); }
-body.dark .modal__container { border: 1px solid rgb(17, 17, 17); }
 body.dark .btn__outline { color: #7bb4ff; border: 2px solid #7bb4ff; }
 body.dark .btn__outline:hover { background-color: #7bb4ff; color: #FFFFFF; }
+body.dark .btn__outline:focus { background-color: #66a8ff; color: #FFFFFF; }
 body.dark .navbar,
 body.dark .btn__changeMode,
 body.dark .about,
@@ -54,7 +53,8 @@ body.dark textarea,
 body.dark select,
 body.dark .contact__sendBtn,
 body.dark .modal__body a,
-body.dark .footer {
+body.dark .footer,
+body.dark .toggleNavbar button {
     color: #FFFFFF;
 }
 body.dark select {
@@ -82,11 +82,25 @@ body.dark .navbar { box-shadow: none; }
 body.dark .footer { background-color: #191919; }
 body.dark .contact__onFocus { background: #FFFFFF; }
 body.dark .projects__viewMore { border-color: #79c3ff; }
+body.dark .btn-config .MuiButtonBase-root { color: #e7e7e7; }
 body.dark ::-webkit-calendar-picker-indicator { filter: invert(1); }
 body.dark .main__button { box-shadow: 2px 1000px 1px #212121 inset; }
 body.dark .projects__viewMore:hover { background-color: #79c3ff; color: #212121; }
 body.dark .footer__socialBtn a:hover { background-color: #FFFFFF; color: #212121; }
 body.dark .main__divider { background-image: linear-gradient(315deg, #0cbaba 0%, #f400eb 74%); }
+body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
+body.dark .btn__label {
+    background-color: #333;
+    color: #FFFFFF;
+    border-style: solid;
+    border-color: #333;
+}
+body.dark .btn__value {
+    background-color: #FFF;
+    border-color: #FFF;
+    border-style: solid;
+    color: #333;
+}
 button, a { user-select: none; cursor: pointer; }
 .oauth-container {
     display: relative;
@@ -116,6 +130,10 @@ button, a { user-select: none; cursor: pointer; }
     color: #FFF;
     background-color: rgb(73, 81, 185);
 }
+.logout {
+    color: #FFF;
+    background-color: rgb(252, 52, 52);
+}
 .oauth-box:hover { opacity: 1; }
 .oauth-box:visited { color: #FFF; }
 .oauth-box svg {
@@ -141,7 +159,10 @@ button, a { user-select: none; cursor: pointer; }
     position: relative;
     z-index: 10001;
 }
+.mt-10 { margin-top: 10px; }
 .mt-20 { margin-top: 20px; }
+.mb-20 { margin-bottom: 20px; }
+.mt-40 { margin-top: 40px; }
 .full-width { width: 100%; }
 .no-border { border: none; }
 .disabled {
@@ -157,7 +178,6 @@ button, a { user-select: none; cursor: pointer; }
     padding-top: 50vh;
     z-index: 1000;
 }
-body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
 .spin-container {
     position: relative;
     width: 30px;
@@ -253,9 +273,6 @@ body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
     right: 0;
     padding-top: 7px;
 }
-body.dark .toggleNavbar button {
-    color: #FFF;
-}
 .close {
     position: absolute;
     right: 50px;
@@ -336,6 +353,7 @@ body.dark .toggleNavbar button {
     margin-top: 50px;
 }
 .btn__outline:hover { background-color: #1976d2; color: #FFFFFF; }
+.btn__outline:focus { background-color: #116dc9; color: #FFFFFF; }
 .green__text { color: #23c739; }
 .badges {
     position: absolute;
@@ -372,18 +390,6 @@ tbody tr:hover {
     color: #FFFFFF;
     border-style: solid;
     border-color: #1a73e8;
-}
-body.dark .btn__label {
-    background-color: #333;
-    color: #FFFFFF;
-    border-style: solid;
-    border-color: #333;
-}
-body.dark .btn__value {
-    background-color: #FFF;
-    border-color: #FFF;
-    border-style: solid;
-    color: #333;
 }
 .animation__message {
     display: block;
@@ -463,17 +469,17 @@ body.dark .btn__value {
 .do-later { background-color: green; }
 .btn-config { margin-right: 10px; }
 .btn-config .MuiButtonBase-root { color: #333; z-index: 1; }
-body.dark .btn-config .MuiButtonBase-root { color: #e7e7e7; }
 .modal {
     left: 0;
-    top: 20px;
+    top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
     position: fixed;
     transition: all .5s;
-    z-index: 90;
-    background-color: rgba(255,255,255,0.5);
+    z-index: 999;
+    background-color: rgb(0 0 0 / 50%);
+    box-shadow: 0 1px 3px 0 rgb(60 64 67 / 30%), 0 4px 8px 3px rgb(60 64 67 / 15%);
 }
 .modal__bodyBtn {
     display: inline-block;
@@ -495,8 +501,8 @@ body.dark .btn-config .MuiButtonBase-root { color: #e7e7e7; }
     width: 80%;
     padding: 15px;
     margin: 5% auto;
+    margin-bottom: 3%;
     border-radius: 10px;
-    border: 1px solid #888;
     background-color: #ffffff;
 }
 .modal__title {
@@ -509,15 +515,17 @@ body.dark .btn-config .MuiButtonBase-root { color: #e7e7e7; }
 .modal__closeBtn {
     float: right;
     opacity: 1;
-    font-size: 20px;
+    font-size: 30px;
     cursor: pointer;
 }
 .modal__closeBtn:hover {
     opacity: 0.7;
     text-decoration: none;
 }
-.showModal { animation: grow 0.3s ease-in forwards; }
-.closeModal { animation: shrink 0.3s ease-out forwards; }
+.showBackground { opacity: 1; visibility: visible; }
+.hideBackground { opacity: 0; visibility: hidden; }
+.showModal { animation: grow 0.15s ease-in forwards; }
+.closeModal { animation: shrink 0.2s ease-out forwards; }
 .hiddenModal { opacity: 0; visibility: hidden; }
 .modal__body { padding: 10px; text-decoration: none; }
 .modal__bodyImg {
@@ -635,11 +643,13 @@ select {
 #form {
     width: 60%;
     padding-top: 100px;
+    padding-bottom: 10px;
     margin-left: auto;
     margin-right: auto;
     transition: all .4s;
 }
 .form__contact {
+    display: block;
     margin: 0 20px;
     margin-bottom: 40px;
     padding: 40px 20px 10px 20px;
@@ -650,7 +660,6 @@ select {
 .form__container {
     display: grid;
     grid-template-columns: auto auto;
-
 }
 .contact__formControl {
     margin: 10px;
@@ -732,7 +741,7 @@ input[type="checkbox"]:checked {
     animation: animate .25s ease-out;
 }
 .github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
-.show-password { user-select: none; }
+.show-password { user-select: none; text-align: center; }
 .container-bar { display: inline-block; }
 .bar1, .bar2, .bar3 {
     width: 20px;
@@ -908,6 +917,7 @@ input[type="checkbox"]:checked {
     .navbar .icons { display: none; }
     .navbar .description { display: inline-flex; }
     .navbar__menu { display: none; float: none; }
+    .github-corner { display: none; }
     .toggleNavbar { display: block; }
     .main__divider { width: 60%; }
     .main__button { width: 40%; }
@@ -919,17 +929,20 @@ input[type="checkbox"]:checked {
     .contact { margin: auto 25px -70px 25px; }
     .contact__me { padding: 10px; text-align: center; }
     .contact__container { grid-template-columns: auto; }
+    .modal__container { margin: 5% auto; }
     #form { width: 100%; }
     .form__container { grid-template-columns: auto; }
     .footer__socialBtn { width: 75%; }
     .btn__outline { width: 50%; margin-top: 20px; }
-    .modal { top: 60px; }
 }
-@media only screen and (max-width: 600px) { .animation__message { width: 100%; height: auto; } .btn__outline { width: 65%; } }
+@media only screen and (max-width: 600px) {
+    .animation__message { width: 100%; height: auto; }
+    .btn__outline { width: 65%; }
+    .oauth-box p { font-family: sans-serif; }
+}
 @media (max-width:500px){
     .github-corner:hover .octo-arm{animation:none}
     .github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}
-    .show-password { text-align: center; }
 }
 @media only screen and (max-width: 480px) {
     .main__divider { width: 80%; }

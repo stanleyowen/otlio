@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import { getCSRFToken } from '../libraries/validation';
-import axios from 'axios';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const OAuth = () => {
-    const {service} = useParams();
-    var {email} = useParams();
+    const {service, email} = useParams();
     var validatedEmail = decodeURIComponent(email);
     const [password, setPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
@@ -29,21 +29,19 @@ const OAuth = () => {
         const btn = document.getElementById('register');
         async function submitData(){
             btn.innerHTML = "Registering...";
-            const registerData = { email: validatedEmail, password, confirmPassword: confirmPsw }
-            await axios.post(`${SERVER_URL}/oauth/${service}/register`, registerData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            const data = { email: validatedEmail, password, confirmPassword: confirmPsw }
+            await axios.post(`${SERVER_URL}/oauth/${service}/register`, data, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => window.location = '/')
-            .catch(err => {
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-            });
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Register";
         }
-        if(honeypot) { return }
-        else if(!validatedEmail || !password || !confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
+        if(honeypot) return;
+        else if(!validatedEmail || !password || !confirmPsw) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')
         else if(EMAIL_VAL.test(String(validatedEmail).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Prvide a Valid Email Address !'); document.getElementById('validatedEmail').focus(); }
         else if(validatedEmail.length < 6 || validatedEmail.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 40 characters !'); document.getElementById('validatedEmail').focus(); }
-        else if(password.length < 6 || password.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('password').focus(); }
+        else if(password.length < 6 || password.length > 40 || confirmPsw.length < 6 || confirmPsw.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('password').focus(); }
         else if(password !== confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('password').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
@@ -83,9 +81,9 @@ const OAuth = () => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <div className="contact__formControl show-password">
-                                <input id="show-oauth-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-oauth-password">Show Pasword</label>
-                            </div>
+                        </div>
+                        <div className="contact__formControl show-password">
+                            <input id="show-oauth-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-oauth-password">Show Pasword</label>
                         </div>
                         <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
                         <button type="submit" className="contact__sendBtn" id="register">Register</button>

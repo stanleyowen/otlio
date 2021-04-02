@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 import axios from 'axios';
+
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 
 const GITHUB_API = "https://api.github.com/repos/stanleyowen/todo-application";
 
@@ -11,27 +12,24 @@ const Landing = () => {
     useEffect(() => {
         async function getRepoInfo() {
             await axios.get(GITHUB_API)
-            .then(res => setRepoInfo([res.data.stargazers_count, res.data.license.spdx_id]))
+            .then(async res => {
+                setRepoInfo([res.data.stargazers_count, res.data.license.spdx_id])
+                await axios.get(`${GITHUB_API}/releases`)
+                .then(res => {
+                    let latestVersion =  res.data[0] ? res.data[0].tag_name.slice(1) : '1.0.0';
+                    if(currentversion !== latestVersion) setNotification(NOTIFICATION_TYPES.WARNING, `Version ${latestVersion} is available`)
+                })
+                .catch(err => {
+                    if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message)
+                    else setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Couldn't Check for Updates")
+                });
+            })
             .catch(err => {
                 if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message)
                 else setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Invalid API")
             });
         }
-        async function getLatestVersion() {
-            await axios.get(`${GITHUB_API}/releases`)
-            .then(res => {
-                if(res.data[0].tag_name){
-                    let latestVersion =  res.data[0].tag_name.substring(1);
-                    if(currentversion !== latestVersion) setNotification(NOTIFICATION_TYPES.WARNING, `Version ${latestVersion} is available`)
-                }
-            })
-            .catch(err => {
-                if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message)
-                else setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Couldn't Check for Updates")
-            });
-        }
         getRepoInfo();
-        getLatestVersion();
     },[currentversion]);
     
     return (
@@ -41,8 +39,8 @@ const Landing = () => {
                 <a href="get-started" className="btn__outline">Get Started</a>
             </div>
             <div className="isCentered badges">
-                <a href="https://github.com/stanleyowen/TodoApp/"><button className="btn__label">License</button><button className="btn__value">{repoInfo[0]}</button></a>
-                <a href="https://github.com/stanleyowen/TodoApp/stargazers"><button className="btn__label">Stars</button><button className="btn__value">{repoInfo[1]}</button></a>
+                <a href="https://github.com/stanleyowen/todo-application/"><button className="btn__label">License</button><button className="btn__value">{repoInfo[0]}</button></a>
+                <a href="https://github.com/stanleyowen/todo-application/stargazers"><button className="btn__label">Stars</button><button className="btn__value">{repoInfo[1]}</button></a>
                 <a href="https://github.com/stanleyowen/todo-application/releases"><button className="btn__label">Version</button><button className="btn__value">{currentversion}</button></a>
             </div>
         </div>
