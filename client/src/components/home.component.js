@@ -9,7 +9,6 @@ import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotificatio
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
-const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const timestamps = () => {
     var today = new Date();
@@ -124,33 +123,35 @@ const Home = ({ userData }) => {
                                 </Tooltip>
                             </span>
                         </td>
-                    </tr>)
+                    </tr>
+                )
             })
         }else if(cacheTodo) {
             if(!isLoading && authenticated){ getTodoData() }
             return cacheTodo.map(a => {
-            return (
-                <tr key={a._id}>
-                    <td>{a.title}<br/>{a.description}</td>
-                    <td>{labeling(titleCase(a.label))}</td>
-                    <td>{validateTimestamp(a.date.substring(10, 0), timestamps())}</td>
-                    <td>
-                        <span className="btn-config">
-                            <Tooltip title="Edit Task">
-                                <IconButton href={`/edit/${a._id}`}>
-                                    <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
-                                </IconButton>
-                            </Tooltip>
-                        </span>
-                        <span className="btn-config">
-                            <Tooltip title="Delete Task">
-                                <IconButton onClick={() => deleteData(a._id)}>
-                                    <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
-                                </IconButton>
-                            </Tooltip>
-                        </span>
-                    </td>
-                </tr>)
+                return (
+                    <tr key={a._id}>
+                        <td>{a.title}<br/>{a.description}</td>
+                        <td>{labeling(titleCase(a.label))}</td>
+                        <td>{validateTimestamp(a.date.substring(10, 0), timestamps())}</td>
+                        <td>
+                            <span className="btn-config">
+                                <Tooltip title="Edit Task">
+                                    <IconButton href={`/edit/${a._id}`}>
+                                        <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
+                                    </IconButton>
+                                </Tooltip>
+                            </span>
+                            <span className="btn-config">
+                                <Tooltip title="Delete Task">
+                                    <IconButton onClick={() => deleteData(a._id)}>
+                                        <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
+                                    </IconButton>
+                                </Tooltip>
+                            </span>
+                        </td>
+                    </tr>
+                )
             })
         }
     }
@@ -191,6 +192,7 @@ const Home = ({ userData }) => {
             btn.innerHTML = "Add";
             getTodoData();
         }
+        if(!email || !userId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !")
         else if(title.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !")
         else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")

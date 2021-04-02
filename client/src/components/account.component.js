@@ -27,7 +27,6 @@ const Account = ({ userData }) => {
                 background.classList.add('hideBackground');
             }
         }
-        console.log(userData)
     }, [userData])
 
     const submitNewPassword = (e) => {
@@ -47,14 +46,14 @@ const Account = ({ userData }) => {
         }
         if(!email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!oldPassword || !newPassword || !confirmPsw) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
-        else if(oldPassword.length < 6 || newPassword.length < 6 || oldPassword.length > 40 || newPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('old-password').focus(); }
+        else if(oldPassword.length < 6 || newPassword.length < 6 || confirmPsw.length < 6 || oldPassword.length > 40 || newPassword.length > 40 || confirmPsw.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('old-password').focus(); }
         else if(newPassword !== confirmPsw) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('new-password').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
     const notify = (e) => {
         e.preventDefault();
-        setNotification(NOTIFICATION_TYPES.WARNING, 'Connecting Existing Account with GitHub OAuth Feature will be available soon in v0.4.2')
+        setNotification(NOTIFICATION_TYPES.WARNING, 'Connecting Account with Multiple Third Parties Feature will be available in the Future Release.')
     }
     return (
         <div>

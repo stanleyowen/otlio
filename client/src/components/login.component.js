@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
+
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
+import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -69,7 +70,7 @@ const Login = () => {
                         <div className="contact__formControl show-password">
                             <input id="show-login-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-login-password">Show Pasword</label>
                         </div>
-                        <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/forget-password">Reset Password</a></p>
+                        <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
                         <p className="isCentered mt-10">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
                         <button type="submit" className="contact__sendBtn" id="login">Login</button>
                     </form>

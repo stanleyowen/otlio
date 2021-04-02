@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { IconButton, Tooltip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers, faChartLine } from '@fortawesome/free-solid-svg-icons/';
 
 import { Logout } from '../libraries/validation';
-import { IconButton, Tooltip } from '@material-ui/core';
 
 const Navbar = ({ userData }) => {
     const {email, id, authenticated, isLoading} = userData;

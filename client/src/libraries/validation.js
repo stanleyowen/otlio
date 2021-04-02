@@ -47,7 +47,7 @@ const getCSRFToken = (e) => {
     return token;
 }
 
-const formatDate = (e) => {
+const formatDate = e => {
     var a = new Date((e.substring(10, 0)) * 1000);
     var date = parseInt(a.getDate());
     var month = parseInt(a.getMonth() + 1);

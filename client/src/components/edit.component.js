@@ -11,10 +11,12 @@ const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[
 const Edit = ({ userData }) => {
     const {email, id: userId, authenticated, isLoading} = userData;
     const {id} = useParams();
-    const [title, setTitle] = useState('loading ...');
-    const [date, setDate] = useState('2020-01-01');
-    const [description, setDescription] = useState('loading ...');
-    const [data, setData] = useState('loading ...');
+    const [title, setTitle] = useState();
+    const [date, setDate] = useState();
+    const [description, setDescription] = useState();
+    const [data, setData] = useState({});
+    const [isFetching, setFetching] = useState(true);
+    let isDiffer = false;
     const [label, setLabel] = useState(labels[0].toLowerCase());
 
     useEffect(() => {
@@ -26,9 +28,10 @@ const Edit = ({ userData }) => {
                 setDescription(res.data.description);
                 setLabel(res.data.label);
                 setData(res.data);
+                setFetching(false);
             })
             .catch(err => {
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                // setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
                 setTimeout(() => { window.location='/' }, 2000)
             });
         }
@@ -64,9 +67,10 @@ const Edit = ({ userData }) => {
         else if(DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }        
     }
+
     return (
         <div>
-            { title && label && data === "loading ..." ?
+            { isFetching ?
             (<div className="loader"><div className="spin-container full-width">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>
@@ -109,7 +113,8 @@ const Edit = ({ userData }) => {
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    { data.title === title && formatDate(data.date.substring(10, 0)) === date && data.description === description && data.label === label ? (<button type="disabled" id="btn-addTodo" className="btn__outline disabled" disabled={true} style={{outline: 'none'}}>Update</button>) : (<button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Update</button>)}
+                    { isFetching ? isDiffer = false : data.title === title && formatDate(data.date) === date && data.description === description && data.label === label ? isDiffer = false : isDiffer = true }
+                    <button type={isDiffer ? 'submit' : 'disabled'} id="btn-addTodo" className={(isDiffer ? null : 'disabled')+' btn__outline'}  disabled={!isDiffer} style={{outline: 'none'}}>Update</button>
                 </form>
             </div>
         </div>

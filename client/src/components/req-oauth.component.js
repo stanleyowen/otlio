@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import Axios from 'axios';
+import axios from 'axios';
 
-const axios = Axios.create({ withCredentials: true });
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const ReqOAuth = () => {
@@ -11,7 +10,7 @@ const ReqOAuth = () => {
 
     useEffect(() => {
         async function validateData() {
-            await axios.get(`${SERVER_URL}${pathname}${code}`)
+            await axios.get(`${SERVER_URL}${pathname}${code}`, { withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
                 if(err.response.data.statusCode === 302) window.location = err.response.data.url;
