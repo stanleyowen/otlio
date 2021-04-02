@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal, Logout } from '../libraries/validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
 
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
+import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal, Logout } from '../libraries/validation';
+
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
-    const {email, id, thirdParty} = userData;
+    const {email, id, thirdParty, isLoading} = userData;
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
@@ -26,6 +27,7 @@ const Account = ({ userData }) => {
                 background.classList.add('hideBackground');
             }
         }
+        console.log(userData)
     }, [userData])
 
     const submitNewPassword = (e) => {
@@ -33,8 +35,8 @@ const Account = ({ userData }) => {
         const btn = document.getElementById('btn-changePassword');
         async function submitData() {
             btn.innerHTML = "Updating...";
-            const postData = { id, email, oldPassword, newPassword, confirmPassword: confirmPsw }
-            await axios.put(`${SERVER_URL}/account/user`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            const data = { id, email, oldPassword, newPassword, confirmPassword: confirmPsw }
+            await axios.put(`${SERVER_URL}/account/user`, data, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             closeModal('background', 'modal');
@@ -90,12 +92,12 @@ const Account = ({ userData }) => {
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
                     <div className="form__container">
                         <div className="contact__formControl">
-                            <button className="oauth-box google" onClick={thirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
+                            <button className="oauth-box google" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
                                 <FontAwesomeIcon icon={faGoogle} size='2x'/> <p>{ thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
                             </button>
                         </div>
                         <div className="contact__formControl">
-                            <button className="oauth-box github" onClick={thirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
+                            <button className="oauth-box github" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
                                 <FontAwesomeIcon icon={faGithub} size='2x'/> <p>{ thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
                             </button>
                         </div>
