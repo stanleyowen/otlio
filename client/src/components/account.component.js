@@ -102,7 +102,7 @@ const Account = ({ userData }) => {
                         </div>
                     </div>
                     <hr className="mt-20"></hr>
-                    <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All rights reserved.</p>
+                    <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                 </div>
                 <div id="background" className="modal hiddenModal">
                     <div id="modal" className="modal__container hiddenModal">
