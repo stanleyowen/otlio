@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { Tooltip } from '@material-ui/core';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons/';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -14,12 +16,13 @@ const Login = () => {
     const [password, setPassword] = useState();
     const [honeypot, setHoneypot] = useState();
     const [visible, setVisible] = useState(false);
+    const [remember, setRemember] = useState(true);
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
         async function submitData(){
             btn.innerHTML = "Logging In...";
-            await axios.post(`${SERVER_URL}/account/login`, { email, password }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/login`, { email, password, rememberMe: remember }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
@@ -66,6 +69,11 @@ const Login = () => {
                                 <input title="Password" id="userPassword" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="current-password"/>
                                 <span className="contact__onFocus"></span>
                             </div>
+                        </div>
+                        <div className="contact__formControl show-password">
+                            <input id="keep-me-signed-in" onClick={() => setRemember(!remember)} type="checkbox" checked={remember} /> <label htmlFor="keep-me-signed-in">
+                                Keep me Signed In <Tooltip placement="top" title="If you are using Public computer or WiFi, it is recommended to uncheck this and you'll be logged out after browsing session ends." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="small" /></span></Tooltip> 
+                            </label>
                         </div>
                         <div className="contact__formControl show-password">
                             <input id="show-login-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-login-password">Show Pasword</label>
