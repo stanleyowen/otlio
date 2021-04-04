@@ -70,7 +70,7 @@ const Account = ({ userData }) => {
                     <div className="form">
                         <div className="contact__formControl">
                             <div className="contact__infoField">
-                                <label htmlFor="userEmail">Email</label>
+                                <label htmlFor="userEmail">Email Address</label>
                                 <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
                                 <span className="contact__onFocus"></span>
                             </div>
@@ -78,7 +78,7 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="oauth-container">
                         <div className="contact__formControl">
-                            <button className="oauth-box change-password" onClick={() => openModal('background', 'modal')}>
+                            <button className="oauth-box change-password" onClick={() => {openModal('background', 'modal', 'old-password')}}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Update Password</p>
                             </button>
                         </div>
@@ -101,6 +101,7 @@ const Account = ({ userData }) => {
                             </button>
                         </div>
                     </div>
+                    <hr className="mt-20"></hr>
                     <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All rights reserved.</p>
                 </div>
                 <div id="background" className="modal hiddenModal">
@@ -115,7 +116,7 @@ const Account = ({ userData }) => {
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                        <input title="Old Password" id="old-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoFocus autoComplete="none" />
+                                        <input title="Old Password" id="old-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="current-password" />
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
