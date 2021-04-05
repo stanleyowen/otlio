@@ -58,7 +58,8 @@ body.dark .modal__body a,
 body.dark .footer,
 body.dark .toggleNavbar button,
 body.dark blockquote,
-body.dark .closeBtn {
+body.dark .closeBtn,
+body.dark .view-eye svg {
     color: #FFFFFF;
 }
 body.dark .bar1,
@@ -104,6 +105,7 @@ body.dark .btn__value {
     color: #333;
 }
 button, a { user-select: none; cursor: pointer; }
+label { user-select: none; }
 .privacy-policy {
     font-family: 'Noto Sans JP', sans-serif;
     margin: auto 150px;
@@ -784,30 +786,41 @@ input[type="checkbox"]:checked {
     transform: rotate(045deg) translate(-2px, -4.5px);
 }
 blockquote{
-  display: block;
-  background: rgb(255 229 100 / 30%);
-  padding: 15px 20px 15px 10px;
-  margin: 0 20px 20px;
-  position: relative;
-  font-size: 16px;
-  line-height: 1.2;
-  color: rgb(0, 0, 0);
-  text-align: justify;
-  border-left: 7px solid #ffe564;
-  /* -moz-box-shadow: 2px 2px 15px #ccc;
-  -webkit-box-shadow: 2px 2px 15px #ccc;
-  box-shadow: 2px 2px 15px #ccc; */
+    display: block;
+    background: rgb(255 229 100 / 30%);
+    padding: 15px 20px 15px 10px;
+    margin: 0 20px 20px;
+    position: relative;
+    font-size: 16px;
+    line-height: 1.2;
+    color: rgb(0, 0, 0);
+    text-align: justify;
+    border-left: 7px solid #ffe564;
+    /* -moz-box-shadow: 2px 2px 15px #ccc;
+    -webkit-box-shadow: 2px 2px 15px #ccc;
+    box-shadow: 2px 2px 15px #ccc; */
 }
 blockquote a{
-  text-decoration: none;
-  background: #eee;
-  cursor: pointer;
-  padding: 0 3px;
-  color: #c76c0c;
+    text-decoration: none;
+    background: #eee;
+    cursor: pointer;
+    padding: 0 3px;
+    color: #c76c0c;
 }
 blockquote a:hover{ color: #666; }
 blockquote em {font-style: italic;}
 .small { font-size: 14px; }
+.view-eye {
+    float: right;
+    margin-top: -40px!important;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+}
+.view-eye svg {
+    font-size: 0.7em;
+    color: #212121;
+}
 .info-title {
     font-size: 20px;
     margin-left: 10px;

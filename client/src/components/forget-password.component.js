@@ -34,7 +34,7 @@ const ResetPassword = () => {
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Password Reset Request Sent</h1></div>
                 <div className="form">
-                    <h4 className="mt-20">Password Reset Recovery has been sent to your email for reset your password. If it hasn't arrived after a few minutes, check your spam folder.</h4>
+                    <h4 className="mt-20 mb-20">Password Reset Recovery has been sent to your email for reset your password. If it hasn't arrived after a few minutes, check your spam folder.</h4>
                 </div>
             </div>
         </div>);

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { IconButton } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -14,8 +16,8 @@ const Register = () => {
     const [password, setPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
     const [honeypot, setHoneypot] = useState();
-    const [visible, setVisible] = useState(false);
-
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [cfPasswordVisible, setCfPasswordVisible] = useState(false);
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('register');
@@ -72,20 +74,23 @@ const Register = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="password">Password <span className="required">*</span></label>
-                                    <input title="Password" id="password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <input title="Password" id="password" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
                                     <span className="contact__onFocus"></span>
+                                    <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
+                                        <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+                                    </IconButton>
                                 </div>
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="confirm_psw">Confirm Password <span className="required">*</span></label>
-                                    <input title="Confirm Password" id="confirm_psw" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <input title="Confirm Password" id="confirm_psw" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
                                     <span className="contact__onFocus"></span>
+                                    <IconButton className="view-eye" onClick={() => setCfPasswordVisible(!cfPasswordVisible)}>
+                                        <FontAwesomeIcon icon={cfPasswordVisible ? faEyeSlash : faEye} />
+                                    </IconButton>
                                 </div>
                             </div>
-                        </div>
-                        <div className="contact__formControl show-password">
-                            <input id="show-register-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-register-password">Show Pasword</label>
                         </div>
                         <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
                         <button type="submit" className="contact__sendBtn" id="register">Register</button>

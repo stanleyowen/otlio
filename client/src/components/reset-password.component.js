@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { IconButton } from '@material-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/';
 import axios from 'axios';
 
 import { getCSRFToken } from '../libraries/validation';
@@ -14,7 +17,8 @@ const ResetPassword = () => {
     const [password, setPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
     const [honeypot, setHoneypot] = useState();
-    const [visible, setVisible] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [cfPasswordVisible, setCfPasswordVisible] = useState(false);
 
     useEffect(() => {
         async function validateData() {
@@ -79,20 +83,23 @@ const ResetPassword = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="password">Password <span className="required">*</span></label>
-                                    <input title="Password" id="password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <input title="Password" id="password" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
                                     <span className="contact__onFocus"></span>
+                                    <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
+                                        <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+                                    </IconButton>
                                 </div>
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="confirm_psw">Confirm Password <span className="required">*</span></label>
-                                    <input title="Confirm Password" id="confirm_psw" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <input title="Confirm Password" id="confirm_psw" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
                                     <span className="contact__onFocus"></span>
+                                    <IconButton className="view-eye" onClick={() => setCfPasswordVisible(!cfPasswordVisible)}>
+                                        <FontAwesomeIcon icon={cfPasswordVisible ? faEyeSlash : faEye} />
+                                    </IconButton>
                                 </div>
                             </div>
-                        </div>
-                        <div className="contact__formControl show-password">
-                            <input id="show-oauth-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-oauth-password">Show Pasword</label>
                         </div>
                         <button type="submit" className="contact__sendBtn" id="reset-password">Change Password</button>
                     </form>
