@@ -103,6 +103,13 @@ body.dark .btn__value {
     color: #333;
 }
 button, a { user-select: none; cursor: pointer; }
+.privacy-policy {
+    font-family: 'Noto Sans JP', sans-serif;
+    margin: auto 150px;
+    padding-top: 100px;
+    transition: all .4s;
+}
+.inline { display: inline; }
 .oauth-container {
     display: relative;
     width: 100%;
@@ -164,6 +171,12 @@ button, a { user-select: none; cursor: pointer; }
 .mt-20 { margin-top: 20px; }
 .mb-20 { margin-bottom: 20px; }
 .mt-40 { margin-top: 40px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-40 { margin-bottom: 40px; }
+.ml-40 { margin-left: 40px; }
+.ml-60 { margin-left: 60px; }
+.ul-ml40 li { margin-left: 40px; }
+.ul-mb10 li { margin-bottom: 10px; }
 .full-width { width: 100%; }
 .no-border { border: none; }
 .disabled {
@@ -909,6 +922,7 @@ input[type="checkbox"]:checked {
 @media only screen and (max-width: 900px) {
     .body__aboutLeft,.body__aboutRight { font-size: 320px; }
     .projects__container { grid-template-columns: auto auto; }
+    .privacy-policy { margin: 0 100px; }
 }
 @media only screen and (max-width: 768px) {
     .navbar a {
@@ -936,11 +950,13 @@ input[type="checkbox"]:checked {
     .form__container { grid-template-columns: auto; }
     .footer__socialBtn { width: 75%; }
     .btn__outline { width: 50%; margin-top: 20px; }
+    .privacy-policy { margin: 0 20px; }
 }
 @media only screen and (max-width: 600px) {
     .animation__message { width: 100%; height: auto; }
     .btn__outline { width: 65%; }
     .oauth-box p { font-family: sans-serif; }
+    .privacy-policy { margin: 0 15px; }
 }
 @media (max-width:500px){
     .github-corner:hover .octo-arm{animation:none}

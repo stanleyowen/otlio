@@ -18,6 +18,7 @@ import EditTodo from './components/edit.component';
 import OAuth from './components/register-oauth.component';
 import ReqOAuth from './components/req-oauth.component';
 import Account from './components/account.component';
+import PrivacyPolicy from './components/privacy-policy.component';
 
 export default function App() {
   const [userData, setUserData] = useState({ isLoading: true });
@@ -68,8 +69,9 @@ export default function App() {
       <Route path='/oauth' component={ReqOAuth} />
       <Route path='/auth/:service/:email' component={OAuth} />
       <Route path='/account' component={() => <Account userData={userData} />} />
-      <Route path='/reset-password/' exact component={ReqResetPassword} />
+      <Route path='/reset-password' exact component={ReqResetPassword} />
       <Route path='/reset-password/:id/:token' component={ResetPassword} />
+      <Route path='/privacy-policy' component={PrivacyPolicy} />
     </Router>
   );
 }
