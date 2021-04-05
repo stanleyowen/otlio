@@ -36,10 +36,6 @@ const TermsAndConditions = () => {
                 <li>Modify, make derivative works of, disassemble, decrypt, reverse compile or reverse engineer any part of the service.</li>
                 <li>Remove, alter or obscure any proprietary notice (including any notice of copyright or trademark) of or its affiliates, partners, suppliers or the licensors of the service.</li>
             </ul>
-            <h2 className="mt-20 mb-20">Return and Refund Policy</h2>
-            <p>Thanks for shopping with us. We appreciate the fact that you like to buy the stuff we build. We also want to make sure you have a rewarding experience while you’re exploring, evaluating, and purchasing our products.</p>
-            <p className="mt-20">As with any shopping experience, there are terms and conditions that apply to transactions at our company. We’ll be as brief as our attorneys will allow. The main thing to remember is that by placing an order or making a purchase from us, you agree to the terms along with our Privacy Policy.</p>
-            <p className="mt-20">If, for any reason, You are not completely satisfied with any good or service that we provide, don't hesitate to contact us and we will discuss any of the issues you are going through with our product.</p>
             <h2 className="mt-20 mb-20">Your Suggestions</h2>
             <p>Any feedback, comments, ideas, improvements or suggestions (collectively, "Suggestions") provided by you to us with respect to the service shall remain the sole and exclusive property of us. We shall be free to use, copy, modify, publish, or redistribute the Suggestions for any purpose and in any way without any credit or any compensation to you.</p>
             <h2 className="mt-20 mb-20">Your Consent</h2>

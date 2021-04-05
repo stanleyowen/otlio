@@ -1,5 +1,6 @@
 /*! Todo Application - CSS Version 0.4.4 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -38,7 +39,8 @@ body.dark .btn__changeMode,
 body.dark .about,
 body.dark .projects__card,
 body.dark .form__contact,
-body.dark .contact {
+body.dark .contact,
+body.dark select {
     background-color: #333;
 }
 body.dark .btn__scrollTop,
@@ -54,11 +56,10 @@ body.dark select,
 body.dark .contact__sendBtn,
 body.dark .modal__body a,
 body.dark .footer,
-body.dark .toggleNavbar button {
+body.dark .toggleNavbar button,
+body.dark blockquote,
+body.dark .closeBtn {
     color: #FFFFFF;
-}
-body.dark select {
-    background-color: #333;
 }
 body.dark .bar1,
 body.dark .bar2,
@@ -169,7 +170,6 @@ button, a { user-select: none; cursor: pointer; }
 }
 .mt-10 { margin-top: 10px; }
 .mt-20 { margin-top: 20px; }
-.mb-20 { margin-bottom: 20px; }
 .mt-40 { margin-top: 40px; }
 .mb-20 { margin-bottom: 20px; }
 .mb-40 { margin-bottom: 40px; }
@@ -290,6 +290,14 @@ button, a { user-select: none; cursor: pointer; }
 .close {
     position: absolute;
     right: 50px;
+}
+.closeBtn {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    position: absolute;
+    right: 20px;
+    font-size: 25px;
 }
 .message__error {
     color: #FFF;
@@ -774,6 +782,35 @@ input[type="checkbox"]:checked {
 .closeIcon .bar3 {
     -webkit-transform: rotate(45deg) translate(-2px, 0px);
     transform: rotate(045deg) translate(-2px, -4.5px);
+}
+blockquote{
+  display: block;
+  background: rgb(255 229 100 / 30%);
+  padding: 15px 20px 15px 10px;
+  margin: 0 20px 20px;
+  position: relative;
+  font-size: 16px;
+  line-height: 1.2;
+  color: rgb(0, 0, 0);
+  text-align: justify;
+  border-left: 7px solid #ffe564;
+  /* -moz-box-shadow: 2px 2px 15px #ccc;
+  -webkit-box-shadow: 2px 2px 15px #ccc;
+  box-shadow: 2px 2px 15px #ccc; */
+}
+blockquote a{
+  text-decoration: none;
+  background: #eee;
+  cursor: pointer;
+  padding: 0 3px;
+  color: #c76c0c;
+}
+blockquote a:hover{ color: #666; }
+blockquote em {font-style: italic;}
+.small { font-size: 14px; }
+.info-title {
+    font-size: 20px;
+    margin-left: 10px;
 }
 @keyframes octocat-wave {
     0%,100%{transform:rotate(0)}

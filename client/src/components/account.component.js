@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faKey, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faInfo, faKey, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
 
@@ -51,6 +51,13 @@ const Account = ({ userData }) => {
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
+    const closeInfo = (a) => {
+        const infos = document.getElementById('infos')
+        const info = document.getElementById(a);
+        info.classList.add('closeModal');
+        setTimeout(() => { infos.removeChild(info) }, 200);
+    }
+
     const notify = (e) => {
         e.preventDefault();
         setNotification(NOTIFICATION_TYPES.WARNING, 'Connecting Account with Multiple Third Parties Feature will be available in the Future Release.')
@@ -65,6 +72,14 @@ const Account = ({ userData }) => {
                 <div className="shape shape-4"></div>
             </div></div>) : null }
             <div id="form">
+                <div id="infos">
+                    <blockquote id="info-oauth">
+                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
+                        <span className="info-title">Multiple OAuth Account</span>
+                        <button className="closeBtn" onClick={() => closeInfo('info-oauth')}>&times;</button>
+                        <p className="mt-10">Connecting an account with Multiple Third Parties Feature will be available in the Future Release.</p>
+                    </blockquote>
+                </div>
                 <div className="form__contact">
                     <div className="get_in_touch"><h1>Account</h1></div>
                     <div className="form">
@@ -97,7 +112,7 @@ const Account = ({ userData }) => {
                         </div>
                         <div className="contact__formControl">
                             <button className="oauth-box github" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
-                                <FontAwesomeIcon icon={faGithub} size='2x'/> <p>{ thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
+                                <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.provider === "github" ? <FontAwesomeIcon icon={faGithub} size='2x'/> : null } <p>{ thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
                             </button>
                         </div>
                     </div>

@@ -19,12 +19,20 @@ import OAuth from './components/register-oauth.component';
 import ReqOAuth from './components/req-oauth.component';
 import Account from './components/account.component';
 import PrivacyPolicy from './components/privacy-policy.component';
+import TermsAndConditions from './components/terms-and-condition.component';
 
 export default function App() {
   const [userData, setUserData] = useState({ isLoading: true });
   const SERVER_URL = process.env.REACT_APP_SERVER_URL;
   const redirectRoute = ['welcome', 'login', 'get-started'];
   const privateRoute = ['', 'edit', 'account'];
+  const info = JSON.parse(localStorage.getItem('info'));
+
+  if(info && info.statusCode && info.message){
+    const status = info.statusCode === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER;
+    setNotification(status, info.message);
+    localStorage.removeItem('info');
+  }
 
   if(!userData.isLoading && userData.authenticated){
     redirectRoute.forEach(a => {
@@ -72,6 +80,7 @@ export default function App() {
       <Route path='/reset-password' exact component={ReqResetPassword} />
       <Route path='/reset-password/:id/:token' component={ResetPassword} />
       <Route path='/privacy-policy' component={PrivacyPolicy} />
+      <Route path='/terms-and-conditions' component={TermsAndConditions} />
     </Router>
   );
 }
