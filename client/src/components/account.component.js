@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { IconButton } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfo, faKey, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -14,7 +15,9 @@ const Account = ({ userData }) => {
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
-    const [visible, setVisible] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [newPasswordVisible, setNewPasswordVisible] = useState(false);
+    const [cfPasswordVisible, setCfPasswordVisible] = useState(false);
 
     useEffect(() => {
         const background = document.getElementById('background');
@@ -107,12 +110,12 @@ const Account = ({ userData }) => {
                     <div className="form__container">
                         <div className="contact__formControl">
                             <button className="oauth-box google" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
-                                <FontAwesomeIcon icon={faGoogle} size='2x'/> <p>{ thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
+                                <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.provider === "google" ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
                             </button>
                         </div>
                         <div className="contact__formControl">
                             <button className="oauth-box github" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
-                                <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.provider === "github" ? <FontAwesomeIcon icon={faGithub} size='2x'/> : null } <p>{ thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
+                                <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.provider === "github" ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
                             </button>
                         </div>
                     </div>
@@ -131,28 +134,34 @@ const Account = ({ userData }) => {
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                        <input title="Old Password" id="old-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="current-password" />
+                                        <input title="Old Password" id="old-password" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="current-password" />
                                         <span className="contact__onFocus"></span>
+                                        <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
+                                            <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+                                        </IconButton>
                                     </div>
                                 </div>
                                 <div className="form__container">
                                     <div className="contact__formControl">
                                         <div className="contact__infoField">
                                             <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                            <input title="New Password" id="new-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
+                                            <input title="New Password" id="new-password" type={ newPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
                                             <span className="contact__onFocus"></span>
+                                            <IconButton className="view-eye" onClick={() => setNewPasswordVisible(!newPasswordVisible)}>
+                                                <FontAwesomeIcon icon={newPasswordVisible ? faEyeSlash : faEye} />
+                                            </IconButton>
                                         </div>
                                     </div>
                                     <div className="contact__formControl">
                                         <div className="contact__infoField">
                                             <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                            <input title="Confirm New Password" id="confirm-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
+                                            <input title="Confirm New Password" id="confirm-password" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
                                             <span className="contact__onFocus"></span>
+                                            <IconButton className="view-eye" onClick={() => setCfPasswordVisible(!cfPasswordVisible)}>
+                                                <FontAwesomeIcon icon={cfPasswordVisible ? faEyeSlash : faEye} />
+                                            </IconButton>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="contact__formControl show-password">
-                                    <input id="show-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-password">Show Pasword</label>
                                 </div>
                                 <button type="submit" id="btn-changePassword" className="btn__outline" style={{outline: 'none'}}>Update</button>
                             </form>
