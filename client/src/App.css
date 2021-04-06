@@ -756,15 +756,6 @@ select {
     visibility: visible;
 }
 .message { margin: 40px auto; }
-input[type='checkbox']{
-    height: 20px;
-    width: 20px;
-    background-color: #eee;
-}
-input[type="checkbox"]:checked {
-    -webkit-animation: animate .25s ease-out;
-    animation: animate .25s ease-out;
-}
 .github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
 .show-password { user-select: none; text-align: center; }
 .container-bar { display: inline-block; }
@@ -812,7 +803,7 @@ blockquote em {font-style: italic;}
 .small { font-size: 14px; }
 .view-eye {
     float: right;
-    margin-top: -40px!important;
+    margin-top: -42px!important;
     position: relative;
     z-index: 1;
     cursor: pointer;
@@ -829,21 +820,6 @@ blockquote em {font-style: italic;}
     0%,100%{transform:rotate(0)}
     20%,60%{transform:rotate(-25deg)}
     40%,80%{transform:rotate(10deg)}
-}
-@keyframes animate {
-    0% {
-      opacity: .4;
-      -webkit-transform: scale(3);
-      transform: scale(2.5); }
-    10% {
-      -webkit-transform: scale(2.5);
-      transform: scale(2); }
-    90% {
-      -webkit-transform: scale(1);
-      transform: scale(1); }
-    100% {
-      -webkit-transform: none;
-      transform: none; }
 }
 @keyframes grow {
     from {

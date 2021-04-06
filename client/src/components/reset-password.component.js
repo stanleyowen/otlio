@@ -51,11 +51,11 @@ const ResetPassword = () => {
             btn.innerHTML = "Change Password";
         }
         if(honeypot) { return }
-        else if(!email || !password || !confirmPsw) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !')
-        else if(email.length < 6 || email.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 40 characters !')
-        else if(password.length < 6 || password.length > 40 || confirmPsw.length < 6 || confirmPsw.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('password').focus(); }
-        else if(password !== confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('password').focus(); }
+        else if(!email || !password || !confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!email ? 'userEmail' : !password ? 'userPassword' : 'userConfirmPassword').focus(); }
+        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
+        else if(email.length < 6 || email.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 40 characters !'); document.getElementById('userEmail').focus(); }
+        else if(password.length < 6 || password.length > 40 || confirmPsw.length < 6 || confirmPsw.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(password.length < 6 || password.length > 40 ? 'userPassword' : 'userConfirmPassword').focus(); }
+        else if(password !== confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('userConfirmPassword').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
@@ -74,16 +74,16 @@ const ResetPassword = () => {
                         </div>
                         <div className="contact__formControl">
                             <div className="contact__infoField">
-                                <label htmlFor="email">Email</label>
-                                <input title="Email" id="email" type="email" className="contact__inputField" value={email} autoFocus required disabled="true" autoComplete="username"/>
+                                <label htmlFor="userEmail">Email</label>
+                                <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} autoFocus required disabled="true" autoComplete="username"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
                         <div className="form__container">
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
-                                    <label htmlFor="password">Password <span className="required">*</span></label>
-                                    <input title="Password" id="password" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <label htmlFor="userPassword">Password <span className="required">*</span></label>
+                                    <input title="Password" id="userPassword" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
                                         <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
@@ -92,8 +92,8 @@ const ResetPassword = () => {
                             </div>
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
-                                    <label htmlFor="confirm_psw">Confirm Password <span className="required">*</span></label>
-                                    <input title="Confirm Password" id="confirm_psw" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
+                                    <input title="Confirm Password" id="userConfirmPassword" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => setCfPasswordVisible(!cfPasswordVisible)}>
                                         <FontAwesomeIcon icon={cfPasswordVisible ? faEyeSlash : faEye} />

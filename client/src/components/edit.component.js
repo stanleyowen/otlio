@@ -9,6 +9,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 
 const Edit = ({ userData }) => {
+    let isDiffer = false;
     const {email, id: userId, authenticated, isLoading} = userData;
     const {id} = useParams();
     const [title, setTitle] = useState();
@@ -16,7 +17,6 @@ const Edit = ({ userData }) => {
     const [description, setDescription] = useState();
     const [data, setData] = useState({});
     const [isFetching, setFetching] = useState(true);
-    let isDiffer = false;
     const [label, setLabel] = useState(labels[0].toLowerCase());
 
     useEffect(() => {
@@ -31,8 +31,8 @@ const Edit = ({ userData }) => {
                 setFetching(false);
             })
             .catch(err => {
-                // setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-                setTimeout(() => { window.location='/' }, 2000)
+                localStorage.setItem('info', JSON.stringify(err.response.data));
+                window.location='/';
             });
         }
         document.querySelectorAll('[data-autoresize]').forEach(function (e) {
@@ -54,7 +54,10 @@ const Edit = ({ userData }) => {
             btn.innerHTML = "Updating...";
             const postData = { userId, email, id, title, label, description, date }
             await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
-            .then(() => window.location='/')
+            .then(res => {
+                localStorage.setItem('info', JSON.stringify(res.data))
+                window.location='/'
+            })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");

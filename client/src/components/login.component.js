@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { Tooltip, IconButton } from '@material-ui/core';
+import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core';
 import { faQuestionCircle, faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons/';
 import axios from 'axios';
 
@@ -30,7 +30,7 @@ const Login = () => {
             btn.innerHTML = "Login";
         }
         if(honeypot) return;
-        else if(!email || !password) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')
+        else if(!email || !password) { setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!email ? 'userEmail' : 'userPassword').focus(); }
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
@@ -74,9 +74,8 @@ const Login = () => {
                             </div>
                         </div>
                         <div className="contact__formControl show-password">
-                            <input id="keep-me-signed-in" onClick={() => setRemember(!remember)} type="checkbox" checked={remember} /> <label htmlFor="keep-me-signed-in">
-                                Keep me Signed In <Tooltip placement="top" title="If you are using Public computer or WiFi, it is recommended to uncheck this and you'll be logged out after browsing session ends." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="small" /></span></Tooltip> 
-                            </label>
+                            <FormControlLabel control={<Checkbox checked={remember} onChange={() => setRemember(!remember)} color="primary"/>}
+                            label="Stay Signed In"/><Tooltip placement="top" title="If you are using Public computer or WiFi, it is recommended to uncheck this and you'll be logged out after browsing session ends." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="small" /></span></Tooltip> 
                         </div>
                         <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
                         <p className="isCentered mt-10">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>

@@ -48,9 +48,9 @@ const Account = ({ userData }) => {
             setOldPassword(''); setNewPassword(''); setConfirmPsw('');
         }
         if(!email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        else if(!oldPassword || !newPassword || !confirmPsw) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
-        else if(oldPassword.length < 6 || newPassword.length < 6 || confirmPsw.length < 6 || oldPassword.length > 40 || newPassword.length > 40 || confirmPsw.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('old-password').focus(); }
-        else if(newPassword !== confirmPsw) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('new-password').focus(); }
+        else if(!oldPassword || !newPassword || !confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!oldPassword ? 'old-password' : !newPassword ? 'new-password' : 'confirm-password').focus(); }
+        else if(oldPassword.length < 6 || newPassword.length < 6 || confirmPsw.length < 6 || oldPassword.length > 40 || newPassword.length > 40 || confirmPsw.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(oldPassword.length < 6 || oldPassword.length > 40 ? 'old-password' : newPassword.length < 6 || newPassword.length > 40 ? 'new-password' : 'confirm-password').focus(); }
+        else if(newPassword !== confirmPsw) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('confirm-password').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
@@ -101,7 +101,7 @@ const Account = ({ userData }) => {
                             </button>
                         </div>
                         <div className="contact__formControl">
-                            <button className="oauth-box logout" onClick={() => Logout(id, email)}>
+                            <button className="oauth-box logout mt-20" onClick={() => Logout(id, email)}>
                                 <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
                             </button>
                         </div>
