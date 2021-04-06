@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { IconButton } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faKey, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -14,7 +15,9 @@ const Account = ({ userData }) => {
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [confirmPsw, setConfirmPsw] = useState();
-    const [visible, setVisible] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [newPasswordVisible, setNewPasswordVisible] = useState(false);
+    const [cfPasswordVisible, setCfPasswordVisible] = useState(false);
 
     useEffect(() => {
         const background = document.getElementById('background');
@@ -45,10 +48,17 @@ const Account = ({ userData }) => {
             setOldPassword(''); setNewPassword(''); setConfirmPsw('');
         }
         if(!email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        else if(!oldPassword || !newPassword || !confirmPsw) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !")
-        else if(oldPassword.length < 6 || newPassword.length < 6 || confirmPsw.length < 6 || oldPassword.length > 40 || newPassword.length > 40 || confirmPsw.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById('old-password').focus(); }
-        else if(newPassword !== confirmPsw) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('new-password').focus(); }
+        else if(!oldPassword || !newPassword || !confirmPsw){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!oldPassword ? 'old-password' : !newPassword ? 'new-password' : 'confirm-password').focus(); }
+        else if(oldPassword.length < 6 || newPassword.length < 6 || confirmPsw.length < 6 || oldPassword.length > 40 || newPassword.length > 40 || confirmPsw.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(oldPassword.length < 6 || oldPassword.length > 40 ? 'old-password' : newPassword.length < 6 || newPassword.length > 40 ? 'new-password' : 'confirm-password').focus(); }
+        else if(newPassword !== confirmPsw) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('confirm-password').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
+    }
+
+    const closeInfo = (a) => {
+        const infos = document.getElementById('infos')
+        const info = document.getElementById(a);
+        info.classList.add('closeModal');
+        setTimeout(() => { infos.removeChild(info) }, 200);
     }
 
     const notify = (e) => {
@@ -65,12 +75,20 @@ const Account = ({ userData }) => {
                 <div className="shape shape-4"></div>
             </div></div>) : null }
             <div id="form">
+                <div id="infos">
+                    <blockquote id="info-oauth">
+                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
+                        <span className="info-title">Multiple OAuth Account</span>
+                        <button className="closeBtn" onClick={() => closeInfo('info-oauth')}>&times;</button>
+                        <p className="mt-10">Connecting an account with Multiple Third Parties Feature will be available in the Future Release.</p>
+                    </blockquote>
+                </div>
                 <div className="form__contact">
                     <div className="get_in_touch"><h1>Account</h1></div>
                     <div className="form">
                         <div className="contact__formControl">
                             <div className="contact__infoField">
-                                <label htmlFor="userEmail">Email</label>
+                                <label htmlFor="userEmail">Email Address</label>
                                 <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
                                 <span className="contact__onFocus"></span>
                             </div>
@@ -78,12 +96,12 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="oauth-container">
                         <div className="contact__formControl">
-                            <button className="oauth-box change-password" onClick={() => openModal('background', 'modal')}>
+                            <button className="oauth-box change-password" onClick={() => {openModal('background', 'modal', 'old-password')}}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Update Password</p>
                             </button>
                         </div>
                         <div className="contact__formControl">
-                            <button className="oauth-box logout" onClick={() => Logout(id, email)}>
+                            <button className="oauth-box logout mt-20" onClick={() => Logout(id, email)}>
                                 <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
                             </button>
                         </div>
@@ -92,16 +110,17 @@ const Account = ({ userData }) => {
                     <div className="form__container">
                         <div className="contact__formControl">
                             <button className="oauth-box google" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
-                                <FontAwesomeIcon icon={faGoogle} size='2x'/> <p>{ thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
+                                <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.provider === "google" ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
                             </button>
                         </div>
                         <div className="contact__formControl">
                             <button className="oauth-box github" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
-                                <FontAwesomeIcon icon={faGithub} size='2x'/> <p>{ thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
+                                <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.provider === "github" ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
                             </button>
                         </div>
                     </div>
-                    <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All rights reserved.</p>
+                    <hr className="mt-20"></hr>
+                    <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                 </div>
                 <div id="background" className="modal hiddenModal">
                     <div id="modal" className="modal__container hiddenModal">
@@ -115,28 +134,34 @@ const Account = ({ userData }) => {
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                        <input title="Old Password" id="old-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoFocus autoComplete="none" />
+                                        <input title="Old Password" id="old-password" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="current-password" />
                                         <span className="contact__onFocus"></span>
+                                        <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
+                                            <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+                                        </IconButton>
                                     </div>
                                 </div>
                                 <div className="form__container">
                                     <div className="contact__formControl">
                                         <div className="contact__infoField">
                                             <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                            <input title="New Password" id="new-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
+                                            <input title="New Password" id="new-password" type={ newPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
                                             <span className="contact__onFocus"></span>
+                                            <IconButton className="view-eye" onClick={() => setNewPasswordVisible(!newPasswordVisible)}>
+                                                <FontAwesomeIcon icon={newPasswordVisible ? faEyeSlash : faEye} />
+                                            </IconButton>
                                         </div>
                                     </div>
                                     <div className="contact__formControl">
                                         <div className="contact__infoField">
                                             <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                            <input title="Confirm New Password" id="confirm-password" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
+                                            <input title="Confirm New Password" id="confirm-password" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
                                             <span className="contact__onFocus"></span>
+                                            <IconButton className="view-eye" onClick={() => setCfPasswordVisible(!cfPasswordVisible)}>
+                                                <FontAwesomeIcon icon={cfPasswordVisible ? faEyeSlash : faEye} />
+                                            </IconButton>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="contact__formControl show-password">
-                                    <input id="show-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-password">Show Pasword</label>
                                 </div>
                                 <button type="submit" id="btn-changePassword" className="btn__outline" style={{outline: 'none'}}>Update</button>
                             </form>

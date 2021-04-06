@@ -42,15 +42,27 @@ router.post('/login', (req, res, next) => {
             req.logIn(user, err => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                 else {
-                    return res.cookie('jwt-token', jwt.sign({
-                        id: user.id,
-                        email: user.email
-                    }, jwtSecret, { expiresIn: '1d' }), {
-                        maxAge: 86400000,
-                        httpOnly: true,
-                        secure: status === 'production' ? true : false,
-                        sameSite: status === 'production' ? 'none' : false
-                    }).json({
+                    if(req.body.rememberMe){
+                        res.cookie('jwt-token', jwt.sign({
+                            id: user.id,
+                            email: user.email
+                        }, jwtSecret, { expiresIn: '1d' }), {
+                            maxAge: 86400000,
+                            httpOnly: true,
+                            secure: status === 'production' ? true : false,
+                            sameSite: status === 'production' ? 'none' : false
+                        })
+                    }else {
+                        res.cookie('jwt-token', jwt.sign({
+                            id: user.id,
+                            email: user.email
+                        }, jwtSecret, { expiresIn: '1d' }), {
+                            httpOnly: true,
+                            secure: status === 'production' ? true : false,
+                            sameSite: status === 'production' ? 'none' : false
+                        })
+                    }
+                    return res.json({
                         statusCode: info.status,
                         message: info.message
                     })

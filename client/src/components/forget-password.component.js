@@ -24,8 +24,8 @@ const ResetPassword = () => {
             btn.innerHTML = "Send";
         }
         if(honeypot) { return }
-        else if(!email){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !') }
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Prvide a Valid Email Address !'); document.getElementById('validatedEmail').focus(); }
+        else if(!email) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')
+        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
@@ -34,7 +34,7 @@ const ResetPassword = () => {
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Password Reset Request Sent</h1></div>
                 <div className="form">
-                    <h4 className="mt-20">Password Reset Recovery has been sent to your email for reset your password. If it hasn't arrived after a few minutes, check your spam folder.</h4>
+                    <h4 className="mt-20 mb-20">Password Reset Recovery has been sent to your email for reset your password. If it hasn't arrived after a few minutes, check your spam folder.</h4>
                 </div>
             </div>
         </div>);

@@ -57,14 +57,14 @@ export const formatDate = e => {
     return year+'-'+month+'-'+date;
 }
 
-export const openModal = (a, b) => {
+export const openModal = (a, b, c) => {
     const background = document.getElementById(a);
     const modal = document.getElementById(b);
     modal.classList.add('showModal');
     modal.classList.remove('closeModal', 'hiddenModal');
     background.classList.add('showBackground');
     background.classList.remove('hideBackground', 'hiddenModal');
-    return false;
+    if(c) setTimeout(() => document.getElementById(c).focus(), 300)
 }
 
 export const closeModal = (a, b) => {

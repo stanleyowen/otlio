@@ -273,7 +273,7 @@ const Home = ({ userData }) => {
                 </tbody>
             </table>
             <Tooltip title="Add Task" placement="top">
-                <button className="btn__changeMode" aria-label="Add Todo" onClick={() => openModal('background','modal')} id="addTodo" style={{bottom: '17vh'}}>
+                <button className="btn__changeMode" aria-label="Add Todo" onClick={() => openModal('background','modal','title')} id="addTodo" style={{bottom: '17vh'}}>
                     <FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />
                 </button>
             </Tooltip>

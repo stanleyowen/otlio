@@ -1,5 +1,6 @@
-/*! Todo Application - CSS Version 0.4.4 Copyright 2021, Stanley Owen */
+/*! Todo Application - CSS Version 0.4.5 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -38,7 +39,8 @@ body.dark .btn__changeMode,
 body.dark .about,
 body.dark .projects__card,
 body.dark .form__contact,
-body.dark .contact {
+body.dark .contact,
+body.dark select {
     background-color: #333;
 }
 body.dark .btn__scrollTop,
@@ -54,11 +56,11 @@ body.dark select,
 body.dark .contact__sendBtn,
 body.dark .modal__body a,
 body.dark .footer,
-body.dark .toggleNavbar button {
+body.dark .toggleNavbar button,
+body.dark blockquote,
+body.dark .closeBtn,
+body.dark .view-eye svg {
     color: #FFFFFF;
-}
-body.dark select {
-    background-color: #333;
 }
 body.dark .bar1,
 body.dark .bar2,
@@ -78,7 +80,7 @@ body.dark .main__title,
 body.dark .projects__viewMore {
     color: #79c3ff;
 }
-body.dark .navbar { box-shadow: none; }
+body.dark .navbar { box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2); }
 body.dark .footer { background-color: #191919; }
 body.dark .contact__onFocus { background: #FFFFFF; }
 body.dark .projects__viewMore { border-color: #79c3ff; }
@@ -89,6 +91,7 @@ body.dark .projects__viewMore:hover { background-color: #79c3ff; color: #212121;
 body.dark .footer__socialBtn a:hover { background-color: #FFFFFF; color: #212121; }
 body.dark .main__divider { background-image: linear-gradient(315deg, #0cbaba 0%, #f400eb 74%); }
 body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
+body.dark .form__contact { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 60%), 0 1px 3px 1px rgb(0 0 0 / 30%); }
 body.dark .btn__label {
     background-color: #333;
     color: #FFFFFF;
@@ -102,6 +105,14 @@ body.dark .btn__value {
     color: #333;
 }
 button, a { user-select: none; cursor: pointer; }
+label { user-select: none; }
+.privacy-policy {
+    font-family: 'Noto Sans JP', sans-serif;
+    margin: auto 150px;
+    padding-top: 100px;
+    transition: all .4s;
+}
+.inline { display: inline; }
 .oauth-container {
     display: relative;
     width: 100%;
@@ -161,8 +172,13 @@ button, a { user-select: none; cursor: pointer; }
 }
 .mt-10 { margin-top: 10px; }
 .mt-20 { margin-top: 20px; }
-.mb-20 { margin-bottom: 20px; }
 .mt-40 { margin-top: 40px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-40 { margin-bottom: 40px; }
+.ml-40 { margin-left: 40px; }
+.ml-60 { margin-left: 60px; }
+.ul-ml40 li { margin-left: 40px; }
+.ul-mb10 li { margin-bottom: 10px; }
 .full-width { width: 100%; }
 .no-border { border: none; }
 .disabled {
@@ -248,7 +264,7 @@ button, a { user-select: none; cursor: pointer; }
     z-index: 99;
     transition: all 0.4s;
     background-color: #FFFFFF;
-    box-shadow: 0 0 11px 0 #9c9b98;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302),0 2px 6px 2px rgba(60,64,67,0.149);
 }
 .navbar a {
     color: #212121;
@@ -276,6 +292,14 @@ button, a { user-select: none; cursor: pointer; }
 .close {
     position: absolute;
     right: 50px;
+}
+.closeBtn {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    position: absolute;
+    right: 20px;
+    font-size: 25px;
 }
 .message__error {
     color: #FFF;
@@ -655,7 +679,8 @@ select {
     padding: 40px 20px 10px 20px;
     border-radius: 10px;
     transition: all .4s;
-    background-color: #F0F0F0;
+    background-color: #f1f1f1;
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 2px 6px 2px rgba(60, 64, 67, .15);
 }
 .form__container {
     display: grid;
@@ -731,15 +756,6 @@ select {
     visibility: visible;
 }
 .message { margin: 40px auto; }
-input[type='checkbox']{
-    height: 20px;
-    width: 20px;
-    background-color: #eee;
-}
-input[type="checkbox"]:checked {
-    -webkit-animation: animate .25s ease-out;
-    animation: animate .25s ease-out;
-}
 .github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
 .show-password { user-select: none; text-align: center; }
 .container-bar { display: inline-block; }
@@ -760,25 +776,50 @@ input[type="checkbox"]:checked {
     -webkit-transform: rotate(45deg) translate(-2px, 0px);
     transform: rotate(045deg) translate(-2px, -4.5px);
 }
+blockquote{
+    display: block;
+    background: rgb(255 229 100 / 30%);
+    padding: 15px 20px 15px 10px;
+    margin: 0 20px 20px;
+    position: relative;
+    font-size: 16px;
+    line-height: 1.2;
+    color: rgb(0, 0, 0);
+    text-align: justify;
+    border-left: 7px solid #ffe564;
+    /* -moz-box-shadow: 2px 2px 15px #ccc;
+    -webkit-box-shadow: 2px 2px 15px #ccc;
+    box-shadow: 2px 2px 15px #ccc; */
+}
+blockquote a{
+    text-decoration: none;
+    background: #eee;
+    cursor: pointer;
+    padding: 0 3px;
+    color: #c76c0c;
+}
+blockquote a:hover{ color: #666; }
+blockquote em {font-style: italic;}
+.small { font-size: 14px; }
+.view-eye {
+    float: right;
+    margin-top: -42px!important;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+}
+.view-eye svg {
+    font-size: 0.7em;
+    color: #212121;
+}
+.info-title {
+    font-size: 20px;
+    margin-left: 10px;
+}
 @keyframes octocat-wave {
     0%,100%{transform:rotate(0)}
     20%,60%{transform:rotate(-25deg)}
     40%,80%{transform:rotate(10deg)}
-}
-@keyframes animate {
-    0% {
-      opacity: .4;
-      -webkit-transform: scale(3);
-      transform: scale(2.5); }
-    10% {
-      -webkit-transform: scale(2.5);
-      transform: scale(2); }
-    90% {
-      -webkit-transform: scale(1);
-      transform: scale(1); }
-    100% {
-      -webkit-transform: none;
-      transform: none; }
 }
 @keyframes grow {
     from {
@@ -907,6 +948,7 @@ input[type="checkbox"]:checked {
 @media only screen and (max-width: 900px) {
     .body__aboutLeft,.body__aboutRight { font-size: 320px; }
     .projects__container { grid-template-columns: auto auto; }
+    .privacy-policy { margin: 0 100px; }
 }
 @media only screen and (max-width: 768px) {
     .navbar a {
@@ -934,11 +976,13 @@ input[type="checkbox"]:checked {
     .form__container { grid-template-columns: auto; }
     .footer__socialBtn { width: 75%; }
     .btn__outline { width: 50%; margin-top: 20px; }
+    .privacy-policy { margin: 0 20px; }
 }
 @media only screen and (max-width: 600px) {
     .animation__message { width: 100%; height: auto; }
     .btn__outline { width: 65%; }
     .oauth-box p { font-family: sans-serif; }
+    .privacy-policy { margin: 0 15px; }
 }
 @media (max-width:500px){
     .github-corner:hover .octo-arm{animation:none}

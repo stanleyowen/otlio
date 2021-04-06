@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core';
+import { faQuestionCircle, faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons/';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -13,13 +15,14 @@ const Login = () => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [honeypot, setHoneypot] = useState();
-    const [visible, setVisible] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [remember, setRemember] = useState(true);
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
         async function submitData(){
             btn.innerHTML = "Logging In...";
-            await axios.post(`${SERVER_URL}/account/login`, { email, password }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/login`, { email, password, rememberMe: remember }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
@@ -27,8 +30,8 @@ const Login = () => {
             btn.innerHTML = "Login";
         }
         if(honeypot) return;
-        else if(!email || !password) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Prvide a Valid Email Address !'); document.getElementById('email').focus(); }
+        else if(!email || !password) { setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!email ? 'userEmail' : 'userPassword').focus(); }
+        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
@@ -63,12 +66,16 @@ const Login = () => {
                         <div className="contact__formControl">
                             <div className="contact__infoField">
                                 <label htmlFor="userPassword">Password</label>
-                                <input title="Password" id="userPassword" type={ visible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="current-password"/>
+                                <input title="Password" id="userPassword" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="current-password"/>
                                 <span className="contact__onFocus"></span>
+                                <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
+                                    <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+                                </IconButton>
                             </div>
                         </div>
                         <div className="contact__formControl show-password">
-                            <input id="show-login-password" onClick={() => setVisible(!visible)} type="checkbox" /> <label htmlFor="show-login-password">Show Pasword</label>
+                            <FormControlLabel control={<Checkbox checked={remember} onChange={() => setRemember(!remember)} color="primary"/>}
+                            label="Stay Signed In"/><Tooltip placement="top" title="If you are using Public computer or WiFi, it is recommended to uncheck this and you'll be logged out after browsing session ends." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="small" /></span></Tooltip> 
                         </div>
                         <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
                         <p className="isCentered mt-10">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
