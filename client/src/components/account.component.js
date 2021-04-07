@@ -134,7 +134,7 @@ const Account = ({ userData }) => {
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                        <input title="Old Password" id="old-password" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete="current-password" />
+                                        <input title="Old Password" id="old-password" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ passwordVisible ? 'off':'current-password'} />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
                                             <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
@@ -145,7 +145,7 @@ const Account = ({ userData }) => {
                                     <div className="contact__formControl">
                                         <div className="contact__infoField">
                                             <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                            <input title="New Password" id="new-password" type={ newPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
+                                            <input title="New Password" id="new-password" type={ newPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ newPasswordVisible ? 'off':'new-password'} />
                                             <span className="contact__onFocus"></span>
                                             <IconButton className="view-eye" onClick={() => setNewPasswordVisible(!newPasswordVisible)}>
                                                 <FontAwesomeIcon icon={newPasswordVisible ? faEyeSlash : faEye} />
@@ -155,7 +155,7 @@ const Account = ({ userData }) => {
                                     <div className="contact__formControl">
                                         <div className="contact__infoField">
                                             <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                            <input title="Confirm New Password" id="confirm-password" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} spellCheck="false" autoCapitalize="none" required autoComplete="new-password" />
+                                            <input title="Confirm New Password" id="confirm-password" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} spellCheck="false" autoCapitalize="none" required autoComplete={ cfPasswordVisible ? 'off':'new-password'} />
                                             <span className="contact__onFocus"></span>
                                             <IconButton className="view-eye" onClick={() => setCfPasswordVisible(!cfPasswordVisible)}>
                                                 <FontAwesomeIcon icon={cfPasswordVisible ? faEyeSlash : faEye} />
@@ -163,6 +163,7 @@ const Account = ({ userData }) => {
                                         </div>
                                     </div>
                                 </div>
+                                <p className="isCentered"><a className="animation__underline" href="/reset-password">I forgot my password</a></p>
                                 <button type="submit" id="btn-changePassword" className="btn__outline" style={{outline: 'none'}}>Update</button>
                             </form>
                         </div>

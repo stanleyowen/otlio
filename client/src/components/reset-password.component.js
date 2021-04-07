@@ -22,7 +22,7 @@ const ResetPassword = () => {
 
     useEffect(() => {
         async function validateData() {
-            await axios.get(`${SERVER_URL}/account/forget-password`, { params: { token, id } })
+            await axios.get(`${SERVER_URL}/account/forgot-password`, { params: { token, id } })
             .then(res => setEmail(res.data.email))
             .catch(err => {
                 if(err.response.data.message || err.response.data.error_description){
@@ -42,10 +42,7 @@ const ResetPassword = () => {
             const data = { token, id, email, password, confirmPassword: confirmPsw }
             await axios.post(`${SERVER_URL}/account/reset-password`, data, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
             .then(() => window.location = '/')
-            .catch(err => {
-                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-                setTimeout(() => { window.location='/reset-password' }, 5000)
-            });
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");
             btn.innerHTML = "Change Password";
@@ -83,7 +80,7 @@ const ResetPassword = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="userPassword">Password <span className="required">*</span></label>
-                                    <input title="Password" id="userPassword" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <input title="Password" id="userPassword" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete={ passwordVisible ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
                                         <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
@@ -93,7 +90,7 @@ const ResetPassword = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
-                                    <input title="Confirm Password" id="userConfirmPassword" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <input title="Confirm Password" id="userConfirmPassword" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete={ cfPasswordVisible ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => setCfPasswordVisible(!cfPasswordVisible)}>
                                         <FontAwesomeIcon icon={cfPasswordVisible ? faEyeSlash : faEye} />

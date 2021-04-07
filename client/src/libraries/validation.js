@@ -79,5 +79,12 @@ export const closeModal = (a, b) => {
 
 export const Logout = async (id, email) => {
     await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true})
-    .then(() => window.location = '/login')
+    .then(() => {
+        localStorage.setItem('info', JSON.stringify({ statusCode: 200, message: 'You have been logged out successfully.' }))
+        window.location = '/login'
+    })
+    .catch(err => {
+        localStorage.setItem('info', JSON.stringify(err.response.data))
+        window.location = '/welcome'
+    })
 }
