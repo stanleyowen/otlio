@@ -22,10 +22,9 @@ const userSchema = new Schema ({
             type: String,
             default: null,
             maxlength: 10,
-        }, status: {
-            type: String,
-            default: null,
-            maxlength: 10,
+        }, verified: {
+            type: Boolean,
+            default: false,
         }
     },
 }, {

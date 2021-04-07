@@ -25,7 +25,7 @@ const MSG_DESC = [
     'Data Added Successfully',                                          // 23
     'Account Successfuly Connected to Google',                          // 24
     'Account Failed to Connect to Google',                              // 25
-    'Account Connected with GitHub',                                    // 26
+    'Account Successfuly Connected with GitHub',                        // 26
     'Account Failed to Connect to GitHub',                              // 27
     'Connecting Account with Multiple Third Parties Feature will be available in the Future Release.', // 28
     'Password Reset Link Sent Successfully',                            // 29
