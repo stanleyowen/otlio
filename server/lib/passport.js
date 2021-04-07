@@ -253,7 +253,7 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
     })
 }))
 
-passport.use('connectGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: `${process.env.GOOGLE_CALLBACK}?connect=true` }, (accessToken, refreshToken, profile, done) => {
+passport.use('connectGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: `${process.env.GOOGLE_CALLBACK}/connect` }, (accessToken, refreshToken, profile, done) => {
     const email = profile._json.email;
     User.findOne({email, 'thirdParty.isThirdParty': false}, (err, user) => {
         if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
