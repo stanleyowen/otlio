@@ -122,10 +122,10 @@ passport.use('forgetPassword', new localStrategy({ usernameField: 'email', passw
         Token.find({ ipAddr: ip }, (err, data) => {
             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
             else if(data && data.length >= 5) return done(null, false, { status: 403, message: MSG_DESC[30] });
-            else if(!data || data.length <= 5){
-                User.findOne({email}, (err, user) => {
+            else if(!data || data.length < 5){
+                User.findOne({ email }, (err, user) => {
                     if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                    else if(!user) return done(null, false, { status: 400, message: MSG_DESC[15] });
+                    else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
                     else {
                         const token = crypto.randomBytes(150).toString("hex");
                         const createToken = new Token({ ipAddr: ip, userId: user.id, token })
@@ -167,26 +167,17 @@ passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwo
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(password.length < 6 || password.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] });
     else {
-        Token.findOneAndDelete({token, userId: id}, (err, token) => {
+        bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-            else if(!token) return done(null, false, { status: 400, message: MSG_DESC[10] });
-            else if(token){
-                User.findOne({_id: id, email}, (err, user) => {
+            else {
+                User.findOneAndUpdate({_id: id, email}, { password: hash }, (err, user) => {
                     if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                    else if(!user) return done(null, false, { status: 400, message: MSG_DESC[8] });
+                    else if(!user) return done(null, false, { status: 401, message: MSG_DESC[10] });
                     else if(user) {
-                        bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+                        Token.findOneAndDelete({token, userId: id}, (err, data) => {
                             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                            else {
-                                bcrypt.hash(password, salt, (err, hash) => {
-                                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                                    else {
-                                        user.password = hash;
-                                        user.save()
-                                        return done(null, user, { status: 200, message: MSG_DESC[6] });
-                                    }
-                                })
-                            }
+                            else if(!data) return done(null, false, { status: 400, message: MSG_DESC[32] });
+                            else if(data) return done(null, user, { status: 200, message: MSG_DESC[6] });
                         })
                     }
                 })
