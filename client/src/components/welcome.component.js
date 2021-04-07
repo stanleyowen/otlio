@@ -39,8 +39,8 @@ const Landing = () => {
                 <a href="get-started" className="btn__outline">Get Started</a>
             </div>
             <div className="isCentered badges">
-                <a href="https://github.com/stanleyowen/todo-application/"><button className="btn__label">License</button><button className="btn__value">{repoInfo[0]}</button></a>
-                <a href="https://github.com/stanleyowen/todo-application/stargazers"><button className="btn__label">Stars</button><button className="btn__value">{repoInfo[1]}</button></a>
+                <a href="https://github.com/stanleyowen/todo-application/"><button className="btn__label">Stars</button><button className="btn__value">{repoInfo[0]}</button></a>
+                <a href="https://github.com/stanleyowen/todo-application/stargazers"><button className="btn__label">License</button><button className="btn__value">{repoInfo[1]}</button></a>
                 <a href="https://github.com/stanleyowen/todo-application/releases"><button className="btn__label">Version</button><button className="btn__value">{currentversion}</button></a>
             </div>
         </div>
