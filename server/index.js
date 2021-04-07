@@ -26,16 +26,16 @@ app.use(passport.initialize());
 app.use(csrf({
     cookie: true,
     cookie: {
-        sameSite: status === 'production' ? 'none' : false,
-        secure: process.env.NODE_ENV === 'production' ? true : false
+        secure: status === 'production' ? true : false,
+        sameSite: status === 'production' ? 'none' : 'strict'
     }
 }));
 app.use((req, res, next) => {
     var token = req.csrfToken();
     res.cookie('XSRF-TOKEN', token, {
         maxAge: 24 * 60 * 60,
-        sameSite: status === 'production' ? 'none' : false,
-        secure: process.env.NODE_ENV === 'production' ? true : false
+        secure: status === 'production' ? true : false,
+        sameSite: status === 'production' ? 'none' : 'strict'
     });
     res.locals.csrfToken = token;
     next();
