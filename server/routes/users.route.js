@@ -23,7 +23,7 @@ router.post('/register', (req, res, next) => {
                         maxAge: 86400000,
                         httpOnly: true,
                         secure: status === 'production' ? true : false,
-                        sameSite: status === 'production' ? 'none' : false
+                        sameSite: status === 'production' ? 'none' : 'strict'
                     }).json({
                         statusCode: info.status,
                         message: info.message
@@ -42,30 +42,15 @@ router.post('/login', (req, res, next) => {
             req.logIn(user, err => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                 else {
-                    if(req.body.rememberMe){
-                        res.cookie('jwt-token', jwt.sign({
-                            id: user.id,
-                            email: user.email
-                        }, jwtSecret, { expiresIn: '1d' }), {
-                            maxAge: 86400000,
-                            httpOnly: true,
-                            secure: status === 'production' ? true : false,
-                            sameSite: status === 'production' ? 'none' : false
-                        })
-                    }else {
-                        res.cookie('jwt-token', jwt.sign({
-                            id: user.id,
-                            email: user.email
-                        }, jwtSecret, { expiresIn: '1d' }), {
-                            httpOnly: true,
-                            secure: status === 'production' ? true : false,
-                            sameSite: status === 'production' ? 'none' : false
-                        })
-                    }
-                    return res.json({
-                        statusCode: info.status,
-                        message: info.message
-                    })
+                    return res.cookie('jwt-token', jwt.sign({
+                        id: user.id,
+                        email: user.email
+                    }, jwtSecret, { expiresIn: '1d' }), {
+                        expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
+                        httpOnly: true,
+                        secure: status === 'production' ? true : false,
+                        sameSite: status === 'production' ? 'none' : 'strict'
+                    }).json({ statusCode: info.status, message: info.message })
                 }
             });
         }
@@ -79,7 +64,7 @@ router.get('/user', (req, res, next) => {
         else if(user){
             BlacklistedToken.findOne({ token: req.cookies['jwt-token'] }, (err, isListed) => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-                else if(isListed) return res.status(401).json({statusCode: 401, message: MSG_DESC[15]});
+                else if(isListed) return res.status(403).json({statusCode: 403, message: MSG_DESC[15]});
                 else if(!isListed){
                     return res.json({
                         statusCode: 200,
@@ -96,12 +81,12 @@ router.get('/user', (req, res, next) => {
 })
 
 router.put('/user', (req, res, next) => {
-    const {id} = req.body;
+    const {id, email} = req.body;
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
         else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
-        else if(user && user.id === id){
-            passport.authenticate('editAccount', { session: false }, (err, account, info) => {
+        else if(user.id === id && user.email === email){
+            passport.authenticate('changePassword', { session: false }, (err, account, info) => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                 else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
                 else if(account) {
@@ -112,7 +97,7 @@ router.put('/user', (req, res, next) => {
                         maxAge: 86400000,
                         httpOnly: true,
                         secure: status === 'production' ? true : false,
-                        sameSite: status === 'production' ? 'none' : false
+                        sameSite: status === 'production' ? 'none' : 'strict'
                     }).json({
                         statusCode: info.status,
                         message: info.message
@@ -123,20 +108,20 @@ router.put('/user', (req, res, next) => {
     })(req, res, next)
 })
 
-router.get('/forget-password', (req, res, next) => {
+router.get('/forgot-password', (req, res, next) => {
     req.params = req.query;
-    passport.authenticate('getForgetPasswordData', { session: false }, (err, user, info) => {
+    passport.authenticate('tokenData', { session: false }, (err, user, info) => {
         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message})
         else return res.json({statusCode: info.status, message: info.message, email: user.email})
     })(req, res, next)
 })
 
-router.post('/forget-password', (req, res, next) => {
-    passport.authenticate('forgetPassword', { session: false }, (err, user, info) => {
+router.post('/forgot-password', (req, res, next) => {
+    passport.authenticate('forgotPassword', { session: false }, (err, user, info) => {
         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
         else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message})
-        else res.json({statusCode: info.status, message: info.message})
+        else if(user) res.json({ statusCode: info.status, message: info.message })
     })(req, res, next)
 })
 
@@ -152,11 +137,8 @@ router.post('/reset-password', (req, res, next) => {
                 maxAge: 86400000,
                 httpOnly: true,
                 secure: status === 'production' ? true : false,
-                sameSite: status === 'production' ? 'none' : false
-            }).json({
-                statusCode: info.status,
-                message: info.message
-            });
+                sameSite: status === 'production' ? 'none' : 'strict'
+            }).json({ statusCode: info.status, message: info.message });
         }
     })(req, res, next)
 })
@@ -166,17 +148,12 @@ router.post('/logout', (req, res, next) => {
     if(!id || !email) return res.status(400).json({statusCode: 400, message: MSG_DESC[3]});
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
+            res.clearCookie('jwt-token')
             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
             else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
             else if(user.id === id && user.email === email){
-                const blacklistedToken = new BlacklistedToken ({ userId: id, token: req.cookies['jwt-token'] })
-                blacklistedToken.save();
-                return res.cookie('jwt-token', '', {
-                    maxAge: 0,
-                    httpOnly: true,
-                    secure: status === 'production' ? true : false,
-                    sameSite: status === 'production' ? 'none' : false
-                }).json({ statusCode: 200, message: MSG_DESC[3] });
+                new BlacklistedToken ({ userId: id, token: req.cookies['jwt-token'] }).save();
+                return res.json({ statusCode: 200, message: MSG_DESC[3] });
             }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
         })(req, res, next)
     }

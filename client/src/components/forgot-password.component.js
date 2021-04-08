@@ -16,8 +16,11 @@ const ResetPassword = () => {
         const btn = document.getElementById('reset-password');
         async function submitData(){
             btn.innerHTML = "Sending...";
-            await axios.post(`${SERVER_URL}/account/forget-password`, { email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
-            .then(() => setSent(true))
+            await axios.post(`${SERVER_URL}/account/forgot-password`, { email }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            .then(res => {
+                setSent(true)
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
+            })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
             btn.classList.remove("disabled");

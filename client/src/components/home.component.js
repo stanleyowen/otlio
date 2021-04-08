@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from 'react';
+import DateFnsUtils from "@date-io/date-fns";
 import { IconButton, Tooltip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons/';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import axios from 'axios';
 
-import { labels, validateLabel, getCSRFToken, formatDate, openModal, closeModal } from '../libraries/validation';
+import { labels, validateLabel, getCSRFToken, openModal, closeModal } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 
-const timestamps = () => {
-    var today = new Date();
-    var date = today.getDate();
-    var month = today.getMonth() + 1;
-    var year = today.getFullYear();
-    if(date < 10) date = '0'+date;
-    if(month < 10) month = '0'+month;
-    return year+'-'+month+'-'+date;
+const convertDate = (e) => {
+    if(e) var d = new Date(e);
+    else var d = new Date();
+    var month = d.getMonth() + 1;
+    var day = d.getDate();
+    var year = d.getFullYear();
+    if (month <= 9) month = '0' + month;
+    if (day <= 9) day = '0' + day;
+    return [day, month, year].join('-');
 }
 
 const validateTimestamp = (a, b) => {
-    var date = formatDate(a)
-    var data = parseInt(date.split('-')[2]);
-    var yesterday = parseInt(b.split('-')[2]) - 1;
-    var today = parseInt(b.split('-')[2]);
-    var tomorrow = parseInt(b.split('-')[2]) + 1;
+    var data = parseInt(a.split('-')[0]);
+    var yesterday = parseInt(b.split('-')[0]) - 1;
+    var today = parseInt(b.split('-')[0]);
+    var tomorrow = parseInt(b.split('-')[0]) + 1;
     if(data === yesterday) return <b>Yesterday</b>;
     else if(data === today) return <b>Today</b>;
     else if(data === tomorrow) return <b>Tomorrow</b>;
-    else return reverseDateFormat(date);
-}
-
-const reverseDateFormat = (e) => {
-    var a = e.split('-');
-    return(a[2]+'-'+a[1]+'-'+a[0])
+    else return a;
 }
 
 const labeling = (a) => {
@@ -55,7 +51,7 @@ const Home = ({ userData }) => {
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
     const [todoData, setTodoData] = useState(null);
     const [title, setTitle] = useState();
-    const [date, setDate] = useState(timestamps);
+    const [date, setDate] = useState(new Date());
     const [description, setDescription] = useState();
     const [label, setLabel] = useState(labels[0].toLowerCase());
     const wrapper = React.createRef();
@@ -106,7 +102,7 @@ const Home = ({ userData }) => {
                     <tr key={a._id}>
                         <td>{a.title}<br/>{a.description}</td>
                         <td>{labeling(titleCase(a.label))}</td>
-                        <td>{validateTimestamp(a.date.substring(10, 0), timestamps())}</td>
+                        <td>{validateTimestamp(convertDate(a.date), convertDate())}</td>
                         <td>
                             <span className="btn-config">
                                 <Tooltip title="Edit Task">
@@ -133,7 +129,7 @@ const Home = ({ userData }) => {
                     <tr key={a._id}>
                         <td>{a.title}<br/>{a.description}</td>
                         <td>{labeling(titleCase(a.label))}</td>
-                        <td>{validateTimestamp(a.date.substring(10, 0), timestamps())}</td>
+                        <td>{validateTimestamp(convertDate(a.date), convertDate())}</td>
                         <td>
                             <span className="btn-config">
                                 <Tooltip title="Edit Task">
@@ -184,7 +180,7 @@ const Home = ({ userData }) => {
                 setTitle('');
                 setLabel(labels[0].toLowerCase());
                 setDescription('');
-                setDate(timestamps);
+                setDate(new Date());
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
@@ -193,11 +189,10 @@ const Home = ({ userData }) => {
             getTodoData();
         }
         if(!email || !userId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !")
+        else if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !")
         else if(title.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !")
         else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
         else if(description && description.length > 120) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !")
-        else if(date.length !== 10 || DATE_VAL.test(String(date)) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !")
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
@@ -222,9 +217,18 @@ const Home = ({ userData }) => {
                                 </div>
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
-                                        <label htmlFor="label">Date <span className="required">*</span></label>
-                                        <input type="date" className="contact__inputField datepicker" onChange={(event) => setDate(event.target.value)} value={date}></input>
-                                        <span className="contact__onFocus"></span>
+                                        <label htmlFor="date">Date <span className="required">*</span></label>
+                                        <div className="datepicker">
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    format="dd/MM/yyyy"
+                                                    id="date"
+                                                    value={date}
+                                                    onChange={(event) => setDate(event)}
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

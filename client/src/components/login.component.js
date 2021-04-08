@@ -22,7 +22,7 @@ const Login = () => {
         const btn = document.getElementById('login');
         async function submitData(){
             btn.innerHTML = "Logging In...";
-            await axios.post(`${SERVER_URL}/account/login`, { email, password, rememberMe: remember }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/login`, { email, password, rememberMe: remember }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0] }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");
@@ -66,7 +66,7 @@ const Login = () => {
                         <div className="contact__formControl">
                             <div className="contact__infoField">
                                 <label htmlFor="userPassword">Password</label>
-                                <input title="Password" id="userPassword" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="current-password"/>
+                                <input title="Password" id="userPassword" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete={ passwordVisible ? 'off':'current-password'} />
                                 <span className="contact__onFocus"></span>
                                 <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
                                     <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />

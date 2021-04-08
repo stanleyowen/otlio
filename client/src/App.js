@@ -12,7 +12,7 @@ import Welcome from './components/welcome.component';
 import Register from './components/register.component';
 import Login from './components/login.component';
 import ResetPassword from './components/reset-password.component';
-import ReqResetPassword from './components/forget-password.component';
+import ReqResetPassword from './components/forgot-password.component';
 import Home from './components/home.component';
 import EditTodo from './components/edit.component';
 import OAuth from './components/register-oauth.component';

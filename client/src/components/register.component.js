@@ -74,7 +74,7 @@ const Register = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="userPassword">Password <span className="required">*</span></label>
-                                    <input title="Password" id="userPassword" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <input title="Password" id="userPassword" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete={ passwordVisible ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
                                         <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
@@ -84,7 +84,7 @@ const Register = () => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
-                                    <input title="Confirm Password" id="userConfirmPassword" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete="new-password"/>
+                                    <input title="Confirm Password" id="userConfirmPassword" type={ cfPasswordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPsw(event.target.value)} value={confirmPsw} required spellCheck="false" autoCapitalize="none" autoComplete={ cfPasswordVisible ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => setCfPasswordVisible(!cfPasswordVisible)}>
                                         <FontAwesomeIcon icon={cfPasswordVisible ? faEyeSlash : faEye} />

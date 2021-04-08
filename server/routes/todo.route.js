@@ -2,6 +2,7 @@ const passport = require('passport');
 const router = require('express').Router();
 
 let Todo = require('../models/todo.model');
+
 const { encrypt, decrypt } = require('../lib/crypto');
 const MSG_DESC = require('../lib/callback');
 
@@ -17,7 +18,7 @@ const validateLabel = (e) => {
     }
 }
 
-router.get('/data', (req,res,next) => {
+router.get('/data', (req, res, next) => {
     const {userId, id, email} = req.query;
     if(!userId || !email) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
     else {
@@ -26,11 +27,11 @@ router.get('/data', (req,res,next) => {
             else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
             else if(user.id === userId && user.email === email){
                 if(id){
-                    Todo.findOne({_id: id, email}, (err, data) => {
+                    Todo.findOne({ _id: id, email }, (err, data) => {
                         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                         else if(!data) return res.status(404).json({statusCode: 404, message: MSG_DESC[13]});
                         else if(data){
-                            res.json({
+                            return res.json({
                                 _id: data._id,
                                 email: data.email,
                                 title: decrypt(data.title),
@@ -56,23 +57,22 @@ router.get('/data', (req,res,next) => {
                                 };
                                 todoData.push(loopData);
                             }
-                            res.json(todoData);
+                            return res.json(todoData);
                         }
                     })
                 }
-            }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
+            }else return res.status(403).json({statusCode: 403, message: MSG_DESC[16]});
         })(req, res, next)
     }
 })
 
-router.put('/data', (req,res,next) => {
-    const {userId, email, id, title, label, description, date: unformattedDate} = req.body;
-    if(!userId || !id || !email || !title || !label || !unformattedDate) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
+router.put('/data', (req, res, next) => {
+    const {userId, id, email, title, label, description, date} = req.body;
+    if(!userId || !id || !email || !title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
     else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
     else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
     else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
-    else if(DATE_VAL.test(String(unformattedDate)) === false) return res.status(400).json({statusCode: 400, message: MSG_DESC[20]});
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
@@ -82,21 +82,21 @@ router.put('/data', (req,res,next) => {
                     title: encrypt(title),
                     label: encrypt(label),
                     description: description ? encrypt(description) : { data: '', iv: '' },
-                    date: encrypt(String(Date.parse(unformattedDate)))
+                    date: encrypt(date)
                 }
                 Todo.findOneAndUpdate({ _id: id, email: user.email }, updateData, (err, updated) => {
                     if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-                    else if(!updated) return res.status(401).json({statusCode: 401, message: MSG_DESC[10]});
+                    else if(!updated) return res.status(404).json({statusCode: 404, message: MSG_DESC[13]});
                     else if(updated) res.json({statusCode: 200, message: MSG_DESC[21]});
                 })
-            }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
+            }else return res.status(403).json({statusCode: 403, message: MSG_DESC[16]});
         })(req, res, next)
     }
 })
 
-router.delete('/data', (req,res,next) => {
-    const {email, id, objId} = req.body;
-    if(!email || !id || !objId) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
+router.delete('/data', (req, res, next) => {
+    const {id, email, objId} = req.body;
+    if(!id || !email || !objId) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
@@ -105,33 +105,31 @@ router.delete('/data', (req,res,next) => {
             else if(user.id === id && user.email === email){
                 Todo.findOneAndDelete({ _id: objId, email }, (err, deleted) => {
                     if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-                    else if(!deleted) return res.status(401).json({statusCode: 401, message: MSG_DESC[10]});
+                    else if(!deleted) return res.status(404).json({statusCode: 404, message: MSG_DESC[13]});
                     else if(deleted) return res.json({statusCode: 200, message: MSG_DESC[22]});
                 })
-            }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
+            }else return res.status(403).json({statusCode: 403, message: MSG_DESC[16]});
         })(req, res, next)
     }
 })
 
-router.post('/data', (req,res,next) => {
-    const {email, id, title, label, description, date: unformattedDate} = req.body;
-    if(!email || !id || !title || !label || !unformattedDate) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
+router.post('/data', (req, res, next) => {
+    const {email, id, title, label, description, date} = req.body;
+    if(!email || !id || !title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
     else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
     else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
     else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
-    else if(DATE_VAL.test(String(unformattedDate)) === false) return res.status(400).json({statusCode: 400, message: MSG_DESC[20]});
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
             else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
             else if(user.id === id && user.email === email){
                 let dataDescription = { data: '', iv: '' };
-                const date = Date.parse(unformattedDate);
                 const dataTitle = encrypt(title);
                 const dataLabel = encrypt(label);
                 if(description){ dataDescription = encrypt(description) }
-                const dataDate = encrypt(String(date));
+                const dataDate = encrypt(date);
                 const todoData = {
                     email,
                     title: {
@@ -151,11 +149,10 @@ router.post('/data', (req,res,next) => {
                         iv: dataDate.iv,
                     }
                 }
-                const newTodo = new Todo(todoData)
-                newTodo.save()
+                new Todo(todoData).save()
                 .then(() => res.json({statusCode: 200, message: MSG_DESC[23]}))
                 .catch(() => res.status(500).json({statusCode: 500, message: MSG_DESC[0]}));        
-            }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
+            }else return res.status(403).json({statusCode: 403, message: MSG_DESC[16]});
         })(req, res, next)
     }
 })

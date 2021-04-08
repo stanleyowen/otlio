@@ -23,14 +23,15 @@ const MSG_DESC = [
     'Data Updated Successfully',                                        // 21
     'Data Deleted Successfully',                                        // 22
     'Data Added Successfully',                                          // 23
-    'Account Successfuly Connected to Google',                          // 24
+    'Account Connected Successfully to Google',                         // 24
     'Account Failed to Connect to Google',                              // 25
-    'Account Connected with GitHub',                                    // 26
+    'Account Connected Successfully with GitHub',                       // 26
     'Account Failed to Connect to GitHub',                              // 27
     'Connecting Account with Multiple Third Parties Feature will be available in the Future Release.', // 28
-    'Recovery Codes Sent Successfully',                                 // 29
+    'Password Reset Link Sent Successfully',                            // 29
     'You have excedeed the maximum number of request verification allowed. Please try again in another hour.', // 30
-    'It looks like you clicked on an invalid password reset link. Please try again.' // 31
+    'It looks like you clicked on an invalid password reset link. Please try again.', // 31
+    'No Users Found'                                                    // 32
 ];
 
 module.exports = MSG_DESC;
