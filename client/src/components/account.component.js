@@ -60,11 +60,6 @@ const Account = ({ userData }) => {
         info.classList.add('closeModal');
         setTimeout(() => { infos.removeChild(info) }, 200);
     }
-
-    const notify = (e) => {
-        e.preventDefault();
-        setNotification(NOTIFICATION_TYPES.WARNING, 'Connecting Account with Multiple Third Parties Feature will be available in the Future Release.')
-    }
     return (
         <div>
             { !email ?
@@ -109,13 +104,13 @@ const Account = ({ userData }) => {
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
                     <div className="form__container">
                         <div className="contact__formControl">
-                            <button className="oauth-box google" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.provider === "github" ? notify : null : ConnectOAuthGoogle}>
-                                <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.provider === "google" ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.provider === "google" ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
+                            <button className="oauth-box google" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.google ? null : ConnectOAuthGoogle : ConnectOAuthGoogle}>
+                                <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
                             </button>
                         </div>
                         <div className="contact__formControl">
-                            <button className="oauth-box github" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.provider === "google" ? notify : null : ConnectOAuthGitHub}>
-                                <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.provider === "github" ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.provider === "github" ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
+                            <button className="oauth-box github" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.github ? null : ConnectOAuthGitHub : ConnectOAuthGitHub}>
+                                <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
                             </button>
                         </div>
                     </div>

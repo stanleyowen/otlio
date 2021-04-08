@@ -8,23 +8,29 @@ const userSchema = new Schema ({
         trim: true,
         required: true,
         minlength: 6,
-        maxlength: 40,
+        maxlength: 40
     },
     password : {
         type: String,
-        maxlength: 60,
+        maxlength: 60
     },
     thirdParty: {
         isThirdParty: {
             type: Boolean,
             default: false,
-        }, provider: {
-            type: String,
-            default: null,
-            maxlength: 10,
+            required: true
+        }, google: {
+            type: Boolean,
+            default: false,
+            required: true
+        }, github: {
+            type: Boolean,
+            default: false,
+            required: true
         }, verified: {
             type: Boolean,
             default: false,
+            required: true
         }
     },
 }, {
