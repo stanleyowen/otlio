@@ -8,14 +8,13 @@ import { labels, validateLabel, getCSRFToken, formatDate } from '../libraries/va
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const DATE_VAL = /^(19|20|21)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/;
 
 const Edit = ({ userData }) => {
     let isDiffer = false;
     const {email, id: userId, authenticated, isLoading} = userData;
     const {id} = useParams();
     const [title, setTitle] = useState();
-    const [date, setDate] = useState();
+    const [date, setDate] = useState(new Date(null));
     const [description, setDescription] = useState();
     const [data, setData] = useState({});
     const [isFetching, setFetching] = useState(true);
@@ -26,7 +25,7 @@ const Edit = ({ userData }) => {
             await axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId, email}, withCredentials: true })
             .then(res => {
                 setTitle(res.data.title);
-                setDate(formatDate(res.data.date));
+                setDate(res.data.date);
                 setDescription(res.data.description);
                 setLabel(res.data.label);
                 setData(res.data);
@@ -69,7 +68,6 @@ const Edit = ({ userData }) => {
         else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !") }
         else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
         else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !") }
-        else if(DATE_VAL.test(String(date)) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !") }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }        
     }
 

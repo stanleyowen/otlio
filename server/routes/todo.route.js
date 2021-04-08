@@ -67,13 +67,12 @@ router.get('/data', (req, res, next) => {
 })
 
 router.put('/data', (req, res, next) => {
-    const {userId, id, email, title, label, description, date: unformattedDate} = req.body;
-    if(!userId || !id || !email || !title || !label || !unformattedDate) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
+    const {userId, id, email, title, label, description, date} = req.body;
+    if(!userId || !id || !email || !title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
     else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
     else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
     else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
-    else if(DATE_VAL.test(String(unformattedDate)) === false) return res.status(400).json({statusCode: 400, message: MSG_DESC[20]});
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
@@ -83,7 +82,7 @@ router.put('/data', (req, res, next) => {
                     title: encrypt(title),
                     label: encrypt(label),
                     description: description ? encrypt(description) : { data: '', iv: '' },
-                    date: encrypt(String(Date.parse(unformattedDate)))
+                    date: encrypt(date)
                 }
                 Todo.findOneAndUpdate({ _id: id, email: user.email }, updateData, (err, updated) => {
                     if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
@@ -115,24 +114,22 @@ router.delete('/data', (req, res, next) => {
 })
 
 router.post('/data', (req, res, next) => {
-    const {email, id, title, label, description, date: unformattedDate} = req.body;
-    if(!email || !id || !title || !label || !unformattedDate) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
+    const {email, id, title, label, description, date} = req.body;
+    if(!email || !id || !title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
     else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
     else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
     else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
-    else if(DATE_VAL.test(String(unformattedDate)) === false) return res.status(400).json({statusCode: 400, message: MSG_DESC[20]});
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
             else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
             else if(user.id === id && user.email === email){
                 let dataDescription = { data: '', iv: '' };
-                const date = Date.parse(unformattedDate);
                 const dataTitle = encrypt(title);
                 const dataLabel = encrypt(label);
                 if(description){ dataDescription = encrypt(description) }
-                const dataDate = encrypt(String(date));
+                const dataDate = encrypt(date);
                 const todoData = {
                     email,
                     title: {
