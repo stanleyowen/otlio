@@ -29,7 +29,7 @@ Todo Application is an **open source** project, completed with highest standard 
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.5.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.6.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder

@@ -77,6 +77,12 @@ const Account = ({ userData }) => {
                         <button className="closeBtn" onClick={() => closeInfo('info-oauth')}>&times;</button>
                         <p className="mt-10">Connecting an account with Multiple Third Parties Feature will be available in the Future Release.</p>
                     </blockquote>
+                    <blockquote id="info-oauth">
+                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
+                        <span className="info-title">Account Verification</span>
+                        <button className="closeBtn" onClick={() => closeInfo('info-oauth')}>&times;</button>
+                        <p className="mt-10">Dear Users, starting from 1st May 2021, Todo Application will Verify All Accounts by sending verification through email. We are sorry to inform that unverified accounts will no longer able to use our services. More information about policy will be posted on the next release.</p>
+                    </blockquote>
                 </div>
                 <div className="form__contact">
                     <div className="get_in_touch"><h1>Account</h1></div>
