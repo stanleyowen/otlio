@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import DateFnsUtils from "@date-io/date-fns";
 import { IconButton, Tooltip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons/';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import axios from 'axios';
 
 import { labels, validateLabel, getCSRFToken, formatDate, openModal, closeModal } from '../libraries/validation';
@@ -55,7 +57,7 @@ const Home = ({ userData }) => {
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
     const [todoData, setTodoData] = useState(null);
     const [title, setTitle] = useState();
-    const [date, setDate] = useState(timestamps);
+    const [date, setDate] = useState(new Date());
     const [description, setDescription] = useState();
     const [label, setLabel] = useState(labels[0].toLowerCase());
     const wrapper = React.createRef();
@@ -192,12 +194,13 @@ const Home = ({ userData }) => {
             btn.innerHTML = "Add";
             getTodoData();
         }
+        console.log(String(formatDate(date)))
         if(!email || !userId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !")
+        else if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !")
         else if(title.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !")
         else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
         else if(description && description.length > 120) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !")
-        else if(date.length !== 10 || DATE_VAL.test(String(date)) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !")
+        else if(DATE_VAL.test(String(date)) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Date !")
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
 
@@ -222,9 +225,18 @@ const Home = ({ userData }) => {
                                 </div>
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
-                                        <label htmlFor="label">Date <span className="required">*</span></label>
-                                        <input type="date" className="contact__inputField datepicker" onChange={(event) => setDate(event.target.value)} value={date}></input>
-                                        <span className="contact__onFocus"></span>
+                                        <label htmlFor="date">Date <span className="required">*</span></label>
+                                        <div className="datepicker">
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    format="dd/MM/yyyy"
+                                                    id="date"
+                                                    value={date}
+                                                    onChange={(event) => setDate(event)}
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

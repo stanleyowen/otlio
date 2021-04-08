@@ -59,8 +59,9 @@ body.dark .footer,
 body.dark .toggleNavbar button,
 body.dark blockquote,
 body.dark .closeBtn,
-body.dark .view-eye svg {
-    color: #FFFFFF;
+body.dark .view-eye svg,
+body.dark .MuiIconButton-root span svg {
+    color: #FFFFFF !important;
 }
 body.dark .bar1,
 body.dark .bar2,
@@ -104,6 +105,8 @@ body.dark .btn__value {
     border-style: solid;
     color: #333;
 }
+body.dark .MuiInput-underline:after { border-bottom: 2px solid #FFFFFF !important; }
+body.dark .MuiInput-underline:hover:not(.Mui-disabled):before { border-bottom: 1px solid #7c7c7c !important; }
 button, a { user-select: none; cursor: pointer; }
 label { user-select: none; }
 .privacy-policy {
@@ -616,9 +619,20 @@ select {
     background-color: transparent;
     border-bottom: 1px solid #7c7c7c;
 }
-.datepicker {
-    width: 95%!important;
+.datepicker > .MuiFormControl-root {
+    width: 100%!important;
+    margin-top: 2px;
 }
+.MuiInput-underline:after { border-bottom: 2px solid #1a73e8 !important; }
+.MuiInput-underline:not(.Mui-disabled):before { border-bottom: 1px solid #7c7c7c !important; }
+.MuiInput-underline:hover:not(.Mui-disabled):before { border-bottom: 1px solid #7c7c7c !important; }
+.datepicker > .MuiFormControl-root > .MuiInput-underline {
+    text-decoration: none;
+    padding: 5px;
+    position: relative;
+}
+.MuiInput-underline:after { transition: all 0.35s !important; }
+.MuiIconButton-root span svg{ color: #212121 !important; }
 .notifications {
     position: fixed;
     bottom: 15px;
@@ -653,17 +667,17 @@ select {
 .notification-success { background-color: #55b559; }
 .notification-warning { background-color: #ffcc00; color: black; }
 .notification-danger { background-color: #f55145; }
-.contact__onFocus {
-    transition: all 0.5s;
-    display: inline-block;
+.contact__onFocus {    
+    width: 0;
     bottom: 0;
-    left: -100%;
-    position: absolute;
-    width: 100%;
+    left: 50%;
     height: 2px;
+    position: absolute;
+    display: inline-block;
     background: #1a73e8;
+    transition: width 0.35s ease 0s, left 0.35s ease 0s;
 }
-.contact__infoField .contact__inputField:focus + .contact__onFocus { left: 0; }
+.contact__infoField .contact__inputField:focus + .contact__onFocus { width: 100%; left: 0; }
 #form {
     width: 60%;
     padding-top: 100px;

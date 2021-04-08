@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import DateFnsUtils from "@date-io/date-fns";
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import axios from 'axios';
 
 import { labels, validateLabel, getCSRFToken, formatDate } from '../libraries/validation';
@@ -94,8 +96,17 @@ const Edit = ({ userData }) => {
                         <div className="contact__formControl">
                             <div className="contact__infoField">
                                 <label htmlFor="label">Date <span className="required">*</span></label>
-                                <input type="date" className="contact__inputField datepicker" onChange={(event) => setDate(event.target.value)} value={date} required></input>
-                                <span className="contact__onFocus"></span>
+                                <div className="datepicker">
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <KeyboardDatePicker
+                                            margin="normal"
+                                            format="dd/MM/yyyy"
+                                            id="date"
+                                            value={date}
+                                            onChange={(event) => setDate(event)}
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                </div>
                             </div>
                         </div>
                     </div>
