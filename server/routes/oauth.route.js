@@ -22,6 +22,7 @@ router.get('/github', async (req, res, next) => {
                 id: user.id,
                 email: user.email
             }, jwtSecret, { expiresIn: '1d' }), {
+                path: '/',
                 maxAge: 86400000,
                 httpOnly: true,
                 secure: status === 'production' ? true : false,
@@ -80,6 +81,7 @@ router.get('/google', (req, res, next) => {
                 id: user.id,
                 email: user.email
             }, jwtSecret, { expiresIn: '1d' }), {
+                path: '/',
                 maxAge: 86400000,
                 httpOnly: true,
                 secure: status === 'production' ? true : false,
@@ -141,10 +143,11 @@ router.post('/:provider/register', (req, res, next) => {
             req.logIn(user, err => {
                 if(err) res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                 else {
-                    res.cookie('jwt-token', jwt.sign({
+                    return res.cookie('jwt-token', jwt.sign({
                         id: user.id,
                         email: user.email
                     }, jwtSecret, { expiresIn: '1d' }), {
+                        path: '/',
                         maxAge: 86400000,
                         httpOnly: true,
                         secure: status === 'production' ? true : false,

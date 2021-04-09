@@ -16,10 +16,11 @@ router.post('/register', (req, res, next) => {
             req.logIn(user, err => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                 else {
-                    res.cookie('jwt-token', jwt.sign({
+                    return res.cookie('jwt-token', jwt.sign({
                         id: user.id,
                         email: user.email
                     }, jwtSecret, { expiresIn: '1d' }), {
+                        path: '/',
                         maxAge: 86400000,
                         httpOnly: true,
                         secure: status === 'production' ? true : false,
@@ -46,6 +47,7 @@ router.post('/login', (req, res, next) => {
                         id: user.id,
                         email: user.email
                     }, jwtSecret, { expiresIn: '1d' }), {
+                        path: '/',
                         expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
                         httpOnly: true,
                         secure: status === 'production' ? true : false,
@@ -94,6 +96,7 @@ router.put('/user', (req, res, next) => {
                         id: account._id,
                         email: account.email
                     }, jwtSecret, { expiresIn: '1d' }), {
+                        path: '/',
                         maxAge: 86400000,
                         httpOnly: true,
                         secure: status === 'production' ? true : false,
@@ -134,6 +137,7 @@ router.post('/reset-password', (req, res, next) => {
                 id: user._id,
                 email: user.email
             }, jwtSecret, { expiresIn: '1d' }), {
+                path: '/',
                 maxAge: 86400000,
                 httpOnly: true,
                 secure: status === 'production' ? true : false,
@@ -145,15 +149,15 @@ router.post('/reset-password', (req, res, next) => {
 
 router.post('/logout', (req, res, next) => {
     const {id, email} = req.body;
-    if(!id || !email) return res.status(400).json({statusCode: 400, message: MSG_DESC[3]});
+    if(!id || !email) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
     else {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
-            res.clearCookie('jwt-token')
+            res.clearCookie('jwt-token', { path: '/' })
             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
             else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
             else if(user.id === id && user.email === email){
                 new BlacklistedToken ({ userId: id, token: req.cookies['jwt-token'] }).save();
-                return res.json({ statusCode: 200, message: MSG_DESC[3] });
+                return res.clearCookie('jwt-token', { path: '/' }).json({ statusCode: 200, message: MSG_DESC[3] });
             }else return res.status(401).json({statusCode: 401, message: MSG_DESC[16]});
         })(req, res, next)
     }
