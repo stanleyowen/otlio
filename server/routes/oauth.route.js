@@ -45,14 +45,13 @@ router.get('/github/connect', async (req, res, next) => {
                 else if(isListed) res.status(403).json({statusCode: 403, message: MSG_DESC[15]});
                 else if(!isListed){
                     passport.authenticate('connectGitHub', (err, userGithub, info) => {
-                        console.log(err, userGithub, info)
                         if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
                         else if(info && info.status >= 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
                         else if(userGithub && userGithub.email === user.email){
-                            User.findOne({email: user.email, 'thirdParty.github': false}, (err, updated) => {
+                            User.findOne({email: user.email, 'thirdParty.github': false}, (err, data) => {
                                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-                                else if(!updated) return res.status(400).json({statusCode: 400, message: MSG_DESC[27]});
-                                else if(updated){
+                                else if(!data) return res.status(400).json({statusCode: 400, message: MSG_DESC[27]});
+                                else if(data){
                                     data.thirdParty.isThirdParty = true
                                     data.thirdParty.github = true
                                     data.thirdParty.verified = true
