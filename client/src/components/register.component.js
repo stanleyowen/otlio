@@ -24,7 +24,7 @@ const Register = () => {
         async function submitData(){
             btn.innerHTML = "Registering...";
             const data = { email, password, confirmPassword: confirmPsw }
-            await axios.post(`${SERVER_URL}/account/register`, data, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/register`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);

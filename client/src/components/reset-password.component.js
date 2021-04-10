@@ -40,7 +40,7 @@ const ResetPassword = () => {
         async function submitData(){
             btn.innerHTML = "Changing...";
             const data = { token, id, email, password, confirmPassword: confirmPsw }
-            await axios.post(`${SERVER_URL}/account/reset-password`, data, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/reset-password`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.removeAttribute("disabled");

@@ -15,25 +15,26 @@ const Login = () => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [honeypot, setHoneypot] = useState();
-    const [passwordVisible, setPasswordVisible] = useState(false);
-    const [remember, setRemember] = useState(true);
+    const [checked, setCheck] = useState({
+        password: false,
+        rememberMe: true
+    });
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
         async function submitData(){
-            btn.innerHTML = "Logging In...";
-            await axios.post(`${SERVER_URL}/account/login`, { email, password, rememberMe: remember }, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0] }, withCredentials: true })
+            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            await axios.post(`${SERVER_URL}/account/login`, { email, password, rememberMe: checked.rememberMe }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.removeAttribute("disabled");
-            btn.classList.remove("disabled");
-            btn.innerHTML = "Login";
+            btn.innerHTML = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(honeypot) return;
         else if(!email || !password) { setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!email ? 'userEmail' : 'userPassword').focus(); }
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
         else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
     }
+    const handleChange = (a, b) => setCheck({ ...checked, [a]: !b });
 
     return (
         <div id="form">
@@ -66,15 +67,15 @@ const Login = () => {
                         <div className="contact__formControl">
                             <div className="contact__infoField">
                                 <label htmlFor="userPassword">Password</label>
-                                <input title="Password" id="userPassword" type={ passwordVisible ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete={ passwordVisible ? 'off':'current-password'} />
+                                <input title="Password" id="userPassword" type={ checked.password ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete={ checked.password ? 'off':'current-password'} />
                                 <span className="contact__onFocus"></span>
-                                <IconButton className="view-eye" onClick={() => setPasswordVisible(!passwordVisible)}>
-                                    <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+                                <IconButton className="view-eye" onClick={() => handleChange('password', checked.password)}>
+                                    <FontAwesomeIcon icon={checked.password ? faEyeSlash : faEye} />
                                 </IconButton>
                             </div>
                         </div>
                         <div className="contact__formControl show-password">
-                            <FormControlLabel control={<Checkbox checked={remember} onChange={() => setRemember(!remember)} color="primary"/>}
+                            <FormControlLabel control={<Checkbox checked={checked.rememberMe} onChange={() => handleChange('rememberMe', checked.rememberMe)} color="primary"/>}
                             label="Stay Signed In"/><Tooltip placement="top" title="If you are using Public computer or WiFi, it is recommended to uncheck this and you'll be logged out after browsing session ends." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="small" /></span></Tooltip> 
                         </div>
                         <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>

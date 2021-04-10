@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
 
-import { createRequest } from './libraries/validation'
 import { setWarning } from './libraries/setNotification';
 import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification';
-import "./App.min.css";
+import "./App.css";
 
 import Navbar from './components/navbar.component';
 import Welcome from './components/welcome.component';
@@ -62,7 +61,6 @@ export default function App() {
         authenticated: false
       })
     })
-    createRequest();
     setWarning();
   },[SERVER_URL])
 

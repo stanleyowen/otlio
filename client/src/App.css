@@ -282,7 +282,7 @@ label { user-select: none; }
 .navbar__logo {
     float: left;
     font-size: 17px;
-    padding: 20px 20px!important;
+    padding: 22px 20px!important;
 }
 .navbar .description { display: none; }
 .toggleNavbar {
@@ -677,7 +677,7 @@ select {
     background: #1a73e8;
     transition: width 0.35s ease 0s, left 0.35s ease 0s;
 }
-.contact__infoField .contact__inputField:focus + .contact__onFocus { width: 100%; left: 0; }
+.contact__infoField .contact__inputField:focus + .contact__onFocus { width: 105%; left: 0; }
 #form {
     width: 60%;
     padding-top: 100px;
@@ -703,7 +703,6 @@ select {
 .contact__formControl {
     margin: 10px;
     color: #212121;
-    border-radius: 10px;
 }
 .contact__sendBtn {
     width: auto;
@@ -815,6 +814,7 @@ blockquote a{
 blockquote a:hover{ color: #666; }
 blockquote em {font-style: italic;}
 .small { font-size: 14px; }
+.full td { width: 70%; text-align: left; }
 .view-eye {
     float: right;
     margin-top: -42px!important;
@@ -828,6 +828,7 @@ blockquote em {font-style: italic;}
 }
 .info-title {
     font-size: 20px;
+    font-weight: bold;
     margin-left: 10px;
 }
 @keyframes octocat-wave {

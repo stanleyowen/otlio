@@ -4,7 +4,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import axios from 'axios';
 
-import { labels, validateLabel, getCSRFToken, formatDate } from '../libraries/validation';
+import { labels, validateLabel, getCSRFToken } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -13,12 +13,13 @@ const Edit = ({ userData }) => {
     let isDiffer = false;
     const {email, id: userId, authenticated, isLoading} = userData;
     const {id} = useParams();
+    const [honeypot, setHoneypot] = useState();
+    const [data, setData] = useState({});
     const [title, setTitle] = useState();
     const [date, setDate] = useState(new Date(null));
     const [description, setDescription] = useState();
-    const [data, setData] = useState({});
-    const [isFetching, setFetching] = useState(true);
     const [label, setLabel] = useState(labels[0].toLowerCase());
+    const [isFetching, setFetching] = useState(true);
 
     useEffect(() => {
         async function getData() {
@@ -36,39 +37,39 @@ const Edit = ({ userData }) => {
                 window.location='/';
             });
         }
-        document.querySelectorAll('[data-autoresize]').forEach(function (e) {
+        document.querySelectorAll('[data-autoresize]').forEach((e) => {
             e.style.boxSizing = 'border-box';
             var offset = e.offsetHeight - e.clientHeight;
-            e.addEventListener('input', function (a) {
+            e.addEventListener('input', (a) => {
               a.target.style.height = '-10px';
               a.target.style.height = a.target.scrollHeight + offset + 'px';
             });
             e.removeAttribute('data-autoresize');
         });
         if(!isLoading && authenticated) getData();
-    }, [userData])
+    }, [userData, id])
 
     const updateData = (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btn-addTodo');
+        const btn = document.getElementById('edit-todo');
         async function submitData() {
-            btn.innerHTML = "Updating...";
-            const postData = { userId, email, id, title, label, description, date }
-            await axios.put(`${SERVER_URL}/todo/data`, postData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            const data = { userId, email, id, title, label, description, date }
+            await axios.put(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 localStorage.setItem('info', JSON.stringify(res.data))
                 window.location='/'
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.removeAttribute("disabled");
-            btn.classList.remove("disabled");
-            btn.innerHTML = "Update";
+            btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
-        if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !") }
-        else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !") }
-        else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
-        else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !") }
-        else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }        
+        if(honeypot) return;
+        else if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
+        else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!title ? 'title' : !date ? 'date' : 'label').focus(); }
+        else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); document.getElementById('title').focus(); }
+        else if(validateLabel(label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }
+        else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !"); document.getElementById('description').focus(); }
+        else submitData();
     }
 
     return (
@@ -83,11 +84,18 @@ const Edit = ({ userData }) => {
             <div className="main__projects">
                 <a href="/" className="close" style={{fontSize: '40px', textDecoration: 'none'}}>&times;</a>
                 <form onSubmit={updateData} className="mt-20">
+                    <div className="contact__formControl no-bot">
+                        <div className="contact__infoField">
+                            <label htmlFor="bot-title">Title</label>
+                            <input title="Title" id="bot-title" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
+                            <span className="contact__onFocus"></span>
+                        </div>
+                    </div>
                     <div className="form__container">
                         <div className="contact__formControl">
                             <div className="contact__infoField">
                                 <label htmlFor="title">Title <span className="required">*</span></label>
-                                <input title="Title" id="title" type="text" className="contact__inputField" onChange={(event) => setTitle(event.target.value)} value={title} required />
+                                <input title="Title" id="title" type="text" className="contact__inputField" maxLength="40" onChange={(event) => setTitle(event.target.value)} value={title} required />
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
@@ -111,7 +119,7 @@ const Edit = ({ userData }) => {
                     <div className="contact__formControl">
                         <div className="contact__infoField">
                             <label htmlFor="label">Label <span className="required">*</span></label>
-                            <select onChange={(event) => setLabel(event.target.value)} value={label}>
+                            <select onChange={(event) => setLabel(event.target.value)} id="label" value={label}>
                                 { labels.map(c => {
                                     return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
                                 }) }
@@ -121,12 +129,12 @@ const Edit = ({ userData }) => {
                     <div className="contact__formControl">
                         <div className="contact__infoField">
                             <label htmlFor="description">Description</label>
-                            <textarea id="description" className="contact__inputField" data-autoresize rows="2" onChange={(event) => setDescription(event.target.value)} value={description}></textarea>
+                            <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="120" onChange={(event) => setDescription(event.target.value)} value={description}></textarea>
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    { isFetching ? isDiffer = false : data.title === title && formatDate(data.date) === date && data.description === description && data.label === label ? isDiffer = false : isDiffer = true }
-                    <button type={isDiffer ? 'submit' : 'disabled'} id="btn-addTodo" className={(isDiffer ? null : 'disabled')+' btn__outline'}  disabled={!isDiffer} style={{outline: 'none'}}>Update</button>
+                    { isFetching ? isDiffer = false : data.title === title && data.date === date && data.description === description && data.label === label ? isDiffer = false : isDiffer = true }
+                    <button type={isDiffer ? 'submit' : 'disabled'} id="edit-todo" className={(isDiffer ? '' : 'disabled ')+'btn__outline'}  disabled={!isDiffer} style={{outline: 'none'}}>Update</button>
                 </form>
             </div>
         </div>
