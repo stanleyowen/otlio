@@ -769,6 +769,7 @@ select {
     visibility: visible;
 }
 .message { margin: 40px auto; }
+.g-recaptcha { display: inline-block; }
 .github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
 .show-password { user-select: none; text-align: center; }
 .container-bar { display: inline-block; }

@@ -14,18 +14,19 @@ const ResetPassword = () => {
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('reset-password');
+        const captcha = document.querySelector('#g-recaptcha-response').value;
         async function submitData(){
             btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
-            await axios.post(`${SERVER_URL}/account/forgot-password`, { email }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/forgot-password`, { email, captcha }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setSent(true)
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Send"; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            btn.innerHTML = "Send"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(honeypot) return;
-        else if(!email) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')
+        else if(!email || !captcha) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
         else submitData();
     }
@@ -58,6 +59,9 @@ const ResetPassword = () => {
                                 <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
                                 <span className="contact__onFocus"></span>
                             </div>
+                        </div>
+                        <div className="isCentered">
+                            <div className="g-recaptcha" data-sitekey="6LfTOaQaAAAAAMYqu976RhDpm1lJtPciLZ-sk2Qq"></div>
                         </div>
                         <button type="submit" className="contact__sendBtn" id="reset-password">Send</button>
                     </form>
