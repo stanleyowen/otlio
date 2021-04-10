@@ -23,7 +23,7 @@ router.post('/register', (req, res, next) => {
                         path: '/',
                         maxAge: 86400000,
                         httpOnly: true,
-                        secure: status === 'production' ? true : false,
+                        secure: status === 'production',
                         sameSite: status === 'production' ? 'none' : 'strict'
                     }).json({
                         statusCode: info.status,
@@ -50,7 +50,7 @@ router.post('/login', (req, res, next) => {
                         path: '/',
                         expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
                         httpOnly: true,
-                        secure: status === 'production' ? true : false,
+                        secure: status === 'production',
                         sameSite: status === 'production' ? 'none' : 'strict'
                     }).json({ statusCode: info.status, message: info.message })
                 }
@@ -99,7 +99,7 @@ router.put('/user', (req, res, next) => {
                         path: '/',
                         maxAge: 86400000,
                         httpOnly: true,
-                        secure: status === 'production' ? true : false,
+                        secure: status === 'production',
                         sameSite: status === 'production' ? 'none' : 'strict'
                     }).json({
                         statusCode: info.status,
@@ -140,7 +140,7 @@ router.post('/reset-password', (req, res, next) => {
                 path: '/',
                 maxAge: 86400000,
                 httpOnly: true,
-                secure: status === 'production' ? true : false,
+                secure: status === 'production',
                 sameSite: status === 'production' ? 'none' : 'strict'
             }).json({ statusCode: info.status, message: info.message });
         }
@@ -154,9 +154,9 @@ router.post('/logout', (req, res, next) => {
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             res.cookie('jwt-token', '', {
                 path: '/',
-                maxAge: 86400000,
+                maxAge: 0,
                 httpOnly: true,
-                secure: status === 'production' ? true : false,
+                secure: status === 'production',
                 sameSite: status === 'production' ? 'none' : 'strict'
             })
             if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});

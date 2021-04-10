@@ -7,12 +7,22 @@ const tokenSchema = new Schema ({
         required: true
     },
     userId: {
-        type: String,
-        required: true,
+        data: {
+            type: String,
+            require: true,
+        }, iv: {
+            type: String,
+            require: true,
+        }
     },
     token: {
-        type: String,
-        require: true,
+        data: {
+            type: String,
+            require: true,
+        }, iv: {
+            type: String,
+            require: true,
+        }
     },
     createdAt: {
         type: Date,

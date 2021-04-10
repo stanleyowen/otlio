@@ -25,7 +25,7 @@ router.get('/github', async (req, res, next) => {
                 path: '/',
                 maxAge: 86400000,
                 httpOnly: true,
-                secure: status === 'production' ? true : false,
+                secure: status === 'production',
                 sameSite: status === 'production' ? 'none' : 'strict'
             }).json({
                 statusCode: 200,
@@ -84,7 +84,7 @@ router.get('/google', (req, res, next) => {
                 path: '/',
                 maxAge: 86400000,
                 httpOnly: true,
-                secure: status === 'production' ? true : false,
+                secure: status === 'production',
                 sameSite: status === 'production' ? 'none' : 'strict'
             }).json({
                 statusCode: 200,
@@ -150,7 +150,7 @@ router.post('/:provider/register', (req, res, next) => {
                         path: '/',
                         maxAge: 86400000,
                         httpOnly: true,
-                        secure: status === 'production' ? true : false,
+                        secure: status === 'production',
                         sameSite: status === 'production' ? 'none' : 'strict'
                     }).json({
                         statusCode: info.status,

@@ -24,28 +24,24 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
 app.use(csrf({
-    cookie: true,
     cookie: {
-        secure: status === 'production' ? true : false,
+        key: 'csrf-token',
+        httpOnly: true,
+        secure: status === 'production',
         sameSite: status === 'production' ? 'none' : 'strict'
     }
 }));
 app.use((req, res, next) => {
-    var token = req.csrfToken();
-    res.cookie('XSRF-TOKEN', token, {
-        maxAge: 24 * 60 * 60,
-        secure: status === 'production' ? true : false,
+    res.cookie('xsrf-token', req.csrfToken(), {
+        secure: status === 'production',
         sameSite: status === 'production' ? 'none' : 'strict'
     });
-    res.locals.csrfToken = token;
     next();
 });
 app.get('/status', (req, res) => {
     res.json({
         statusCode: 200,
-        message: 'Server is up and running',
-        'X_CSRF_TOKEN': req.cookies['_csrf'],
-        'X_XSRF_TOKEN': res.locals.csrfToken
+        message: 'Server is up and running'
     });
 })
 
