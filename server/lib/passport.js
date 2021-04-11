@@ -297,22 +297,23 @@ passport.use('getOAuthData', new localStrategy({ usernameField: 'email', passwor
 }))
 
 passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
-    const provider = req.params.provider;
-    if(!provider) return done(null, false, { status: 400, message: MSG_DESC[3] });
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[4] });
-    else if(password.length < 6 || password.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] });
+    const {provider, confirmPassword} = req.body;
+    if(!provider || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[3] });
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
+    else if(password.length < 6 || password.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] })
+    else if(password !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] })
     else {
         bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
-            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+            if(err) return done(err, false);
             else if(provider === "google") {
                 User.findOneAndUpdate({email, 'thirdParty.google': true, 'thirdParty.verified': false }, { password: hash, 'thirdParty.verified': true }, (err, user) => {
-                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                    if(err) return done(err, false);
                     else if(!user) done(null, false, { status: 400, message: MSG_DESC[32] });
                     else if(user) return done(null, user, { status: 200, message: MSG_DESC[4]});
                 })
             }else {
                 User.findOneAndUpdate({email, 'thirdParty.github': true, 'thirdParty.verified': false }, { password: hash, 'thirdParty.verified': true }, (err, user) => {
-                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                    if(err) return done(err, false);
                     else if(!user) done(null, false, { status: 400, message: MSG_DESC[32] });
                     else if(user) return done(null, user, { status: 200, message: MSG_DESC[4]});
                 })

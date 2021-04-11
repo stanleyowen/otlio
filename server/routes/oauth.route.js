@@ -137,14 +137,14 @@ router.post('/:provider/validate', (req, res, next) => {
 })
 
 router.post('/:provider/register', (req, res, next) => {
+    req.body = {...req.body, provider: req.params.provider}
     passport.authenticate('registerOAuth', (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && info.status ? info.status >= 400 ? true : false : true) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(user) {
             req.logIn(user, err => {
                 if(err) res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
-                else {
-                    return res.cookie('jwt-token', jwt.sign({
+                else return res.cookie('jwt-token', jwt.sign({
                         id: user.id,
                         email: user.email
                     }, jwtSecret, { expiresIn: '1d' }), {
@@ -158,7 +158,6 @@ router.post('/:provider/register', (req, res, next) => {
                         message: info.message,
                         id: user.id,
                     }, null, 2));
-                }
             })
         }
     })(req, res, next)
