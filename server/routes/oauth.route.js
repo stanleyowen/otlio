@@ -6,7 +6,7 @@ let BlacklistedToken = require('../models/blacklisted-token.model');
 let User = require('../models/users.model');
 const MSG_DESC = require('../lib/callback');
 
-const status = process.env.NODE_ENV;
+const status = process.env.NODE_ENV === 'production';
 const jwtSecret = process.env.JWT_SECRET;
 
 router.get('/github/auth', passport.authenticate('github', { scope : ['user:email'] }));
@@ -14,9 +14,10 @@ router.get('/github/auth/connect', passport.authenticate('connectGitHub', { scop
 
 router.get('/github', async (req, res, next) => {
     passport.authenticate('github', (err, user, info) => {
-        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-        else if(info && info.status >= 400) return res.status(info.status).json({statusCode: info.status, message: info.message});
-        else if(info && info.status === 302) return res.status(info.status).json({statusCode: info.status, type: info.type, url: info.url});
+        console.log(err, user, info)
+        if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
+        else if(info && info.status ? info.status >= 400 ? true : false : false) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
+        else if(info && info.status === 302) return res.status(info.status).send(JSON.stringify({statusCode: info.status, type: info.type, url: info.url}, null, 2));
         else if(user){
             return res.cookie('jwt-token', jwt.sign({
                 id: user.id,
@@ -25,21 +26,21 @@ router.get('/github', async (req, res, next) => {
                 path: '/',
                 maxAge: 86400000,
                 httpOnly: true,
-                secure: status === 'production',
-                sameSite: status === 'production' ? 'none' : 'strict'
-            }).json({
+                secure: status,
+                sameSite: status ? 'none' : 'strict'
+            }).send(JSON.stringify({
                 statusCode: 200,
                 message: MSG_DESC[2],
                 id: user.id
-            });
+            }, null, 2));
         }
     })(req, res, next)
 })
 
 router.get('/github/connect', async (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-        else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+        if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
+        else if(info && info.status ? info.status >= 400 ? true : false : true) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(user){
             BlacklistedToken.findOne({ token: req.cookies['jwt-token'] }, (err, isListed) => {
                 if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
@@ -73,9 +74,9 @@ router.get('/google/auth/connect', passport.authenticate('connectGoogle', { scop
 
 router.get('/google', (req, res, next) => {
     passport.authenticate('google', (err, user, info) => {
-        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-        else if(info && info.status >= 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
-        else if(info && info.status === 302) return res.status(info.status).json({statusCode: info.status, type: info.type, url: info.url});
+        if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
+        else if(info && info.status ? info.status >= 400 ? true : false : false) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
+        else if(info && info.status === 302) return res.status(info.status).send(JSON.stringify({statusCode: info.status, type: info.type, url: info.url}, null, 2));
         else if(user){
             return res.cookie('jwt-token', jwt.sign({
                 id: user.id,
@@ -84,32 +85,32 @@ router.get('/google', (req, res, next) => {
                 path: '/',
                 maxAge: 86400000,
                 httpOnly: true,
-                secure: status === 'production',
-                sameSite: status === 'production' ? 'none' : 'strict'
-            }).json({
+                secure: status,
+                sameSite: status ? 'none' : 'strict'
+            }).send(JSON.stringify({
                 statusCode: 200,
                 message: MSG_DESC[2],
                 id: user.id
-            });
+            }, null, 2));
         }
     })(req, res, next)
 });
 
 router.get('/google/connect', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-        else if(info) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+        if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
+        else if(info && info.status ? info.status >= 400 ? true : false : true) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(user){
             BlacklistedToken.findOne({ token: req.cookies['jwt-token'] }, (err, isListed) => {
-                if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else if(isListed) res.status(401).json({statusCode: 403, message: MSG_DESC[15]});
                 else if(!isListed){
                     passport.authenticate('connectGoogle', (err, userGoogle, info) => {
-                        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                        if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                         else if(info && info.status >= 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
                         else if(userGoogle && userGoogle.email === user.email){
                             User.findOne({email: user.email, 'thirdParty.google': false}, (err, data) => {
-                                if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                                if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                                 else if(!data) return res.status(400).json({statusCode: 400, message: MSG_DESC[25]});
                                 else if(data){
                                     data.thirdParty.isThirdParty = true
@@ -129,19 +130,19 @@ router.get('/google/connect', (req, res, next) => {
 
 router.post('/:provider/validate', (req, res, next) => {
     passport.authenticate('getOAuthData', (err, user, info) => {
-        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-        else if(info && info.status >= 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
-        else if(user) return res.json({statusCode: info.status, userExists: info.message})
+        if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
+        else if(info && info.status ? info.status >= 400 ? true : false : true) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
+        else if(user) return res.send(JSON.stringify({statusCode: info.status, userExists: info.message}, null, 2))
     })(req, res, next)
 })
 
 router.post('/:provider/register', (req, res, next) => {
     passport.authenticate('registerOAuth', (err, user, info) => {
-        if(err) return res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
-        else if(info && info.status >= 400) return res.status(info.status ? info.status : info.status = 400).json({statusCode: info.status, message: info.message});
+        if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
+        else if(info && info.status ? info.status >= 400 ? true : false : true) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(user) {
             req.logIn(user, err => {
-                if(err) res.status(500).json({statusCode: 500, message: MSG_DESC[0]});
+                if(err) res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else {
                     return res.cookie('jwt-token', jwt.sign({
                         id: user.id,
@@ -150,13 +151,13 @@ router.post('/:provider/register', (req, res, next) => {
                         path: '/',
                         maxAge: 86400000,
                         httpOnly: true,
-                        secure: status === 'production',
-                        sameSite: status === 'production' ? 'none' : 'strict'
-                    }).json({
+                        secure: status,
+                        sameSite: status ? 'none' : 'strict'
+                    }).send(JSON.stringify({
                         statusCode: info.status,
                         message: info.message,
                         id: user.id,
-                    });
+                    }, null, 2));
                 }
             })
         }

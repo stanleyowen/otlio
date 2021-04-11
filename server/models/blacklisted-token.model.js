@@ -7,8 +7,13 @@ const blacklistedTokenSchema = new Schema ({
         required: true,
     },
     token: {
-        type: String,
-        required: true,
+        data: {
+            type: String,
+            require: true,
+        }, iv: {
+            type: String,
+            require: true,
+        }
     },
     createdAt: {
         type: Date,
