@@ -89,26 +89,22 @@ passport.use('changePassword', new localStrategy({ usernameField: 'email', passw
                         bcrypt.hash(newPassword, SALT_WORK_FACTOR, (err, hash) => {
                             if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
                             else {
-                                const token = req.cookies['jwt-token']
-                                BlacklistedToken.findOne({ token }, (err, isListed) => {
-                                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                                    else if(isListed) return done(null, false, { status: 403, message: MSG_DESC[15] });
-                                    else if(!isListed){
-                                        new BlacklistedToken ({ userId: id, token }).save()
-                                        user.password = hash;
-                                        user.save()
-                                        const mailOptions = {
-                                            to: email,
-                                            replyTo: process.env.MAIL_REPLY_TO,
-                                            subject: '[TodoApp] Password Changed',
-                                            html: `Hi ${email},<br><br>We wanted to inform that your Todo Application password has changed.<br><br> If you did not perform this action, you can recover access by entering ${email} into the form at ${CLIENT_URL}/forget-password<br><br> Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.`
-                                        };
-                                        transporter.sendMail(mailOptions, (err) => {
-                                            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                                            else return done(null, user, { status: 200, message: MSG_DESC[6] });
-                                        });
-                                    }
+                                new BlacklistedToken ({ userId: id, token: encrypt(req.cookies['jwt-token']) }).save((err) => {
+                                    console.log(err)
                                 })
+                                user.password = hash;
+                                user.save()
+                                return done(null, user, { status: 200, message: MSG_DESC[6] });
+                                // const mailOptions = {
+                                //     to: email,
+                                //     replyTo: process.env.MAIL_REPLY_TO,
+                                //     subject: '[TodoApp] Password Changed',
+                                //     html: `Hi ${email},<br><br>We wanted to inform that your Todo Application password has changed.<br><br> If you did not perform this action, you can recover access by entering ${email} into the form at ${CLIENT_URL}/forget-password<br><br> Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.`
+                                // };
+                                // transporter.sendMail(mailOptions, (err) => {
+                                //     if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                                //     else return done(null, user, { status: 200, message: MSG_DESC[6] });
+                                // });
                             }
                         })
                     }
@@ -334,13 +330,24 @@ const extractJWT = (req) => {
 const opts = {
     jwtFromRequest: extractJWT,
     secretOrKey: jwtSecret,
+    passReqToCallback: true
 };
 
-passport.use('jwt', new JWTStrategy(opts, (jwt_payload, done) => {
-    User.findById(jwt_payload.id, (err, user) => {
-        if(err) done(null, false);
-        else if(user) done(null, user);
-        else done(null, false);
+passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
+    User.findOne({ _id: payload.id, email: payload.email }, (err, user) => {
+        if(err) return done(err, false);
+        else if(user){
+            BlacklistedToken.find({ userId: user._id }, (err, data) => {
+                if(err) return done(err, false);
+                else if(data){
+                    for (x=0; x < data.length; x++){
+                        if(decrypt(data[x].token) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
+                        else if(x === data.length-1 && decrypt(data[x].token) !== req.cookies['jwt-token']) return done(null, user, { status: 200, message: MSG_DESC[5] });
+                    }
+                }
+                else if(!data) return done(null, user, { status: 200, message: MSG_DESC[5] });
+            })
+        }else return done(null, false, { status: 400, message: MSG_DESC[16] });
     })
 }))
 
