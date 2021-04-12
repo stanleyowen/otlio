@@ -179,16 +179,16 @@ passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwo
     else {
         const userId = id.split('-')[0];
         const todoId = id.split('-')[1];
-        bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
-            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-            else {
-                User.findOneAndUpdate({_id: userId, email}, { password: hash }, (err, user) => {
-                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                    else if(!user) return done(null, false, { status: 401, message: MSG_DESC[10] });
-                    else if(user) {
-                        Token.findByIdAndDelete(todoId, (err, data) => {
-                            if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
-                            else if(data && token === decrypt(data.token)){
+        Token.findById(todoId, (err, data) => {
+            if(err) done(err, false);
+            else if(data && token === decrypt(data.token) && userId === decrypt(data.userId)){
+                bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
+                    if(err) return done(err, false);
+                    else {
+                        User.findOneAndUpdate({_id: userId, email}, { password: hash }, (err, user) => {
+                            if(err) done(err, false);
+                            else if(user) {
+                                data.remove();
                                 const mailOptions = {
                                     to: email,
                                     replyTo: process.env.MAIL_REPLY_TO,
@@ -196,15 +196,15 @@ passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwo
                                     html: `Hi ${email},<br><br>We wanted to inform that your Todo Application password has changed.<br><br> If you did not perform this action, you can recover access by entering ${email} into the form at ${CLIENT_URL}/forget-password<br><br> Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.`
                                 };
                                 transporter.sendMail(mailOptions, (err) => {
-                                    if(err) return done(null, false, { status: 500, message: MSG_DESC[0] });
+                                    if(err) return done(err, false);
                                     else return done(null, user, { status: 200, message: MSG_DESC[6] });
                                 });
-                            }
-                            else return done(null, false, { status: 400, message: MSG_DESC[32] });
+                            }else return done(null, false, { status: 401, message: MSG_DESC[10] });
                         })
                     }
                 })
             }
+            }else return done(null, false, { status: 400, message: MSG_DESC[32] });
         })
     }
 }))

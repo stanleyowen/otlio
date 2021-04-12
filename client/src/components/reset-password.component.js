@@ -23,7 +23,7 @@ const ResetPassword = () => {
     useEffect(() => {
         async function validateData() {
             await axios.get(`${SERVER_URL}/account/forgot-password`, { params: { token, id } })
-            .then(res => setEmail(res.data.email))
+            .then(res => setEmail(res.data.credentials.email))
             .catch(err => {
                 if(err.response.data.message || err.response.data.error_description){
                     setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message ? err.response.data.message : err.response.data.error_description);

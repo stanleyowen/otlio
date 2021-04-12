@@ -24,4 +24,4 @@ const blacklistedTokenSchema = new Schema ({
     timestamps: true,
 })
 
-module.exports = User = mongoose.model('blacklisted-token', blacklistedTokenSchema);
+module.exports = User = mongoose.model('revoked-token', blacklistedTokenSchema);
