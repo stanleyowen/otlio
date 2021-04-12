@@ -30,7 +30,7 @@ const tokenSchema = new Schema ({
         expires: 3600,
     }
 },{
-    timestamps: true,
+    timestamps: true
 })
 
 module.exports = Token = mongoose.model('Token', tokenSchema);
