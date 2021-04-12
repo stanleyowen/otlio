@@ -29,6 +29,15 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+const listLabel = ["Priority","Secondary","Important","Do Later"];
+
+const validateLabel = (e) => {
+    for (a=0; listLabel.length; a++){
+        if(e === listLabel[a].toLowerCase()) return false;
+        else if(a === listLabel.length-1 && e !== listLabel[a].toLowerCase()) return true;
+    }
+}
+
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
 
@@ -322,11 +331,94 @@ passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwo
     }
 }))
 
-const extractJWT = (req) => {
-    var token = null;
-    if(req.cookies) token = req.cookies['jwt-token'];
-    return token;
-}
+passport.use('todoData', new localStrategy({ usernameField: 'email', passwordField: 'id', passReqToCallback: true, session: false }, (req, email, id, done) => {
+    if(req.body.id){
+        Todo.findOne({ _id: req.body.id, email }, (err, data) => {
+            if(err) return done(err, false);
+            else if(!data) return done(err, null, {status: 404, message: MSG_DESC[13]});
+            else if(data){
+                const todoData = {
+                    _id: data.id,
+                    email: data.email,
+                    title: decrypt(data.title),
+                    label: decrypt(data.label),
+                    description: data.description.data === '' ? '' : decrypt(data.description),
+                    date: decrypt(data.date)
+                };
+                return done(null, todoData)
+            }
+        })
+    }else {
+        Todo.find({ email }, (err, data) => {
+            if(err) return done(err, false);
+            else {
+                let todoData = [];
+                for (let x=0; x<data.length; x++){
+                    const loopData = {
+                        _id: data[x]._id,
+                        email: data[x].email,
+                        title: decrypt(data[x].title),
+                        label: decrypt(data[x].label),
+                        description: data[x].description.data === '' ? '' : decrypt(data[x].description),
+                        date: decrypt(data[x].date)
+                    };
+                    todoData.push(loopData);
+                }
+                return done(null, todoData)
+            }
+        })
+    }
+}))
+
+passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
+    const {title, label, description, date} = req.body;
+    if(!title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
+    else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
+    else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
+    else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
+    else {
+        const data = {
+            email,
+            title: encrypt(title),
+            label: encrypt(label),
+            description: description ? encrypt(description) : { data: '', iv: '' },
+            date: encrypt(date)
+        }
+        new Todo(data).save()
+        return done(null, data, {status: 200, message: MSG_DESC[23]});
+    }
+}))
+
+passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: 'id', passReqToCallback: true, session: false }, (req, email, id, done) => {
+    const {title, label, description, date} = req.body;
+    if(!title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
+    else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
+    else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
+    else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
+    else {
+        const data = {
+            title: encrypt(title),
+            label: encrypt(label),
+            description: description ? encrypt(description) : { data: '', iv: '' },
+            date: encrypt(date)
+        }
+        Todo.findOneAndUpdate({ _id: id, email }, data, (err, data) => {
+            if(err) return done(err, false);
+            else if(!data) return done(null, false, { status: 404, message: MSG_DESC[13] })
+            else if(data) return done(null, data, { status: 200, message: MSG_DESC[21] })
+        })
+    }
+}))
+
+passport.use('deleteTodo', new localStrategy({ usernameField: 'email', passwordField: 'objId', session: false }, (email, id, done) => {
+    Todo.findOneAndDelete({ _id: id, email }, (err, data) => {
+        if(err) return done(err, false);
+        else if(!data) return done(null, false, { status: 404, message: MSG_DESC[13] });
+        else if(data) return done(null, data, { status: 200, message: MSG_DESC[22] });
+    })
+}))
 
 const opts = {
     jwtFromRequest: extractJWT,
