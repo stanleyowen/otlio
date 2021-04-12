@@ -9,25 +9,25 @@ const tokenSchema = new Schema ({
     userId: {
         data: {
             type: String,
-            require: true,
+            require: true
         }, iv: {
             type: String,
-            require: true,
+            require: true
         }
     },
     token: {
         data: {
             type: String,
-            require: true,
+            require: true
         }, iv: {
             type: String,
-            require: true,
+            require: true
         }
     },
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 3600,
+        expires: 3600
     }
 },{
     timestamps: true

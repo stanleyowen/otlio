@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = require('express').Router();
 
-let User = require('../models/users.model');
 const MSG_DESC = require('../lib/callback');
 
 const status = process.env.NODE_ENV === 'production';
@@ -29,6 +28,7 @@ router.get('/github', async (req, res, next) => {
                 statusCode: 200,
                 message: MSG_DESC[2]
             }, null, 2));
+        else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -41,8 +41,9 @@ router.get('/github/connect', async (req, res, next) => {
                 if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
                 else if(github) res.send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2))
+                else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
             })(req, res, next)
-        }
+        }else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -68,6 +69,7 @@ router.get('/google', (req, res, next) => {
                 message: MSG_DESC[2],
                 id: user.id
             }, null, 2));
+        else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -80,8 +82,9 @@ router.get('/google/connect', (req, res, next) => {
                 if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
                 else if(google) res.send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2))
+                else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
             })(req, res, next)
-        }
+        }else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -91,6 +94,7 @@ router.post('/:provider/validate', (req, res, next) => {
         if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(user) return res.send(JSON.stringify({statusCode: info.status, userExists: info.message}, null, 2))
+        else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -117,7 +121,7 @@ router.post('/:provider/register', (req, res, next) => {
                         id: user.id,
                     }, null, 2));
             })
-        }
+        }else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 

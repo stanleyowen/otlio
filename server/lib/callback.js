@@ -32,7 +32,8 @@ const MSG_DESC = [
     'You have excedeed the maximum number of request verification allowed. Please try again in another hour.', // 30
     'It looks like you clicked on an invalid password reset link. Please try again.', // 31
     'No Users Found',                                                   // 32
-    'Captcha Verification Failed'                                       // 33
+    'Captcha Verification Failed',                                      // 33
+    'Sorry, we are not able to process your request. Please try again later.' // 34
 ];
 
 module.exports = MSG_DESC;

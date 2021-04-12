@@ -56,8 +56,5 @@ app.use('/oauth/', oauthRouter);
 const URI = process.env.ATLAS_URI;
 mongoose.connect(URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology:true } );
 const connection = mongoose.connection;
-connection.once('open', () => {
-    console.log('MongoDB Database Extablished Successfully');
-})
-
+connection.once('open', () => console.log('MongoDB Database Extablished Successfully'))
 app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));

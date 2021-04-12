@@ -30,7 +30,7 @@ router.post('/register', (req, res, next) => {
                         message: info.message
                     })
             })
-        }
+        }else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -52,7 +52,7 @@ router.post('/login', (req, res, next) => {
                         sameSite: status ? 'none' : 'strict'
                     }).send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2));
             });
-        }
+        }else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -62,12 +62,17 @@ router.get('/user', (req, res, next) => {
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(user) return res.send(JSON.stringify({
                 statusCode: 200,
-                authenticated: true,
                 message: MSG_DESC[5],
-                id: user._id,
-                email: user.email,
-                thirdParty: user.thirdParty
+                credentials: {
+                    id: user._id,
+                    email: user.email,
+                    authenticated: true,
+                    thirdParty: user.thirdParty,
+                    verified: user.verified
+                }
+                
             }, null, 2));
+        else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -92,8 +97,9 @@ router.put('/user', (req, res, next) => {
                         statusCode: info.status,
                         message: info.message
                     }, null, 2));
+                else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
             })(req, res, next)
-        }
+        }else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -102,7 +108,7 @@ router.get('/forgot-password', (req, res, next) => {
     passport.authenticate('tokenData', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
-        else return res.send(JSON.stringify({
+        else if(user) return res.send(JSON.stringify({
             statusCode: info.status,
             message: info.message,
             credentials: {
@@ -110,6 +116,7 @@ router.get('/forgot-password', (req, res, next) => {
                 email: user.email
             }
         }, null, 2))
+        else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -117,7 +124,8 @@ router.post('/forgot-password', (req, res, next) => {
     passport.authenticate('forgotPassword', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
-        else if(user) res.send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2))
+        else if(user) return res.send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2))
+        else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -135,6 +143,7 @@ router.post('/reset-password', (req, res, next) => {
                 secure: status,
                 sameSite: status ? 'none' : 'strict'
             }).send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2));
+        else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 
@@ -151,7 +160,7 @@ router.post('/logout', (req, res, next) => {
                 secure: status,
                 sameSite: status ? 'none' : 'strict'
             }).send(JSON.stringify({ statusCode: 200, message: MSG_DESC[3] }, null, 2));
-        }
+        }else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
 

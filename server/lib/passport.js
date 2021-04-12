@@ -427,7 +427,7 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
                         if(decrypt(data[x].token) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
                         else if(x === data.length-1 && decrypt(data[x].token) !== req.cookies['jwt-token']) return done(null, user);
                     }
-                } else if(!data.length) return done(null, user);
+                }else if(!data.length) return done(null, user);
             })
         }else return done(null, false, { status: 401, message: MSG_DESC[16] });
     })
