@@ -33,7 +33,8 @@ const MSG_DESC = [
     'It looks like you clicked on an invalid password reset link. Please try again.', // 31
     'No Users Found',                                                   // 32
     'Captcha Verification Failed',                                      // 33
-    'Sorry, we are not able to process your request. Please try again later.' // 34
+    'Sorry, we are not able to process your request. Please try again later.', // 34
+    'Account Verification Link Sent Successfully'                       // 35
 ];
 
 module.exports = MSG_DESC;

@@ -6,6 +6,17 @@ const tokenSchema = new Schema ({
         type: String,
         required: true
     },
+    type: {
+        passwordReset: {
+            type: Boolean,
+            default: false,
+            require: true
+        }, accountVerification: {
+            type: Boolean,
+            default: false,
+            require: true
+        }
+    },
     userId: {
         data: {
             type: String,
