@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
 
-import { setWarning } from './libraries/setNotification';
 import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification';
 import "./App.css";
 
@@ -29,10 +28,8 @@ export default function App() {
 
   if(info && info.statusCode && info.message){
     const status = info.statusCode === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER;
-    setNotification(status, info.message);
-    localStorage.removeItem('info');
+    setNotification(status, info.message); localStorage.removeItem('info');
   }
-
   if(!userData.isLoading && userData.authenticated){
     redirectRoute.forEach(a => {
       if(window.location.pathname.split('/')[1] === a) window.location='/';
@@ -44,14 +41,15 @@ export default function App() {
   }
 
   useEffect(() => {
-    axios.get(`${SERVER_URL}/account/user`, {withCredentials: true})
+    axios.get(`${SERVER_URL}/account/user`, { withCredentials: true })
     .then(res => {
       setUserData({
         isLoading: false,
-        id: res.data.id,
-        email: res.data.email,
-        authenticated: res.data.authenticated,
-        thirdParty: res.data.thirdParty
+        id: res.data.credentials.id,
+        email: res.data.credentials.email,
+        authenticated: res.data.credentials.authenticated,
+        thirdParty: res.data.credentials.thirdParty,
+        verified: res.data.credentials.verified
       })
     })
     .catch(err => {
@@ -61,7 +59,8 @@ export default function App() {
         authenticated: false
       })
     })
-    setWarning();
+    console.log("%c%s","color: red; background: yellow; font-size: 24px;","WARNING!");
+    console.log("%c%s","font-size: 18px;","Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand.")
   },[SERVER_URL])
 
   return (

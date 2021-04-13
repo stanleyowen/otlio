@@ -23,7 +23,7 @@ const Edit = ({ userData }) => {
 
     useEffect(() => {
         async function getData() {
-            await axios.get(`${SERVER_URL}/todo/data`, { params: {id, userId, email}, withCredentials: true })
+            await axios.get(`${SERVER_URL}/todo/data`, { params: {id}, withCredentials: true })
             .then(res => {
                 setTitle(res.data.title);
                 setDate(res.data.date);
@@ -54,8 +54,7 @@ const Edit = ({ userData }) => {
         const btn = document.getElementById('edit-todo');
         async function submitData() {
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
-            const data = { userId, email, id, title, label, description, date }
-            await axios.put(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.put(`${SERVER_URL}/todo/data`, { id, title, label, description, date }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 localStorage.setItem('info', JSON.stringify(res.data))
                 window.location='/'
@@ -64,7 +63,6 @@ const Edit = ({ userData }) => {
             btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(honeypot) return;
-        else if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!title ? 'title' : !date ? 'date' : 'label').focus(); }
         else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); document.getElementById('title').focus(); }
         else if(validateLabel(label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }

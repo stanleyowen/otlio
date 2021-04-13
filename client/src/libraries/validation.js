@@ -5,8 +5,8 @@ export const labels = ["Priority", "Secondary", "Important", "Do Later"];
 
 export const validateLabel = (e) => {
     for (let a=0; labels.length; a++){
-        if(((a === labels.length-1) && (e === labels[a].toLowerCase())) || e === labels[a].toLowerCase()) return false;
-        else if((a === labels.length-1) && (e !== labels[a].toLowerCase())) return true;
+        if(e === labels[a].toLowerCase()) return false;
+        else if(a === labels.length-1 && e !== labels[a].toLowerCase()) return true;
     }
 }
 

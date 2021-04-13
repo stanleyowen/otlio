@@ -61,16 +61,14 @@ const Navbar = ({ userData }) => {
                     </a>) : null}
                     <a className="animation__underline" href="https://todoapp.freshstatus.io/" target="_blank" rel="noopener noreferrer">
                         <span className="icons">
-                            <Tooltip title="Status"><span>
-                                <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.5em" }} />
-                            </span></Tooltip>
+                            <Tooltip title="Status">
+                                <span><FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.5em" }} /></span>
+                            </Tooltip>
                         </span>
                         <span className="description">Status</span>
                     </a>
                     <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[3]}>
-                        <span className="icons">
-                            <Tooltip title={value_b[0] ? value_b[0]:""}><span>{value_b[2]}</span></Tooltip>
-                        </span>
+                        <span className="icons"><Tooltip title={value_b[0] ? value_b[0]:""}><span>{value_b[2]}</span></Tooltip></span>
                         <span className="description">{value_b[0]}</span>
                     </a>
                 </div>

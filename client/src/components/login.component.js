@@ -23,7 +23,7 @@ const Login = () => {
         e.preventDefault();
         const btn = document.getElementById('login');
         async function submitData(){
-            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            btn.innerHTML = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/account/login`, { email, password, rememberMe: checked.rememberMe }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
