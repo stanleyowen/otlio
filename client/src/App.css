@@ -770,6 +770,8 @@ select {
 }
 .message { margin: 40px auto; }
 .g-recaptcha { display: inline-block; }
+.unverified path { color: hsl(16, 100%, 50%) !important; }
+.verified path { color: rgb(66, 196, 49) !important; }
 .github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
 .show-password { user-select: none; text-align: center; }
 .container-bar { display: inline-block; }

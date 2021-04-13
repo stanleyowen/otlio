@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IconButton, Tooltip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -11,7 +11,7 @@ import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeM
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
-    const {email, id, thirdParty, isLoading} = userData;
+    const {email, id, thirdParty, verified, authenticated, isLoading} = userData;
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
@@ -40,8 +40,7 @@ const Account = ({ userData }) => {
         const btn = document.getElementById('change-password');
         async function submitData() {
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); setDisabled(true);
-            const data = { id, email, oldPassword, newPassword, confirmPassword }
-            await axios.put(`${SERVER_URL}/account/user`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.put(`${SERVER_URL}/account/user`, { oldPassword, newPassword, confirmPassword }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('background', 'modal');
                 setOldPassword(''); setNewPassword(''); setConfirmPassword('');
@@ -50,8 +49,7 @@ const Account = ({ userData }) => {
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); setDisabled(false);
         }
-        if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        else if(!oldPassword || !newPassword || !confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!oldPassword ? 'old-password' : !newPassword ? 'new-password' : 'confirm-password').focus(); }
+        if(!oldPassword || !newPassword || !confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!oldPassword ? 'old-password' : !newPassword ? 'new-password' : 'confirm-password').focus(); }
         else if(oldPassword.length < 6 || newPassword.length < 6 || confirmPassword.length < 6 || oldPassword.length > 40 || newPassword.length > 40 || confirmPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(oldPassword.length < 6 || oldPassword.length > 40 ? 'old-password' : newPassword.length < 6 || newPassword.length > 40 ? 'new-password' : 'confirm-password').focus(); }
         else if(newPassword !== confirmPassword) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('confirm-password').focus(); }
         else submitData();
@@ -67,7 +65,7 @@ const Account = ({ userData }) => {
     
     return (
         <div>
-            { !email ?
+            { !authenticated ?
             (<div className="loader"><div className="spin-container full-width">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>
@@ -91,9 +89,9 @@ const Account = ({ userData }) => {
                         <div className="contact__formControl contact__infoField">
                             <label htmlFor="userEmail mt-20">Email Address</label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
-                            <Tooltip placement="top" title="Verified">
+                            <Tooltip placement="top" title={verified ? 'Verified':'Unverified'}>
                                 <IconButton className="view-eye">
-                                    <FontAwesomeIcon icon={faCheck} />
+                                    <FontAwesomeIcon icon={ verified ? faCheckCircle : faTimesCircle } style={{ fontSize: '0.8em' }} className={ verified ? 'verified':'unverified' } />
                                 </IconButton>
                             </Tooltip>
                         </div>
