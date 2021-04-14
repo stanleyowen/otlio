@@ -58,8 +58,8 @@ router.post('/login', (req, res, next) => {
 
 router.get('/user', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
-        else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
+        if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0], 'XSRF-TOKEN': req.csrfToken()}, null, 2));
+        else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message, 'XSRF-TOKEN': req.csrfToken()}, null, 2));
         else if(user) return res.send(JSON.stringify({
                 statusCode: 200,
                 message: MSG_DESC[5],
@@ -68,11 +68,11 @@ router.get('/user', (req, res, next) => {
                     email: user.email,
                     authenticated: true,
                     thirdParty: user.thirdParty,
-                    verified: user.verified
-                }
-                
+                    verified: user.verified,
+                },
+                'XSRF-TOKEN': req.csrfToken()
             }, null, 2));
-        else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
+        else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34], 'XSRF-TOKEN': req.csrfToken() }, null, 2));
     })(req, res, next)
 })
 

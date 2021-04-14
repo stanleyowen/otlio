@@ -31,9 +31,7 @@ export const ConnectOAuthGoogle = (e) => {
 }
 
 export const getCSRFToken = () => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; xsrf-token=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+    return localStorage.getItem('XSRF-TOKEN')
 }
 
 export const openModal = (a, b, c) => {

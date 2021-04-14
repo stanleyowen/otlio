@@ -52,8 +52,10 @@ export default function App() {
         thirdParty: res.data.credentials.thirdParty,
         verified: res.data.credentials.verified
       })
+      localStorage.setItem('XSRF-TOKEN', res.data['XSRF-TOKEN'])
     })
     .catch(err => {
+      localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
       if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
       setUserData({
         isLoading: false,
