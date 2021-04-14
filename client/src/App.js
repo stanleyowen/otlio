@@ -18,6 +18,7 @@ import ReqOAuth from './components/req-oauth.component';
 import Account from './components/account.component';
 import PrivacyPolicy from './components/privacy-policy.component';
 import TermsAndConditions from './components/terms-and-condition.component';
+import VerifyAccount from './components/verify-account.component';
 
 export default function App() {
   const [userData, setUserData] = useState({ isLoading: true });
@@ -76,6 +77,7 @@ export default function App() {
       <Route path='/account' component={() => <Account userData={userData} />} />
       <Route path='/reset-password' exact component={ReqResetPassword} />
       <Route path='/reset-password/:id/:token' component={ResetPassword} />
+      <Route path='/verify/:id/:token' component={VerifyAccount} />
       <Route path='/privacy-policy' component={PrivacyPolicy} />
       <Route path='/terms-and-conditions' component={TermsAndConditions} />
     </Router>

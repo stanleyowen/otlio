@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IconButton, Tooltip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -34,6 +34,19 @@ const Account = ({ userData }) => {
             }
         }
     }, [disabled])
+
+    const reqVerify = (e) => {
+        e.preventDefault();
+        const text = document.getElementById('status');
+        async function submitData() {
+            text.innerHTML = "Veryfing Account"; setDisabled(true);
+            await axios.post(`${SERVER_URL}/account/verify`, { email, id }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            text.innerHTML = "Verify Account"; setDisabled(false);
+        }
+        if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later");        else submitData();
+    }
 
     const submitNewPassword = (e) => {
         e.preventDefault();
@@ -89,7 +102,7 @@ const Account = ({ userData }) => {
                         <div className="contact__formControl contact__infoField">
                             <label htmlFor="userEmail mt-20">Email Address</label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
-                            <Tooltip placement="top" title={verified ? 'Verified':'Unverified'}>
+                            <Tooltip placement="top" title={verified ? 'Verified Account':'Unverified Account'}>
                                 <IconButton className="view-eye">
                                     <FontAwesomeIcon icon={ verified ? faCheckCircle : faTimesCircle } style={{ fontSize: '0.8em' }} className={ verified ? 'verified':'unverified' } />
                                 </IconButton>
@@ -98,7 +111,12 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="oauth-container">
                         <div className="contact__formControl">
-                            <button className="oauth-box change-password" onClick={() => {openModal('background', 'modal', 'old-password')}}>
+                            <button className="oauth-box verify-account" onClick={ disabled || verified ? null : reqVerify}>
+                                <FontAwesomeIcon icon={faUserCheck} size='2x'/> <p id="status">{ verified ? 'Verified Account':'Verify Account' }</p>
+                            </button>
+                        </div>
+                        <div className="contact__formControl">
+                            <button className="oauth-box change-password mt-20" onClick={() => openModal('background', 'modal', 'old-password')}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Update Password</p>
                             </button>
                         </div>

@@ -11,7 +11,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Edit = ({ userData }) => {
     let isDiffer = false;
-    const {email, id: userId, authenticated, isLoading} = userData;
+    const {authenticated, isLoading} = userData;
     const {id} = useParams();
     const [honeypot, setHoneypot] = useState();
     const [data, setData] = useState({});

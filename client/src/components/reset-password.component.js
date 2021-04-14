@@ -25,7 +25,7 @@ const ResetPassword = () => {
     const handleChange = (a, b) => setVisibility({ ...visible, [a]: !b });
     useEffect(() => {
         async function validateData() {
-            await axios.get(`${SERVER_URL}/account/forgot-password`, { params: { token, id } })
+            await axios.get(`${SERVER_URL}/account/forgot-password`, { params: { token, id, type: 'passwordReset' } })
             .then(res => setEmail(res.data.credentials.email))
             .catch(err => {
                 if(err.response.data.message || err.response.data.error_description){
@@ -42,7 +42,7 @@ const ResetPassword = () => {
         const btn = document.getElementById('reset-password');
         async function submitData(){
             btn.innerHTML = "Changing...";
-            const data = { token, id, email, password, confirmPassword }
+            const data = { type: 'passwordReset', token, id, email, password, confirmPassword }
             await axios.post(`${SERVER_URL}/account/reset-password`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));

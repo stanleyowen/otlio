@@ -48,7 +48,7 @@ const labeling = (a) => {
 
 const Home = ({ userData }) => {
     var intervalData;
-    const {email, id: userId, authenticated, isLoading} = userData;
+    const {email, authenticated, isLoading} = userData;
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
     const [todoData, setTodoData] = useState(null);
     const [honeypot, setHoneypot] = useState();
@@ -93,32 +93,34 @@ const Home = ({ userData }) => {
 
     const todoList = () => {
         let todo = cacheTodo;
-        if(todoData && cacheTodo !== todoData) todo = todoData
-        return todo.map(a => {
-            return(
-                <tr key={a._id}>
-                    <td>{a.title}<br/>{a.description}</td>
-                    <td>{labeling(titleCase(a.label))}</td>
-                    <td>{validateTimestamp(formatDate(a.date), formatDate())}</td>
-                    <td>
-                        <span className="btn-config">
-                            <Tooltip title="Edit Task">
-                                <IconButton href={`/edit/${a._id}`}>
-                                    <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
-                                </IconButton>
-                            </Tooltip>
-                        </span>
-                        <span className="btn-config">
-                            <Tooltip title="Delete Task">
-                                <IconButton onClick={() => deleteData(a._id)}>
-                                    <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
-                                </IconButton>
-                            </Tooltip>
-                        </span>
-                    </td>
-                </tr>
-            )
-        })
+        if(todoData) todo = todoData
+        if(cacheTodo || todoData){
+            return todo.map(a => {
+                return(
+                    <tr key={a._id}>
+                        <td>{a.title}<br/>{a.description}</td>
+                        <td>{labeling(titleCase(a.label))}</td>
+                        <td>{validateTimestamp(formatDate(a.date), formatDate())}</td>
+                        <td>
+                            <span className="btn-config">
+                                <Tooltip title="Edit Task">
+                                    <IconButton href={`/edit/${a._id}`}>
+                                        <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
+                                    </IconButton>
+                                </Tooltip>
+                            </span>
+                            <span className="btn-config">
+                                <Tooltip title="Delete Task">
+                                    <IconButton onClick={() => deleteData(a._id)}>
+                                        <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
+                                    </IconButton>
+                                </Tooltip>
+                            </span>
+                        </td>
+                    </tr>
+                )
+            })
+        }
     }
 
     const deleteData = async id => {

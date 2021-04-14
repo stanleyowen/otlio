@@ -144,6 +144,10 @@ label { user-select: none; }
     color: #FFF;
     background-color: rgb(73, 81, 185);
 }
+.verify-account {
+    color: #FFF;
+    background-color: rgb(48 201 64);
+}
 .logout {
     color: #FFF;
     background-color: rgb(252, 52, 52);

@@ -31,7 +31,8 @@ const ResetPassword = () => {
         else submitData();
     }
 
-    if(sent) return(
+    return(
+        sent ? (
         <div id="form">
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Password Reset Request Sent</h1></div>
@@ -39,8 +40,7 @@ const ResetPassword = () => {
                     <h4 className="mt-20 mb-20">Password Reset Recovery has been sent to {email} for reset your password. If it hasn't arrived after a few minutes, check your spam folder.</h4>
                 </div>
             </div>
-        </div>);
-    else return (
+        </div>) : (
         <div id="form">
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Reset Password</h1></div>
@@ -68,6 +68,7 @@ const ResetPassword = () => {
                 </div>
             </div>
         </div>)
+    )
 }
 
 export default ResetPassword;
