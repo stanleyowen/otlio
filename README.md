@@ -29,7 +29,7 @@ Todo Application is an **open source** project, completed with highest standard 
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.6.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.7.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
@@ -55,6 +55,7 @@ Todo Application is an **open source** project, completed with highest standard 
       - `GOOGLE_ID` stores the client id fot Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
       - `GOOGLE_SECRET` stores the client secret for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
       - `GOOGLE_CALLBACK` stores the callback URL for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
+      - `CAPTCHA_SECRET` stores the secret provided by Google [reCAPTCHA](https://www.google.com/recaptcha/about/)
       - `MAIL_SERVICE`, `MAIL_EMAIL`, and `MAIL_PASSWORD` are configured for sending email to users<br /><br />
           ```
           ATLAS_URI       = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
@@ -69,10 +70,12 @@ Todo Application is an **open source** project, completed with highest standard 
           GOOGLE_ID       = /* Your Google Client ID */
           GOOGLE_SECRET   = /* Your Google Client Secret */
           GOOGLE_CALLBACK = http://localhost:3000/auth/google
+          CAPTCHA_SECRET  = /* Your reCAPTCHA Secret Key */
 
           MAIL_SERVICE    = /* Your Email Service Provider */
           MAIL_EMAIL      = /* Your Email Address */
           MAIL_PASSWORD   = /* Your Email Password */
+          MAIL_REPLY_TO   = /* Reply To Property */
           ```
   4. Run and Compile it
       - In the `client` directory, type `npm start` in command line
