@@ -4,11 +4,16 @@ const Schema = mongoose.Schema;
 const blacklistedTokenSchema = new Schema ({
     userId: {
         type: String,
-        required: true,
+        required: true
     },
     token: {
-        type: String,
-        required: true,
+        data: {
+            type: String,
+            require: true
+        }, iv: {
+            type: String,
+            require: true
+        }
     },
     createdAt: {
         type: Date,
@@ -16,7 +21,7 @@ const blacklistedTokenSchema = new Schema ({
         expires: '1d'
     }
 }, {
-    timestamps: true,
+    timestamps: true
 })
 
-module.exports = User = mongoose.model('blacklisted-token', blacklistedTokenSchema);
+module.exports = User = mongoose.model('revoked-token', blacklistedTokenSchema);

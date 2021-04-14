@@ -11,9 +11,10 @@ import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotificatio
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
-const convertDate = (e) => {
-    if(e) var d = new Date(e);
-    else var d = new Date();
+const formatDate = (e) => {
+    var d;
+    if(e) d = new Date(e);
+    else d = new Date();
     var month = d.getMonth() + 1;
     var day = d.getDate();
     var year = d.getFullYear();
@@ -47,89 +48,59 @@ const labeling = (a) => {
 
 const Home = ({ userData }) => {
     var intervalData;
-    const {email, id: userId, authenticated, isLoading} = userData;
+    const {email, authenticated, isLoading} = userData;
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
     const [todoData, setTodoData] = useState(null);
+    const [honeypot, setHoneypot] = useState();
+    const [disabled, setDisabled] = useState(false);
     const [title, setTitle] = useState();
     const [date, setDate] = useState(new Date());
     const [description, setDescription] = useState();
     const [label, setLabel] = useState(labels[0].toLowerCase());
-    const wrapper = React.createRef();
-    async function clearData() {
-        if(intervalData) clearInterval(intervalData);
-    }
 
+    async function clearData(){ if(intervalData) clearInterval(intervalData); }
     async function getTodoData() {
-        await axios.get(`${SERVER_URL}/todo/data`, {params: {userId, email}, withCredentials: true})
+        await axios.get(`${SERVER_URL}/todo/data`, { withCredentials: true })
         .then(res => {
-            setTodoData(res.data);
+            setTodoData(res.data); clearData();
             localStorage.setItem('todoData', JSON.stringify(res.data));
-            clearData()
         })
-        .catch(err => {
-            setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-        });
+        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
     }
 
     useEffect(() => {
         const background = document.getElementById('background');
         const modal = document.getElementById('modal');
         window.onclick = function(e){
-            if(e.target === modal || e.target === background){
+            if(e.target === background && !disabled){
                 modal.classList.remove('showModal');
                 modal.classList.add('closeModal');
                 background.classList.remove('showBackground');
                 background.classList.add('hideBackground');
             }
         }
-        document.querySelectorAll('[data-autoresize]').forEach(function (e) {
+        document.querySelectorAll('[data-autoresize]').forEach((e) => {
             e.style.boxSizing = 'border-box';
             var offset = e.offsetHeight - e.clientHeight;
-            e.addEventListener('input', function (a) {
+            e.addEventListener('input', (a) => {
               a.target.style.height = '-10px';
               a.target.style.height = a.target.scrollHeight + offset + 'px';
             });
             e.removeAttribute('data-autoresize');
         });
-        if(!isLoading && authenticated){ getTodoData() }
-        else if(!isLoading && authenticated && !todoData) setInterval(getTodoData(), 2000)
-    }, [userData]);
+        if(!isLoading && authenticated) getTodoData()
+    }, [userData, disabled]);
 
     const todoList = () => {
-        if(todoData && cacheTodo !== todoData){
-            return todoData.map(a => {
-                return (
+        let todo = cacheTodo;
+        if(todoData) todo = todoData
+        if(cacheTodo || todoData){
+            return todo.map(a => {
+                return(
                     <tr key={a._id}>
                         <td>{a.title}<br/>{a.description}</td>
                         <td>{labeling(titleCase(a.label))}</td>
-                        <td>{validateTimestamp(convertDate(a.date), convertDate())}</td>
-                        <td>
-                            <span className="btn-config">
-                                <Tooltip title="Edit Task">
-                                    <IconButton href={`/edit/${a._id}`}>
-                                        <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
-                                    </IconButton>
-                                </Tooltip>
-                            </span>
-                            <span className="btn-config">
-                                <Tooltip title="Delete Task">
-                                    <IconButton onClick={() => deleteData(a._id)}>
-                                        <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
-                                    </IconButton>
-                                </Tooltip>
-                            </span>
-                        </td>
-                    </tr>
-                )
-            })
-        }else if(cacheTodo) {
-            if(!isLoading && authenticated){ getTodoData() }
-            return cacheTodo.map(a => {
-                return (
-                    <tr key={a._id}>
-                        <td>{a.title}<br/>{a.description}</td>
-                        <td>{labeling(titleCase(a.label))}</td>
-                        <td>{validateTimestamp(convertDate(a.date), convertDate())}</td>
+                        <td>{validateTimestamp(formatDate(a.date), formatDate())}</td>
                         <td>
                             <span className="btn-config">
                                 <Tooltip title="Edit Task">
@@ -153,8 +124,7 @@ const Home = ({ userData }) => {
     }
 
     const deleteData = async id => {
-        const data = { email, objId: id, id: userId }
-        await axios.delete(`${SERVER_URL}/todo/data`, { data, headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+        await axios.delete(`${SERVER_URL}/todo/data`, { data: { objId: id }, headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
         .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
         .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
         getTodoData();
@@ -162,42 +132,37 @@ const Home = ({ userData }) => {
 
     const titleCase = (a) => {
         var sentence = a.toLowerCase().split(" ");
-        for (var i = 0; i < sentence.length; i++){ sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1); }
+        for (var i = 0; i < sentence.length; i++) sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
         sentence.join(" ");
         return sentence;
     }
 
-    const submitTodo = (e) => {
+    const addTodo = (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btn-addTodo');
+        const btn = document.getElementById('add-todo');
         async function submitData() {
-            btn.innerHTML = "Adding...";
-            const todoData = { id: userId, email, title, label, description, date };
-            await axios.post(`${SERVER_URL}/todo/data`, todoData, { headers: { 'X-CSRF-TOKEN': getCSRFToken()[0], 'X-XSRF-TOKEN': getCSRFToken()[1] }, withCredentials: true })
+            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); setDisabled(true);
+            const data = { title, label, description, date };
+            await axios.post(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
-                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
                 closeModal('background','modal')
-                setTitle('');
-                setLabel(labels[0].toLowerCase());
-                setDescription('');
-                setDate(new Date());
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
+                setTitle(''); setLabel(labels[0].toLowerCase()); setDescription(''); setDate(new Date());
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.removeAttribute("disabled");
-            btn.classList.remove("disabled");
-            btn.innerHTML = "Add";
+            btn.innerHTML = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); setDisabled(false);
             getTodoData();
         }
-        if(!email || !userId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        else if(!title || !date || !label) setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !")
-        else if(title.length > 40) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !")
-        else if(validateLabel(label)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
-        else if(description && description.length > 120) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !")
-        else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
+        if(honeypot) return;
+        else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!title ? 'title' : !date ? 'date' : 'label').focus(); }
+        else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); document.getElementById('title').focus(); }
+        else if(validateLabel(label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }
+        else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !"); document.getElementById('description').focus(); }
+        else submitData();
     }
 
     return (
-        <div className="main__projects" ref={wrapper}>
+        <div className="main__projects">
             <p>Hi, Welcome Back {email}</p>
             <div id="background" className="modal hiddenModal">
                 <div id="modal" className="modal__container hiddenModal">
@@ -206,12 +171,19 @@ const Home = ({ userData }) => {
                         <h2>Add Todo</h2>
                     </div>
                     <div className="modal__body">
-                        <form onSubmit={submitTodo}>
+                        <form onSubmit={addTodo}>
+                            <div className="contact__formControl no-bot">
+                                <div className="contact__infoField">
+                                    <label htmlFor="bot-title">Title</label>
+                                    <input title="Title" id="bot-title" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
+                                    <span className="contact__onFocus"></span>
+                                </div>
+                            </div>
                             <div className="form__container">
                                 <div className="contact__formControl">
                                     <div className="contact__infoField">
                                         <label htmlFor="title">Title <span className="required">*</span></label>
-                                        <input title="Title" id="title" type="text" className="contact__inputField" onChange={(event) => setTitle(event.target.value)} value={title} required />
+                                        <input title="Title" id="title" type="text" className="contact__inputField" maxLength="40" onChange={(event) => setTitle(event.target.value)} value={title} required />
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
@@ -245,11 +217,11 @@ const Home = ({ userData }) => {
                             <div className="contact__formControl">
                                 <div className="contact__infoField">
                                     <label htmlFor="description">Description</label>
-                                    <textarea id="description" className="contact__inputField" data-autoresize rows="2" onChange={(event) => setDescription(event.target.value)} value={description}></textarea>
+                                    <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="120" onChange={(event) => setDescription(event.target.value)} value={description}></textarea>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <button type="submit" id="btn-addTodo" className="btn__outline" style={{outline: 'none'}}>Add</button>
+                            <button type="submit" id="add-todo" className="btn__outline" style={{outline: 'none'}}>Add</button>
                         </form>
                     </div>
                 </div>

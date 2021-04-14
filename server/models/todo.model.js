@@ -21,10 +21,10 @@ const todoSchema = new Schema ({
     label: {
         data: {
             type: String,
-            required: true,
+            required: true
         }, iv: {
             type: String,
-            required: true,
+            required: true
         }
     },
     description: {

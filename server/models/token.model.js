@@ -6,21 +6,42 @@ const tokenSchema = new Schema ({
         type: String,
         required: true
     },
+    type: {
+        passwordReset: {
+            type: Boolean,
+            default: false,
+            require: true
+        }, accountVerification: {
+            type: Boolean,
+            default: false,
+            require: true
+        }
+    },
     userId: {
-        type: String,
-        required: true,
+        data: {
+            type: String,
+            require: true
+        }, iv: {
+            type: String,
+            require: true
+        }
     },
     token: {
-        type: String,
-        require: true,
+        data: {
+            type: String,
+            require: true
+        }, iv: {
+            type: String,
+            require: true
+        }
     },
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 3600,
+        expires: 3600
     }
 },{
-    timestamps: true,
+    timestamps: true
 })
 
 module.exports = Token = mongoose.model('Token', tokenSchema);

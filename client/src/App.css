@@ -1,4 +1,4 @@
-/*! Todo Application - CSS Version 0.4.6 Copyright 2021, Stanley Owen */
+/*! Todo Application - CSS Version 0.4.7 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 * {
@@ -144,6 +144,10 @@ label { user-select: none; }
     color: #FFF;
     background-color: rgb(73, 81, 185);
 }
+.verify-account {
+    color: #FFF;
+    background-color: rgb(48 201 64);
+}
 .logout {
     color: #FFF;
     background-color: rgb(252, 52, 52);
@@ -282,7 +286,7 @@ label { user-select: none; }
 .navbar__logo {
     float: left;
     font-size: 17px;
-    padding: 20px 20px!important;
+    padding: 22px 20px!important;
 }
 .navbar .description { display: none; }
 .toggleNavbar {
@@ -677,7 +681,7 @@ select {
     background: #1a73e8;
     transition: width 0.35s ease 0s, left 0.35s ease 0s;
 }
-.contact__infoField .contact__inputField:focus + .contact__onFocus { width: 100%; left: 0; }
+.contact__infoField .contact__inputField:focus + .contact__onFocus { width: 105%; left: 0; }
 #form {
     width: 60%;
     padding-top: 100px;
@@ -703,7 +707,6 @@ select {
 .contact__formControl {
     margin: 10px;
     color: #212121;
-    border-radius: 10px;
 }
 .contact__sendBtn {
     width: auto;
@@ -770,6 +773,9 @@ select {
     visibility: visible;
 }
 .message { margin: 40px auto; }
+.g-recaptcha { display: inline-block; }
+.unverified path { color: hsl(16, 100%, 50%) !important; }
+.verified path { color: rgb(66, 196, 49) !important; }
 .github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
 .show-password { user-select: none; text-align: center; }
 .container-bar { display: inline-block; }
@@ -815,6 +821,7 @@ blockquote a{
 blockquote a:hover{ color: #666; }
 blockquote em {font-style: italic;}
 .small { font-size: 14px; }
+.full td { width: 70%; text-align: left; }
 .view-eye {
     float: right;
     margin-top: -42px!important;
@@ -828,6 +835,7 @@ blockquote em {font-style: italic;}
 }
 .info-title {
     font-size: 20px;
+    font-weight: bold;
     margin-left: 10px;
 }
 @keyframes octocat-wave {

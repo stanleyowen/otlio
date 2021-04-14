@@ -6,12 +6,12 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 
-const app = express();
-const status = process.env.NODE_ENV;
-const PORT = process.env.PORT || 5000;
-
 require('dotenv').config();
 require('./lib/passport');
+
+const app = express();
+const status = process.env.NODE_ENV === 'production';
+const PORT = process.env.PORT || 5000;
 
 app.use(cors({
     origin: process.env.CLIENT_URL,
@@ -19,33 +19,30 @@ app.use(cors({
     credentials: true
 }));
 app.use(helmet());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(cookieParser());
-app.use(express.json());
 app.use(passport.initialize());
 app.use(csrf({
-    cookie: true,
     cookie: {
-        secure: status === 'production' ? true : false,
-        sameSite: status === 'production' ? 'none' : 'strict'
+        key: 'csrf-token',
+        httpOnly: true,
+        secure: status,
+        sameSite: status ? 'none' : 'strict'
     }
 }));
 app.use((req, res, next) => {
-    var token = req.csrfToken();
-    res.cookie('XSRF-TOKEN', token, {
-        maxAge: 24 * 60 * 60,
-        secure: status === 'production' ? true : false,
-        sameSite: status === 'production' ? 'none' : 'strict'
+    res.header('Content-Type', 'application/json;charset=UTF-8');
+    res.cookie('xsrf-token', req.csrfToken(), {
+        secure: status,
+        sameSite: status ? 'none' : 'strict'
     });
-    res.locals.csrfToken = token;
     next();
 });
 app.get('/status', (req, res) => {
     res.json({
         statusCode: 200,
-        message: 'Server is up and running',
-        'X_CSRF_TOKEN': req.cookies['_csrf'],
-        'X_XSRF_TOKEN': res.locals.csrfToken
+        message: 'Server is up and running'
     });
 })
 
@@ -59,10 +56,5 @@ app.use('/oauth/', oauthRouter);
 const URI = process.env.ATLAS_URI;
 mongoose.connect(URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology:true } );
 const connection = mongoose.connection;
-connection.once('open', () => {
-    console.log('MongoDB Database Extablished Successfully');
-})
-
-app.listen(PORT, () => {
-    console.log(`Server is running on PORT ${PORT}`);
-});
+connection.once('open', () => console.log('MongoDB Database Extablished Successfully'))
+app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
