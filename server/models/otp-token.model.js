@@ -6,17 +6,6 @@ const tokenSchema = new Schema ({
         type: String,
         required: true
     },
-    type: {
-        passwordReset: {
-            type: Boolean,
-            default: false,
-            require: true
-        }, accountVerification: {
-            type: Boolean,
-            default: false,
-            require: true
-        }
-    },
     userId: {
         data: {
             type: String,
@@ -38,10 +27,10 @@ const tokenSchema = new Schema ({
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 3600
+        expires: 300
     }
 },{
     timestamps: true
 })
 
-module.exports = Token = mongoose.model('Token', tokenSchema);
+module.exports = OTPToken = mongoose.model('OTP-Token', tokenSchema);
