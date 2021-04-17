@@ -14,7 +14,7 @@ const MSG_DESC = [
     'No Token Provided',                                                // 12
     'No Data Found',                                                    // 13
     'Token Mismatch',                                                   // 14
-    'Token Expired',                                                    // 15
+    'Your session has expired. Please log in again.',                   // 15
     'Authentication Failed',                                            // 16
     'Invalid Title Format',                                             // 17
     'Invalid Label Format',                                             // 18
@@ -35,7 +35,8 @@ const MSG_DESC = [
     'Captcha Verification Failed',                                      // 33
     'Sorry, we are not able to process your request. Please try again later.', // 34
     'Account Verification Link Sent Successfully',                      // 35
-    'Code has been Sent Successfully'                                   // 36
+    'Verification Code has been Sent Successfully',                     // 36
+    'Authenctication Required',                                         // 37
 ];
 
 module.exports = MSG_DESC;

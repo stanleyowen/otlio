@@ -400,7 +400,7 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
                         const token = crypto.randomBytes(3).toString("hex");
                         new OTPToken({ ipAddr: ip, userId: encrypt(id), token: encrypt(token) }).save((err, data) => {
                             if(err) return done(err, false);
-                            else if(data){
+                            else{
                                 const mailOptions = {
                                     to: email,
                                     subject: '[TodoApp] One Time Password',
@@ -408,7 +408,7 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
                                 };
                                 transporter.sendMail(mailOptions, (err) => {
                                     if(err) return done(err, false);
-                                    else return done(null, user, { status: 200, message: MSG_DESC[36] });
+                                    else return done(null, { email: user.email, id: user.id, tokenId: data.id }, { status: 200, message: MSG_DESC[36] });
                                 });
                             }
                         });
@@ -419,6 +419,20 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
         .catch(err => { return done(err, false) })
     })
     .catch(err => { return done(err, false); })
+}))
+
+passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', passwordField: 'token', passReqToCallback: true, session: false }, (req, tokenId, token, done) => {
+    const id = req.body._id;
+    OTPToken.findById(tokenId, (err, data) => {
+        if(err) return done(err, false);
+        else if(!data) return done(null, false, { status: 400, message: MSG_DESC[32] });
+        else if(data && id == decrypt(data.userId) && token === decrypt(data.token)){
+            data.remove();
+            return done(null, req.body, { status: 200, message: MSG_DESC[5] })
+        }
+        else return done(null, false, { status: 400, message: MSG_DESC[10] });
+    })
+    .catch(err => { return done(err, false) })
 }))
 
 passport.use('todoData', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
@@ -517,7 +531,26 @@ const opts = {
 };
 
 passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
-    User.findOne({ _id: payload.id, email: payload.email, 'security.2FA': payload['2FA']  }, (err, user) => {
+    User.findOne({ _id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA'] }, (err, user) => {
+        if(err) return done(err, false);
+        else if(user){
+            if(user.security['2FA'] === payload.auth.status){
+                RevokedToken.find({ userId: user.id }, (err, data) => {
+                    if(err) return done(err, false);
+                    else if(data.length){
+                        for (x=0; data.length; x++){
+                            if(decrypt(data[x].token) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
+                            else if(x === data.length-1 && decrypt(data[x].token) !== req.cookies['jwt-token']) return done(null, user);
+                        }
+                    }else if(!data.length) return done(null, user);
+                })
+            }else return done(null, false, { status: 403, message: MSG_DESC[37] })
+        }else return done(null, false, { status: 401, message: MSG_DESC[16] });
+    })
+}))
+
+passport.use('jwtOTP', new JWTStrategy(opts, (req, payload, done) => {
+    User.findOne({ _id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA'] }, (err, user) => {
         if(err) return done(err, false);
         else if(user){
             RevokedToken.find({ userId: user.id }, (err, data) => {
