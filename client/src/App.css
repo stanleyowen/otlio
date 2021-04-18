@@ -59,8 +59,7 @@ body.dark .footer,
 body.dark .toggleNavbar button,
 body.dark blockquote,
 body.dark .closeBtn,
-body.dark .view-eye svg,
-body.dark .MuiIconButton-root span svg {
+body.dark svg {
     color: #FFFFFF !important;
 }
 body.dark .bar1,
@@ -603,6 +602,11 @@ select {
 }
 .contact__btn:hover { background-color: #FFFFFF; color: #212121; }
 .get_in_touch { text-align: center; }
+img {
+    width: 100% !important;
+    height: 300px !important;
+    object-fit: cover !important;
+}
 .form { display:block; min-width: 300px; }
 .contact__form { padding: 15px; }
 .contact__infoField {
@@ -636,7 +640,6 @@ select {
     position: relative;
 }
 .MuiInput-underline:after { transition: all 0.35s !important; }
-.MuiIconButton-root span svg{ color: #212121 !important; }
 .notifications {
     position: fixed;
     bottom: 15px;

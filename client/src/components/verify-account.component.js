@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import verifiedSuccess from '../img/verified-success.mp4';
+import verifiedSuccess from '../img/verified-success.gif';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -28,9 +28,7 @@ const VerifyAccount = () => {
     return(
         success ? (
             <div id="form">
-                <video autoPlay muted className="animation__message">
-                    <source src={verifiedSuccess} type="video/mp4"></source>
-                </video>
+                <img className="animation__message" src={verifiedSuccess} />
                 <div className="get_in_touch"><h1>Account Verified Successfully</h1></div>
             </div>
         ) : (
