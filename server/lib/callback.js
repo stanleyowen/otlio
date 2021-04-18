@@ -30,14 +30,14 @@ const MSG_DESC = [
     'Connecting Account with Multiple Third Parties Feature will be available in the Future Release.', // 28
     'Password Reset Link Sent Successfully',                            // 29
     'You have excedeed the maximum number of request verification allowed. Please try again later.', // 30
-    'It looks like you clicked on an invalid password reset link. Please try again.', // 31
+    'It looks like the link is expired or invalid. Please try again.',  // 31
     'No Users Found',                                                   // 32
     'Captcha Verification Failed',                                      // 33
     'Sorry, we are not able to process your request. Please try again later.', // 34
     'Account Verification Link Sent Successfully',                      // 35
     'Verification Code has been Sent Successfully',                     // 36
     'Authenctication Required',                                         // 37
-    'Verification Code is Invalid or Expired. Please try again.'        // 38
+    'Verification Code is Invalid or Expired. Please try again.',       // 38
 ];
 
 module.exports = MSG_DESC;

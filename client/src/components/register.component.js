@@ -23,8 +23,6 @@ const Register = () => {
         confirmPassword: false
     })
 
-    console.log(register, properties)
-
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleRegister = (a, b) => setRegister({ ...register, [a]: b })
 

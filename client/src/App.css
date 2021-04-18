@@ -606,7 +606,7 @@ select {
 .get_in_touch { text-align: center; }
 img {
     width: 100% !important;
-    height: 300px !important;
+    height: 350px !important;
     object-fit: cover !important;
 }
 .form { display:block; min-width: 300px; }
