@@ -544,7 +544,7 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
                         }
                     }else if(!data.length) return done(null, user);
                 })
-            }else return done(null, false, { status: 403, message: MSG_DESC[37] })
+            }else return done(null, false, { status: 200, message: MSG_DESC[37] })
         }else return done(null, false, { status: 401, message: MSG_DESC[16] });
     })
 }))

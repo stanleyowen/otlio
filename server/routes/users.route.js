@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 const passport = require('passport');
 const router = require('express').Router();
 
@@ -6,6 +7,7 @@ const { encrypt } = require('../lib/crypto');
 const MSG_DESC = require('../lib/callback');
 let RevokedToken = require('../models/revoke-token.model');
 
+const SERVER_URL = process.env.SERVER_URL;
 const jwtSecret = process.env.JWT_SECRET;
 const status = process.env.NODE_ENV === 'production';
 
@@ -42,12 +44,40 @@ router.post('/login', (req, res, next) => {
         else if(user){
             req.logIn(user, err => {
                 if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
-                else return res.cookie('jwt-token', jwt.sign({
+                else{
+                    const verify = user.security['2FA'];
+                    if(verify && (req.body = {...req.body, id: user.id})){
+                        // console.log(req.body)
+                        passport.authenticate('sendOTP', { session: false }, (err, data, info) => {
+                            // console.log(err, data, info)
+                            if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
+                            else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
+                            else if(data) return res.cookie('jwt-token', jwt.sign({
+                                id: user._id,
+                                email: user.email,
+                                auth: {
+                                    '2FA': verify,
+                                    status: false
+                                }
+                            }, jwtSecret, { expiresIn: '1d' }), {
+                                path: '/',
+                                expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
+                                httpOnly: true,
+                                secure: status,
+                                sameSite: status ? 'none' : 'strict'
+                            }).status(302).send(JSON.stringify({
+                                statusCode: 302,
+                                message: info.message,
+                                tokenId: data.tokenId
+                            }, null, 2));
+                            else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
+                        })(req, res, next)
+                    }else return res.cookie('jwt-token', jwt.sign({
                         id: user._id,
                         email: user.email,
                         auth: {
-                            '2FA': user.security['2FA'],
-                            status: user.security['2FA'] ? false : true
+                            '2FA': verify,
+                            status: false 
                         }
                     }, jwtSecret, { expiresIn: '1d' }), {
                         path: '/',
@@ -55,7 +85,11 @@ router.post('/login', (req, res, next) => {
                         httpOnly: true,
                         secure: status,
                         sameSite: status ? 'none' : 'strict'
-                    }).send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2));
+                    }).status(200).send(JSON.stringify({
+                        statusCode: verify ? 302 : 200,
+                        message: info.message
+                    }, null, 2));
+                }
             });
         }else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
@@ -74,6 +108,7 @@ router.get('/user', (req, res, next) => {
                     authenticated: true,
                     thirdParty: user.thirdParty,
                     verified: user.verified,
+                    security: user.security
                 },
                 'XSRF-TOKEN': req.csrfToken()
             }, null, 2));
