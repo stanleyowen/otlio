@@ -58,14 +58,14 @@ const OAuth = () => {
                 <div className="get_in_touch"><h1>Register</h1></div>
                 <div className="form">
                     <form className="contact__form" name="contact__form" onSubmit={Submit}>
-                        <div className="contact__formControl no-bot">
+                        <div className="m-10 no-bot">
                             <div className="contact__infoField">
                                 <label htmlFor="bot-email">Email <span className="required">*</span></label>
                                 <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userEmail">Email <span className="required">*</span></label>
                                 <input title="Email" id="userEmail" type="email" minLength="6" maxLength="40" className="contact__inputField" value={email} autoFocus required disabled="true" autoComplete="username"/>
@@ -73,7 +73,7 @@ const OAuth = () => {
                             </div>
                         </div>
                         <div className="form__container">
-                            <div className="contact__formControl">
+                            <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userPassword">Password <span className="required">*</span></label>
                                     <input title="Password" id="userPassword" type={ visible.password ? 'text':'password' } minLength="6" maxLength="40" className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete={ visible.password ? 'off':'new-password'} />
@@ -83,7 +83,7 @@ const OAuth = () => {
                                     </IconButton>
                                 </div>
                             </div>
-                            <div className="contact__formControl">
+                            <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
                                     <input title="Confirm Password" id="userConfirmPassword" type={ visible.confirmPassword ? 'text':'password' } minLength="6" maxLength="40" className="contact__inputField" onChange={(event) => setConfirmPassword(event.target.value)} value={confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ visible.confirmPassword ? 'off':'new-password'} />

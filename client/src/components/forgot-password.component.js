@@ -46,14 +46,14 @@ const ResetPassword = () => {
                 <div className="get_in_touch"><h1>Reset Password</h1></div>
                 <div className="form">
                     <form className="contact__form" name="contact__form" onSubmit={Submit}>
-                        <div className="contact__formControl no-bot">
+                        <div className="m-10 no-bot">
                             <div className="contact__infoField">
                                 <label htmlFor="bot-email">Email</label>
                                 <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userEmail">Enter your user account's verified email address and we will send you a password reset link.</label>
                                 <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>

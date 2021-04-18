@@ -429,8 +429,7 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', password
         else if(data && id == decrypt(data.userId) && token === decrypt(data.token)){
             data.remove();
             return done(null, req.body, { status: 200, message: MSG_DESC[5] })
-        }
-        else return done(null, false, { status: 400, message: MSG_DESC[10] });
+        }else return done(null, false, { status: 400, message: MSG_DESC[38] });
     })
     .catch(err => { return done(err, false) })
 }))

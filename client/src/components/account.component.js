@@ -45,7 +45,8 @@ const Account = ({ userData }) => {
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             text.innerHTML = "Verify Account"; setDisabled(false);
         }
-        if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later");        else submitData();
+        if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
+        else submitData();
     }
 
     const submitNewPassword = (e) => {
@@ -99,7 +100,7 @@ const Account = ({ userData }) => {
                 <div className="form__contact">
                     <div className="get_in_touch"><h1>Account</h1></div>
                     <div className="form">
-                        <div className="contact__formControl contact__infoField">
+                        <div className="m-10 contact__infoField">
                             <label htmlFor="userEmail mt-20">Email Address</label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
                             <Tooltip placement="top" title={verified ? 'Verified Account':'Unverified Account'}>
@@ -110,17 +111,17 @@ const Account = ({ userData }) => {
                         </div>
                     </div>
                     <div className="oauth-container">
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <button className="oauth-box verify-account" onClick={ disabled || verified ? null : reqVerify}>
                                 <FontAwesomeIcon icon={faUserCheck} size='2x'/> <p id="status">{ verified ? 'Verified Account':'Verify Account' }</p>
                             </button>
                         </div>
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <button className="oauth-box change-password mt-20" onClick={() => openModal('background', 'modal', 'old-password')}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Update Password</p>
                             </button>
                         </div>
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <button className="oauth-box logout mt-20" onClick={() => Logout(id, email)}>
                                 <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
                             </button>
@@ -128,12 +129,12 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
                     <div className="form__container">
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <button className="oauth-box google" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.google ? null : ConnectOAuthGoogle : ConnectOAuthGoogle}>
                                 <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
                             </button>
                         </div>
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <button className="oauth-box github" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.github ? null : ConnectOAuthGitHub : ConnectOAuthGitHub}>
                                 <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
                             </button>
@@ -151,7 +152,7 @@ const Account = ({ userData }) => {
                         <div className="modal__body">
                             <form onSubmit={submitNewPassword}>
                                 <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
-                                <div className="contact__formControl">
+                                <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="old-password">Old Password <span className="required">*</span></label>
                                         <input title="Old Password" id="old-password" type={ visible.password ? 'text':'password' } className="contact__inputField" onChange={(event) => setOldPassword(event.target.value)} value={oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ visible.password ? 'off':'current-password'} />
@@ -162,7 +163,7 @@ const Account = ({ userData }) => {
                                     </div>
                                 </div>
                                 <div className="form__container">
-                                    <div className="contact__formControl">
+                                    <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="new-password">New Password <span className="required">*</span></label>
                                             <input title="New Password" id="new-password" type={ visible.newPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => setNewPassword(event.target.value)} value={newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ visible.newPassword ? 'off':'new-password'} />
@@ -172,7 +173,7 @@ const Account = ({ userData }) => {
                                             </IconButton>
                                         </div>
                                     </div>
-                                    <div className="contact__formControl">
+                                    <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
                                             <input title="Confirm New Password" id="confirm-password" type={ visible.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => setConfirmPassword(event.target.value)} value={confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ visible.confirmPassword ? 'off':'new-password'} />

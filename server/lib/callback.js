@@ -37,6 +37,7 @@ const MSG_DESC = [
     'Account Verification Link Sent Successfully',                      // 35
     'Verification Code has been Sent Successfully',                     // 36
     'Authenctication Required',                                         // 37
+    'Verification Code is Invalid or Expired. Please try again.'        // 38
 ];
 
 module.exports = MSG_DESC;

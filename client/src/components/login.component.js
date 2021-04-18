@@ -6,65 +6,68 @@ import { faQuestionCircle, faEyeSlash, faEye } from '@fortawesome/free-solid-svg
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation';
+import { OAuthGitHub, OAuthGoogle, getCSRFToken, Logout } from '../libraries/validation';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Login = ({ userData }) => {
-    console.log(userData)
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const [honeypot, setHoneypot] = useState();
-    const [data, setData] = useState({
-        tokenId: null,
-        token: null
-    })
     const [properties, setProperties] = useState({
+        honeypot: '',
         password: false,
         rememberMe: true,
         verify: false
-    });
+    })
+    const [login, setLogin] = useState({
+        email: '',
+        password: '',
+        rememberMe: true
+    })
+    const [data, setData] = useState({
+        tokenId: '',
+        token: ''
+    })
+
     const LogIn = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
         async function submitData(){
             btn.innerHTML = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
-            await axios.post(`${SERVER_URL}/account/login`, { email, password, rememberMe: properties.rememberMe }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(res => console.log(res.data, 'Helllo'))
+            await axios.post(`${SERVER_URL}/account/login`, login, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(() => window.location = '/')
             .catch(err => {
                 if(err.response.status === 302){
-                    handleChange('verify', properties.verify);
+                    handleChange('verify', !properties.verify);
                     handleData('tokenId', err.response.data.tokenId);
-                }
-                else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                }else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
             })
             btn.innerHTML = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
-        if(honeypot) return;
-        else if(!email || !password) { setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!email ? 'userEmail' : 'userPassword').focus(); }
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
+        if(properties.honeypot) return;
+        else if(!login.email || !login.password) { setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!login.email ? 'userEmail' : 'userPassword').focus(); }
+        else if(EMAIL_VAL.test(String(login.email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
         else submitData();
     }
 
     const VerifyOTP = (e) => {
         e.preventDefault();
-        console.log(data)
         const btn = document.getElementById('verify');
         async function submitData(){
             btn.innerHTML = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/account/otp`, { tokenId: data.tokenId, token: data.token }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            btn.innerHTML = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
-        if(honeypot) return;
-        else if(!email || !password) { setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!email ? 'userEmail' : 'userPassword').focus(); }
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
+        if(properties.honeypot) return;
+        else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
+        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
         else submitData();
     }
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: !b });
-    const handleData = (a, b) => setData({ ...data, [a]: b });
+
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
+    const handleLogin = (a, b) => setLogin({ ...login, [a]: b })
+    const handleData = (a, b) => setData({ ...data, [a]: b })
 
     return properties.verify ? (
         <div id="form">
@@ -72,28 +75,29 @@ const Login = ({ userData }) => {
                 <div className="get_in_touch"><h1>Verification</h1></div>
                 <div className="form">
                     <form className="contact__form" onSubmit={VerifyOTP}>
-                        <div className="contact__formControl no-bot">
+                        <div className="m-10 no-bot">
                             <div className="contact__infoField">
-                                <label htmlFor="bot-email">Email</label>
-                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
+                                <label htmlFor="bot-login.email">Email</label>
+                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userEmail">Email</label>
-                                <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} required readOnly disabled/>
+                                <input title="Email" id="userEmail" type="email" className="contact__inputField" value={login.email} required readOnly disabled/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userPassword">Verification Code</label>
                                 <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete='one-time-code' />
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
-                        <button type="submit" className="contact__sendBtn" id="verify">Verify</button>
+                        <button type="reset" className="contact__sendBtn solid" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
+                        <button type="submit" className="contact__sendBtn ml-10" id="verify">Login</button>
                     </form>
                 </div>
             </div>
@@ -112,32 +116,32 @@ const Login = ({ userData }) => {
             </div>
             <div className="form">
                 <form className="contact__form" onSubmit={LogIn}>
-                    <div className="contact__formControl no-bot">
+                    <div className="m-10 no-bot">
                         <div className="contact__infoField">
                             <label htmlFor="bot-email">Email</label>
-                            <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
+                            <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    <div className="contact__formControl">
+                    <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="userEmail">Email</label>
-                            <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
+                            <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => handleLogin('email', event.target.value)} value={login.email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    <div className="contact__formControl">
+                    <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="userPassword">Password</label>
-                            <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'current-password'} />
+                            <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleLogin('password', event.target.value)} value={login.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'current-password'} />
                             <span className="contact__onFocus"></span>
-                            <IconButton className="view-eye" onClick={() => handleChange('password', properties.password)}>
+                            <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                 <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
                             </IconButton>
                         </div>
-                        <div className="contact__formControl show-password">
-                            <FormControlLabel control={<Checkbox properties={properties.rememberMe} onChange={() => handleChange('rememberMe', properties.rememberMe)} color="primary"/>}
-                            label="Stay Signed In"/><Tooltip placement="top" title="If you are using Public computer or WiFi, it is recommended to uncheck this and you'll be logged out after browsing session ends." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="small" /></span></Tooltip> 
+                        <div className="m-10 show-password">
+                            <FormControlLabel control={<Checkbox checked={properties.rememberMe} onChange={() => { handleChange('rememberMe', !properties.rememberMe); handleLogin('rememberMe', !properties.rememberMe) }} color="primary"/>}
+                            label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer or WiFi" arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="small" /></span></Tooltip> 
                         </div>
                         <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
                         <p className="isCentered mt-10">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>

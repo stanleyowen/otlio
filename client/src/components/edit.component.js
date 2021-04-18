@@ -82,7 +82,7 @@ const Edit = ({ userData }) => {
             <div className="main__projects">
                 <a href="/" className="close" style={{fontSize: '40px', textDecoration: 'none'}}>&times;</a>
                 <form onSubmit={updateData} className="mt-20">
-                    <div className="contact__formControl no-bot">
+                    <div className="m-10 no-bot">
                         <div className="contact__infoField">
                             <label htmlFor="bot-title">Title</label>
                             <input title="Title" id="bot-title" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
@@ -90,14 +90,14 @@ const Edit = ({ userData }) => {
                         </div>
                     </div>
                     <div className="form__container">
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="title">Title <span className="required">*</span></label>
                                 <input title="Title" id="title" type="text" className="contact__inputField" maxLength="40" onChange={(event) => setTitle(event.target.value)} value={title} required />
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="label">Date <span className="required">*</span></label>
                                 <div className="datepicker">
@@ -114,7 +114,7 @@ const Edit = ({ userData }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="contact__formControl">
+                    <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="label">Label <span className="required">*</span></label>
                             <select onChange={(event) => setLabel(event.target.value)} id="label" value={label}>
@@ -124,7 +124,7 @@ const Edit = ({ userData }) => {
                             </select>
                         </div>
                     </div>
-                    <div className="contact__formControl">
+                    <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="description">Description</label>
                             <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="120" onChange={(event) => setDescription(event.target.value)} value={description}></textarea>

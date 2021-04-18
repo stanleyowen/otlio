@@ -18,8 +18,8 @@ body {
     font-family: 'Chilanka', sans-serif;
 }
 body.dark {
-    color: #FFFFFF;
-    background-color: #212121;
+    color: #FFFFFF !important;
+    background-color: #212121 !important;
 }
 a:visited { color: #212121; }
 body.dark a, body.dark a:visited { color: #FFF; }
@@ -176,6 +176,8 @@ label { user-select: none; }
     position: relative;
     z-index: 10001;
 }
+.m-10 { margin: 10px; }
+.ml-10 { margin-left: 10px !important; }
 .mt-10 { margin-top: 10px; }
 .mt-20 { margin-top: 20px; }
 .mt-40 { margin-top: 40px; }
@@ -707,10 +709,6 @@ img {
     display: grid;
     grid-template-columns: auto auto;
 }
-.contact__formControl {
-    margin: 10px;
-    color: #212121;
-}
 .contact__sendBtn {
     width: auto;
     display: inline-block;
@@ -728,6 +726,7 @@ img {
     background-color: transparent;
     border: 2px solid #1a73e8;
 }
+.solid { background-color: #1976d2; color: #FFFFFF; }
 .contact__sendBtn:hover { background-color: #1976d2; color: #FFFFFF; }
 .footer {
     z-index: -1;
