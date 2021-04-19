@@ -97,7 +97,7 @@ const Login = ({ userData }) => {
                             </div>
                         </div>
                         <button type="reset" className="contact__sendBtn solid" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
-                        <button type="submit" className="contact__sendBtn ml-10" id="verify">Login</button>
+                        <button type="submit" className="contact__sendBtn ml-10" id="verify">Verify</button>
                     </form>
                 </div>
             </div>

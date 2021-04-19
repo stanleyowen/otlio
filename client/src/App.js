@@ -9,6 +9,7 @@ import Navbar from './components/navbar.component';
 import Welcome from './components/welcome.component';
 import Register from './components/register.component';
 import Login from './components/login.component';
+import Logout from './components/logout.component';
 import ResetPassword from './components/reset-password.component';
 import ReqResetPassword from './components/forgot-password.component';
 import Home from './components/home.component';
@@ -73,6 +74,7 @@ export default function App() {
       <Route path='/welcome' component={Welcome} />
       <Route path='/get-started' component={Register} />
       <Route path='/login' component={() => <Login userData={userData} />} />
+      <Route path='/logout' component={() => <Logout userData={userData} />} />
       <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
       <Route path='/oauth' component={ReqOAuth} />
       <Route path='/auth/:service/:email' component={OAuth} />

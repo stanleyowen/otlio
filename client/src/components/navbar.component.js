@@ -3,8 +3,6 @@ import { IconButton, Tooltip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers, faChartLine } from '@fortawesome/free-solid-svg-icons/';
 
-import { Logout } from '../libraries/validation';
-
 const Navbar = ({ userData }) => {
     const {email, id, authenticated, isLoading} = userData;
     const theme = localStorage.getItem('__theme')
@@ -16,7 +14,7 @@ const Navbar = ({ userData }) => {
         if(theme === "dark") document.body.classList.add("dark");
         if(!isLoading && authenticated){
             setValue_a([`Dashboard`,'/', <FontAwesomeIcon icon={faListUl} style={{ fontSize: "1.5em" }} />]);
-            setValue_b([`Sign Out`,'#!', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />, () => Logout(id, email)]);
+            setValue_b([`Sign Out`,'/logout', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />]);
             setValue_c([`Account Settings`,'/account', <FontAwesomeIcon icon={faUser} style={{ fontSize: "1.4em" }} />]);
         }else {
             setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);

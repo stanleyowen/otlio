@@ -6,7 +6,7 @@ import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle,
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal, Logout } from '../libraries/validation';
+import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal } from '../libraries/validation';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -40,11 +40,11 @@ const Account = ({ userData }) => {
         }
     }, [disabled])
 
-    const reqVerify = (e) => {
+    const verifyAccount = (e) => {
         e.preventDefault();
         const text = document.getElementById('status');
         async function submitData() {
-            text.innerHTML = "Veryfing Account"; setDisabled(true);
+            text.innerHTML = "Veryfing Account..."; setDisabled(true);
             await axios.post(`${SERVER_URL}/account/verify`, { email, id }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
@@ -54,7 +54,7 @@ const Account = ({ userData }) => {
         else submitData();
     }
 
-    const submitNewPassword = (e) => {
+    const changePassword = (e) => {
         e.preventDefault();
         const btn = document.getElementById('change-password');
         async function submitData() {
@@ -80,7 +80,7 @@ const Account = ({ userData }) => {
         info.classList.add('closeModal');
         setTimeout(() => { infos.removeChild(info) }, 200);
     }
-    
+
     return (
         <div>
             { !authenticated ?
@@ -107,7 +107,7 @@ const Account = ({ userData }) => {
                         <div className="m-10 contact__infoField">
                             <label htmlFor="userEmail mt-20">Email Address</label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
-                            <Tooltip placement="top" title={verified ? 'Verified Account':'Unverified Account'}>
+                            <Tooltip placement="top" title={ verified ? 'Verified Account' : 'Unverified Account' }>
                                 <IconButton className="view-eye">
                                     <FontAwesomeIcon icon={ verified ? faCheckCircle : faTimesCircle } style={{ fontSize: '0.8em' }} className={ verified ? 'verified':'unverified' } />
                                 </IconButton>
@@ -116,7 +116,7 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="oauth-container">
                         <div className="m-10">
-                            <button className="oauth-box verify-account" onClick={ disabled || verified ? null : reqVerify}>
+                            <button className="oauth-box verify-account" onClick={ disabled || verified ? null : verifyAccount}>
                                 <FontAwesomeIcon icon={faUserCheck} size='2x'/> <p id="status">{ verified ? 'Verified Account':'Verify Account' }</p>
                             </button>
                         </div>
@@ -126,7 +126,7 @@ const Account = ({ userData }) => {
                             </button>
                         </div>
                         <div className="m-10">
-                            <button className="oauth-box logout mt-20" onClick={() => Logout(id, email)}>
+                            <button className="oauth-box logout mt-20" onClick={() => window.location='logout'}>
                                 <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
                             </button>
                         </div>
@@ -154,7 +154,7 @@ const Account = ({ userData }) => {
                             <h2>Update Password</h2>
                         </div>
                         <div className="modal__body">
-                            <form onSubmit={submitNewPassword}>
+                            <form onSubmit={changePassword}>
                                 <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
                                 <div className="m-10">
                                     <div className="contact__infoField">
