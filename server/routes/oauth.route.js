@@ -17,18 +17,19 @@ router.get('/github', async (req, res, next) => {
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(info && info.status === 302) return res.status(info.status).send(JSON.stringify({statusCode: info.status, type: info.type, url: info.url}, null, 2));
         else if(user) return res.cookie('jwt-token', jwt.sign({
-                id: user.id,
-                email: user.email
+                id: user._id,
+                email: user.email,
+                auth: {
+                    '2FA': user.security['2FA'],
+                    status: false
+                }
             }, jwtSecret, { expiresIn: '1d' }), {
                 path: '/',
-                maxAge: 86400000,
+                expires: new Date(Date.now() + 86400000),
                 httpOnly: true,
                 secure: status,
                 sameSite: status ? 'none' : 'strict'
-            }).send(JSON.stringify({
-                statusCode: 200,
-                message: MSG_DESC[2]
-            }, null, 2));
+            }).send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2));
         else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
@@ -57,19 +58,19 @@ router.get('/google', (req, res, next) => {
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(info && info.status === 302) return res.status(info.status).send(JSON.stringify({statusCode: info.status, type: info.type, url: info.url}, null, 2));
         else if(user) return res.cookie('jwt-token', jwt.sign({
-                id: user.id,
-                email: user.email
+                id: user._id,
+                email: user.email,
+                auth: {
+                    '2FA': user.security['2FA'],
+                    status: false
+                }
             }, jwtSecret, { expiresIn: '1d' }), {
                 path: '/',
-                maxAge: 86400000,
+                expires: new Date(Date.now() + 86400000),
                 httpOnly: true,
                 secure: status,
                 sameSite: status ? 'none' : 'strict'
-            }).send(JSON.stringify({
-                statusCode: 200,
-                message: MSG_DESC[2],
-                id: user.id
-            }, null, 2));
+            }).send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2));
         else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
@@ -108,19 +109,19 @@ router.post('/:provider/register', (req, res, next) => {
             req.logIn(user, err => {
                 if(err) res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else return res.cookie('jwt-token', jwt.sign({
-                        id: user.id,
-                        email: user.email
+                        id: user._id,
+                        email: user.email,
+                        auth: {
+                            '2FA': user.security['2FA'],
+                            status: false
+                        }
                     }, jwtSecret, { expiresIn: '1d' }), {
                         path: '/',
-                        maxAge: 86400000,
+                        expires: new Date(Date.now() + 86400000),
                         httpOnly: true,
                         secure: status,
                         sameSite: status ? 'none' : 'strict'
-                    }).send(JSON.stringify({
-                        statusCode: info.status,
-                        message: info.message,
-                        id: user.id,
-                    }, null, 2));
+                    }).send(JSON.stringify({ statusCode: info.status, message: info.message }, null, 2));
             })
         }else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)

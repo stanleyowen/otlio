@@ -94,7 +94,7 @@ passport.use('changePassword', new localStrategy({ usernameField: 'email', passw
                         bcrypt.hash(newPassword, SALT_WORK_FACTOR, (err, hash) => {
                             if(err) return done(err, false);
                             else {
-                                new RevokedToken ({ userId: id, token: encrypt(req.cookies['jwt-token']) }).save()
+                                new RevokedToken ({ userId: id, token: encrypt(req.cookies['jwt-token'], 1) }).save()
                                 user.password = hash; user.save()
                                 const mailOptions = {
                                     to: email,
@@ -137,7 +137,7 @@ passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passw
                             else {
                                 const id = user.id;
                                 const token = crypto.randomBytes(120).toString("hex");
-                                new Token({ ipAddr: ip, 'type.passwordReset': true, userId: encrypt(id), token: encrypt(token) }).save((err, data) => {
+                                new Token({ ipAddr: ip, 'type.passwordReset': true, userId: encrypt(id, 1), token: encrypt(token, 1) }).save((err, data) => {
                                     if(err) return done(err, false);
                                     else {
                                         const mailOptions = {
@@ -170,7 +170,7 @@ passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField
     query['_id'] = tokenId; query['type.'.concat(type)] = true;
     Token.findOne(query, (err, user) => {
         if(err) return done(err, false);
-        else if(user && userId === decrypt(user.userId) && token === decrypt(user.token)){
+        else if(user && userId === decrypt(user.userId, 1) && token === decrypt(user.token, 1)){
             User.findById(userId, (err, user) => {
                 if(err) done(err, false);
                 else if(user) return done(null, user, { status: 200, message: MSG_DESC[5] });
@@ -193,7 +193,7 @@ passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwo
         query['_id'] = tokenId; query['type.'.concat(type)] = true;
         Token.findOne(query, (err, data) => {
             if(err) done(err, false);
-            else if(data && token === decrypt(data.token) && userId === decrypt(data.userId)){
+            else if(data && token === decrypt(data.token, 1) && userId === decrypt(data.userId, 1)){
                 bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
                     if(err) return done(err, false);
                     else {
@@ -233,7 +233,7 @@ passport.use('verifyAccount', new localStrategy({ usernameField: 'email', passwo
                     else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
                     else {
                         const token = crypto.randomBytes(120).toString("hex");
-                        new Token({ ipAddr: ip, 'type.accountVerification': true, userId: encrypt(id), token: encrypt(token) }).save((err, data) => {
+                        new Token({ ipAddr: ip, 'type.accountVerification': true, userId: encrypt(id, 1), token: encrypt(token, 1) }).save((err, data) => {
                             if(err) return done(err, false);
                             else {
                                 const mailOptions = {
@@ -264,7 +264,7 @@ passport.use('verifyUser', new localStrategy({ usernameField: 'id', passwordFiel
     query['_id'] = tokenId; query['type.'.concat(type)] = true;
     Token.findOne(query, (err, data) => {
         if(err) return done(err, false);
-        else if(data && userId === decrypt(data.userId) && token === decrypt(data.token)){
+        else if(data && userId === decrypt(data.userId, 1) && token === decrypt(data.token, 1)){
             User.findById(userId, (err, user) => {
                 if(err) done(err, false);
                 else if(user){
@@ -398,7 +398,7 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
                     else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
                     else {
                         const token = crypto.randomBytes(3).toString("hex");
-                        new OTPToken({ ipAddr: ip, userId: encrypt(id), token: encrypt(token) }).save((err, data) => {
+                        new OTPToken({ ipAddr: ip, userId: encrypt(id, 2), token: encrypt(token, 2) }).save((err, data) => {
                             if(err) return done(err, false);
                             else{
                                 const mailOptions = {
@@ -426,7 +426,7 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', password
     OTPToken.findById(tokenId, (err, data) => {
         if(err) return done(err, false);
         else if(!data) return done(null, false, { status: 400, message: MSG_DESC[32] });
-        else if(data && id == decrypt(data.userId) && token === decrypt(data.token)){
+        else if(data && id == decrypt(data.userId, 2) && token === decrypt(data.token, 2)){
             data.remove();
             return done(null, req.body, { status: 200, message: MSG_DESC[5] })
         }else return done(null, false, { status: 400, message: MSG_DESC[38] });
@@ -443,10 +443,10 @@ passport.use('todoData', new localStrategy({ usernameField: 'email', passwordFie
                 const todoData = {
                     _id: data.id,
                     email: data.email,
-                    title: decrypt(data.title),
-                    label: decrypt(data.label),
-                    description: data.description.data === '' ? '' : decrypt(data.description),
-                    date: decrypt(data.date)
+                    title: decrypt(data.title, 1),
+                    label: decrypt(data.label, 1),
+                    description: data.description.data === '' ? '' : decrypt(data.description, 1),
+                    date: decrypt(data.date, 1)
                 };
                 return done(null, todoData)
             }
@@ -460,10 +460,10 @@ passport.use('todoData', new localStrategy({ usernameField: 'email', passwordFie
                     const loopData = {
                         _id: data[x]._id,
                         email: data[x].email,
-                        title: decrypt(data[x].title),
-                        label: decrypt(data[x].label),
-                        description: data[x].description.data === '' ? '' : decrypt(data[x].description),
-                        date: decrypt(data[x].date)
+                        title: decrypt(data[x].title, 1),
+                        label: decrypt(data[x].label, 1),
+                        description: data[x].description.data === '' ? '' : decrypt(data[x].description, 1),
+                        date: decrypt(data[x].date, 1)
                     };
                     todoData.push(loopData);
                 } return done(null, todoData)
@@ -482,10 +482,10 @@ passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordFiel
     else {
         new Todo({
             email,
-            title: encrypt(title),
-            label: encrypt(label),
-            description: description ? encrypt(description) : { data: '', iv: '' },
-            date: encrypt(date)
+            title: encrypt(title, 1),
+            label: encrypt(label, 1),
+            description: description ? encrypt(description, 1) : { data: '', iv: '' },
+            date: encrypt(date, 1)
         }).save((err, data) => {
             if(err) done(err, null);
             else return done(null, data, {status: 200, message: MSG_DESC[23]});
@@ -502,10 +502,10 @@ passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordF
     else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
     else {
         const data = {
-            title: encrypt(title),
-            label: encrypt(label),
-            description: description ? encrypt(description) : { data: '', iv: '' },
-            date: encrypt(date)
+            title: encrypt(title, 1),
+            label: encrypt(label, 1),
+            description: description ? encrypt(description, 1) : { data: '', iv: '' },
+            date: encrypt(date, 1)
         }
         Todo.findOneAndUpdate({ _id: id, email }, data, (err, data) => {
             if(err) return done(err, false);
@@ -538,8 +538,8 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
                     if(err) return done(err, false);
                     else if(data.length){
                         for (x=0; data.length; x++){
-                            if(decrypt(data[x].token) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
-                            else if(x === data.length-1 && decrypt(data[x].token) !== req.cookies['jwt-token']) return done(null, user);
+                            if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
+                            else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, user);
                         }
                     }else if(!data.length) return done(null, user);
                 })
@@ -556,8 +556,8 @@ passport.use('jwtOTP', new JWTStrategy(opts, (req, payload, done) => {
                 if(err) return done(err, false);
                 else if(data.length){
                     for (x=0; data.length; x++){
-                        if(decrypt(data[x].token) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
-                        else if(x === data.length-1 && decrypt(data[x].token) !== req.cookies['jwt-token']) return done(null, user);
+                        if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
+                        else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, user);
                     }
                 }else if(!data.length) return done(null, user);
             })
