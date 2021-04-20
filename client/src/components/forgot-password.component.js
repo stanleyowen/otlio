@@ -6,10 +6,14 @@ import axios from 'axios';
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const ResetPassword = () => {
-    const [honeypot, setHoneypot] = useState();
-    const [email, setEmail] = useState();
-    const [sent, setSent] = useState(false);
+const ResetPassword = ({ userData }) => {
+    const [email, setEmail] = useState(userData.email ? userData.email : '');
+    const [properties, setProperties] = useState({
+        honeypot: '',
+        success: false
+    });
+
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     const Submit = (e) => {
         e.preventDefault();
@@ -19,20 +23,20 @@ const ResetPassword = () => {
             btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/account/forgot-password`, { email, captcha }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
-                setSent(true)
-                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
+                handleChange('success', true)
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.message)
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.message));
             btn.innerHTML = "Send"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
-        if(honeypot) return;
+        if(properties.honeypot) return;
         else if(!email || !captcha) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
         else submitData();
     }
 
     return(
-        sent ? (
+        properties.success ? (
         <div id="form">
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Password Reset Request Sent</h1></div>
@@ -49,7 +53,7 @@ const ResetPassword = () => {
                         <div className="m-10 no-bot">
                             <div className="contact__infoField">
                                 <label htmlFor="bot-email">Email</label>
-                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
+                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>

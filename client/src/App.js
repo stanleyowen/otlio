@@ -79,7 +79,7 @@ export default function App() {
       <Route path='/oauth' component={ReqOAuth} />
       <Route path='/auth/:service/:email' component={OAuth} />
       <Route path='/account' component={() => <Account userData={userData} />} />
-      <Route path='/reset-password' exact component={ReqResetPassword} />
+      <Route path='/reset-password' exact component={() => <ReqResetPassword userData={userData} />} />
       <Route path='/reset-password/:id/:token' component={ResetPassword} />
       <Route path='/verify/:id/:token' component={VerifyAccount} />
       <Route path='/privacy-policy' component={PrivacyPolicy} />

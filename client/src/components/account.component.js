@@ -12,13 +12,13 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
     const {email, id, thirdParty, verified, authenticated, isLoading} = userData;
-    const [disabled, setDisabled] = useState(false);
     const [data, setData] = useState({
         oldPassword: '',
         newPassword: '',
         confirmPassword: ''
     })
     const [properties, setProperties] = useState({
+        disabled: false,
         password: false,
         newPassword: false,
         confirmPassword: false
@@ -31,24 +31,24 @@ const Account = ({ userData }) => {
         const background = document.getElementById('background');
         const modal = document.getElementById('modal');
         window.onclick = function(e){
-            if(e.target === background && !disabled){
+            if(e.target === background && !properties.disabled){
                 modal.classList.remove('showModal');
                 modal.classList.add('closeModal');
                 background.classList.remove('showBackground');
                 background.classList.add('hideBackground');
             }
         }
-    }, [disabled])
+    }, [properties.disabled])
 
     const verifyAccount = (e) => {
         e.preventDefault();
         const text = document.getElementById('status');
         async function submitData() {
-            text.innerHTML = "Veryfing Account..."; setDisabled(true);
+            text.innerHTML = "Veryfing Account..."; handleChange('disabled', true);
             await axios.post(`${SERVER_URL}/account/verify`, { email, id }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            text.innerHTML = "Verify Account"; setDisabled(false);
+            text.innerHTML = "Verify Account"; handleChange('disabled', false);
         }
         if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
         else submitData();
@@ -58,7 +58,7 @@ const Account = ({ userData }) => {
         e.preventDefault();
         const btn = document.getElementById('change-password');
         async function submitData() {
-            btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); setDisabled(true);
+            btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
             await axios.put(`${SERVER_URL}/account/user`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('background', 'modal');
@@ -66,7 +66,7 @@ const Account = ({ userData }) => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); setDisabled(false);
+            btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
         }
         if(!data.oldPassword || !data.newPassword || !data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.oldPassword ? 'old-password' : !data.newPassword ? 'new-password' : 'confirm-password').focus(); }
         else if(data.oldPassword.length < 6 || data.newPassword.length < 6 || data.confirmPassword.length < 6 || data.oldPassword.length > 40 || data.newPassword.length > 40 || data.confirmPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(data.oldPassword.length < 6 || data.oldPassword.length > 40 ? 'old-password' : data.newPassword.length < 6 || data.newPassword.length > 40 ? 'new-password' : 'confirm-password').focus(); }
@@ -116,7 +116,7 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="oauth-container">
                         <div className="m-10">
-                            <button className="oauth-box verify-account" onClick={ disabled || verified ? null : verifyAccount}>
+                            <button className="oauth-box verify-account" onClick={ properties.disabled || verified ? null : verifyAccount}>
                                 <FontAwesomeIcon icon={faUserCheck} size='2x'/> <p id="status">{ verified ? 'Verified Account':'Verify Account' }</p>
                             </button>
                         </div>
@@ -147,6 +147,7 @@ const Account = ({ userData }) => {
                     <hr className="mt-20"></hr>
                     <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                 </div>
+                
                 <div id="background" className="modal hiddenModal">
                     <div id="modal" className="modal__container hiddenModal">
                         <div className="modal__title">
