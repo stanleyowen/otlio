@@ -73,17 +73,16 @@ const Login = ({ userData }) => {
 
     const resendCode = (e) => {
         e.preventDefault();
+        console.log(data)
         const btn = document.getElementById('status');
         async function submitData(){
             btn.innerHTML = "Resending..."; setDisabled(true);
             await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = '/')
-            .catch(err => {
-                if(err.response.status === 302){
-                    handleChange('verify', !properties.verify);
-                    handleData('tokenId', err.response.data.tokenId);
-                }else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+            .then(res => {
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
+                handleData('tokenId', res.data.credentials.tokenId);
             })
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerHTML = "Resend"; setDisabled(false);
         }
         if(properties.honeypot) return;

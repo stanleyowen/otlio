@@ -228,7 +228,7 @@ router.get('/otp', (req, res, next) => {
             passport.authenticate('sendOTP', { session: false }, (err, user, info) => {
                 if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
-                else if(user) return res.status(504).send(JSON.stringify({
+                else if(user) return res.status(200).send(JSON.stringify({
                         statusCode: 200,
                         message: MSG_DESC[36],
                         credentials: {
