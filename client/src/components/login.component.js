@@ -12,6 +12,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Login = ({ userData }) => {
+    const [disabled, setDisabled] = useState(false);
     const [properties, setProperties] = useState({
         honeypot: '',
         password: false,
@@ -56,12 +57,37 @@ const Login = ({ userData }) => {
             btn.innerHTML = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/account/otp`, { tokenId: data.tokenId, token: data.token }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            .catch(err => {
+                if(err.response.status === 302){
+                    handleChange('verify', !properties.verify);
+                    handleData('tokenId', err.response.data.tokenId);
+                }else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+            })
             btn.innerHTML = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;
         else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
         else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
+        else submitData();
+    }
+
+    const resendCode = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('status');
+        async function submitData(){
+            btn.innerHTML = "Resending..."; setDisabled(true);
+            await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(() => window.location = '/')
+            .catch(err => {
+                if(err.response.status === 302){
+                    handleChange('verify', !properties.verify);
+                    handleData('tokenId', err.response.data.tokenId);
+                }else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+            })
+            btn.innerHTML = "Resend"; setDisabled(false);
+        }
+        if(properties.honeypot) return;
+        else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
         else submitData();
     }
 
@@ -96,6 +122,7 @@ const Login = ({ userData }) => {
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
+                        <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="status" onClick={disabled ? null : resendCode}>Resend Code</a></p>
                         <button type="reset" className="contact__sendBtn solid" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
                         <button type="submit" className="contact__sendBtn ml-10" id="verify">Verify</button>
                     </form>
