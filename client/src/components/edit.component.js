@@ -34,8 +34,14 @@ const Edit = ({ userData }) => {
                 handleChange('isLoading', false);
             })
             .catch(err => {
-                localStorage.setItem('info', JSON.stringify(err.response.data));
-                window.location='/';
+                if(err.response.status === 500){
+                    setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+                    setTimeout(() => getData(), 5000)
+                }
+                else {
+                    localStorage.setItem('info', JSON.stringify(err.response.data));
+                    window.location='/';
+                }
             });
         }
         document.querySelectorAll('[data-autoresize]').forEach((e) => {

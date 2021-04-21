@@ -78,7 +78,7 @@ const Account = ({ userData }) => {
         const infos = document.getElementById('infos')
         const info = document.getElementById(a);
         info.classList.add('closeModal');
-        setTimeout(() => { infos.removeChild(info) }, 200);
+        setTimeout(() => infos.removeChild(info), 200);
     }
 
     return (

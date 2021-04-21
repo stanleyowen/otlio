@@ -76,7 +76,7 @@ export default function App() {
       <Route path='/login' component={() => <Login userData={userData} />} />
       <Route path='/logout' component={() => <Logout userData={userData} />} />
       <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
-      <Route path='/oauth' component={ReqOAuth} />
+      <Route path='/oauth' component={() => <ReqOAuth userData={userData} />} />
       <Route path='/auth/:service/:email' component={OAuth} />
       <Route path='/account' component={() => <Account userData={userData} />} />
       <Route path='/reset-password' exact component={() => <ReqResetPassword userData={userData} />} />

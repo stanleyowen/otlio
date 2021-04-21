@@ -45,7 +45,6 @@ const parseLabel = (a) => {
 }
 
 const Home = ({ userData }) => {
-    var intervalData;
     const {email, authenticated, isLoading} = userData;
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
     const [todoData, setTodoData] = useState(null);
@@ -63,14 +62,16 @@ const Home = ({ userData }) => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
 
-    async function clearData(){ if(intervalData) clearInterval(intervalData); }
     async function getTodoData() {
         await axios.get(`${SERVER_URL}/todo/data`, { withCredentials: true })
         .then(res => {
-            setTodoData(res.data); clearData();
+            setTodoData(res.data);
             localStorage.setItem('todoData', JSON.stringify(res.data));
         })
-        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+        .catch(err => {
+            setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+            setTimeout(() => getTodoData(), 5000)
+        });
     }
 
     useEffect(() => {

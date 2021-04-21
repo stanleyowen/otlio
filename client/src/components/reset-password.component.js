@@ -36,9 +36,14 @@ const ResetPassword = () => {
             .then(res => handleData('email', res.data.credentials.email))
             .catch(err => {
                 if(err.response.data.message || err.response.data.error_description){
-                    setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message ? err.response.data.message : err.response.data.error_description);
-                    setTimeout(() => { window.location='/reset-password' }, 5000)
-                }else window.location='/'
+                    if(err.response.status === 500){
+                        setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message ? err.response.data.message : err.response.data.error_description)
+                        setTimeout(() => validateData(), 5000)
+                    }else {
+                        localStorage.setItem('info', JSON.stringify(err.response.data))
+                        window.location='/reset-password'
+                    }
+                }else window.location='/reset-password'
             })
         }
         validateData();

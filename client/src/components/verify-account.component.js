@@ -20,6 +20,7 @@ const VerifyAccount = () => {
             .then(() => setProperties({ success: true }))
             .catch(err => {
                 setProperties({ ...properties, isLoading: false })
+                if(err.response.status === 500) setTimeout(() => validateData(), 5000)
                 if(err.response.data.message || err.response.data.error_description) setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message ? err.response.data.message : err.response.data.error_description)
             })
         }
