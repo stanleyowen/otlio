@@ -3,22 +3,17 @@ import axios from 'axios';
 import { getCSRFToken } from '../libraries/validation';
 
 const Logout = ({ userData }) => {
-    const {isLoading, authenticated} = userData;
+    const {isLoading, authenticated, status} = userData;
 
     useEffect(() => {
         async function Logout(){
             await axios.post(`${process.env.REACT_APP_SERVER_URL}/account/logout`, {}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true})
-            .then(() => {
-                localStorage.setItem('info', JSON.stringify({ statusCode: 200, message: 'You have been logged out successfully.' }))
-                window.location = '/login'
-            })
-            .catch(err => {
-                localStorage.setItem('info', JSON.stringify(err.response.data))
-                window.location = '/welcome'
-            })
+            .then(() => localStorage.setItem('info', JSON.stringify({ statusCode: 200, message: 'You have been logged out successfully.' })))
+            .catch(err => localStorage.setItem('info', JSON.stringify(err.response.data)))
+            window.location = '/login'
         }
-        if(authenticated) Logout()
-        if(!isLoading && !authenticated) window.location = '/login'
+        if(authenticated || status === 302) Logout()
+        else if(!isLoading && !authenticated) window.location = '/login'
     }, [authenticated])
 
     return(

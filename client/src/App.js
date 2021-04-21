@@ -27,7 +27,6 @@ export default function App() {
   const redirectRoute = ['welcome', 'login', 'get-started'];
   const privateRoute = ['', 'edit', 'account'];
   const info = JSON.parse(localStorage.getItem('info'));
-
   if(info && info.statusCode && info.message){
     const status = info.statusCode === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER;
     setNotification(status, info.message); localStorage.removeItem('info');
@@ -46,6 +45,7 @@ export default function App() {
     axios.get(`${SERVER_URL}/account/user`, { withCredentials: true })
     .then(res => {
       setUserData({
+        status: res.data.status,
         isLoading: false,
         id: res.data.credentials.id,
         email: res.data.credentials.email,
@@ -57,8 +57,11 @@ export default function App() {
     })
     .catch(err => {
       localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
+      if(err.response.status === 302 && (window.location.pathname.split('/')[1] !== 'login' && window.location.pathname.split('/')[1] !== 'logout')) window.location='/login';
       if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
       setUserData({
+        status: err.response.status,
+        email: err.response.data.email,
         isLoading: false,
         authenticated: false
       })

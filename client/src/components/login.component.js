@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core';
@@ -6,12 +6,13 @@ import { faQuestionCircle, faEyeSlash, faEye } from '@fortawesome/free-solid-svg
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { OAuthGitHub, OAuthGoogle, getCSRFToken, Logout } from '../libraries/validation';
+import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Login = ({ userData }) => {
+    const {status, email} = userData;
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,
@@ -29,6 +30,23 @@ const Login = ({ userData }) => {
         token: ''
     })
 
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
+    const handleLogin = (a, b) => setLogin({ ...login, [a]: b })
+    const handleData = (a, b) => setData({ ...data, [a]: b })
+
+    useEffect(() => {
+        async function sendOTP(){
+            properties.verify = true; handleLogin('email', email);
+            await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(res => {
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
+                handleData('tokenId', res.data.credentials.tokenId);
+            })
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+        }
+        if(status === 302 && !properties.verify) sendOTP()
+    }, [status, properties.verify])
+
     const LogIn = (e) => {
         e.preventDefault();
         const btn = document.getElementById('login');
@@ -38,7 +56,7 @@ const Login = ({ userData }) => {
             .then(() => window.location = '/')
             .catch(err => {
                 if(err.response.status === 302){
-                    handleChange('verify', !properties.verify);
+                    handleChange('verify', true);
                     handleData('tokenId', err.response.data.tokenId);
                 }else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
             })
@@ -59,7 +77,7 @@ const Login = ({ userData }) => {
             .then(() => window.location = '/')
             .catch(err => {
                 if(err.response.status === 302){
-                    handleChange('verify', !properties.verify);
+                    handleChange('verify', true);
                     handleData('tokenId', err.response.data.tokenId);
                 }else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
             })
@@ -72,27 +90,21 @@ const Login = ({ userData }) => {
     }
 
     const resendCode = (e) => {
-        e.preventDefault();
-        console.log(data)
+        if(e) e.preventDefault();
         const btn = document.getElementById('status');
         async function submitData(){
-            btn.innerHTML = "Resending..."; handleChange('disabled', true);
+            if(btn) btn.innerHTML = "Resending..."; handleChange('disabled', true);
             await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
-                handleData('tokenId', res.data.credentials.tokenId);
+                handleData('tokenId', res.data.tokenId);
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Resend"; handleChange('disabled', false);
+            if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false);
         }
         if(properties.honeypot) return;
-        else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
         else submitData();
     }
-
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
-    const handleLogin = (a, b) => setLogin({ ...login, [a]: b })
-    const handleData = (a, b) => setData({ ...data, [a]: b })
 
     return properties.verify ? (
         <div id="form">
@@ -167,7 +179,7 @@ const Login = ({ userData }) => {
                         </div>
                         <div className="m-10 show-password">
                             <FormControlLabel control={<Checkbox checked={properties.rememberMe} onChange={() => { handleChange('rememberMe', !properties.rememberMe); handleLogin('rememberMe', !properties.rememberMe) }} color="primary"/>}
-                            label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer or WiFi" arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="small" /></span></Tooltip> 
+                            label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer or WiFi" arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                         <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
                         <p className="isCentered mt-10">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
