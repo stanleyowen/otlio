@@ -12,12 +12,12 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Login = ({ userData }) => {
-    const [disabled, setDisabled] = useState(false);
     const [properties, setProperties] = useState({
         honeypot: '',
+        verify: false,
+        disabled: false,
         password: false,
         rememberMe: true,
-        verify: false
     })
     const [login, setLogin] = useState({
         email: '',
@@ -76,14 +76,14 @@ const Login = ({ userData }) => {
         console.log(data)
         const btn = document.getElementById('status');
         async function submitData(){
-            btn.innerHTML = "Resending..."; setDisabled(true);
+            btn.innerHTML = "Resending..."; handleChange('disabled', true);
             await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleData('tokenId', res.data.credentials.tokenId);
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Resend"; setDisabled(false);
+            btn.innerHTML = "Resend"; handleChange('disabled', false);
         }
         if(properties.honeypot) return;
         else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
@@ -121,7 +121,7 @@ const Login = ({ userData }) => {
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
-                        <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="status" onClick={disabled ? null : resendCode}>Resend Code</a></p>
+                        <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="status" onClick={properties.disabled ? null : resendCode}>Resend Code</a></p>
                         <button type="reset" className="contact__sendBtn solid" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
                         <button type="submit" className="contact__sendBtn ml-10" id="verify">Verify</button>
                     </form>

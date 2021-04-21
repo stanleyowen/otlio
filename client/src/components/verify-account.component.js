@@ -14,7 +14,6 @@ const VerifyAccount = () => {
         isLoading: true,
         success: false
     })
-    console.log(properties)
     useEffect(() => {
         async function validateData() {
             await axios.get(`${SERVER_URL}/account/verify`, { params: { id, token, type: 'accountVerification' } })

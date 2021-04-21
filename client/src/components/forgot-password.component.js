@@ -37,41 +37,42 @@ const ResetPassword = ({ userData }) => {
 
     return(
         properties.success ? (
-        <div id="form">
-            <div className="form__contact">
-                <div className="get_in_touch"><h1>Password Reset Request Sent</h1></div>
-                <div className="form">
-                    <h4 className="mt-20 mb-20">Password Reset Recovery has been sent to {email} for reset your password. If it hasn't arrived after a few minutes, check your spam folder.</h4>
+            <div id="form">
+                <div className="form__contact">
+                    <div className="get_in_touch"><h1>Password Reset Request Sent</h1></div>
+                    <div className="form">
+                        <h4 className="mt-20 mb-20">Password Reset Recovery has been sent to {email} for reset your password. If it hasn't arrived after a few minutes, check your spam folder.</h4>
+                    </div>
                 </div>
             </div>
-        </div>) : (
-        <div id="form">
-            <div className="form__contact">
-                <div className="get_in_touch"><h1>Reset Password</h1></div>
-                <div className="form">
-                    <form className="contact__form" name="contact__form" onSubmit={Submit}>
-                        <div className="m-10 no-bot">
-                            <div className="contact__infoField">
-                                <label htmlFor="bot-email">Email</label>
-                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                                <span className="contact__onFocus"></span>
+        ) : (
+            <div id="form">
+                <div className="form__contact">
+                    <div className="get_in_touch"><h1>Reset Password</h1></div>
+                    <div className="form">
+                        <form className="contact__form" name="contact__form" onSubmit={Submit}>
+                            <div className="m-10 no-bot">
+                                <div className="contact__infoField">
+                                    <label htmlFor="bot-email">Email</label>
+                                    <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
+                                    <span className="contact__onFocus"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="m-10">
-                            <div className="contact__infoField">
-                                <label htmlFor="userEmail">Enter your user account's verified email address and we will send you a password reset link.</label>
-                                <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
-                                <span className="contact__onFocus"></span>
+                            <div className="m-10">
+                                <div className="contact__infoField">
+                                    <label htmlFor="userEmail">Enter your user account's verified email address and we will send you a password reset link.</label>
+                                    <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
+                                    <span className="contact__onFocus"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="isCentered">
-                            <div className="g-recaptcha" data-sitekey="6LfTOaQaAAAAAMYqu976RhDpm1lJtPciLZ-sk2Qq"></div>
-                        </div>
-                        <button type="submit" className="contact__sendBtn" id="reset-password">Send</button>
-                    </form>
+                            <div className="isCentered">
+                                <div className="g-recaptcha" data-sitekey="6LfTOaQaAAAAAMYqu976RhDpm1lJtPciLZ-sk2Qq"></div>
+                            </div>
+                            <button type="submit" className="contact__sendBtn" id="reset-password">Send</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </div>)
+            </div>)
     )
 }
 

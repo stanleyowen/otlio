@@ -12,9 +12,7 @@ import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotificatio
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const formatDate = (e) => {
-    var d;
-    if(e) d = new Date(e);
-    else d = new Date();
+    var d = e ? new Date(e) : new Date();
     var month = d.getMonth() + 1;
     var day = d.getDate();
     var year = d.getFullYear();
@@ -23,7 +21,7 @@ const formatDate = (e) => {
     return [day, month, year].join('-');
 }
 
-const validateTimestamp = (a, b) => {
+const parseDate = (a, b) => {
     var data = parseInt(a.split('-')[0]);
     var yesterday = parseInt(b.split('-')[0]) - 1;
     var today = parseInt(b.split('-')[0]);
@@ -34,9 +32,9 @@ const validateTimestamp = (a, b) => {
     else return a;
 }
 
-const labeling = (a) => {
+const parseLabel = (a) => {
     var _labelClass = null;
-    if(a[1]) {if(a[0]+" "+a[1] === labels[3]) _labelClass="do-later"}
+    if(a[1]){ if(a[0]+" "+a[1] === labels[3]) _labelClass="do-later" }
     else {
         if(a[0] === labels[0]) _labelClass="priority";
         else if(a[0] === labels[1]) _labelClass="secondary";
@@ -51,12 +49,19 @@ const Home = ({ userData }) => {
     const {email, authenticated, isLoading} = userData;
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
     const [todoData, setTodoData] = useState(null);
-    const [honeypot, setHoneypot] = useState();
-    const [disabled, setDisabled] = useState(false);
-    const [title, setTitle] = useState();
-    const [date, setDate] = useState(new Date());
-    const [description, setDescription] = useState();
-    const [label, setLabel] = useState(labels[0].toLowerCase());
+    const [data, setData] = useState({
+        title: '',
+        date: new Date(),
+        label: labels[0].toLowerCase(),
+        description: ''
+    });
+    const [properties, setProperties] = useState({
+        honeypot: '',
+        disabled: false
+    });
+
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
+    const handleData = (a, b) => setData({ ...data, [a]: b })
 
     async function clearData(){ if(intervalData) clearInterval(intervalData); }
     async function getTodoData() {
@@ -72,7 +77,7 @@ const Home = ({ userData }) => {
         const background = document.getElementById('background');
         const modal = document.getElementById('modal');
         window.onclick = function(e){
-            if(e.target === background && !disabled){
+            if(e.target === background && !properties.disabled){
                 modal.classList.remove('showModal');
                 modal.classList.add('closeModal');
                 background.classList.remove('showBackground');
@@ -89,38 +94,34 @@ const Home = ({ userData }) => {
             e.removeAttribute('data-autoresize');
         });
         if(!isLoading && authenticated) getTodoData()
-    }, [userData, disabled]);
+    }, [userData, properties.disabled]);
 
-    const todoList = () => {
-        let todo = cacheTodo;
-        if(todoData) todo = todoData
-        if(cacheTodo || todoData){
-            return todo.map(a => {
-                return(
-                    <tr key={a._id}>
-                        <td>{a.title}<br/>{a.description}</td>
-                        <td>{labeling(titleCase(a.label))}</td>
-                        <td>{validateTimestamp(formatDate(a.date), formatDate())}</td>
-                        <td>
-                            <span className="btn-config">
-                                <Tooltip title="Edit Task">
-                                    <IconButton href={`/edit/${a._id}`}>
-                                        <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
-                                    </IconButton>
-                                </Tooltip>
-                            </span>
-                            <span className="btn-config">
-                                <Tooltip title="Delete Task">
-                                    <IconButton onClick={() => deleteData(a._id)}>
-                                        <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
-                                    </IconButton>
-                                </Tooltip>
-                            </span>
-                        </td>
-                    </tr>
-                )
-            })
-        }
+    const todoList = (b = todoData ? todoData : cacheTodo) => {
+        return b.map(a => {
+            return(
+                <tr key={a._id}>
+                    <td>{a.title}<br/>{a.description}</td>
+                    <td>{parseLabel(titleCase(a.label))}</td>
+                    <td>{parseDate(formatDate(a.date), formatDate())}</td>
+                    <td>
+                        <span className="btn-config">
+                            <Tooltip title="Edit Task">
+                                <IconButton href={`/edit/${a._id}`}>
+                                    <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
+                                </IconButton>
+                            </Tooltip>
+                        </span>
+                        <span className="btn-config">
+                            <Tooltip title="Delete Task">
+                                <IconButton onClick={() => deleteData(a._id)}>
+                                    <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
+                                </IconButton>
+                            </Tooltip>
+                        </span>
+                    </td>
+                </tr>
+            )
+        })
     }
 
     const deleteData = async id => {
@@ -141,23 +142,22 @@ const Home = ({ userData }) => {
         e.preventDefault();
         const btn = document.getElementById('add-todo');
         async function submitData() {
-            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); setDisabled(true);
-            const data = { title, label, description, date };
+            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
             await axios.post(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('background','modal')
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
-                setTitle(''); setLabel(labels[0].toLowerCase()); setDescription(''); setDate(new Date());
+                setData({ title: '', date: new Date(), label: labels[0].toLowerCase(), description: '' })
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); setDisabled(false);
+            btn.innerHTML = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
             getTodoData();
         }
-        if(honeypot) return;
-        else if(!title || !date || !label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!title ? 'title' : !date ? 'date' : 'label').focus(); }
-        else if(title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); document.getElementById('title').focus(); }
-        else if(validateLabel(label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }
-        else if(description && description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !"); document.getElementById('description').focus(); }
+        if(properties.honeypot) return;
+        else if(!data.title || !data.date || !data.label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus(); }
+        else if(data.title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); document.getElementById('title').focus(); }
+        else if(validateLabel(data.label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }
+        else if(data.description && data.description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !"); document.getElementById('description').focus(); }
         else submitData();
     }
 
@@ -172,22 +172,22 @@ const Home = ({ userData }) => {
                     </div>
                     <div className="modal__body">
                         <form onSubmit={addTodo}>
-                            <div className="contact__formControl no-bot">
+                            <div className="m-10 no-bot">
                                 <div className="contact__infoField">
                                     <label htmlFor="bot-title">Title</label>
-                                    <input title="Title" id="bot-title" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
+                                    <input title="Title" id="bot-title" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="form__container">
-                                <div className="contact__formControl">
+                                <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="title">Title <span className="required">*</span></label>
-                                        <input title="Title" id="title" type="text" className="contact__inputField" maxLength="40" onChange={(event) => setTitle(event.target.value)} value={title} required />
+                                        <input title="Title" id="title" type="text" className="contact__inputField" maxLength="40" onChange={(event) => handleData('title', event.target.value)} value={data.title} required />
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
-                                <div className="contact__formControl">
+                                <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="date">Date <span className="required">*</span></label>
                                         <div className="datepicker">
@@ -196,28 +196,28 @@ const Home = ({ userData }) => {
                                                     margin="normal"
                                                     format="dd/MM/yyyy"
                                                     id="date"
-                                                    value={date}
-                                                    onChange={(event) => setDate(event)}
+                                                    value={data.date}
+                                                    onChange={(event) => handleData('date', event)}
                                                 />
                                             </MuiPickersUtilsProvider>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="contact__formControl">
+                            <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="label">Label <span className="required">*</span></label>
-                                    <select onChange={(event) => setLabel(event.target.value)} value={label}>
+                                    <select onChange={(event) => handleData('label', event.target.value)} value={data.label}>
                                         { labels.map(c => {
                                             return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
                                         }) }
                                     </select>
                                 </div>
                             </div>
-                            <div className="contact__formControl">
+                            <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="description">Description</label>
-                                    <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="120" onChange={(event) => setDescription(event.target.value)} value={description}></textarea>
+                                    <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="120" onChange={(event) => handleData('description', event.target.value)} value={data.description}></textarea>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>

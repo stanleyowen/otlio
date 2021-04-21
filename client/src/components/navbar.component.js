@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers, faChartLine } from '@fortawesome/free-solid-svg-icons/';
 
 const Navbar = ({ userData }) => {
-    const {email, id, authenticated, isLoading} = userData;
+    const {authenticated, isLoading} = userData;
     const theme = localStorage.getItem('__theme')
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
