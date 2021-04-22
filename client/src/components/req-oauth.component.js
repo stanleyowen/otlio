@@ -4,7 +4,7 @@ import axios from 'axios';
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const ReqOAuth = ({ userData }) => {
-    const {authenticated} = userData;
+    const {isLoading, authenticated} = userData;
     const {pathname} = window.location;
     const code = window.location.search;
 
@@ -18,15 +18,16 @@ const ReqOAuth = ({ userData }) => {
                 }else window.location = '/login'
             })
             .catch(err => {
+                console.log(err.response)
                 if(err.response.status === 302) window.location = err.response.data.url
                 else{
                     localStorage.setItem('info', JSON.stringify(err.response.data))
-                    if(authenticated) window.location='/account'
+                    if(!isLoading && authenticated) window.location='/account'
                     else window.location='/login'
                 };
             })
         }
-        validateData();
+        if(!isLoading)validateData();
     },[code, pathname])
 
     return(

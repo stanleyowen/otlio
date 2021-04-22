@@ -301,10 +301,10 @@ passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, cl
 }))
 
 passport.use('connectGitHub', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: `${process.env.GITHUB_CALLBACK}/connect`, passReqToCallback: true }, (req, accessToken, refreshToken, profile, done) => {
-    const {id, email} = req.body;
+    const {_id: id, email} = req.body;
     User.findOne({email: profile._json.email, 'thirdParty.github': false}, (err, user) => {
         if(err) return done(err, false);
-        else if(user && id === user.id && email === user.email){
+        else if(user && String(id) === String(user._id) && email === user.email){
             user.thirdParty.isThirdParty = true
             user.thirdParty.github = true
             user.thirdParty.verified = true
@@ -337,10 +337,10 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
 }))
 
 passport.use('connectGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: `${process.env.GOOGLE_CALLBACK}/connect`, passReqToCallback: true }, (req, accessToken, refreshToken, profile, done) => {
-    const {id, email} = req.body;
+    const {_id: id, email} = req.body;
     User.findOne({email: profile._json.email, 'thirdParty.google': false}, (err, user) => {
         if(err) return done(err, false);
-        else if(user && id === user.id && email === user.email){
+        else if(user && String(id) === String(user._id) && email === user.email){
             user.thirdParty.isThirdParty = true
             user.thirdParty.google = true
             user.thirdParty.verified = true

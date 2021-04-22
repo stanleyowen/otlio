@@ -98,7 +98,7 @@ const Home = ({ userData }) => {
     }, [userData, properties.disabled]);
 
     const todoList = (b = todoData ? todoData : cacheTodo) => {
-        return b.map(a => {
+        if(b)return b.map(a => {
             return(
                 <tr key={a._id}>
                     <td>{a.title}<br/>{a.description}</td>

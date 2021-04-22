@@ -40,12 +40,11 @@ export default function App() {
       if(window.location.pathname.split('/')[1] === a) window.location='/welcome';
     });
   }
-
   useEffect(() => {
     axios.get(`${SERVER_URL}/account/user`, { withCredentials: true })
     .then(res => {
       setUserData({
-        status: res.data.status,
+        status: res.status,
         isLoading: false,
         id: res.data.credentials.id,
         email: res.data.credentials.email,

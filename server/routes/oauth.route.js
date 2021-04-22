@@ -15,50 +15,23 @@ router.get('/github', async (req, res, next) => {
         if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(info && info.status === 302) return res.status(info.status).send(JSON.stringify({statusCode: info.status, type: info.type, url: info.url}, null, 2));
-        else if(user) {
-            const verify = user.security['2FA'];
-            if(verify && (req.body = {...req.body, id: user.id})){
-                passport.authenticate('sendOTP', { session: false }, (err, data, info) => {
-                    if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
-                    else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
-                    else if(data) return res.cookie('jwt-token', jwt.sign({
-                            id: user._id,
-                            email: user.email,
-                            auth: {
-                                '2FA': verify,
-                                status: false
-                            }
-                        }, jwtSecret, { expiresIn: '1d' }), {
-                            path: '/',
-                            expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
-                            httpOnly: true,
-                            secure: status,
-                            sameSite: status ? 'none' : 'strict'
-                        }).status(302).send(JSON.stringify({
-                            statusCode: 302,
-                            message: info.message,
-                            tokenId: data.tokenId
-                        }, null, 2));
-                    else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
-                })(req, res, next)
-            }else return res.cookie('jwt-token', jwt.sign({
+        else if(user) return res.cookie('jwt-token', jwt.sign({
                 id: user._id,
                 email: user.email,
                 auth: {
-                    '2FA': verify,
-                    status: false 
+                    '2FA': user.security['2FA'],
+                    status: false
                 }
             }, jwtSecret, { expiresIn: '1d' }), {
                 path: '/',
-                expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
+                maxAge: 86400000,
                 httpOnly: true,
                 secure: status,
                 sameSite: status ? 'none' : 'strict'
-            }).status(200).send(JSON.stringify({
-                statusCode: user.security['2FA'] ? 302 : 200,
+            }).status(302).send(JSON.stringify({
+                statusCode: 302,
                 message: info.message
             }, null, 2));
-        }
         else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
@@ -67,7 +40,7 @@ router.get('/github/connect', async (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
-        else if(user && (req.body = user)){
+        else if(user && (req.body = {...req.query, ...user._doc})){
             passport.authenticate('connectGitHub', (err, github, info) => {
                 if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
@@ -86,50 +59,23 @@ router.get('/google', (req, res, next) => {
         if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else if(info && info.status === 302) return res.status(info.status).send(JSON.stringify({statusCode: info.status, type: info.type, url: info.url}, null, 2));
-        else if(user){
-            const verify = user.security['2FA'];
-            if(verify && (req.body = {...req.body, id: user.id})){
-                passport.authenticate('sendOTP', { session: false }, (err, data, info) => {
-                    if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
-                    else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
-                    else if(data) return res.cookie('jwt-token', jwt.sign({
-                            id: user._id,
-                            email: user.email,
-                            auth: {
-                                '2FA': verify,
-                                status: false
-                            }
-                        }, jwtSecret, { expiresIn: '1d' }), {
-                            path: '/',
-                            expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
-                            httpOnly: true,
-                            secure: status,
-                            sameSite: status ? 'none' : 'strict'
-                        }).status(302).send(JSON.stringify({
-                            statusCode: 302,
-                            message: info.message,
-                            tokenId: data.tokenId
-                        }, null, 2));
-                    else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
-                })(req, res, next)
-            }else return res.cookie('jwt-token', jwt.sign({
+        else if(user) return res.cookie('jwt-token', jwt.sign({
                 id: user._id,
                 email: user.email,
                 auth: {
-                    '2FA': verify,
-                    status: false 
+                    '2FA': user.security['2FA'],
+                    status: false
                 }
             }, jwtSecret, { expiresIn: '1d' }), {
                 path: '/',
-                expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
+                maxAge: 86400000,
                 httpOnly: true,
                 secure: status,
                 sameSite: status ? 'none' : 'strict'
-            }).status(200).send(JSON.stringify({
-                statusCode: user.security['2FA'] ? 302 : 200,
+            }).status(302).send(JSON.stringify({
+                statusCode: 302,
                 message: info.message
             }, null, 2));
-        }
         else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
@@ -138,7 +84,7 @@ router.get('/google/connect', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
-        else if(user && (req.body = user)){
+        else if(user && (req.body = {...req.query, ...user._doc})){
             passport.authenticate('connectGoogle', (err, google, info) => {
                 if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
@@ -176,7 +122,7 @@ router.post('/:provider/register', (req, res, next) => {
                         }
                     }, jwtSecret, { expiresIn: '1d' }), {
                         path: '/',
-                        expires: new Date(Date.now() + 86400000),
+                        maxAge: 86400000,
                         httpOnly: true,
                         secure: status,
                         sameSite: status ? 'none' : 'strict'
