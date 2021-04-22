@@ -9,10 +9,10 @@ const blacklistedTokenSchema = new Schema ({
     token: {
         data: {
             type: String,
-            require: true
+            required: true
         }, iv: {
             type: String,
-            require: true
+            required: true
         }
     },
     createdAt: {

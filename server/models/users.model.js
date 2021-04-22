@@ -35,7 +35,15 @@ const userSchema = new Schema ({
     },
     verified: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true
+    },
+    security: {
+        '2FA' : {
+            type: Boolean,
+            default: false,
+            required: true
+        }
     }
 }, {
     timestamps: true

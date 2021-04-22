@@ -1,4 +1,4 @@
-/*! Todo Application - CSS Version 0.4.7 Copyright 2021, Stanley Owen */
+/*! Todo Application - CSS Version 0.4.8 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 * {
@@ -18,8 +18,8 @@ body {
     font-family: 'Chilanka', sans-serif;
 }
 body.dark {
-    color: #FFFFFF;
-    background-color: #212121;
+    color: #FFFFFF !important;
+    background-color: #212121 !important;
 }
 a:visited { color: #212121; }
 body.dark a, body.dark a:visited { color: #FFF; }
@@ -32,8 +32,10 @@ body.dark tbody tr:hover {
     transition: all .4s;
 }
 body.dark .btn__outline { color: #7bb4ff; border: 2px solid #7bb4ff; }
-body.dark .btn__outline:hover { background-color: #7bb4ff; color: #FFFFFF; }
-body.dark .btn__outline:focus { background-color: #66a8ff; color: #FFFFFF; }
+body.dark .btn__outline:hover,
+body.dark .solid { background-color: #7bb4ff; color: #FFFFFF; }
+body.dark .btn__outline:focus,
+body.dark .solid { background-color: #66a8ff; color: #FFFFFF; }
 body.dark .navbar,
 body.dark .btn__changeMode,
 body.dark .about,
@@ -59,8 +61,7 @@ body.dark .footer,
 body.dark .toggleNavbar button,
 body.dark blockquote,
 body.dark .closeBtn,
-body.dark .view-eye svg,
-body.dark .MuiIconButton-root span svg {
+body.dark svg {
     color: #FFFFFF !important;
 }
 body.dark .bar1,
@@ -177,6 +178,9 @@ label { user-select: none; }
     position: relative;
     z-index: 10001;
 }
+.flex { display: flex; }
+.m-10 { margin: 10px; }
+.ml-10 { margin-left: 10px !important; }
 .mt-10 { margin-top: 10px; }
 .mt-20 { margin-top: 20px; }
 .mt-40 { margin-top: 40px; }
@@ -603,6 +607,11 @@ select {
 }
 .contact__btn:hover { background-color: #FFFFFF; color: #212121; }
 .get_in_touch { text-align: center; }
+img {
+    width: 100% !important;
+    height: 350px !important;
+    object-fit: cover !important;
+}
 .form { display:block; min-width: 300px; }
 .contact__form { padding: 15px; }
 .contact__infoField {
@@ -636,7 +645,6 @@ select {
     position: relative;
 }
 .MuiInput-underline:after { transition: all 0.35s !important; }
-.MuiIconButton-root span svg{ color: #212121 !important; }
 .notifications {
     position: fixed;
     bottom: 15px;
@@ -704,10 +712,6 @@ select {
     display: grid;
     grid-template-columns: auto auto;
 }
-.contact__formControl {
-    margin: 10px;
-    color: #212121;
-}
 .contact__sendBtn {
     width: auto;
     display: inline-block;
@@ -725,6 +729,7 @@ select {
     background-color: transparent;
     border: 2px solid #1a73e8;
 }
+.solid { background-color: #1976d2; color: #FFFFFF; }
 .contact__sendBtn:hover { background-color: #1976d2; color: #FFFFFF; }
 .footer {
     z-index: -1;

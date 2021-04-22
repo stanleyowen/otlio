@@ -1,4 +1,3 @@
-const axios = require("axios");
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 export const labels = ["Priority", "Secondary", "Important", "Do Later"];
@@ -52,16 +51,4 @@ export const closeModal = (a, b) => {
     background.classList.remove('showBackground');
     background.classList.add('hideBackground');
     return false;
-}
-
-export const Logout = async (id, email) => {
-    await axios.post(`${SERVER_URL}/account/logout`, { id, email }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true})
-    .then(() => {
-        localStorage.setItem('info', JSON.stringify({ statusCode: 200, message: 'You have been logged out successfully.' }))
-        window.location = '/login'
-    })
-    .catch(err => {
-        localStorage.setItem('info', JSON.stringify(err.response.data))
-        window.location = '/welcome'
-    })
 }

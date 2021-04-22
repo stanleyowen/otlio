@@ -12,33 +12,36 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Register = () => {
-    const [email, setEmail] = useState();
-    const [honeypot, setHoneypot] = useState();
-    const [password, setPassword] = useState();
-    const [confirmPassword, setConfirmPassword] = useState();
-    const [visible, setVisibility] = useState({
+    const [register, setRegister] = useState({
+        email: '',
+        password: '',
+        confirmPassword: ''
+    })
+    const [properties, setProperties] = useState({
+        honeypot: '',
         password: false,
         confirmPassword: false
     })
 
-    const handleChange = (a, b) => setVisibility({ ...visible, [a]: !b });
-    const Submit = (e) => {
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
+    const handleRegister = (a, b) => setRegister({ ...register, [a]: b })
+
+    const Register = (e) => {
         e.preventDefault();
         const btn = document.getElementById('register');
         async function submitData(){
             btn.innerHTML = "Registering..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
-            const data = { email, password, confirmPassword }
-            await axios.post(`${SERVER_URL}/account/register`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/register`, register, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            btn.innerHTML = "Register"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
-        if(honeypot) { return }
-        else if(!email || !password || !confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!email ? 'userEmail' : !password ? 'userPassword' : 'userConfirmPassword').focus(); }
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
-        else if(email.length < 6 || email.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 40 characters !'); document.getElementById('userEmail').focus(); }
-        else if(password.length < 6 || password.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(password.length < 6 || password.length > 40 ? 'userPassword' : 'userConfirmPassword').focus(); }
-        else if(password !== confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('userConfirmPassword').focus(); }
+        if(properties.honeypot) return;
+        else if(!register.email || !register.password || !register.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!register.email ? 'userEmail' : !register.password ? 'userPassword' : 'userConfirmPassword').focus(); }
+        else if(EMAIL_VAL.test(String(register.email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
+        else if(register.email.length < 6 || register.email.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 40 characters !'); document.getElementById('userEmail').focus(); }
+        else if(register.password.length < 6 || register.password.length > 40 || register.confirmPassword.length < 6 || register.confirmPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(register.password.length < 6 || register.password.length > 40 ? 'userPassword' : 'userConfirmPassword').focus(); }
+        else if(register.password !== register.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('userConfirmPassword').focus(); }
         else submitData();
     }
 
@@ -55,39 +58,39 @@ const Register = () => {
                     </button>
                 </div>
                 <div className="form">
-                    <form className="contact__form" name="contact__form" onSubmit={Submit}>
-                        <div className="contact__formControl no-bot">
+                    <form className="contact__form" name="contact__form" onSubmit={Register}>
+                        <div className="m-10 no-bot">
                             <div className="contact__infoField">
                                 <label htmlFor="bot-email">Email <span className="required">*</span></label>
-                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => setHoneypot(event.target.value)} value={honeypot} autoComplete="off"/>
+                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
-                        <div className="contact__formControl">
+                        <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userEmail">Email <span className="required">*</span></label>
-                                <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="40" onChange={(event) => setEmail(event.target.value)} value={email} autoFocus required autoComplete="username"/>
+                                <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="40" onChange={(event) => handleRegister('email', event.target.value)} value={register.email} autoFocus required autoComplete="username"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
                         <div className="form__container">
-                            <div className="contact__formControl">
+                            <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userPassword">Password <span className="required">*</span></label>
-                                    <input title="Password" id="userPassword" type={ visible.password ? 'text':'password' } minLength="6" maxLength="40" className="contact__inputField" onChange={(event) => setPassword(event.target.value)} value={password} required spellCheck="false" autoCapitalize="none" autoComplete={ visible.password ? 'off':'new-password'} />
+                                    <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } minLength="6" maxLength="40" className="contact__inputField" onChange={(event) => handleRegister('password', event.target.value)} value={register.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
-                                    <IconButton className="view-eye" onClick={() => handleChange('password', visible.password)}>
-                                        <FontAwesomeIcon icon={visible.password ? faEyeSlash : faEye} />
+                                    <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
+                                        <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
                                     </IconButton>
                                 </div>
                             </div>
-                            <div className="contact__formControl">
+                            <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
-                                    <input title="Confirm Password" id="userConfirmPassword" type={ visible.confirmPassword ? 'text':'password' } minLength="6" maxLength="40" className="contact__inputField" onChange={(event) => setConfirmPassword(event.target.value)} value={confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ visible.confirmPassword ? 'off':'new-password'} />
+                                    <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } minLength="6" maxLength="40" className="contact__inputField" onChange={(event) => handleRegister('confirmPassword', event.target.value)} value={register.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
-                                    <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', visible.confirmPassword)}>
-                                        <FontAwesomeIcon icon={visible.confirmPassword ? faEyeSlash : faEye} />
+                                    <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)}>
+                                        <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
                                     </IconButton>
                                 </div>
                             </div>

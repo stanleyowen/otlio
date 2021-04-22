@@ -9,6 +9,7 @@ import Navbar from './components/navbar.component';
 import Welcome from './components/welcome.component';
 import Register from './components/register.component';
 import Login from './components/login.component';
+import Logout from './components/logout.component';
 import ResetPassword from './components/reset-password.component';
 import ReqResetPassword from './components/forgot-password.component';
 import Home from './components/home.component';
@@ -26,7 +27,6 @@ export default function App() {
   const redirectRoute = ['welcome', 'login', 'get-started'];
   const privateRoute = ['', 'edit', 'account'];
   const info = JSON.parse(localStorage.getItem('info'));
-
   if(info && info.statusCode && info.message){
     const status = info.statusCode === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER;
     setNotification(status, info.message); localStorage.removeItem('info');
@@ -40,24 +40,28 @@ export default function App() {
       if(window.location.pathname.split('/')[1] === a) window.location='/welcome';
     });
   }
-
   useEffect(() => {
     axios.get(`${SERVER_URL}/account/user`, { withCredentials: true })
     .then(res => {
       setUserData({
+        status: res.status,
         isLoading: false,
         id: res.data.credentials.id,
         email: res.data.credentials.email,
         authenticated: res.data.credentials.authenticated,
         thirdParty: res.data.credentials.thirdParty,
-        verified: res.data.credentials.verified
+        verified: res.data.credentials.verified,
+        security: res.data.credentials.security
       })
       localStorage.setItem('XSRF-TOKEN', res.data['XSRF-TOKEN'])
     })
     .catch(err => {
       localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
+      if(err.response.status === 302 && (window.location.pathname.split('/')[1] !== 'login' && window.location.pathname.split('/')[1] !== 'logout')) window.location='/login';
       if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
       setUserData({
+        status: err.response.status,
+        email: err.response.data.email,
         isLoading: false,
         authenticated: false
       })
@@ -73,11 +77,12 @@ export default function App() {
       <Route path='/welcome' component={Welcome} />
       <Route path='/get-started' component={Register} />
       <Route path='/login' component={() => <Login userData={userData} />} />
+      <Route path='/logout' component={() => <Logout userData={userData} />} />
       <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
-      <Route path='/oauth' component={ReqOAuth} />
+      <Route path='/oauth' component={() => <ReqOAuth userData={userData} />} />
       <Route path='/auth/:service/:email' component={OAuth} />
       <Route path='/account' component={() => <Account userData={userData} />} />
-      <Route path='/reset-password' exact component={ReqResetPassword} />
+      <Route path='/reset-password' exact component={() => <ReqResetPassword userData={userData} />} />
       <Route path='/reset-password/:id/:token' component={ResetPassword} />
       <Route path='/verify/:id/:token' component={VerifyAccount} />
       <Route path='/privacy-policy' component={PrivacyPolicy} />

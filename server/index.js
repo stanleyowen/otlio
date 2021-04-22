@@ -40,10 +40,10 @@ app.use((req, res, next) => {
     next();
 });
 app.get('/status', (req, res) => {
-    res.json({
+    res.send(JSON.stringify({
         statusCode: 200,
         message: 'Server is up and running'
-    });
+    }, null, 2));
 })
 
 const usersRouter = require('./routes/users.route');
