@@ -90,17 +90,17 @@ const Login = ({ userData }) => {
     }
 
     const resendCode = (e) => {
-        if(e) e.preventDefault();
+        e.preventDefault();
         const btn = document.getElementById('status');
         async function submitData(){
-            if(btn) btn.innerHTML = "Resending..."; handleChange('disabled', true);
+            btn.innerHTML = "Resending..."; handleChange('disabled', true);
             await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleData('tokenId', res.data.tokenId);
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false);
+            btn.innerHTML = "Resend"; handleChange('disabled', false);
         }
         if(properties.honeypot) return;
         else submitData();
@@ -129,7 +129,7 @@ const Login = ({ userData }) => {
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userPassword">Verification Code</label>
-                                <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete='one-time-code' />
+                                <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete="one-time-code" />
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>

@@ -12,7 +12,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
     const {email, id, thirdParty, verified, security, authenticated, isLoading} = userData;
-    const [data, setData] = useState({
+    const [password, setPassword] = useState({
         oldPassword: '',
         newPassword: '',
         confirmPassword: ''
@@ -23,8 +23,13 @@ const Account = ({ userData }) => {
         newPassword: false,
         confirmPassword: false
     })
+    const [data, setData] = useState({
+        tokenId: '',
+        token: ''
+    })
 
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
+    const handlePassword = (a, b) => setPassword({ ...password, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
 
     useEffect(() => {
@@ -60,24 +65,66 @@ const Account = ({ userData }) => {
         if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
         else submitData();
     }
-
+    
     const changePassword = (e) => {
         e.preventDefault();
         const btn = document.getElementById('change-password');
         async function submitData() {
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
-            await axios.put(`${SERVER_URL}/account/user`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.put(`${SERVER_URL}/account/user`, password, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('background', 'modal');
-                setData({ oldPassword: '', newPassword: '', confirmPassword: '' })
+                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' })
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
         }
-        if(!data.oldPassword || !data.newPassword || !data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.oldPassword ? 'old-password' : !data.newPassword ? 'new-password' : 'confirm-password').focus(); }
-        else if(data.oldPassword.length < 6 || data.newPassword.length < 6 || data.confirmPassword.length < 6 || data.oldPassword.length > 40 || data.newPassword.length > 40 || data.confirmPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(data.oldPassword.length < 6 || data.oldPassword.length > 40 ? 'old-password' : data.newPassword.length < 6 || data.newPassword.length > 40 ? 'new-password' : 'confirm-password').focus(); }
-        else if(data.newPassword !== data.confirmPassword) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('confirm-password').focus(); }
+        if(!password.oldPassword || !password.newPassword || !password.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!password.oldPassword ? 'old-password' : !password.newPassword ? 'new-password' : 'confirm-password').focus(); }
+        else if(password.oldPassword.length < 6 || password.newPassword.length < 6 || password.confirmPassword.length < 6 || password.oldPassword.length > 40 || password.newPassword.length > 40 || password.confirmPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(password.oldPassword.length < 6 || password.oldPassword.length > 40 ? 'old-password' : password.newPassword.length < 6 || password.newPassword.length > 40 ? 'new-password' : 'confirm-password').focus(); }
+        else if(password.newPassword !== password.confirmPassword) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('confirm-password').focus(); }
+        else submitData();
+    }
+
+    const sendOTP = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('send-otp');
+        async function sendToken(){
+            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
+            await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(res => {
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
+                handleData('tokenId', res.data.credentials.tokenId)
+                document.getElementById('code').focus()
+            })
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            btn.innerHTML = "Send Verification Code"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
+        }
+        if(!authenticated) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
+        else sendToken()
+    }
+
+    const VerifyOTP = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('verify');
+        async function submitData(){
+            if (security['2FA']) btn.innerHTML = "Deactivating...";
+            else btn.innerHTML = "Activating...";
+            btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
+            await axios.put(`${SERVER_URL}/account/otp`, { tokenId: data.tokenId, token: data.token }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(res => {
+                localStorage.setItem('info', JSON.stringify(res.data))
+                closeModal('mfa-bg', 'mfa-modal');
+                window.location.reload();
+            })
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            if (security['2FA']) btn.innerHTML = "Deactivate";
+            else btn.innerHTML = "Activate";
+            btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
+        }
+        if(properties.honeypot) return;
+        else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
+        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
         else submitData();
     }
 
@@ -140,9 +187,9 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="get_in_touch mt-40"><h1>Security <sup className="required small">Beta</sup></h1></div>
                     <div className="form">
-                        <div className="m-10 contact__infoField">
+                        <div className="m-10">
                             <FormControlLabel control={
-                                <Switch checked={!isLoading ? security['2FA'] : false} onChange={() => openModal('warning-beta-bg', 'warning-beta')} color="primary"/>
+                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? security['2FA'] ? openModal('mfa-bg', 'mfa-modal') : openModal('warning-beta-bg', 'warning-beta') : null} color="primary"/>
                             } label="Multi Factor Authentication (MFA)" />
                             
                             <Tooltip placement="top" className="ml-10" title="Warning: Please note that this is a beta version of the Multi Factor Authentication (MFA) which is still undergoing final testing before its official release. The Todo Application does not give any warranties, whether express or implied, as to the suitability or usability of users' account." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
@@ -177,7 +224,7 @@ const Account = ({ userData }) => {
                                 <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                        <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('oldPassword', event.target.value)} value={data.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
+                                        <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handlePassword('oldPassword', event.target.value)} value={password.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                             <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
@@ -188,7 +235,7 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                            <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('newPassword', event.target.value)} value={data.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
+                                            <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handlePassword('newPassword', event.target.value)} value={password.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
                                             <span className="contact__onFocus"></span>
                                             <IconButton className="view-eye" onClick={() => handleChange('newPassword', !properties.newPassword)} name="newPassword">
                                                 <FontAwesomeIcon icon={properties.newPassword ? faEyeSlash : faEye} />
@@ -198,7 +245,7 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                            <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('confirmPassword', event.target.value)} value={data.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                            <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handlePassword('confirmPassword', event.target.value)} value={password.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
                                             <span className="contact__onFocus"></span>
                                             <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)} name="confirmPassword">
                                                 <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
@@ -208,7 +255,7 @@ const Account = ({ userData }) => {
                                 </div>
                                 <p className="isCentered"><a className="animation__underline" href="/reset-password">I forgot my password</a></p>
                                 <div className="inline">
-                                    <button type="submit" id="change-password" className="btn__outline" style={{outline: 'none'}}>Update</button>
+                                    <button type="submit" id="change-password" className="btn__outline">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -223,8 +270,8 @@ const Account = ({ userData }) => {
                         <div className="modal__body">
                             Please note that this is a <span className="required">beta</span> version of the <b>Multi Factor Authentication (MFA)</b> which is still undergoing final testing before its official release. The Todo Application does not give any warranties, whether express or implied, as to the suitability or usability of users' account.
                             <div className="flex">
-                                <button id="cancel" className="btn__outline solid" onClick={() => closeModal('warning-beta-bg', 'warning-beta')} style={{outline: 'none'}}>Cancel</button>
-                                <button type="submit" id="change-password" className="btn__outline" onClick={() => { closeModal('warning-beta-bg', 'warning-beta'); openModal('mfa-bg', 'mfa-modal') }} style={{outline: 'none'}}>I Agree and Understand</button>
+                                <button id="cancel" className="btn__outline solid" onClick={() => closeModal('warning-beta-bg', 'warning-beta')}>Cancel</button>
+                                <button id="change-password" className="btn__outline" onClick={() => { closeModal('warning-beta-bg', 'warning-beta'); openModal('mfa-bg', 'mfa-modal') }}>I Agree and Understand</button>
                             </div>
                         </div>
                     </div>
@@ -234,55 +281,30 @@ const Account = ({ userData }) => {
                     <div id="mfa-modal" className="modal__container hiddenModal">
                         <div className="modal__title">
                             <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('mfa-bg', 'mfa-modal')}>&times;</span>
-                            <h2>Multi Factor Authentication</h2>
+                            <h2>Multi Factor Authentication (MFA)</h2>
                         </div>
-                        <div className="modal__body">
-                            <ol>
-                                <li>Send Verification Code</li>
+                        <div className="modal__body mt-10">
+                            <ol className="ml-40 ul-mb10">
                                 <li>
-                                    Verify
-                                    <form onSubmit={changePassword}>
-                                <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
-                                <div className="m-10">
-                                    <div className="contact__infoField">
-                                        <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                        <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('oldPassword', event.target.value)} value={data.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
-                                        <span className="contact__onFocus"></span>
-                                        <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
-                                            <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
-                                        </IconButton>
-                                    </div>
-                                </div>
-                                <div className="form__container">
-                                    <div className="m-10">
-                                        <div className="contact__infoField">
-                                            <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                            <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('newPassword', event.target.value)} value={data.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
-                                            <span className="contact__onFocus"></span>
-                                            <IconButton className="view-eye" onClick={() => handleChange('newPassword', !properties.newPassword)} name="newPassword">
-                                                <FontAwesomeIcon icon={properties.newPassword ? faEyeSlash : faEye} />
-                                            </IconButton>
+                                    Send Verification Code
+                                    <button id="send-otp" className="btn__outline" onClick={sendOTP}>Send Verification Code</button>
+                                </li>
+                                <li>
+                                    Verify Code
+                                    <form onSubmit={VerifyOTP}>
+                                        <div className="m-10">
+                                            <div className="contact__infoField">
+                                                <label htmlFor="code">Verification Code</label>
+                                                <input title="Old Password" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
+                                                <span className="contact__onFocus"></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="m-10">
-                                        <div className="contact__infoField">
-                                            <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                            <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('confirmPassword', event.target.value)} value={data.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
-                                            <span className="contact__onFocus"></span>
-                                            <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)} name="confirmPassword">
-                                                <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
-                                            </IconButton>
+                                        <div className="inline">
+                                            <button type="submit" id="verify" className="btn__outline">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
                                         </div>
-                                    </div>
-                                </div>
-                                <p className="isCentered"><a className="animation__underline" href="/reset-password">I forgot my password</a></p>
-                                <div className="inline">
-                                    <button type="submit" id="change-password" className="btn__outline" style={{outline: 'none'}}>Update</button>
-                                </div>
-                            </form>
+                                    </form>
                                 </li>
                             </ol>
-                            
                         </div>
                     </div>
                 </div>

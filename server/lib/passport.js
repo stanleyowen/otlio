@@ -530,7 +530,6 @@ const opts = {
 };
 
 passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
-    console.log(payload)
     User.findOne({ _id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA'] }, (err, user) => {
         if(err) return done(err, false);
         else if(user){

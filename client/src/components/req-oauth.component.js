@@ -18,11 +18,10 @@ const ReqOAuth = ({ userData }) => {
                 }else window.location = '/login'
             })
             .catch(err => {
-                console.log(err.response)
                 if(err.response.status === 302) window.location = err.response.data.url
                 else{
                     localStorage.setItem('info', JSON.stringify(err.response.data))
-                    if(!isLoading && authenticated) window.location='/account'
+                    if(authenticated) window.location='/account'
                     else window.location='/login'
                 };
             })
