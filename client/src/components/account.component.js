@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle, faUserCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle, faUserCheck, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -11,7 +11,7 @@ import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeM
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
-    const {email, id, thirdParty, verified, authenticated, isLoading} = userData;
+    const {email, id, thirdParty, verified, security, authenticated, isLoading} = userData;
     const [data, setData] = useState({
         oldPassword: '',
         newPassword: '',
@@ -30,12 +30,19 @@ const Account = ({ userData }) => {
     useEffect(() => {
         const background = document.getElementById('background');
         const modal = document.getElementById('modal');
+        const mfaBg = document.getElementById('mfa-bg');
+        const mfaModal = document.getElementById('mfa-modal');
         window.onclick = function(e){
             if(e.target === background && !properties.disabled){
                 modal.classList.remove('showModal');
                 modal.classList.add('closeModal');
                 background.classList.remove('showBackground');
                 background.classList.add('hideBackground');
+            }if(e.target === mfaBg && !properties.disabled){
+                mfaModal.classList.remove('showModal');
+                mfaModal.classList.add('closeModal');
+                mfaBg.classList.remove('showBackground');
+                mfaBg.classList.add('hideBackground');
             }
         }
     }, [properties.disabled])
@@ -105,7 +112,7 @@ const Account = ({ userData }) => {
                     <div className="get_in_touch"><h1>Account</h1></div>
                     <div className="form">
                         <div className="m-10 contact__infoField">
-                            <label htmlFor="userEmail mt-20">Email Address</label>
+                            <label htmlFor="userEmail">Email Address</label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
                             <Tooltip placement="top" title={ verified ? 'Verified Account' : 'Unverified Account' }>
                                 <IconButton className="view-eye">
@@ -129,6 +136,16 @@ const Account = ({ userData }) => {
                             <button className="oauth-box logout mt-20" onClick={() => window.location='logout'}>
                                 <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
                             </button>
+                        </div>
+                    </div>
+                    <div className="get_in_touch mt-40"><h1>Security <sup className="required small">Beta</sup></h1></div>
+                    <div className="form">
+                        <div className="m-10 contact__infoField">
+                            <FormControlLabel control={
+                                <Switch checked={!isLoading ? security['2FA'] : false} onChange={() => openModal('warning-beta-bg', 'warning-beta')} color="primary"/>
+                            } label="Multi Factor Authentication (MFA)" />
+                            
+                            <Tooltip placement="top" className="ml-10" title="Warning: Please note that this is a beta version of the Multi Factor Authentication (MFA) which is still undergoing final testing before its official release. The Todo Application does not give any warranties, whether express or implied, as to the suitability or usability of users' account." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                     </div>
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
@@ -194,6 +211,78 @@ const Account = ({ userData }) => {
                                     <button type="submit" id="change-password" className="btn__outline" style={{outline: 'none'}}>Update</button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="warning-beta-bg" className="modal hiddenModal">
+                    <div id="warning-beta" className="modal__container hiddenModal">
+                        <div className="modal__title">
+                            <h2 className="required">Warning</h2>
+                        </div>
+                        <div className="modal__body">
+                            Please note that this is a <span className="required">beta</span> version of the <b>Multi Factor Authentication (MFA)</b> which is still undergoing final testing before its official release. The Todo Application does not give any warranties, whether express or implied, as to the suitability or usability of users' account.
+                            <div className="flex">
+                                <button id="cancel" className="btn__outline solid" onClick={() => closeModal('warning-beta-bg', 'warning-beta')} style={{outline: 'none'}}>Cancel</button>
+                                <button type="submit" id="change-password" className="btn__outline" onClick={() => { closeModal('warning-beta-bg', 'warning-beta'); openModal('mfa-bg', 'mfa-modal') }} style={{outline: 'none'}}>I Agree and Understand</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mfa-bg" className="modal hiddenModal">
+                    <div id="mfa-modal" className="modal__container hiddenModal">
+                        <div className="modal__title">
+                            <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('mfa-bg', 'mfa-modal')}>&times;</span>
+                            <h2>Multi Factor Authentication</h2>
+                        </div>
+                        <div className="modal__body">
+                            <ol>
+                                <li>Send Verification Code</li>
+                                <li>
+                                    Verify
+                                    <form onSubmit={changePassword}>
+                                <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
+                                <div className="m-10">
+                                    <div className="contact__infoField">
+                                        <label htmlFor="old-password">Old Password <span className="required">*</span></label>
+                                        <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('oldPassword', event.target.value)} value={data.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
+                                        <span className="contact__onFocus"></span>
+                                        <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
+                                            <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
+                                        </IconButton>
+                                    </div>
+                                </div>
+                                <div className="form__container">
+                                    <div className="m-10">
+                                        <div className="contact__infoField">
+                                            <label htmlFor="new-password">New Password <span className="required">*</span></label>
+                                            <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('newPassword', event.target.value)} value={data.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
+                                            <span className="contact__onFocus"></span>
+                                            <IconButton className="view-eye" onClick={() => handleChange('newPassword', !properties.newPassword)} name="newPassword">
+                                                <FontAwesomeIcon icon={properties.newPassword ? faEyeSlash : faEye} />
+                                            </IconButton>
+                                        </div>
+                                    </div>
+                                    <div className="m-10">
+                                        <div className="contact__infoField">
+                                            <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
+                                            <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('confirmPassword', event.target.value)} value={data.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                            <span className="contact__onFocus"></span>
+                                            <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)} name="confirmPassword">
+                                                <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
+                                            </IconButton>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p className="isCentered"><a className="animation__underline" href="/reset-password">I forgot my password</a></p>
+                                <div className="inline">
+                                    <button type="submit" id="change-password" className="btn__outline" style={{outline: 'none'}}>Update</button>
+                                </div>
+                            </form>
+                                </li>
+                            </ol>
+                            
                         </div>
                     </div>
                 </div>

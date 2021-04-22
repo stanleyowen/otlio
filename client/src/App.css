@@ -32,8 +32,10 @@ body.dark tbody tr:hover {
     transition: all .4s;
 }
 body.dark .btn__outline { color: #7bb4ff; border: 2px solid #7bb4ff; }
-body.dark .btn__outline:hover { background-color: #7bb4ff; color: #FFFFFF; }
-body.dark .btn__outline:focus { background-color: #66a8ff; color: #FFFFFF; }
+body.dark .btn__outline:hover,
+body.dark .solid { background-color: #7bb4ff; color: #FFFFFF; }
+body.dark .btn__outline:focus,
+body.dark .solid { background-color: #66a8ff; color: #FFFFFF; }
 body.dark .navbar,
 body.dark .btn__changeMode,
 body.dark .about,
@@ -176,6 +178,7 @@ label { user-select: none; }
     position: relative;
     z-index: 10001;
 }
+.flex { display: flex; }
 .m-10 { margin: 10px; }
 .ml-10 { margin-left: 10px !important; }
 .mt-10 { margin-top: 10px; }

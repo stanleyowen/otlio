@@ -50,7 +50,8 @@ export default function App() {
         email: res.data.credentials.email,
         authenticated: res.data.credentials.authenticated,
         thirdParty: res.data.credentials.thirdParty,
-        verified: res.data.credentials.verified
+        verified: res.data.credentials.verified,
+        security: res.data.credentials.security
       })
       localStorage.setItem('XSRF-TOKEN', res.data['XSRF-TOKEN'])
     })
