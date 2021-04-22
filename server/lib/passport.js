@@ -20,7 +20,6 @@ let RevokedToken = require('../models/revoke-token.model');
 const SALT_WORK_FACTOR = 12;
 const jwtSecret = process.env.JWT_SECRET;
 const CLIENT_URL = process.env.CLIENT_URL;
-const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const transporter = nodemailer.createTransport({
@@ -115,49 +114,38 @@ passport.use('changePassword', new localStrategy({ usernameField: 'email', passw
     }
 }))
 
-passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passwordField: 'captcha', session: false }, (email, token, done) => {
+passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passwordField: 'email', session: false }, (email, token, done) => {
     axios.get('https://api.ipify.org/?format=json')
     .then(async res => {
         const ip = res.data.ip;
-        const query = {
-            secret: CAPTCHA_SECRET,
-            response: token,
-            remoteip: ip
-        }
-        await axios.get('https://google.com/recaptcha/api/siteverify', { params: query })
-        .then(res => {
-            if(res.data.success){
-                Token.find({ ipAddr: ip, 'type.passwordReset': true }, (err, data) => {
+        Token.find({ ipAddr: ip, 'type.passwordReset': true }, (err, data) => {
+            if(err) return done(err, false);
+            else if(data && data.length >= 5) return done(null, false, { status: 403, message: MSG_DESC[30] });
+            else if(!data || data.length < 5){
+                User.findOne({ email }, (err, user) => {
                     if(err) return done(err, false);
-                    else if(data && data.length >= 5) return done(null, false, { status: 403, message: MSG_DESC[30] });
-                    else if(!data || data.length < 5){
-                        User.findOne({ email }, (err, user) => {
+                    else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
+                    else {
+                        const id = user.id;
+                        const token = crypto.randomBytes(120).toString("hex");
+                        new Token({ ipAddr: ip, 'type.passwordReset': true, userId: encrypt(id, 1), token: encrypt(token, 1) }).save((err, data) => {
                             if(err) return done(err, false);
-                            else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
                             else {
-                                const id = user.id;
-                                const token = crypto.randomBytes(120).toString("hex");
-                                new Token({ ipAddr: ip, 'type.passwordReset': true, userId: encrypt(id, 1), token: encrypt(token, 1) }).save((err, data) => {
+                                const mailOptions = {
+                                    to: email,
+                                    subject: '[TodoApp] Password Reset',
+                                    html: `<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"><head><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1" name="viewport"><meta name="x-apple-disable-message-reformatting"><meta http-equiv="X-UA-Compatible" content="IE=edge"> <!--[if IE]><style type="text/css">a{text-decoration:none;color:black!important}</style><![endif]--> <!--[if (mso 16)]><style type="text/css">a{text-decoration:none}</style><![endif]--> <!--[if gte mso 9]><style>sup{font-size:100% !important}</style><![endif]--> <!--[if gte mso 9]> <xml> <o:OfficeDocumentSettings> <o:AllowPNG></o:AllowPNG> <o:PixelsPerInch>96</o:PixelsPerInch> </o:OfficeDocumentSettings> </xml> <![endif]--></head><body><div class="es-wrapper-color"> <!--[if gte mso 9]> <v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t"> <v:fill type="tile" color="#f4f4f4"></v:fill> </v:background> <![endif]--><table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0"><tr><td class="esd-email-paddings" valign="top"><table class="es-header" cellspacing="0" cellpadding="0" align="center"><tr><td class="esd-stripe" esd-custom-block-id="6339" style="background-color: rgb(8 72 179); padding: 10px; border-radius: 10px;" bgcolor="#7c72dc" align="center"><table class="es-header-body" width="600" cellspacing="0" cellpadding="0" align="center"><tr><table width="100%" cellspacing="0" cellpadding="0"><tr><td class="esd-block-image es-p25t es-p25b es-p10r es-p10l" align="center" style="font-size: 0px;"><img src="https://raw.githubusercontent.com/stanleyowen/todo-application/v0.4.3/client/public/logo512.png" alt style="display: block;" width="40"></td></tr></table></tr></table></td></tr></table><table class="es-content" cellspacing="0" cellpadding="0" align="center"><tr><td class="esd-stripe" align="center"><table class="es-content-body" style="background-color: #ffffff;" width="600" cellspacing="0" cellpadding="10" bgcolor="#ffffff" align="center"><tr><td bgcolor="#ffffff" align="left"><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Need to reset your password? No problem! Just click the button below to reset your password!</p><div style="display: block; width: 100%; text-align: center; margin: 30px 0;"> <a href="${CLIENT_URL}/reset-password/${id}-${data.id}/${token}" style="padding: 15px 30px; background-color: rgb(8 72 179); color: white; text-decoration: none; border-radius: 5px; font-family: Cambria, Georgia, Times, 'Times New Roman', serif; font-weight: bold;">Reset your password</a></div><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">This link will expires after one hour. To get a new password reset link, visit:<br>${CLIENT_URL}/reset-password</p><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Best Regards,<br>Todo Application</p></td></tr><tr><td align="center"><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; color: gray; font-size: 15px;">You're receiving this email because a password reset was requested for your account.</p></td></tr></table></td></tr></table></td></tr></table></div></body></html>`
+                                };
+                                transporter.sendMail(mailOptions, (err) => {
                                     if(err) return done(err, false);
-                                    else {
-                                        const mailOptions = {
-                                            to: email,
-                                            subject: '[TodoApp] Password Reset',
-                                            html: `<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"><head><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1" name="viewport"><meta name="x-apple-disable-message-reformatting"><meta http-equiv="X-UA-Compatible" content="IE=edge"> <!--[if IE]><style type="text/css">a{text-decoration:none;color:black!important}</style><![endif]--> <!--[if (mso 16)]><style type="text/css">a{text-decoration:none}</style><![endif]--> <!--[if gte mso 9]><style>sup{font-size:100% !important}</style><![endif]--> <!--[if gte mso 9]> <xml> <o:OfficeDocumentSettings> <o:AllowPNG></o:AllowPNG> <o:PixelsPerInch>96</o:PixelsPerInch> </o:OfficeDocumentSettings> </xml> <![endif]--></head><body><div class="es-wrapper-color"> <!--[if gte mso 9]> <v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t"> <v:fill type="tile" color="#f4f4f4"></v:fill> </v:background> <![endif]--><table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0"><tr><td class="esd-email-paddings" valign="top"><table class="es-header" cellspacing="0" cellpadding="0" align="center"><tr><td class="esd-stripe" esd-custom-block-id="6339" style="background-color: rgb(8 72 179); padding: 10px; border-radius: 10px;" bgcolor="#7c72dc" align="center"><table class="es-header-body" width="600" cellspacing="0" cellpadding="0" align="center"><tr><table width="100%" cellspacing="0" cellpadding="0"><tr><td class="esd-block-image es-p25t es-p25b es-p10r es-p10l" align="center" style="font-size: 0px;"><img src="https://raw.githubusercontent.com/stanleyowen/todo-application/v0.4.3/client/public/logo512.png" alt style="display: block;" width="40"></td></tr></table></tr></table></td></tr></table><table class="es-content" cellspacing="0" cellpadding="0" align="center"><tr><td class="esd-stripe" align="center"><table class="es-content-body" style="background-color: #ffffff;" width="600" cellspacing="0" cellpadding="10" bgcolor="#ffffff" align="center"><tr><td bgcolor="#ffffff" align="left"><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Need to reset your password? No problem! Just click the button below to reset your password!</p><div style="display: block; width: 100%; text-align: center; margin: 30px 0;"> <a href="${CLIENT_URL}/reset-password/${id}-${data.id}/${token}" style="padding: 15px 30px; background-color: rgb(8 72 179); color: white; text-decoration: none; border-radius: 5px; font-family: Cambria, Georgia, Times, 'Times New Roman', serif; font-weight: bold;">Reset your password</a></div><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">This link will expires after one hour. To get a new password reset link, visit:<br>${CLIENT_URL}/reset-password</p><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Best Regards,<br>Todo Application</p></td></tr><tr><td align="center"><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; color: gray; font-size: 15px;">You're receiving this email because a password reset was requested for your account.</p></td></tr></table></td></tr></table></td></tr></table></div></body></html>`
-                                        };
-                                        transporter.sendMail(mailOptions, (err) => {
-                                            if(err) return done(err, false);
-                                            else return done(null, user, { status: 200, message: MSG_DESC[29] });
-                                        });
-                                    }
+                                    else return done(null, user, { status: 200, message: MSG_DESC[29] });
                                 });
                             }
-                        })
+                        });
                     }
                 })
-            }else return done(null, false, { status: 403, message: MSG_DESC[33] })
+            }
         })
-        .catch(err => { return done(err, false) })
     })
     .catch(err => { return done(err, false); })
 }))
