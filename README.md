@@ -10,10 +10,13 @@
 ## Login Freely with OAuth
 ![Login with OAuth](https://user-images.githubusercontent.com/69080584/113655970-16ca1c00-96c5-11eb-836e-83e0c58cbe2b.png)
 
+## Built In Multi Factor Authentication (MFA) - Beta
+![Multi Factor Authentication](https://user-images.githubusercontent.com/69080584/115656260-1eddb900-a35f-11eb-8c6f-fa24196704b6.png)
+
 ## User Interface
 ![Todo Application](https://user-images.githubusercontent.com/69080584/113655834-c488fb00-96c4-11eb-9479-be2e0e4acc62.png)
 
-Todo Application is an **open source** project, completed with highest standard security, which is easy to use and easy to organize!
+Todo Application is an **open source** project, completed with **highest standard security**, which is easy to use and easy to organize!
 
 ## Table of Contents
 - [Getting Started](#getting-started)
@@ -29,7 +32,7 @@ Todo Application is an **open source** project, completed with highest standard 
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.7.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.4.8.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
@@ -37,15 +40,18 @@ Todo Application is an **open source** project, completed with highest standard 
 3. Create `.env` file
     - Inside `client` directory, create a new file named `.env` which stores about sensitive information, which is `REACT_APP_SERVER_URL` and `REACT_APP_VERSION`
       - `REACT_APP_SERVER_URL` stores the server side URL
+      - `REACT_APP_CAPTCHA_KEY` stores the reCAPTCHA Site Key provided by [Google reCAPTCHA](https://www.google.com/recaptcha/admin/create)
       - `REACT_APP_VERSION` stores the Todo Application's current version<br /><br />
           ```
           REACT_APP_SERVER_URL    = http://localhost:5000
+          REACT_APP_CAPTCHA_KEY   = /* Your reCAPTCHA Site Key */
           REACT_APP_VERSION       = $npm_package_version
           ```
 
     - Inside `server` directory, create a new file named `.env` which stores about sensitive information, which is `ATLAS_URI`, `SECRET_KEY`, and `TOKEN_KEY`
       - `ATLAS_URI` stores the Database URI provided by [MongoDB](https://www.mongodb.com/2)
-      - `JWT_SECRET` stores JWT secret (Make it secret and hard to guess)
+      - `JWT_SECRET_1` stores first JWT secret (Make it secret, hard to guess, and different from the second JWT Secret)
+      - `JWT_SECRET_2` stores second JWT secret (Make it secret, hard to guess, and different from the first JWT Secret)
       - `SECRET_KEY` stores secret key for encyption method (Approximately 32 chars)
       - `CLIENT_URL` stores the whitelisted domain for `CORS` Policy
       - `NODE_ENV` stores the status of an application, whether it is in `development` or `production` status.
@@ -55,11 +61,12 @@ Todo Application is an **open source** project, completed with highest standard 
       - `GOOGLE_ID` stores the client id fot Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
       - `GOOGLE_SECRET` stores the client secret for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
       - `GOOGLE_CALLBACK` stores the callback URL for Google OAuth provided by [Google OAuth](https://console.cloud.google.com/)
-      - `CAPTCHA_SECRET` stores the secret provided by Google [reCAPTCHA](https://www.google.com/recaptcha/about/)
+      - `CAPTCHA_SECRET` stores the reCAPTCHA Secret Key provided by [Google reCAPTCHA](https://www.google.com/recaptcha/admin/create)
       - `MAIL_SERVICE`, `MAIL_EMAIL`, and `MAIL_PASSWORD` are configured for sending email to users<br /><br />
           ```
           ATLAS_URI       = mongodb+srv://<username>:<password>@<port>/<dbname>?retryWrites=true&w=majority
-          JWT_SECRET      = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3
+          JWT_SECRET_1    = YHUIEHN$HOIDFU2^8374C897C4%T843973)X4843C57N8934D29#87N839*4NC07489BC3
+          JWT_SECRET_2    = YHUIEHNUY292C492NFC7489N23%T843973)384793qeqw#23489*4NC07482C39479934K
           SECRET_KEY      = SpFcG29lKzfx9SxjLRjujaYxzSswhihd
           NODE_ENV        = development
           CLIENT_URL      = http://localhost:3000

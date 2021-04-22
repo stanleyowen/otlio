@@ -66,7 +66,7 @@ const ResetPassword = ({ userData }) => {
                                 </div>
                             </div>
                             <div className="isCentered">
-                                <div className="g-recaptcha" data-sitekey="6LfTOaQaAAAAAMYqu976RhDpm1lJtPciLZ-sk2Qq"></div>
+                                <div className="g-recaptcha" data-sitekey={process.env.REACT_APP_CAPTCHA_KEY}></div>
                             </div>
                             <button type="submit" className="contact__sendBtn" id="reset-password">Send</button>
                         </form>
