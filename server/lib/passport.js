@@ -393,7 +393,7 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
             if(err) return done(err, false);
             else if(data && data.length >= 5) return done(null, false, { status: 403, message: MSG_DESC[30] });
             else if(!data || data.length < 5){
-                User.findOne({ _id: id, email, 'security.2FA': true }, (err, user) => {
+                User.findOne({ _id: id, email }, (err, user) => {
                     if(err) return done(err, false);
                     else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
                     else {
@@ -530,6 +530,7 @@ const opts = {
 };
 
 passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
+    console.log(payload)
     User.findOne({ _id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA'] }, (err, user) => {
         if(err) return done(err, false);
         else if(user){
