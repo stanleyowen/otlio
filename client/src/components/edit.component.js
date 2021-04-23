@@ -34,7 +34,7 @@ const Edit = ({ userData }) => {
                 handleChange('isLoading', false);
             })
             .catch(err => {
-                if(err.response.status === 500){
+                if(err.response.status >= 500){
                     setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
                     setTimeout(() => getData(), 5000)
                 }

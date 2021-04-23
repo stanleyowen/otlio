@@ -36,7 +36,7 @@ const ResetPassword = () => {
             .then(res => handleData('email', res.data.credentials.email))
             .catch(err => {
                 if(err.response.data.message || err.response.data.error_description){
-                    if(err.response.status === 500){
+                    if(err.response.status >= 500){
                         setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message ? err.response.data.message : err.response.data.error_description)
                         setTimeout(() => validateData(), 5000)
                     }else {

@@ -36,17 +36,23 @@ const Login = ({ userData }) => {
     const handleData = (a, b) => setData({ ...data, [a]: b })
 
     useEffect(() => {
+        const btn = document.getElementById('send-otp');
         async function sendOTP(){
-            properties.verify = true;
-            if(!login.email) handleLogin('email', email);
-            await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            if(!login.email) handleLogin('email', email); properties.verify = true;
+            if(btn) btn.innerHTML = "Sending..."; handleChange('disabled', true);
+            await axios.get(`${SERVER_URL}/account/otp`, { withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
-                handleData('tokenId', res.data.credentials.tokenId);
+                handleData('tokenId', res.data.credentials.tokenId)
+                document.getElementById('code').focus()
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            .catch(err => {
+                if(err.response.status >= 500) setTimeout(() => sendOTP(), 5000)
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+            })
+            if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false); handleChange('sendOTP', false);
         }
-        if((status === 302 && !properties.verify) || properties.sendOTP) sendOTP()
+        if((status === 302 && !properties.verify) || (properties.sendOTP && properties.verify)) sendOTP()
     }, [userData, properties.verify, properties.sendOTP])
 
     const LogIn = (e) => {
@@ -88,55 +94,48 @@ const Login = ({ userData }) => {
         else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
         else submitData();
     }
-
-    const resendCode = (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('status');
-        async function submitData(){
-            btn.innerHTML = "Resending..."; handleChange('disabled', true);
-            await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(res => {
-                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
-                handleData('tokenId', res.data.tokenId);
-            })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Resend"; handleChange('disabled', false);
-        }
-        if(properties.honeypot) return;
-        else submitData();
-    }
-
+    console.log(properties)
     return properties.verify ? (
-        <div id="form">
-            <div className="form__contact">
-                <div className="get_in_touch"><h1>Verification</h1></div>
-                <div className="form">
-                    <form className="contact__form" onSubmit={VerifyOTP}>
-                        <div className="m-10 no-bot">
-                            <div className="contact__infoField">
-                                <label htmlFor="bot-login.email">Email</label>
-                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                                <span className="contact__onFocus"></span>
+        <div>
+            { !data.tokenId ?
+            (<div className="loader"><div className="spin-container full-width">
+                <div className="shape shape-1"></div>
+                <div className="shape shape-2"></div>
+                <div className="shape shape-3"></div>
+                <div className="shape shape-4"></div>
+            </div></div>) : null }
+            
+            <div id="form">
+                <div className="form__contact">
+                    <div className="get_in_touch"><h1>Verification</h1></div>
+                    <div className="form">
+                        <form className="contact__form" onSubmit={VerifyOTP}>
+                            <div className="m-10">
+                                <div className="contact__infoField">
+                                    <label htmlFor="userEmail">Email</label>
+                                    <input title="Email" id="userEmail" type="email" className="contact__inputField" value={login.email} required readOnly disabled/>
+                                    <span className="contact__onFocus"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="m-10">
-                            <div className="contact__infoField">
-                                <label htmlFor="userEmail">Email</label>
-                                <input title="Email" id="userEmail" type="email" className="contact__inputField" value={login.email} required readOnly disabled/>
-                                <span className="contact__onFocus"></span>
+                            <div className="m-10 no-bot">
+                                <div className="contact__infoField">
+                                    <label htmlFor="bot-code">Verification Code</label>
+                                    <input title="Verification Code" id="bot-code" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
+                                    <span className="contact__onFocus"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="m-10">
-                            <div className="contact__infoField">
-                                <label htmlFor="userPassword">Verification Code</label>
-                                <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete="one-time-code" />
-                                <span className="contact__onFocus"></span>
+                            <div className="m-10">
+                                <div className="contact__infoField">
+                                    <label htmlFor="userPassword">Verification Code</label>
+                                    <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete="one-time-code" />
+                                    <span className="contact__onFocus"></span>
+                                </div>
                             </div>
-                        </div>
-                        <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="status" onClick={properties.disabled ? null : resendCode}>Resend Code</a></p>
-                        <button type="reset" className="contact__sendBtn solid" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
-                        <button type="submit" className="contact__sendBtn ml-10" id="verify">Verify</button>
-                    </form>
+                            <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</a></p>
+                            <button type="reset" className="contact__sendBtn solid" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
+                            <button type="submit" className="contact__sendBtn ml-10" id="verify">Verify</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
