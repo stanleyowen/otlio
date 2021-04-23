@@ -23,6 +23,7 @@ const ResetPassword = () => {
     })
     const [properties, setProperties] = useState({
         honeypot: '',
+        isLoading: true,
         password: false,
         confirmPassword: false
     })
@@ -33,7 +34,11 @@ const ResetPassword = () => {
     useEffect(() => {
         async function validateData(){
             await axios.get(`${SERVER_URL}/account/forgot-password`, { params: { token, id, type: 'passwordReset' } })
-            .then(res => handleData('email', res.data.credentials.email))
+            .then(res => {
+                handleData('email', res.data.credentials.email)
+                handleChange('isLoading', false)
+                document.getElementById('userPassword').focus()
+            })
             .catch(err => {
                 if(err.response.data.message || err.response.data.error_description){
                     if(err.response.status >= 500){
@@ -71,49 +76,59 @@ const ResetPassword = () => {
     }
 
     return(
-        <div id="form">
-            <div className="form__contact">
-                <div className="get_in_touch"><h1>Reset Password</h1></div>
-                <div className="form">
-                    <form className="contact__form" name="contact__form" onSubmit={Submit}>
-                        <div className="m-10 no-bot">
-                            <div className="contact__infoField">
-                                <label htmlFor="bot-validatedEmail">Email</label>
-                                <input title="Email" id="bot-validatedEmail" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                                <span className="contact__onFocus"></span>
-                            </div>
-                        </div>
-                        <div className="m-10">
-                            <div className="contact__infoField">
-                                <label htmlFor="userEmail">Email</label>
-                                <input title="Email" id="userEmail" type="email" className="contact__inputField" value={data.email} autoFocus required disabled="true" autoComplete="username"/>
-                                <span className="contact__onFocus"></span>
-                            </div>
-                        </div>
-                        <div className="form__container">
-                            <div className="m-10">
+        <div>
+            { properties.isLoading ?
+            (<div className="loader"><div className="spin-container full-width">
+                <div className="shape shape-1"></div>
+                <div className="shape shape-2"></div>
+                <div className="shape shape-3"></div>
+                <div className="shape shape-4"></div>
+            </div></div>) : null }
+
+            <div id="form">
+                <div className="form__contact">
+                    <div className="get_in_touch"><h1>Reset Password</h1></div>
+                    <div className="form">
+                        <form className="contact__form" name="contact__form" onSubmit={Submit}>
+                            <div className="m-10 no-bot">
                                 <div className="contact__infoField">
-                                    <label htmlFor="userPassword">Password <span className="required">*</span></label>
-                                    <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('password', event.target.value)} value={data.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'new-password'} />
+                                    <label htmlFor="bot-validatedEmail">Email</label>
+                                    <input title="Email" id="bot-validatedEmail" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                     <span className="contact__onFocus"></span>
-                                    <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
-                                        <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
-                                    </IconButton>
                                 </div>
                             </div>
                             <div className="m-10">
                                 <div className="contact__infoField">
-                                    <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
-                                    <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('confirmPassword', event.target.value)} value={data.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                    <label htmlFor="userEmail">Email</label>
+                                    <input title="Email" id="userEmail" type="email" className="contact__inputField" value={data.email} autoFocus required disabled="true" autoComplete="username"/>
                                     <span className="contact__onFocus"></span>
-                                    <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)}>
-                                        <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
-                                    </IconButton>
                                 </div>
                             </div>
-                        </div>
-                        <button type="submit" className="contact__sendBtn" id="reset-password">Change Password</button>
-                    </form>
+                            <div className="form__container">
+                                <div className="m-10">
+                                    <div className="contact__infoField">
+                                        <label htmlFor="userPassword">Password <span className="required">*</span></label>
+                                        <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('password', event.target.value)} value={data.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'new-password'} />
+                                        <span className="contact__onFocus"></span>
+                                        <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
+                                            <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
+                                        </IconButton>
+                                    </div>
+                                </div>
+                                <div className="m-10">
+                                    <div className="contact__infoField">
+                                        <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
+                                        <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('confirmPassword', event.target.value)} value={data.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                        <span className="contact__onFocus"></span>
+                                        <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)}>
+                                            <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
+                                        </IconButton>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" className="contact__sendBtn" id="reset-password">Change Password</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

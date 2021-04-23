@@ -50,9 +50,9 @@ const Login = ({ userData }) => {
                 if(err.response.status >= 500) setTimeout(() => sendOTP(), 5000)
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
-            if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false); handleChange('sendOTP', false);
+            if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false);
         }
-        if((status === 302 && !properties.verify) || properties.sendOTP) sendOTP()
+        if((status === 302 && !properties.verify) || properties.sendOTP){ properties.sendOTP = false; sendOTP(); }
     }, [userData, properties.verify, properties.sendOTP])
 
     const LogIn = (e) => {
