@@ -28,8 +28,8 @@ export default function App() {
   const privateRoute = ['', 'edit', 'account'];
   const info = JSON.parse(localStorage.getItem('info'));
   if(info && info.statusCode && info.message){
-    const status = info.statusCode === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER;
-    setNotification(status, info.message); localStorage.removeItem('info');
+    setNotification(info.statusCode === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER, info.message);
+    localStorage.removeItem('info');
   }
   if(!userData.isLoading && userData.authenticated){
     redirectRoute.forEach(a => {
@@ -40,6 +40,7 @@ export default function App() {
       if(window.location.pathname.split('/')[1] === a) window.location='/welcome';
     });
   }
+  
   useEffect(() => {
     axios.get(`${SERVER_URL}/account/user`, { withCredentials: true })
     .then(res => {

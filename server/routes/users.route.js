@@ -48,36 +48,12 @@ router.post('/login', (req, res, next) => {
                 if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else{
                     const verify = user.security['2FA'];
-                    if(verify && (req.body = {...req.body, id: user.id})){
-                        passport.authenticate('sendOTP', { session: false }, (err, data, info) => {
-                            if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
-                            else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
-                            else if(data) return res.cookie('jwt-token', jwt.sign({
-                                    id: user._id,
-                                    email: user.email,
-                                    auth: {
-                                        '2FA': verify,
-                                        status: false
-                                    }
-                                }, jwtSecret, { expiresIn: '1d' }), {
-                                    path: '/',
-                                    expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
-                                    httpOnly: true,
-                                    secure: status,
-                                    sameSite: status ? 'none' : 'strict'
-                                }).status(302).send(JSON.stringify({
-                                    statusCode: 302,
-                                    message: info.message,
-                                    tokenId: data.tokenId
-                                }, null, 2));
-                            else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
-                        })(req, res, next)
-                    }else return res.cookie('jwt-token', jwt.sign({
+                    return res.cookie('jwt-token', jwt.sign({
                         id: user._id,
                         email: user.email,
                         auth: {
                             '2FA': verify,
-                            status: false 
+                            status: false
                         }
                     }, jwtSecret, { expiresIn: '1d' }), {
                         path: '/',
@@ -85,8 +61,8 @@ router.post('/login', (req, res, next) => {
                         httpOnly: true,
                         secure: status,
                         sameSite: status ? 'none' : 'strict'
-                    }).status(200).send(JSON.stringify({
-                        statusCode: user.security['2FA'] ? 302 : 200,
+                    }).status(verify ? 302 : 200).send(JSON.stringify({
+                        statusCode: verify ? 302 : 200,
                         message: info.message
                     }, null, 2));
                 }

@@ -18,7 +18,8 @@ const Login = ({ userData }) => {
         verify: false,
         disabled: false,
         password: false,
-        rememberMe: true,
+        sendOTP: false,
+        rememberMe: true
     })
     const [login, setLogin] = useState({
         email: '',
@@ -36,7 +37,8 @@ const Login = ({ userData }) => {
 
     useEffect(() => {
         async function sendOTP(){
-            properties.verify = true; handleLogin('email', email);
+            properties.verify = true;
+            if(!login.email) handleLogin('email', email);
             await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
@@ -44,8 +46,8 @@ const Login = ({ userData }) => {
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
         }
-        if(status === 302 && !properties.verify) sendOTP()
-    }, [status, properties.verify])
+        if((status === 302 && !properties.verify) || properties.sendOTP) sendOTP()
+    }, [userData, properties.verify, properties.sendOTP])
 
     const LogIn = (e) => {
         e.preventDefault();
@@ -55,16 +57,14 @@ const Login = ({ userData }) => {
             await axios.post(`${SERVER_URL}/account/login`, login, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
-                if(err.response.status === 302){
-                    handleChange('verify', true);
-                    handleData('tokenId', err.response.data.tokenId);
-                }else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                if(err.response.status === 302){ handleChange('sendOTP', true); handleChange('verify', true); }
+                else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
             btn.innerHTML = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;
         else if(!login.email || !login.password) { setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!login.email ? 'userEmail' : 'userPassword').focus(); }
-        else if(EMAIL_VAL.test(String(login.email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
+        else if(EMAIL_VAL.test(String(login.email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Email Address !"); document.getElementById('userEmail').focus(); }
         else submitData();
     }
 
