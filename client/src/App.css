@@ -32,10 +32,9 @@ body.dark tbody tr:hover {
     transition: all .4s;
 }
 body.dark .btn__outline { color: #7bb4ff; border: 2px solid #7bb4ff; }
-body.dark .btn__outline:hover,
-body.dark .solid { background-color: #7bb4ff; color: #FFFFFF; }
+body.dark .btn__outline:hover { background-color: #7bb4ff; color: #FFFFFF; }
 body.dark .btn__outline:focus,
-body.dark .solid { background-color: #66a8ff; color: #FFFFFF; }
+body.dark .solid { border-color: #7bb4ff; background-color: #66a8ff; color: #FFFFFF; }
 body.dark .navbar,
 body.dark .btn__changeMode,
 body.dark .about,

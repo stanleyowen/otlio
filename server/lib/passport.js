@@ -481,7 +481,7 @@ passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordFiel
     }
 }))
 
-passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: 'id', passReqToCallback: true, session: false }, (req, email, id, done) => {
+passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, id, done) => {
     const {title, label, description, date} = req.body;
     if(!title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});

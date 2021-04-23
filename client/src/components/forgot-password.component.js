@@ -24,7 +24,10 @@ const ResetPassword = ({ userData }) => {
                 handleChange('success', true)
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.message)
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+                document.getElementById('userEmail').focus()
+            });
             btn.innerHTML = "Send"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;

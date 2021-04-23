@@ -114,10 +114,13 @@ const Account = ({ userData }) => {
             await axios.put(`${SERVER_URL}/account/otp`, { tokenId: data.tokenId, token: data.token }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 localStorage.setItem('info', JSON.stringify(res.data))
-                closeModal('mfa-bg', 'mfa-modal');
-                window.location.reload();
+                closeModal('mfa-bg', 'mfa-modal')
+                window.location.reload()
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+                document.getElementById('code').focus()
+            })
             if (security['2FA']) btn.innerHTML = "Deactivate";
             else btn.innerHTML = "Activate";
             btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);

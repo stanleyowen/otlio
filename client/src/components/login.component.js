@@ -52,7 +52,7 @@ const Login = ({ userData }) => {
             })
             if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false); handleChange('sendOTP', false);
         }
-        if((status === 302 && !properties.verify) || (properties.sendOTP && properties.verify)) sendOTP()
+        if((status === 302 && !properties.verify) || properties.sendOTP) sendOTP()
     }, [userData, properties.verify, properties.sendOTP])
 
     const LogIn = (e) => {
@@ -85,7 +85,10 @@ const Login = ({ userData }) => {
                 if(err.response.status === 302){
                     handleChange('verify', true);
                     handleData('tokenId', err.response.data.tokenId);
-                }else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+                }else {
+                    setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+                    document.getElementById('code').focus()
+                }
             })
             btn.innerHTML = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
