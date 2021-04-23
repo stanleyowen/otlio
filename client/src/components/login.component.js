@@ -97,7 +97,8 @@ const Login = ({ userData }) => {
             await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
-                handleData('tokenId', res.data.tokenId);
+                handleData('tokenId', res.data.credentials.tokenId)
+                document.getElementById('code').focus()
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerHTML = "Resend"; handleChange('disabled', false);
