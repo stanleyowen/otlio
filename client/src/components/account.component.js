@@ -11,7 +11,7 @@ import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeM
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
-    const {email, id, thirdParty, verified, security, authenticated, isLoading} = userData;
+    const {email, thirdParty, verified, security, authenticated, isLoading} = userData;
     const [password, setPassword] = useState({
         oldPassword: '',
         newPassword: '',
@@ -51,20 +51,6 @@ const Account = ({ userData }) => {
             }
         }
     }, [properties.disabled])
-
-    const verifyAccount = (e) => {
-        e.preventDefault();
-        const text = document.getElementById('verify-account');
-        async function submitData() {
-            text.innerHTML = "Veryfing Account..."; handleChange('disabled', true);
-            await axios.post(`${SERVER_URL}/account/verify`, { email, id }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            text.innerHTML = "Verify Account"; handleChange('disabled', false);
-        }
-        if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
-        else submitData();
-    }
     
     const changePassword = (e) => {
         e.preventDefault();
@@ -172,11 +158,6 @@ const Account = ({ userData }) => {
                         </div>
                     </div>
                     <div className="oauth-container">
-                        <div className="m-10">
-                            <button className="oauth-box verify-account" onClick={ properties.disabled || verified ? null : verifyAccount}>
-                                <FontAwesomeIcon icon={faUserCheck} size='2x'/> <p id="verify-account">{ verified ? 'Verified Account':'Verify Account' }</p>
-                            </button>
-                        </div>
                         <div className="m-10">
                             <button className="oauth-box change-password mt-20" onClick={() => openModal('password-bg', 'password-modal', 'old-password')}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Update Password</p>

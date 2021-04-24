@@ -191,7 +191,7 @@ router.get('/verify', (req, res, next) => {
 router.post('/verify', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
-        else if(info && info.status === 301 && (req.params = user)){
+        else if(info && info.status === 302 && (req.body = info.credentials)){
             passport.authenticate('verifyAccount', { session: false }, (err, user, info) => {
                 if(err) return res.status(500).send(JSON.stringify({statusCode: 500, message: MSG_DESC[0]}, null, 2));
                 else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
@@ -201,7 +201,7 @@ router.post('/verify', (req, res, next) => {
         }
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({statusCode: info.status, message: info.message}, null, 2));
         else return res.status(504).send(JSON.stringify({ statusCode: 504, message: MSG_DESC[34] }, null, 2));
-    })
+    })(req, res, next)
 })
 
 router.get('/otp', (req, res, next) => {

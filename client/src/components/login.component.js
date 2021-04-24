@@ -12,8 +12,8 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Login = ({ userData }) => {
-    const {status, email, type } = userData;
-    const {mfa, verifyAccount} = type ? type : '';
+    const {status, email, type} = userData;
+    const {mfa} = type ? type : '';
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,

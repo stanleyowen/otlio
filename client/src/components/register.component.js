@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IconButton } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
@@ -11,20 +11,27 @@ import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation'
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const Register = () => {
+const Register = ({ userData }) => {
+    const {status, email, type} = userData;
+    const {verifyAccount} = type ? type : '';
+    const [properties, setProperties] = useState({
+        honeypot: '',
+        verify: false,
+        password: false,
+        confirmPassword: false
+    })
     const [register, setRegister] = useState({
         email: '',
         password: '',
         confirmPassword: ''
     })
-    const [properties, setProperties] = useState({
-        honeypot: '',
-        password: false,
-        confirmPassword: false
-    })
 
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleRegister = (a, b) => setRegister({ ...register, [a]: b })
+
+    useEffect(() => {
+        if(status === 302 && !properties.verify && verifyAccount) handleChange('verify', true);
+    }, [userData, properties.verify])
 
     const Register = (e) => {
         e.preventDefault();
@@ -45,7 +52,33 @@ const Register = () => {
         else submitData();
     }
 
-    return (
+    const sendLink = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('send-link');
+        async function submitData() {
+            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            await axios.post(`${SERVER_URL}/account/verify`, null, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            btn.innerHTML = "Resend Link"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+        } submitData();
+    }
+
+    return properties.verify ? (
+        <div id="form">
+            <div className="form__contact">
+                <div className="get_in_touch"><h1>Almost there ...</h1></div>
+                <div className="form">
+                    <h4 className="mt-20 mb-20 isCentered">Please check your email ({ email ? email : properties.email }) to confirm your account.</h4>
+                    <hr />
+                    <h4 className="mt-20 mb-20 isCentered">If { email ? email : properties.email } is not your email address, please click Logout and enter the correct one.</h4>
+                    <h4 className="mt-20 mb-20 isCentered">If it hasn't arrived after a few minutes, check your spam folder or click on the resend button.</h4>
+                    <button className="contact__sendBtn solid" id="cancel" onClick={() => window.location='/logout'}>Logout</button>
+                    <button className="contact__sendBtn ml-10" id="send-link" onClick={sendLink}>Resend Link</button>
+                </div>
+            </div>
+        </div>
+    ) : (
         <div id="form">
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Register</h1></div>

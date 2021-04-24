@@ -58,7 +58,8 @@ export default function App() {
     })
     .catch(err => {
       localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
-      if(err.response.status === 302 && (window.location.pathname.split('/')[1] !== 'login' && window.location.pathname.split('/')[1] !== 'logout')) window.location='/login';
+      if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname.split('/')[1] !== 'login' && window.location.pathname.split('/')[1] !== 'logout')) window.location='/login';
+      if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname.split('/')[1] !== 'get-started' && window.location.pathname.split('/')[1] !== 'logout')) window.location='/get-started';
       if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
       console.log(err.response)
       setUserData({
@@ -79,7 +80,7 @@ export default function App() {
       <Navbar userData={userData} />
       <Route path='/' exact component={() => <Home userData={userData} />} />
       <Route path='/welcome' component={Welcome} />
-      <Route path='/get-started' component={Register} />
+      <Route path='/get-started' component={() => <Register userData={userData} />} />
       <Route path='/login' component={() => <Login userData={userData} />} />
       <Route path='/logout' component={() => <Logout userData={userData} />} />
       <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
