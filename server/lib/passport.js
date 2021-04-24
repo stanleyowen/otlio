@@ -522,17 +522,35 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
         if(err) return done(err, false);
         else if(user){
             if(user.security['2FA'] === payload.auth.status){
-                RevokedToken.find({ userId: user.id }, (err, data) => {
-                    if(err) return done(err, false);
-                    else if(data.length){
-                        for (x=0; data.length; x++){
-                            if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
-                            else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, user);
-                        }
-                    }else if(!data.length) return done(null, user);
+                if(user.verified){
+                    RevokedToken.find({ userId: user.id }, (err, data) => {
+                        if(err) return done(err, false);
+                        else if(data.length){
+                            for (x=0; data.length; x++){
+                                if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15], credentials: {} });
+                                else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, user);
+                            }
+                        }else if(!data.length) return done(null, user);
+                    })
+                }else return done(null, false, {
+                    status: 302,
+                    message: MSG_DESC[37],
+                    type: { mfa: false, verifyAccount: true },
+                    credentials: {
+                        id: user.id,
+                        email: user.email
+                    }
                 })
-            }else return done(null, false, { status: 302, message: MSG_DESC[37], email: user.email })
-        }else return done(null, false, { status: 401, message: MSG_DESC[16] });
+            }else return done(null, false, {
+                status: 302,
+                message: MSG_DESC[37],
+                type: { mfa: true, verifyAccount: false },
+                credentials: {
+                    id: user.id,
+                    email: user.email
+                }
+            })
+        }else return done(null, false, { status: 401, message: MSG_DESC[16], credentials: {} });
     })
 }))
 

@@ -60,9 +60,12 @@ export default function App() {
       localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
       if(err.response.status === 302 && (window.location.pathname.split('/')[1] !== 'login' && window.location.pathname.split('/')[1] !== 'logout')) window.location='/login';
       if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+      console.log(err.response)
       setUserData({
         status: err.response.status,
-        email: err.response.data.email,
+        id: err.response.data.credentials ? err.response.data.credentials.id : '',
+        email: err.response.data.credentials ? err.response.data.credentials.email : '',
+        type: err.response.data.type,
         isLoading: false,
         authenticated: false
       })

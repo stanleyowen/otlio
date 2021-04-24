@@ -12,7 +12,8 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Login = ({ userData }) => {
-    const {status, email} = userData;
+    const {status, email, type } = userData;
+    const {mfa, verifyAccount} = type ? type : '';
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,
@@ -52,7 +53,7 @@ const Login = ({ userData }) => {
             })
             if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false);
         }
-        if((status === 302 && !properties.verify) || properties.sendOTP){ properties.sendOTP = false; sendOTP(); }
+        if((status === 302 && !properties.verify && mfa) || properties.sendOTP){ properties.sendOTP = false; sendOTP(); }
     }, [userData, properties.verify, properties.sendOTP])
 
     const LogIn = (e) => {
@@ -97,7 +98,6 @@ const Login = ({ userData }) => {
         else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
         else submitData();
     }
-    console.log(properties)
     return properties.verify ? (
         <div>
             { !data.tokenId ?

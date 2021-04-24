@@ -33,16 +33,16 @@ const Account = ({ userData }) => {
     const handleData = (a, b) => setData({ ...data, [a]: b })
 
     useEffect(() => {
-        const background = document.getElementById('background');
-        const modal = document.getElementById('modal');
+        const passwordBg = document.getElementById('password-bg');
+        const passwordModal = document.getElementById('password-modal');
         const mfaBg = document.getElementById('mfa-bg');
         const mfaModal = document.getElementById('mfa-modal');
         window.onclick = function(e){
-            if(e.target === background && !properties.disabled){
-                modal.classList.remove('showModal');
-                modal.classList.add('closeModal');
-                background.classList.remove('showBackground');
-                background.classList.add('hideBackground');
+            if(e.target === passwordBg && !properties.disabled){
+                passwordModal.classList.remove('showModal');
+                passwordModal.classList.add('closeModal');
+                passwordBg.classList.remove('showBackground');
+                passwordBg.classList.add('hideBackground');
             }if(e.target === mfaBg && !properties.disabled){
                 mfaModal.classList.remove('showModal');
                 mfaModal.classList.add('closeModal');
@@ -54,7 +54,7 @@ const Account = ({ userData }) => {
 
     const verifyAccount = (e) => {
         e.preventDefault();
-        const text = document.getElementById('status');
+        const text = document.getElementById('verify-account');
         async function submitData() {
             text.innerHTML = "Veryfing Account..."; handleChange('disabled', true);
             await axios.post(`${SERVER_URL}/account/verify`, { email, id }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
@@ -73,7 +73,7 @@ const Account = ({ userData }) => {
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
             await axios.put(`${SERVER_URL}/account/user`, password, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
-                closeModal('background', 'modal');
+                closeModal('password-bg', 'password-modal');
                 setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' })
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
@@ -174,11 +174,11 @@ const Account = ({ userData }) => {
                     <div className="oauth-container">
                         <div className="m-10">
                             <button className="oauth-box verify-account" onClick={ properties.disabled || verified ? null : verifyAccount}>
-                                <FontAwesomeIcon icon={faUserCheck} size='2x'/> <p id="status">{ verified ? 'Verified Account':'Verify Account' }</p>
+                                <FontAwesomeIcon icon={faUserCheck} size='2x'/> <p id="verify-account">{ verified ? 'Verified Account':'Verify Account' }</p>
                             </button>
                         </div>
                         <div className="m-10">
-                            <button className="oauth-box change-password mt-20" onClick={() => openModal('background', 'modal', 'old-password')}>
+                            <button className="oauth-box change-password mt-20" onClick={() => openModal('password-bg', 'password-modal', 'old-password')}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Update Password</p>
                             </button>
                         </div>
@@ -215,10 +215,10 @@ const Account = ({ userData }) => {
                     <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                 </div>
                 
-                <div id="background" className="modal hiddenModal">
-                    <div id="modal" className="modal__container hiddenModal">
+                <div id="password-bg" className="modal hiddenModal">
+                    <div id="password-modal" className="modal__container hiddenModal">
                         <div className="modal__title">
-                            <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('background', 'modal')}>&times;</span>
+                            <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('password-bg', 'password-modal')}>&times;</span>
                             <h2>Update Password</h2>
                         </div>
                         <div className="modal__body">
