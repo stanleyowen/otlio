@@ -36,18 +36,17 @@ const parseLabel = (a) => {
     var _labelClass = null;
     if(a[1]){ if(a[0]+" "+a[1] === labels[3]) _labelClass="do-later" }
     else {
-        if(a[0] === labels[0]) _labelClass="priority";
-        else if(a[0] === labels[1]) _labelClass="secondary";
-        else if(a[0] === labels[2]) _labelClass="important";
+        if(a[0] === labels[0]) _labelClass="priority"
+        else if(a[0] === labels[1]) _labelClass="secondary"
+        else if(a[0] === labels[2]) _labelClass="important"
     }
-    var _label = <span className={"label "+_labelClass}>{a}</span>;
-    return _label;
+    return <span className={"label "+_labelClass}>{a}</span>;
 }
 
 const Home = ({ userData }) => {
     const {email, authenticated, isLoading} = userData;
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
-    const [todoData, setTodoData] = useState(null);
+    const [todoData, setTodoData] = useState();
     const [data, setData] = useState({
         title: '',
         date: new Date(),
@@ -70,7 +69,7 @@ const Home = ({ userData }) => {
         })
         .catch(err => {
             setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
-            setTimeout(() => getTodoData(), 5000)
+            if(err.response.status >= 500) setTimeout(() => getTodoData(), 5000)
         });
     }
 
@@ -97,8 +96,38 @@ const Home = ({ userData }) => {
         if(!isLoading && authenticated) getTodoData()
     }, [userData, properties.disabled]);
 
+    const addTodo = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('add-todo');
+        async function submitData() {
+            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
+            await axios.post(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(res => {
+                closeModal('background','modal')
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
+                setData({ title: '', date: new Date(), label: labels[0].toLowerCase(), description: '' })
+                getTodoData();
+            })
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            btn.innerHTML = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
+        }
+        if(properties.honeypot) return;
+        else if(!data.title || !data.date || !data.label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus(); }
+        else if(data.title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); document.getElementById('title').focus(); }
+        else if(validateLabel(data.label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }
+        else if(data.description && data.description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !"); document.getElementById('description').focus(); }
+        else submitData();
+    }
+
+    const deleteData = async id => {
+        await axios.delete(`${SERVER_URL}/todo/data`, { data: { objId: id }, headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+        .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
+        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+        getTodoData();
+    }
+
     const todoList = (b = todoData ? todoData : cacheTodo) => {
-        if(b)return b.map(a => {
+        if(b) return b.map(a => {
             return(
                 <tr key={a._id}>
                     <td>{a.title}<br/>{a.description}</td>
@@ -120,16 +149,8 @@ const Home = ({ userData }) => {
                             </Tooltip>
                         </span>
                     </td>
-                </tr>
-            )
+                </tr>)
         })
-    }
-
-    const deleteData = async id => {
-        await axios.delete(`${SERVER_URL}/todo/data`, { data: { objId: id }, headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-        .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
-        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-        getTodoData();
     }
 
     const titleCase = (a) => {
@@ -139,32 +160,38 @@ const Home = ({ userData }) => {
         return sentence;
     }
 
-    const addTodo = (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('add-todo');
-        async function submitData() {
-            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
-            await axios.post(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(res => {
-                closeModal('background','modal')
-                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
-                setData({ title: '', date: new Date(), label: labels[0].toLowerCase(), description: '' })
-            })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
-            getTodoData();
-        }
-        if(properties.honeypot) return;
-        else if(!data.title || !data.date || !data.label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus(); }
-        else if(data.title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); document.getElementById('title').focus(); }
-        else if(validateLabel(data.label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }
-        else if(data.description && data.description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !"); document.getElementById('description').focus(); }
-        else submitData();
-    }
-
     return (
         <div className="main__projects">
             <p>Hi, Welcome Back {email}</p>
+            <table className="main__table">
+                <thead>
+                    <tr>
+                        <th>Activity Name</th>
+                        <th>Labels</th>
+                        <th>Due Date</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    { todoList() }
+                    { !cacheTodo && !todoData ?
+                        (<tr><td colSpan="5" className="no-border">
+                            <div className="full-width spin-container">
+                                <div className="shape shape-1"></div>
+                                <div className="shape shape-2"></div>
+                                <div className="shape shape-3"></div>
+                                <div className="shape shape-4"></div>
+                            </div>
+                        </td></tr>) : null }
+                </tbody>
+            </table>
+            
+            <Tooltip title="Add Task" placement="top">
+                <button className="btn__changeMode" aria-label="Add Todo" onClick={() => authenticated ? openModal('background','modal','title') : null} id="addTodo" style={{bottom: '17vh'}}>
+                    <FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />
+                </button>
+            </Tooltip>
+
             <div id="background" className="modal hiddenModal">
                 <div id="modal" className="modal__container hiddenModal">
                     <div className="modal__title">
@@ -208,7 +235,7 @@ const Home = ({ userData }) => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="label">Label <span className="required">*</span></label>
-                                    <select onChange={(event) => handleData('label', event.target.value)} value={data.label}>
+                                    <select className="mt-10 mb-10" onChange={(event) => handleData('label', event.target.value)} value={data.label}>
                                         { labels.map(c => {
                                             return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
                                         }) }
@@ -227,33 +254,6 @@ const Home = ({ userData }) => {
                     </div>
                 </div>
             </div>
-            <table className="main__table">
-                <thead>
-                    <tr>
-                        <th>Activity Name</th>
-                        <th>Labels</th>
-                        <th>Due Date</th>
-                        <th>&nbsp;</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    { todoList() }
-                    { !cacheTodo && !todoData ?
-                        (<tr><td colSpan="5" className="no-border">
-                            <div className="full-width spin-container">
-                                <div className="shape shape-1"></div>
-                                <div className="shape shape-2"></div>
-                                <div className="shape shape-3"></div>
-                                <div className="shape shape-4"></div>
-                            </div>
-                        </td></tr>) : null }
-                </tbody>
-            </table>
-            <Tooltip title="Add Task" placement="top">
-                <button className="btn__changeMode" aria-label="Add Todo" onClick={() => openModal('background','modal','title')} id="addTodo" style={{bottom: '17vh'}}>
-                    <FontAwesomeIcon icon={faPlus} style={{ fontSize: "2.2em" }} />
-                </button>
-            </Tooltip>
        </div>
     );
 }

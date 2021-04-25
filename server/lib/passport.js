@@ -9,8 +9,8 @@ const GitHubStrategy = require('passport-github').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 const { encrypt, decrypt } = require('../lib/crypto');
-
 const MSG_DESC = require('./callback');
+
 let User = require('../models/users.model');
 let Todo = require('../models/todo.model');
 let Token = require('../models/token.model');
@@ -39,8 +39,8 @@ const validateLabel = (e) => {
     }
 }
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+passport.serializeUser((user, done) => done(null, user))
+passport.deserializeUser((user, done) => done(null, user))
 
 passport.use('register', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
     const {confirmPassword} = req.body;
@@ -59,7 +59,7 @@ passport.use('register', new localStrategy({ usernameField: 'email', passwordFie
                             else return done(null, data, { status: 200, message: MSG_DESC[4] })
                         })
                 })
-            }else return done(null, false, { status: 400, message: MSG_DESC[1] })
+            }else if(user) return done(null, false, { status: 400, message: MSG_DESC[1] })
         })
     }
 }))
@@ -521,18 +521,17 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
     User.findOne({ _id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA'] }, (err, user) => {
         if(err) return done(err, false);
         else if(user){
-            if(user.security['2FA'] === payload.auth.status){
-                if(user.verified){
-                    RevokedToken.find({ userId: user.id }, (err, data) => {
-                        if(err) return done(err, false);
-                        else if(data.length){
-                            for (x=0; data.length; x++){
-                                if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15], credentials: {} });
-                                else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, user);
-                            }
-                        }else if(!data.length) return done(null, user);
-                    })
-                }else return done(null, false, {
+            if(user.security['2FA'] === payload.auth.status && user.verified){
+                RevokedToken.find({ userId: user.id }, (err, data) => {
+                    if(err) return done(err, false);
+                    else if(data.length){
+                        for (x=0; data.length; x++){
+                            if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
+                            else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, user);
+                        }
+                    }else if(!data.length) return done(null, user);
+                })
+            }else if(!user.verified) return done(null, false, {
                     status: 302,
                     message: MSG_DESC[37],
                     type: { mfa: false, verifyAccount: true },
@@ -541,7 +540,7 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
                         email: user.email
                     }
                 })
-            }else return done(null, false, {
+            else return done(null, false, {
                 status: 302,
                 message: MSG_DESC[37],
                 type: { mfa: true, verifyAccount: false },
@@ -550,7 +549,7 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
                     email: user.email
                 }
             })
-        }else return done(null, false, { status: 401, message: MSG_DESC[16], credentials: {} });
+        }else return done(null, false, { status: 401, message: MSG_DESC[16] });
     })
 }))
 

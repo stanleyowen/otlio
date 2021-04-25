@@ -14,7 +14,7 @@ router.post('/register', (req, res, next) => {
     passport.authenticate('register', (err, user, infos) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(infos && (infos.status ? infos.status >= 300 ? true : false : true)) return res.status(infos.status ? infos.status : infos.status = 400).send(JSON.stringify({status: infos.status, message: infos.message}, null, 2));
-        else if(user && (req.body = { email: req.body.email, id: String(user._id) }) ) {
+        else if(user && (req.body = { email: req.body.email, id: String(user._id) })) {
             passport.authenticate('verifyAccount', { session: false }, (err, user, info) => {
                 if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
                 else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -32,7 +32,7 @@ router.post('/register', (req, res, next) => {
                         secure: status,
                         sameSite: status ? 'none' : 'strict'
                     }).status(200).send(JSON.stringify({
-                        status: user.security['2FA'] ? 302 : 200,
+                        status: 200,
                         message: infos.message
                     }, null, 2));
                 else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
@@ -77,7 +77,7 @@ router.get('/user', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0], 'XSRF-TOKEN': req.csrfToken()}, null, 2));
         else if(info && info.status === 302) return res.status(info.status).send(JSON.stringify({...info, 'XSRF-TOKEN': req.csrfToken()}, null, 2));
-        else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message, 'XSRF-TOKEN': req.csrfToken()}, null, 2));
+        else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({...info, 'XSRF-TOKEN': req.csrfToken()}, null, 2));
         else if(user) return res.send(JSON.stringify({
                 status: 200,
                 message: MSG_DESC[5],

@@ -60,7 +60,7 @@ const Account = ({ userData }) => {
             await axios.put(`${SERVER_URL}/account/user`, password, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('password-bg', 'password-modal');
-                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' })
+                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' });
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));

@@ -121,7 +121,7 @@ const Edit = ({ userData }) => {
                     <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="label">Label <span className="required">*</span></label>
-                            <select onChange={(event) => handleData('label', event.target.value)} id="label" value={data.label}>
+                            <select className="mt-10 mb-10" onChange={(event) => handleData('label', event.target.value)} id="label" value={data.label}>
                                 { labels.map(c => {
                                     return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
                                 }) }
