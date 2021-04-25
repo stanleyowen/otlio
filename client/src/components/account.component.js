@@ -160,7 +160,7 @@ const Account = ({ userData }) => {
                                 <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color="primary"/>
                             } label="Multi Factor Authentication (MFA)" />
                             
-                            <Tooltip placement="top" className="ml-10" title="Two-Factor Authentication (2FA for short) is a good way to add an extra layer of security to your Discord account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                            <Tooltip placement="top" className="ml-10" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                     </div>
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>

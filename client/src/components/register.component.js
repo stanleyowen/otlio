@@ -12,8 +12,9 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Register = ({ userData }) => {
-    const {status, email, type} = userData;
-    const {verifyAccount} = type ? type : '';
+    const {status} = userData;
+    const {verifyAccount} = userData.type;
+    const {email} = userData.credentials;
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,

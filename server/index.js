@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 });
 app.get('/status', (req, res) => {
     res.send(JSON.stringify({
-        statusCode: 200,
+        status: 200,
         message: 'Server is up and running'
     }, null, 2));
 })

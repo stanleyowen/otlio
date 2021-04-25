@@ -462,11 +462,11 @@ passport.use('todoData', new localStrategy({ usernameField: 'email', passwordFie
 
 passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
     const {title, label, description, date} = req.body;
-    if(!title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
-    else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
-    else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
-    else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
+    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]});
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[8]});
+    else if(title.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[17]});
+    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]});
+    else if(description && description.length > 120) return res.status(400).json({status: 400, message: MSG_DESC[19]});
     else {
         new Todo({
             email,
@@ -483,11 +483,11 @@ passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordFiel
 
 passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, id, done) => {
     const {title, label, description, date} = req.body;
-    if(!title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
-    else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
-    else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
-    else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
+    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]});
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[8]});
+    else if(title.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[17]});
+    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]});
+    else if(description && description.length > 120) return res.status(400).json({status: 400, message: MSG_DESC[19]});
     else {
         const data = {
             title: encrypt(title, 1),
