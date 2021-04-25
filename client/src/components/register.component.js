@@ -72,7 +72,7 @@ const Register = ({ userData }) => {
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Almost there ...</h1></div>
                 <div className="form">
-                    <h4 className="mt-20 mb-20 isCentered">Please check your email ({ email ? email : properties.email }) to confirm your account.</h4>
+                    <h4 className="mt-20 mb-20 isCentered">Please check your email ({ email ? email : register.email }) to confirm your account.</h4>
                     <hr />
                     <h4 className="mt-20 mb-20 isCentered">If { email ? email : properties.email } is not your email address, please click Logout and enter the correct one.</h4>
                     <h4 className="mt-20 mb-20 isCentered">If it hasn't arrived after a few minutes, check your spam folder or click on the resend button.</h4>
