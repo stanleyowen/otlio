@@ -114,6 +114,34 @@ passport.use('changePassword', new localStrategy({ usernameField: 'email', passw
     }
 }))
 
+passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField: 'token', passReqToCallback: true, session: false }, (req, id, token, done) => {
+    const {type} = req.params;
+    const userId = id.split('-')[0];
+    const tokenId = id.split('-')[1];
+    if(!type) return done(null, false, { status: 400, message: MSG_DESC[11] });
+    if(!userId || !tokenId) return done(null, false, { status: 400, message: MSG_DESC[39] });
+    else {
+        var query = {}; query['_id'] = tokenId; query['type.'.concat(type)] = true;
+        Token.findOne(query, (err, user) => {
+            if(err) return done(err, false);
+            else if(user && userId === decrypt(user.userId, 3) && token === decrypt(user.token, 3)){
+                User.findById(userId, (err, user) => {
+                    if(err) done(err, false);
+                    else if(user) return done(null, user, {
+                        status: 200,
+                        message: MSG_DESC[5],
+                        credentials: {
+                            id: user.id,
+                            email: user.email
+                        }
+                    });
+                    else return done(null, false, { status: 400, message: MSG_DESC[31] });
+                })
+            }else return done(null, false, { status: 400, message: MSG_DESC[31] });
+        })
+    }
+}))
+
 passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passwordField: 'email', session: false }, (email, token, done) => {
     axios.get('https://api.ipify.org/?format=json')
     .then(async res => {
@@ -124,11 +152,10 @@ passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passw
             else if(!data || data.length < 5){
                 User.findOne({ email }, (err, user) => {
                     if(err) return done(err, false);
-                    else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
-                    else {
+                    else if(user) {
                         const id = user.id;
-                        const token = crypto.randomBytes(120).toString("hex");
-                        new Token({ ipAddr: ip, 'type.passwordReset': true, userId: encrypt(id, 1), token: encrypt(token, 1) }).save((err, data) => {
+                        const token = crypto.randomBytes(60).toString("hex");
+                        new Token({ ipAddr: ip, 'type.passwordReset': true, userId: encrypt(id, 3), token: encrypt(token, 3) }).save((err, data) => {
                             if(err) return done(err, false);
                             else {
                                 const mailOptions = {
@@ -142,30 +169,12 @@ passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passw
                                 });
                             }
                         });
-                    }
+                    }else return done(null, false, { status: 400, message: MSG_DESC[32] });
                 })
             }
         })
     })
     .catch(err => { return done(err, false); })
-}))
-
-passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField: 'token', passReqToCallback: true, session: false }, (req, id, token, done) => {
-    const {type} = req.params;
-    const userId = id.split('-')[0];
-    const tokenId = id.split('-')[1];
-    var query = {};
-    query['_id'] = tokenId; query['type.'.concat(type)] = true;
-    Token.findOne(query, (err, user) => {
-        if(err) return done(err, false);
-        else if(user && userId === decrypt(user.userId, 1) && token === decrypt(user.token, 1)){
-            User.findById(userId, (err, user) => {
-                if(err) done(err, false);
-                else if(user) return done(null, user, { status: 200, message: MSG_DESC[5] });
-                else return done(null, false, { status: 400, message: MSG_DESC[31] });
-            })
-        }else return done(null, false, { status: 400, message: MSG_DESC[31] });
-    })
 }))
 
 passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {

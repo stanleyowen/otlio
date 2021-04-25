@@ -38,6 +38,7 @@ const MSG_DESC = [
     'Verification Code has been Sent Successfully',                     // 36
     'Authentication Required',                                          // 37
     'Verification Code is Invalid or Expired. Please try again.',       // 38
+    'Invalid ID Format',                                                // 39
 ];
 
 module.exports = MSG_DESC;
