@@ -39,7 +39,10 @@ const Register = ({ userData }) => {
         async function submitData(){
             btn.innerHTML = "Registering..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/account/register`, register, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = '/')
+            .then(res => {
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
+                handleChange('verify', true)
+            })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.innerHTML = "Register"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
