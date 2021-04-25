@@ -363,7 +363,7 @@ passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwo
             else {
                 var query = {};
                 query['email'] = email; query['thirdParty.'.concat(provider)] = true; query['thirdParty.verified'] = false;
-                User.findOneAndUpdate(query, { password: hash, 'thirdParty.verified': true }, (err, user) => {
+                User.findOneAndUpdate(query, { password: hash, verified: true, 'thirdParty.verified': true }, (err, user) => {
                     if(err) return done(err, false);
                     else if(user) return done(null, user, { status: 200, message: MSG_DESC[4] });
                     else done(null, false, { status: 401, message: MSG_DESC[10] });

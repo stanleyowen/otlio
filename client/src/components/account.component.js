@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle, faUserCheck, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -117,13 +117,6 @@ const Account = ({ userData }) => {
         else submitData();
     }
 
-    const closeInfo = (a) => {
-        const infos = document.getElementById('infos')
-        const info = document.getElementById(a);
-        info.classList.add('closeModal');
-        setTimeout(() => infos.removeChild(info), 200);
-    }
-
     return (
         <div>
             { !authenticated ?
@@ -135,15 +128,6 @@ const Account = ({ userData }) => {
             </div></div>) : null }
 
             <div id="form">
-                <div id="infos">
-                    <blockquote id="info-account-verification">
-                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
-                        <span className="info-title">Account Verification</span>
-                        <button className="closeBtn" onClick={() => closeInfo('info-account-verification')}>&times;</button>
-                        <p className="mt-10">Dear Users,<br />Starting from <b>1<sup>st</sup> May 2021</b>, Todo Application will Verify All Accounts by sending verification through Email in order to improve our services, security, and reliablity. We are sorry to inform that unverified accounts will no longer able to use our services.</p>
-                    </blockquote>
-                </div>
-
                 <div className="form__contact">
                     <div className="get_in_touch"><h1>Account</h1></div>
                     <div className="form">
@@ -173,10 +157,10 @@ const Account = ({ userData }) => {
                     <div className="form">
                         <div className="m-10">
                             <FormControlLabel control={
-                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? security['2FA'] ? openModal('mfa-bg', 'mfa-modal') : openModal('warning-beta-bg', 'warning-beta') : null} color="primary"/>
+                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color="primary"/>
                             } label="Multi Factor Authentication (MFA)" />
                             
-                            <Tooltip placement="top" className="ml-10" title="Warning: Please note that this is a beta version of the Multi Factor Authentication (MFA) which is still undergoing final testing before its official release. The Todo Application does not give any warranties, whether express or implied, as to the suitability or usability of users' account." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                            <Tooltip placement="top" className="ml-10" title="Two-Factor Authentication (2FA for short) is a good way to add an extra layer of security to your Discord account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                     </div>
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
@@ -246,21 +230,6 @@ const Account = ({ userData }) => {
                     </div>
                 </div>
 
-                <div id="warning-beta-bg" className="modal hiddenModal">
-                    <div id="warning-beta" className="modal__container hiddenModal">
-                        <div className="modal__title">
-                            <h2 className="required">Warning</h2>
-                        </div>
-                        <div className="modal__body">
-                            Please note that this is a <span className="required">beta</span> version of the <b>Multi Factor Authentication (MFA)</b> which is still undergoing final testing before its official release. The Todo Application does not give any warranties, whether express or implied, as to the suitability or usability of users' account.
-                            <div className="flex">
-                                <button id="cancel" className="btn__outline solid" onClick={() => closeModal('warning-beta-bg', 'warning-beta')}>Cancel</button>
-                                <button id="change-password" className="btn__outline" onClick={() => { closeModal('warning-beta-bg', 'warning-beta'); openModal('mfa-bg', 'mfa-modal') }}>I Agree and Understand</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="mfa-bg" className="modal hiddenModal">
                     <div id="mfa-modal" className="modal__container hiddenModal">
                         <div className="modal__title">
@@ -271,10 +240,21 @@ const Account = ({ userData }) => {
                             <ol className="ml-40 ul-mb10">
                                 <li>
                                     Send Verification Code
+                                    <blockquote className="mt-20">
+                                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
+                                        <span className="info-title">Verification Code</span>
+                                        <p className="mt-10">Verification Code will be sent to <b>{email}</b> via email and will be valid for <b>ONLY 5 (five) minutes</b>.</p>
+                                        <p className="mt-10"><b>Note: Once you enable 2 Factor Authentication (2FA), you will be prompted to enter verification code on every login session.</b></p>
+                                    </blockquote>
                                     <button id="send-otp" className="btn__outline" onClick={sendOTP}>Send Verification Code</button>
                                 </li>
                                 <li>
                                     Verify Code
+                                    <blockquote className="mt-20">
+                                        <span><FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: '1.5em' }} /></span>
+                                        <span className="info-title">Account Recovery</span>
+                                        <p className="mt-10"><b>Note: If you do not have access to both your account or email, we are unable to remove 2FA and you will have to create a new account.</b></p>
+                                    </blockquote>
                                     <form onSubmit={VerifyOTP}>
                                         <div className="m-10">
                                             <div className="contact__infoField">
@@ -283,9 +263,7 @@ const Account = ({ userData }) => {
                                                 <span className="contact__onFocus"></span>
                                             </div>
                                         </div>
-                                        <div className="inline">
-                                            <button type="submit" id="verify" className="btn__outline">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
-                                        </div>
+                                        <button type="submit" id="verify" className="btn__outline">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
                                     </form>
                                 </li>
                             </ol>
