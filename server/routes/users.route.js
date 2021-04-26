@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = require('express').Router();
@@ -7,6 +8,7 @@ const MSG_DESC = require('../lib/callback');
 let RevokedToken = require('../models/revoke-token.model');
 let User = require('../models/users.model');
 
+const SALT_WORK_FACTOR = 12;
 const jwtSecret = process.env.JWT_SECRET;
 const status = process.env.NODE_ENV === 'production';
 
@@ -99,29 +101,49 @@ router.put('/user', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
-        else if(user && (req.body = {...req.body, email: user.email, id: user.id})){
-            passport.authenticate('changePassword', { session: false }, (err, account, info) => {
-                if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
-                else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
-                else if(account) return res.cookie('jwt-token', jwt.sign({
-                        id: user._id,
-                        email: user.email,
-                        auth: {
-                            '2FA': user.security['2FA'],
-                            status: false 
-                        }
-                    }, jwtSecret, { expiresIn: '1d' }), {
-                        path: '/',
-                        expires: new Date(Date.now() + 86400000),
-                        httpOnly: true,
-                        secure: status,
-                        sameSite: status ? 'none' : 'strict'
-                    }).status(200).send(JSON.stringify({
-                        status: user.security['2FA'] ? 302 : 200,
-                        message: info.message
-                    }, null, 2));
-                else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
-            })(req, res, next)
+        else if(user){
+            const {tokenId, token} = req.body;
+            async function sendCookie(user, info) {
+                return res.cookie('jwt-token', jwt.sign({
+                    id: user._id,
+                    email: user.email,
+                    auth: {
+                        '2FA': user.security['2FA'],
+                        status: user.security['2FA']
+                    }
+                }, jwtSecret, { expiresIn: '1d' }), {
+                    path: '/',
+                    expires: new Date(Date.now() + 86400000),
+                    httpOnly: true,
+                    secure: status,
+                    sameSite: status ? 'none' : 'strict'
+                }).status(200).send(JSON.stringify({
+                    status: 200,
+                    message: info.message
+                }, null, 2));
+            }
+            if(user.security['2FA'] && (!token || !tokenId)) return res.status(428).send(JSON.stringify({ status: 428, message: MSG_DESC[37] }, null, 2));
+            else if(user.security['2FA'] && token && tokenId) {
+                passport.authenticate('verifyOTP', { session: false }, (err, user, info) => {
+                    if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
+                    else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
+                    else if(user && (req.body = {...req.body, email: user.email, id: user.id})) {
+                        passport.authenticate('changePassword', { session: false }, (err, account, info) => {
+                            if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
+                            else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
+                            else if(account) sendCookie(account, info);
+                            else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
+                        })(req, res, next)
+                    }else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
+                })(req, res, next)
+            }else if(user && (req.body = {...req.body, email: user.email, id: user.id})) {
+                passport.authenticate('changePassword', { session: false }, (err, account, info) => {
+                    if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
+                    else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
+                    else if(account) sendCookie(account, info);
+                    else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
+                })(req, res, next)
+            }else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
         }else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)
 })
