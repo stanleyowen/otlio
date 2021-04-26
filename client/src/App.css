@@ -1,4 +1,4 @@
-/*! Todo Application - CSS Version 0.4.8 Copyright 2021, Stanley Owen */
+/*! Todo Application - CSS Version 0.4.9 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 * {
@@ -32,10 +32,9 @@ body.dark tbody tr:hover {
     transition: all .4s;
 }
 body.dark .btn__outline { color: #7bb4ff; border: 2px solid #7bb4ff; }
-body.dark .btn__outline:hover,
-body.dark .solid { background-color: #7bb4ff; color: #FFFFFF; }
+body.dark .btn__outline:hover { background-color: #7bb4ff; color: #FFFFFF; }
 body.dark .btn__outline:focus,
-body.dark .solid { background-color: #66a8ff; color: #FFFFFF; }
+body.dark .solid { border-color: #7bb4ff; background-color: #66a8ff; color: #FFFFFF; }
 body.dark .navbar,
 body.dark .btn__changeMode,
 body.dark .about,
@@ -184,6 +183,7 @@ label { user-select: none; }
 .mt-10 { margin-top: 10px; }
 .mt-20 { margin-top: 20px; }
 .mt-40 { margin-top: 40px; }
+.mb-10 { margin-bottom: 10px; }
 .mb-20 { margin-bottom: 20px; }
 .mb-40 { margin-bottom: 40px; }
 .ml-40 { margin-left: 40px; }

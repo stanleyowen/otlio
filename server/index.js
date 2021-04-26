@@ -32,19 +32,15 @@ app.use(csrf({
     }
 }));
 app.use((req, res, next) => {
-    res.header('Content-Type', 'application/json;charset=UTF-8');
+    res.header('Content-Type', 'application/json; charset=UTF-8');
     res.cookie('xsrf-token', req.csrfToken(), {
         secure: status,
         sameSite: status ? 'none' : 'strict'
-    });
-    next();
+    }); next();
 });
-app.get('/status', (req, res) => {
-    res.send(JSON.stringify({
-        statusCode: 200,
-        message: 'Server is up and running'
-    }, null, 2));
-})
+app.get('/status', (req, res) =>
+    res.send(JSON.stringify({ status: 200, message: 'Server is up and running' }, null, 2))
+)
 
 const usersRouter = require('./routes/users.route');
 const todoRouter = require('./routes/todo.route');
@@ -53,8 +49,6 @@ app.use('/account/', usersRouter);
 app.use('/todo/', todoRouter);
 app.use('/oauth/', oauthRouter);
 
-const URI = process.env.ATLAS_URI;
-mongoose.connect(URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology:true } );
-const connection = mongoose.connection;
-connection.once('open', () => console.log('MongoDB Database Extablished Successfully'))
-app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
+mongoose.connect(process.env.ATLAS_URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true } );
+mongoose.connection.once('open', () => console.log('MongoDB Database Extablished Successfully'))
+app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`))

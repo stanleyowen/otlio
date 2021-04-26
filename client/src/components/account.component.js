@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle, faUserCheck, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -11,7 +11,7 @@ import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeM
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
-    const {email, id, thirdParty, verified, security, authenticated, isLoading} = userData;
+    const {email, thirdParty, verified, security, authenticated, isLoading} = userData;
     const [password, setPassword] = useState({
         oldPassword: '',
         newPassword: '',
@@ -33,51 +33,53 @@ const Account = ({ userData }) => {
     const handleData = (a, b) => setData({ ...data, [a]: b })
 
     useEffect(() => {
-        const background = document.getElementById('background');
-        const modal = document.getElementById('modal');
+        const passwordBg = document.getElementById('password-bg');
+        const passwordModal = document.getElementById('password-modal');
         const mfaBg = document.getElementById('mfa-bg');
         const mfaModal = document.getElementById('mfa-modal');
+        const otpBg = document.getElementById('otp-bg');
+        const otpModal = document.getElementById('otp-modal');
         window.onclick = function(e){
-            if(e.target === background && !properties.disabled){
-                modal.classList.remove('showModal');
-                modal.classList.add('closeModal');
-                background.classList.remove('showBackground');
-                background.classList.add('hideBackground');
-            }if(e.target === mfaBg && !properties.disabled){
+            if(e.target === passwordBg && !properties.disabled){
+                passwordModal.classList.remove('showModal');
+                passwordModal.classList.add('closeModal');
+                passwordBg.classList.remove('showBackground');
+                passwordBg.classList.add('hideBackground');
+            }else if(e.target === mfaBg && !properties.disabled){
                 mfaModal.classList.remove('showModal');
                 mfaModal.classList.add('closeModal');
                 mfaBg.classList.remove('showBackground');
                 mfaBg.classList.add('hideBackground');
+            }else if(e.target === otpBg && !properties.disabled){
+                otpModal.classList.remove('showModal');
+                otpModal.classList.add('closeModal');
+                otpBg.classList.remove('showBackground');
+                otpBg.classList.add('hideBackground');
             }
         }
     }, [properties.disabled])
-
-    const verifyAccount = (e) => {
-        e.preventDefault();
-        const text = document.getElementById('status');
-        async function submitData() {
-            text.innerHTML = "Veryfing Account..."; handleChange('disabled', true);
-            await axios.post(`${SERVER_URL}/account/verify`, { email, id }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            text.innerHTML = "Verify Account"; handleChange('disabled', false);
-        }
-        if(!id || !email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
-        else submitData();
-    }
     
     const changePassword = (e) => {
         e.preventDefault();
         const btn = document.getElementById('change-password');
+        const verifyBtn = document.getElementById('verify-otp');
         async function submitData() {
-            btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
-            await axios.put(`${SERVER_URL}/account/user`, password, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            verifyBtn.innerHTML = "Verifying..."; verifyBtn.setAttribute("disabled", "true"); verifyBtn.classList.add("disabled"); handleChange('disabled', true);
+            btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            await axios.put(`${SERVER_URL}/account/user`, {...password, ...data }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
-                closeModal('background', 'modal');
-                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' })
+                closeModal('password-bg', 'password-modal');
+                closeModal('otp-bg', 'otp-modal');
+                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' });
+                setData({ tokenId: '', token: '' });
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
+            .catch(err =>{
+                if(err.response.status === 428) openModal('otp-bg', 'otp-modal')
+                document.getElementById('code-otp').focus()
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+            })
+            verifyBtn.innerHTML = "Verify"; verifyBtn.removeAttribute("disabled"); verifyBtn.classList.remove("disabled");
             btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
         }
         if(!password.oldPassword || !password.newPassword || !password.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!password.oldPassword ? 'old-password' : !password.newPassword ? 'new-password' : 'confirm-password').focus(); }
@@ -89,15 +91,19 @@ const Account = ({ userData }) => {
     const sendOTP = (e) => {
         e.preventDefault();
         const btn = document.getElementById('send-otp');
+        const passwordBtn = document.getElementById('send-otp-pass');
         async function sendToken(){
-            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
+            passwordBtn.innerHTML = "Sending..."; passwordBtn.setAttribute("disabled", "true"); passwordBtn.classList.add("disabled"); handleChange('disabled', true);
+            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleData('tokenId', res.data.credentials.tokenId)
                 document.getElementById('code').focus()
+                document.getElementById('code-otp').focus()
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            passwordBtn.innerHTML = "Send Verification Code"; passwordBtn.removeAttribute("disabled"); passwordBtn.classList.remove("disabled");
             btn.innerHTML = "Send Verification Code"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
         }
         if(!authenticated) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
@@ -111,13 +117,16 @@ const Account = ({ userData }) => {
             if (security['2FA']) btn.innerHTML = "Deactivating...";
             else btn.innerHTML = "Activating...";
             btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
-            await axios.put(`${SERVER_URL}/account/otp`, { tokenId: data.tokenId, token: data.token }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.put(`${SERVER_URL}/account/otp`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 localStorage.setItem('info', JSON.stringify(res.data))
-                closeModal('mfa-bg', 'mfa-modal');
-                window.location.reload();
+                closeModal('mfa-bg', 'mfa-modal')
+                window.location.reload()
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            .catch(err => {
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+                document.getElementById('code').focus()
+            })
             if (security['2FA']) btn.innerHTML = "Deactivate";
             else btn.innerHTML = "Activate";
             btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
@@ -126,13 +135,6 @@ const Account = ({ userData }) => {
         else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
         else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
         else submitData();
-    }
-
-    const closeInfo = (a) => {
-        const infos = document.getElementById('infos')
-        const info = document.getElementById(a);
-        info.classList.add('closeModal');
-        setTimeout(() => infos.removeChild(info), 200);
     }
 
     return (
@@ -146,15 +148,6 @@ const Account = ({ userData }) => {
             </div></div>) : null }
 
             <div id="form">
-                <div id="infos">
-                    <blockquote id="info-account-verification">
-                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
-                        <span className="info-title">Account Verification</span>
-                        <button className="closeBtn" onClick={() => closeInfo('info-account-verification')}>&times;</button>
-                        <p className="mt-10">Dear Users,<br />Starting from <b>1<sup>st</sup> May 2021</b>, Todo Application will Verify All Accounts by sending verification through Email in order to improve our services, security, and reliablity. We are sorry to inform that unverified accounts will no longer able to use our services.</p>
-                    </blockquote>
-                </div>
-
                 <div className="form__contact">
                     <div className="get_in_touch"><h1>Account</h1></div>
                     <div className="form">
@@ -170,12 +163,7 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="oauth-container">
                         <div className="m-10">
-                            <button className="oauth-box verify-account" onClick={ properties.disabled || verified ? null : verifyAccount}>
-                                <FontAwesomeIcon icon={faUserCheck} size='2x'/> <p id="status">{ verified ? 'Verified Account':'Verify Account' }</p>
-                            </button>
-                        </div>
-                        <div className="m-10">
-                            <button className="oauth-box change-password mt-20" onClick={() => openModal('background', 'modal', 'old-password')}>
+                            <button className="oauth-box change-password mt-20" onClick={() => openModal('password-bg', 'password-modal', 'old-password')}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Update Password</p>
                             </button>
                         </div>
@@ -189,10 +177,10 @@ const Account = ({ userData }) => {
                     <div className="form">
                         <div className="m-10">
                             <FormControlLabel control={
-                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? security['2FA'] ? openModal('mfa-bg', 'mfa-modal') : openModal('warning-beta-bg', 'warning-beta') : null} color="primary"/>
+                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color="primary"/>
                             } label="Multi Factor Authentication (MFA)" />
                             
-                            <Tooltip placement="top" className="ml-10" title="Warning: Please note that this is a beta version of the Multi Factor Authentication (MFA) which is still undergoing final testing before its official release. The Todo Application does not give any warranties, whether express or implied, as to the suitability or usability of users' account." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                            <Tooltip placement="top" className="ml-10" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                     </div>
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
@@ -212,10 +200,10 @@ const Account = ({ userData }) => {
                     <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                 </div>
                 
-                <div id="background" className="modal hiddenModal">
-                    <div id="modal" className="modal__container hiddenModal">
+                <div id="password-bg" className="modal hiddenModal">
+                    <div id="password-modal" className="modal__container hiddenModal">
                         <div className="modal__title">
-                            <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('background', 'modal')}>&times;</span>
+                            <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('password-bg', 'password-modal')}>&times;</span>
                             <h2>Update Password</h2>
                         </div>
                         <div className="modal__body">
@@ -262,21 +250,6 @@ const Account = ({ userData }) => {
                     </div>
                 </div>
 
-                <div id="warning-beta-bg" className="modal hiddenModal">
-                    <div id="warning-beta" className="modal__container hiddenModal">
-                        <div className="modal__title">
-                            <h2 className="required">Warning</h2>
-                        </div>
-                        <div className="modal__body">
-                            Please note that this is a <span className="required">beta</span> version of the <b>Multi Factor Authentication (MFA)</b> which is still undergoing final testing before its official release. The Todo Application does not give any warranties, whether express or implied, as to the suitability or usability of users' account.
-                            <div className="flex">
-                                <button id="cancel" className="btn__outline solid" onClick={() => closeModal('warning-beta-bg', 'warning-beta')}>Cancel</button>
-                                <button id="change-password" className="btn__outline" onClick={() => { closeModal('warning-beta-bg', 'warning-beta'); openModal('mfa-bg', 'mfa-modal') }}>I Agree and Understand</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="mfa-bg" className="modal hiddenModal">
                     <div id="mfa-modal" className="modal__container hiddenModal">
                         <div className="modal__title">
@@ -287,10 +260,21 @@ const Account = ({ userData }) => {
                             <ol className="ml-40 ul-mb10">
                                 <li>
                                     Send Verification Code
+                                    <blockquote className="mt-20">
+                                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
+                                        <span className="info-title">Verification Code</span>
+                                        <p className="mt-10">Verification Code will be sent to <b>{email}</b> via email and will be valid for <b>ONLY 5 (five) minutes</b>.</p>
+                                        <p className="mt-10"><b>Note: Once you enable 2 Factor Authentication (2FA), you will be prompted to enter verification code on every login session.</b></p>
+                                    </blockquote>
                                     <button id="send-otp" className="btn__outline" onClick={sendOTP}>Send Verification Code</button>
                                 </li>
                                 <li>
                                     Verify Code
+                                    <blockquote className="mt-20">
+                                        <span><FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: '1.5em' }} /></span>
+                                        <span className="info-title">Account Recovery</span>
+                                        <p className="mt-10"><b>Note: If you do not have access to both your account or email, we are unable to remove 2FA and you will have to create a new account.</b></p>
+                                    </blockquote>
                                     <form onSubmit={VerifyOTP}>
                                         <div className="m-10">
                                             <div className="contact__infoField">
@@ -299,9 +283,42 @@ const Account = ({ userData }) => {
                                                 <span className="contact__onFocus"></span>
                                             </div>
                                         </div>
-                                        <div className="inline">
-                                            <button type="submit" id="verify" className="btn__outline">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
+                                        <button type="submit" id="verify" className="btn__outline">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
+                                    </form>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="otp-bg" className="modal hiddenModal">
+                    <div id="otp-modal" className="modal__container hiddenModal">
+                        <div className="modal__title">
+                            <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('otp-bg', 'otp-modal')}>&times;</span>
+                            <h2>Authentication Required</h2>
+                        </div>
+                        <div className="modal__body mt-10">
+                            <ol className="ml-40 ul-mb10">
+                                <li>
+                                    Send Verification Code
+                                    <blockquote className="mt-20">
+                                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
+                                        <span className="info-title">Change Password</span>
+                                        <p className="mt-10">In order to improve our services, qualities, and securities, we will need an <b>OTP Token</b> before users perform Change Password Request.</p>
+                                    </blockquote>
+                                    <button id="send-otp-pass" className="btn__outline" onClick={sendOTP}>Send Verification Code</button>
+                                </li>
+                                <li>
+                                    Verify Code
+                                    <form onSubmit={changePassword}>
+                                        <div className="m-10">
+                                            <div className="contact__infoField">
+                                                <label htmlFor="code">Verification Code</label>
+                                                <input title="Old Password" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
+                                                <span className="contact__onFocus"></span>
+                                            </div>
                                         </div>
+                                        <button type="submit" id="verify-otp" className="btn__outline">Verify</button>
                                     </form>
                                 </li>
                             </ol>

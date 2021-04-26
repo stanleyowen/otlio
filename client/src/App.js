@@ -3,33 +3,33 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification';
-import "./App.css";
+import "./App.min.css";
 
 import Navbar from './components/navbar.component';
 import Welcome from './components/welcome.component';
 import Register from './components/register.component';
 import Login from './components/login.component';
 import Logout from './components/logout.component';
-import ResetPassword from './components/reset-password.component';
-import ReqResetPassword from './components/forgot-password.component';
-import Home from './components/home.component';
-import EditTodo from './components/edit.component';
 import OAuth from './components/register-oauth.component';
 import ReqOAuth from './components/req-oauth.component';
+import Home from './components/home.component';
 import Account from './components/account.component';
+import EditTodo from './components/edit.component';
+import ResetPassword from './components/reset-password.component';
+import ReqResetPassword from './components/forgot-password.component';
+import VerifyAccount from './components/verify-account.component';
 import PrivacyPolicy from './components/privacy-policy.component';
 import TermsAndConditions from './components/terms-and-condition.component';
-import VerifyAccount from './components/verify-account.component';
 
 export default function App() {
-  const [userData, setUserData] = useState({ isLoading: true });
+  const [userData, setUserData] = useState({ isLoading: true, type: {}, credentials: {} });
   const SERVER_URL = process.env.REACT_APP_SERVER_URL;
   const redirectRoute = ['welcome', 'login', 'get-started'];
   const privateRoute = ['', 'edit', 'account'];
   const info = JSON.parse(localStorage.getItem('info'));
   if(info && info.statusCode && info.message){
-    const status = info.statusCode === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER;
-    setNotification(status, info.message); localStorage.removeItem('info');
+    setNotification(info.statusCode === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER, info.message);
+    localStorage.removeItem('info');
   }
   if(!userData.isLoading && userData.authenticated){
     redirectRoute.forEach(a => {
@@ -40,6 +40,7 @@ export default function App() {
       if(window.location.pathname.split('/')[1] === a) window.location='/welcome';
     });
   }
+  
   useEffect(() => {
     axios.get(`${SERVER_URL}/account/user`, { withCredentials: true })
     .then(res => {
@@ -56,15 +57,11 @@ export default function App() {
       localStorage.setItem('XSRF-TOKEN', res.data['XSRF-TOKEN'])
     })
     .catch(err => {
+      setUserData({ type: {}, credentials: {}, ...err.response.data, isLoading: false, authenticated: false })
       localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
-      if(err.response.status === 302 && (window.location.pathname.split('/')[1] !== 'login' && window.location.pathname.split('/')[1] !== 'logout')) window.location='/login';
+      if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname !== '/login' && window.location.pathname !== '/logout')) window.location='/login';
+      if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname !== '/get-started' && window.location.pathname !== '/logout')) window.location='/get-started';
       if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-      setUserData({
-        status: err.response.status,
-        email: err.response.data.email,
-        isLoading: false,
-        authenticated: false
-      })
     })
     console.log("%c%s","color: red; background: yellow; font-size: 24px;","WARNING!");
     console.log("%c%s","font-size: 18px;","Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand.")
@@ -75,7 +72,7 @@ export default function App() {
       <Navbar userData={userData} />
       <Route path='/' exact component={() => <Home userData={userData} />} />
       <Route path='/welcome' component={Welcome} />
-      <Route path='/get-started' component={Register} />
+      <Route path='/get-started' component={() => <Register userData={userData} />} />
       <Route path='/login' component={() => <Login userData={userData} />} />
       <Route path='/logout' component={() => <Logout userData={userData} />} />
       <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />

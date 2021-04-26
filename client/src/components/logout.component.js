@@ -8,7 +8,7 @@ const Logout = ({ userData }) => {
     useEffect(() => {
         async function Logout(){
             await axios.post(`${process.env.REACT_APP_SERVER_URL}/account/logout`, {}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true})
-            .then(() => localStorage.setItem('info', JSON.stringify({ statusCode: 200, message: 'You have been logged out successfully.' })))
+            .then(() => localStorage.setItem('info', JSON.stringify({ status: 200, message: 'You have been logged out successfully.' })))
             .catch(err => localStorage.setItem('info', JSON.stringify(err.response.data)))
             window.location = '/login'
         }

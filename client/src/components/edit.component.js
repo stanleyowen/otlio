@@ -12,7 +12,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const Edit = ({ userData }) => {
     const {authenticated, isLoading} = userData;
     const [data, setData] = useState({
-        id: useParams().id,
+        _id: useParams().id,
         title: '',
         date: new Date(null),
         label: labels[0].toLowerCase(),
@@ -28,17 +28,16 @@ const Edit = ({ userData }) => {
 
     useEffect(() => {
         async function getData() {
-            await axios.get(`${SERVER_URL}/todo/data`, { params: {id: data.id}, withCredentials: true })
+            await axios.get(`${SERVER_URL}/todo/data`, { params: {id: data._id}, withCredentials: true })
             .then(res => {
-                setData({...data, title: res.data.title, date: res.data.date, label: res.data.label, description: res.data.description});
-                handleChange('isLoading', false);
+                setData(res.data); handleChange('isLoading', false);
+                document.getElementById('title').focus();
             })
             .catch(err => {
-                if(err.response.status === 500){
+                if(err.response.status >= 500){
                     setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
                     setTimeout(() => getData(), 5000)
-                }
-                else {
+                }else {
                     localStorage.setItem('info', JSON.stringify(err.response.data));
                     window.location='/';
                 }
@@ -62,10 +61,7 @@ const Edit = ({ userData }) => {
         async function submitData() {
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.put(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(res => {
-                localStorage.setItem('info', JSON.stringify(res.data))
-                window.location='/'
-            })
+            .then(res => { localStorage.setItem('info', JSON.stringify(res.data)); window.location='/'; })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
@@ -86,6 +82,7 @@ const Edit = ({ userData }) => {
                 <div className="shape shape-3"></div>
                 <div className="shape shape-4"></div>
             </div></div>) : null }
+
             <div className="main__projects">
                 <a href="/" className="close" style={{fontSize: '40px', textDecoration: 'none'}}>&times;</a>
                 <form onSubmit={updateData} className="mt-20">
@@ -106,7 +103,7 @@ const Edit = ({ userData }) => {
                         </div>
                         <div className="m-10">
                             <div className="contact__infoField">
-                                <label htmlFor="label">Date <span className="required">*</span></label>
+                                <label htmlFor="date">Date <span className="required">*</span></label>
                                 <div className="datepicker">
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                         <KeyboardDatePicker
@@ -124,7 +121,7 @@ const Edit = ({ userData }) => {
                     <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="label">Label <span className="required">*</span></label>
-                            <select onChange={(event) => handleData('label', event.target.value)} id="label" value={data.label}>
+                            <select className="mt-10 mb-10" onChange={(event) => handleData('label', event.target.value)} id="label" value={data.label}>
                                 { labels.map(c => {
                                     return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
                                 }) }

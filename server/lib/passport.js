@@ -9,8 +9,8 @@ const GitHubStrategy = require('passport-github').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 const { encrypt, decrypt } = require('../lib/crypto');
-
 const MSG_DESC = require('./callback');
+
 let User = require('../models/users.model');
 let Todo = require('../models/todo.model');
 let Token = require('../models/token.model');
@@ -39,8 +39,8 @@ const validateLabel = (e) => {
     }
 }
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+passport.serializeUser((user, done) => done(null, user))
+passport.deserializeUser((user, done) => done(null, user))
 
 passport.use('register', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
     const {confirmPassword} = req.body;
@@ -59,7 +59,7 @@ passport.use('register', new localStrategy({ usernameField: 'email', passwordFie
                             else return done(null, data, { status: 200, message: MSG_DESC[4] })
                         })
                 })
-            }else return done(null, false, { status: 400, message: MSG_DESC[1] })
+            }else if(user) return done(null, false, { status: 400, message: MSG_DESC[1] })
         })
     }
 }))
@@ -78,7 +78,7 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
 }))
 
 passport.use('changePassword', new localStrategy({ usernameField: 'email', passwordField: 'oldPassword', passReqToCallback: true, session: false }, (req, email, password, done) => {
-    const {id, newPassword, confirmPassword} = req.body;
+    const {_id: id, newPassword, confirmPassword} = req.body;
     if(!id || !newPassword || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] });
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(password.length < 6 || password.length > 40 || newPassword.length < 6 || newPassword.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] });
@@ -114,6 +114,34 @@ passport.use('changePassword', new localStrategy({ usernameField: 'email', passw
     }
 }))
 
+passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField: 'token', passReqToCallback: true, session: false }, (req, id, token, done) => {
+    const {type} = req.params;
+    const userId = id.split('-')[0];
+    const tokenId = id.split('-')[1];
+    if(!type) return done(null, false, { status: 400, message: MSG_DESC[11] });
+    if(!userId || !tokenId) return done(null, false, { status: 400, message: MSG_DESC[39] });
+    else {
+        var query = {}; query['_id'] = tokenId; query['type.'.concat(type)] = true;
+        Token.findOne(query, (err, user) => {
+            if(err) return done(err, false);
+            else if(user && userId === decrypt(user.userId, 3) && token === decrypt(user.token, 3)){
+                User.findById(userId, (err, user) => {
+                    if(err) done(err, false);
+                    else if(user) return done(null, user, {
+                        status: 200,
+                        message: MSG_DESC[5],
+                        credentials: {
+                            id: user.id,
+                            email: user.email
+                        }
+                    });
+                    else return done(null, false, { status: 400, message: MSG_DESC[31] });
+                })
+            }else return done(null, false, { status: 400, message: MSG_DESC[31] });
+        })
+    }
+}))
+
 passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passwordField: 'email', session: false }, (email, token, done) => {
     axios.get('https://api.ipify.org/?format=json')
     .then(async res => {
@@ -124,11 +152,10 @@ passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passw
             else if(!data || data.length < 5){
                 User.findOne({ email }, (err, user) => {
                     if(err) return done(err, false);
-                    else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
-                    else {
+                    else if(user) {
                         const id = user.id;
-                        const token = crypto.randomBytes(120).toString("hex");
-                        new Token({ ipAddr: ip, 'type.passwordReset': true, userId: encrypt(id, 1), token: encrypt(token, 1) }).save((err, data) => {
+                        const token = crypto.randomBytes(60).toString("hex");
+                        new Token({ ipAddr: ip, 'type.passwordReset': true, userId: encrypt(id, 3), token: encrypt(token, 3) }).save((err, data) => {
                             if(err) return done(err, false);
                             else {
                                 const mailOptions = {
@@ -142,30 +169,12 @@ passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passw
                                 });
                             }
                         });
-                    }
+                    }else return done(null, false, { status: 400, message: MSG_DESC[32] });
                 })
             }
         })
     })
     .catch(err => { return done(err, false); })
-}))
-
-passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField: 'token', passReqToCallback: true, session: false }, (req, id, token, done) => {
-    const {type} = req.params;
-    const userId = id.split('-')[0];
-    const tokenId = id.split('-')[1];
-    var query = {};
-    query['_id'] = tokenId; query['type.'.concat(type)] = true;
-    Token.findOne(query, (err, user) => {
-        if(err) return done(err, false);
-        else if(user && userId === decrypt(user.userId, 1) && token === decrypt(user.token, 1)){
-            User.findById(userId, (err, user) => {
-                if(err) done(err, false);
-                else if(user) return done(null, user, { status: 200, message: MSG_DESC[5] });
-                else return done(null, false, { status: 400, message: MSG_DESC[31] });
-            })
-        }else return done(null, false, { status: 400, message: MSG_DESC[31] });
-    })
 }))
 
 passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
@@ -181,7 +190,7 @@ passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwo
         query['_id'] = tokenId; query['type.'.concat(type)] = true;
         Token.findOne(query, (err, data) => {
             if(err) done(err, false);
-            else if(data && token === decrypt(data.token, 1) && userId === decrypt(data.userId, 1)){
+            else if(data && token === decrypt(data.token, 3) && userId === decrypt(data.userId, 3)){
                 bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
                     if(err) return done(err, false);
                     else {
@@ -220,7 +229,7 @@ passport.use('verifyAccount', new localStrategy({ usernameField: 'email', passwo
                     if(err) return done(err, false);
                     else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
                     else {
-                        const token = crypto.randomBytes(120).toString("hex");
+                        const token = crypto.randomBytes(60).toString("hex");
                         new Token({ ipAddr: ip, 'type.accountVerification': true, userId: encrypt(id, 1), token: encrypt(token, 1) }).save((err, data) => {
                             if(err) return done(err, false);
                             else {
@@ -363,7 +372,7 @@ passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwo
             else {
                 var query = {};
                 query['email'] = email; query['thirdParty.'.concat(provider)] = true; query['thirdParty.verified'] = false;
-                User.findOneAndUpdate(query, { password: hash, 'thirdParty.verified': true }, (err, user) => {
+                User.findOneAndUpdate(query, { password: hash, verified: true, 'thirdParty.verified': true }, (err, user) => {
                     if(err) return done(err, false);
                     else if(user) return done(null, user, { status: 200, message: MSG_DESC[4] });
                     else done(null, false, { status: 401, message: MSG_DESC[10] });
@@ -462,11 +471,11 @@ passport.use('todoData', new localStrategy({ usernameField: 'email', passwordFie
 
 passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
     const {title, label, description, date} = req.body;
-    if(!title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
-    else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
-    else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
-    else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
+    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]});
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[8]});
+    else if(title.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[17]});
+    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]});
+    else if(description && description.length > 120) return res.status(400).json({status: 400, message: MSG_DESC[19]});
     else {
         new Todo({
             email,
@@ -481,13 +490,13 @@ passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordFiel
     }
 }))
 
-passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: 'id', passReqToCallback: true, session: false }, (req, email, id, done) => {
+passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, id, done) => {
     const {title, label, description, date} = req.body;
-    if(!title || !label || !date) return res.status(400).json({statusCode: 400, message: MSG_DESC[11]});
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[8]});
-    else if(title.length > 40) return res.status(400).json({statusCode: 400, message: MSG_DESC[17]});
-    else if(validateLabel(label)) return res.status(400).json({statusCode: 400, message: MSG_DESC[18]});
-    else if(description && description.length > 120) return res.status(400).json({statusCode: 400, message: MSG_DESC[19]});
+    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]});
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[8]});
+    else if(title.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[17]});
+    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]});
+    else if(description && description.length > 120) return res.status(400).json({status: 400, message: MSG_DESC[19]});
     else {
         const data = {
             title: encrypt(title, 1),
@@ -521,7 +530,7 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
     User.findOne({ _id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA'] }, (err, user) => {
         if(err) return done(err, false);
         else if(user){
-            if(user.security['2FA'] === payload.auth.status){
+            if(user.security['2FA'] === payload.auth.status && user.verified){
                 RevokedToken.find({ userId: user.id }, (err, data) => {
                     if(err) return done(err, false);
                     else if(data.length){
@@ -531,7 +540,24 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
                         }
                     }else if(!data.length) return done(null, user);
                 })
-            }else return done(null, false, { status: 302, message: MSG_DESC[37], email: user.email })
+            }else if(!user.verified) return done(null, false, {
+                    status: 302,
+                    message: MSG_DESC[37],
+                    type: { mfa: false, verifyAccount: true },
+                    credentials: {
+                        id: user.id,
+                        email: user.email
+                    }
+                })
+            else return done(null, false, {
+                status: 302,
+                message: MSG_DESC[37],
+                type: { mfa: true, verifyAccount: false },
+                credentials: {
+                    id: user.id,
+                    email: user.email
+                }
+            })
         }else return done(null, false, { status: 401, message: MSG_DESC[16] });
     })
 }))
