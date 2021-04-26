@@ -78,7 +78,7 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
 }))
 
 passport.use('changePassword', new localStrategy({ usernameField: 'email', passwordField: 'oldPassword', passReqToCallback: true, session: false }, (req, email, password, done) => {
-    const {_id: id, newPassword, confirmPassword} = req.body;
+    const {id, newPassword, confirmPassword} = req.body;
     if(!id || !newPassword || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] });
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(password.length < 6 || password.length > 40 || newPassword.length < 6 || newPassword.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] });
@@ -190,7 +190,7 @@ passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwo
         query['_id'] = tokenId; query['type.'.concat(type)] = true;
         Token.findOne(query, (err, data) => {
             if(err) done(err, false);
-            else if(data && token === decrypt(data.token, 3) && userId === decrypt(data.userId, 3)){
+            else if(data && token === decrypt(data.token, 1) && userId === decrypt(data.userId, 1)){
                 bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
                     if(err) return done(err, false);
                     else {
@@ -229,7 +229,7 @@ passport.use('verifyAccount', new localStrategy({ usernameField: 'email', passwo
                     if(err) return done(err, false);
                     else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
                     else {
-                        const token = crypto.randomBytes(60).toString("hex");
+                        const token = crypto.randomBytes(120).toString("hex");
                         new Token({ ipAddr: ip, 'type.accountVerification': true, userId: encrypt(id, 1), token: encrypt(token, 1) }).save((err, data) => {
                             if(err) return done(err, false);
                             else {
