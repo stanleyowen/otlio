@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import DateFnsUtils from "@date-io/date-fns";
+import { Select, MenuItem } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import axios from 'axios';
 
@@ -121,11 +122,9 @@ const Edit = ({ userData }) => {
                     <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="label">Label <span className="required">*</span></label>
-                            <select className="mt-10 mb-10" onChange={(event) => handleData('label', event.target.value)} id="label" value={data.label}>
-                                { labels.map(c => {
-                                    return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
-                                }) }
-                            </select>
+                            <Select id="label" value={data.label} onChange={(event) => handleData('label', event.target.value)} style={{width: '100%'}} className="mt-10 mb-10">
+                                { labels.map(c => { return (<MenuItem value={c.toLowerCase()}>{c}</MenuItem>) }) }
+                            </Select>
                         </div>
                     </div>
                     <div className="m-10">

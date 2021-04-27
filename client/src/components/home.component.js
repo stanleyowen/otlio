@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DateFnsUtils from "@date-io/date-fns";
-import { IconButton, Tooltip } from '@material-ui/core';
+import { IconButton, Tooltip, Select, MenuItem } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons/';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -235,11 +235,9 @@ const Home = ({ userData }) => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="label">Label <span className="required">*</span></label>
-                                    <select className="mt-10 mb-10" onChange={(event) => handleData('label', event.target.value)} value={data.label}>
-                                        { labels.map(c => {
-                                            return (<option key={c.toLowerCase()} value={c.toLowerCase()}>{c}</option>)
-                                        }) }
-                                    </select>
+                                    <Select id="label" value={data.label} onChange={(event) => handleData('label', event.target.value)} style={{width: '100%'}} className="mt-10 mb-10">
+                                        { labels.map(c => { return (<MenuItem value={c.toLowerCase()}>{c}</MenuItem>) }) }
+                                    </Select>
                                 </div>
                             </div>
                             <div className="m-10">

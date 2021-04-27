@@ -60,7 +60,8 @@ body.dark .footer,
 body.dark .toggleNavbar button,
 body.dark blockquote,
 body.dark .closeBtn,
-body.dark svg {
+body.dark svg,
+body.dark .MuiSelect-root {
     color: #FFFFFF !important;
 }
 body.dark .bar1,
