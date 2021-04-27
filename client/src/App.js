@@ -27,8 +27,8 @@ export default function App() {
   const redirectRoute = ['welcome', 'login', 'get-started'];
   const privateRoute = ['', 'edit', 'account'];
   const info = JSON.parse(localStorage.getItem('info'));
-  if(info && info.statusCode && info.message){
-    setNotification(info.statusCode === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER, info.message);
+  if(info && info.status && info.message){
+    setNotification(info.status === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER, info.message);
     localStorage.removeItem('info');
   }
   if(!userData.isLoading && userData.authenticated){
