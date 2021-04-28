@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = require('express').Router();
+const rateLimit = require('express-rate-limit');
 
 const { encrypt } = require('../lib/crypto');
 const MSG_DESC = require('../lib/callback');
@@ -9,6 +10,10 @@ let User = require('../models/users.model');
 
 const jwtSecret = process.env.JWT_SECRET;
 const status = process.env.NODE_ENV === 'production';
+const OTPLimiter = new rateLimit({
+    windowMs: 60*60*1000,
+    max: 5
+})
 
 router.post('/register', (req, res, next) => {
     passport.authenticate('register', (err, user, infos) => {
@@ -199,7 +204,7 @@ router.get('/verify', (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/verify', (req, res, next) => {
+router.post('/verify', OTPLimiter, (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && info.status === 302 && (req.body = info.credentials)){
@@ -215,7 +220,7 @@ router.post('/verify', (req, res, next) => {
     })(req, res, next)
 })
 
-router.get('/otp', (req, res, next) => {
+router.get('/otp', OTPLimiter, (req, res, next) => {
     passport.authenticate('jwtOTP', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));

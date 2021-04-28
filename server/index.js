@@ -5,6 +5,7 @@ const express = require('express');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 
 require('dotenv').config();
 require('./lib/passport');
@@ -23,6 +24,10 @@ app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(new rateLimit({
+    windowMs: 1*60*1000,
+    max: 30
+}))
 app.use(csrf({
     cookie: {
         key: 'csrf-token',
