@@ -15,18 +15,20 @@ const ReqOAuth = ({ userData }) => {
                 if(authenticated){
                     localStorage.setItem('info', JSON.stringify(res.data))
                     window.location='/account'
-                }else window.location = '/login'
+                }else window.location='/'
             })
             .catch(err => {
-                if(err.response.status === 302) window.location = err.response.data.url
-                else{
+                if(err.response.status === 302){
+                    if(err.response.data.url) window.location = err.response.data.url
+                    else window.location='/login'
+                }else {
                     localStorage.setItem('info', JSON.stringify(err.response.data))
                     if(authenticated) window.location='/account'
                     else window.location='/login'
                 };
             })
         }
-        if(!isLoading)validateData();
+        if(!isLoading) validateData();
     },[code, pathname])
 
     return(

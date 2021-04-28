@@ -39,7 +39,7 @@ const Account = ({ userData }) => {
         const mfaModal = document.getElementById('mfa-modal');
         const otpBg = document.getElementById('otp-bg');
         const otpModal = document.getElementById('otp-modal');
-        window.onclick = function(e){
+        window.onclick = (e) => {
             if(e.target === passwordBg && !properties.disabled){
                 passwordModal.classList.remove('showModal');
                 passwordModal.classList.add('closeModal');
@@ -177,9 +177,8 @@ const Account = ({ userData }) => {
                     <div className="form">
                         <div className="m-10">
                             <FormControlLabel control={
-                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color="primary"/>
+                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color={document.body.classList.contains("dark") ? "white" : "primary"}/>
                             } label="Multi Factor Authentication (MFA)" />
-                            
                             <Tooltip placement="top" className="ml-10" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                     </div>

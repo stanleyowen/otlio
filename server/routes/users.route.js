@@ -11,7 +11,7 @@ let User = require('../models/users.model');
 const jwtSecret = process.env.JWT_SECRET;
 const status = process.env.NODE_ENV === 'production';
 const OTPLimiter = new rateLimit({
-    windowMs: 60*60*1000,
+    windowMs: 3600000,
     max: 5,
     handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[41]}, null, 2))
 })
