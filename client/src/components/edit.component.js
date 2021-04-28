@@ -69,7 +69,7 @@ const Edit = ({ userData }) => {
         if(properties.honeypot) return;
         else if(!data.title || !data.date || !data.label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus(); }
         else if(data.title.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 60 characters !"); document.getElementById('title').focus(); }
-        else if(validateLabel(data.label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }
+        else if(validateLabel(data.label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label !"); document.getElementById('label').focus(); }
         else if(data.description && data.description.length > 200){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 200 characters !"); document.getElementById('description').focus(); }
         else submitData();
     }
