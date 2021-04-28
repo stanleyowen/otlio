@@ -39,6 +39,8 @@ const MSG_DESC = [
     'Authentication Required',                                          // 37
     'Verification Code is Invalid or Expired. Please try again.',       // 38
     'Invalid ID Format',                                                // 39
+    'Invalid CSRF Token',                                               // 40
+    'API rate limit exceeded for current IP. Please try again later.'   // 41
 ];
 
 module.exports = MSG_DESC;
