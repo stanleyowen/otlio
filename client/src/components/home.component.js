@@ -113,9 +113,9 @@ const Home = ({ userData }) => {
         }
         if(properties.honeypot) return;
         else if(!data.title || !data.date || !data.label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus(); }
-        else if(data.title.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 40 characters !"); document.getElementById('title').focus(); }
+        else if(data.title.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 60 characters !"); document.getElementById('title').focus(); }
         else if(validateLabel(data.label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }
-        else if(data.description && data.description.length > 120){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 120 characters !"); document.getElementById('description').focus(); }
+        else if(data.description && data.description.length > 200){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 200 characters !"); document.getElementById('description').focus(); }
         else submitData();
     }
 
@@ -211,7 +211,7 @@ const Home = ({ userData }) => {
                                 <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="title">Title <span className="required">*</span></label>
-                                        <input title="Title" id="title" type="text" className="contact__inputField" maxLength="40" onChange={(event) => handleData('title', event.target.value)} value={data.title} required />
+                                        <input title="Title" id="title" type="text" className="contact__inputField" maxLength="60" onChange={(event) => handleData('title', event.target.value)} value={data.title} required />
                                         <span className="contact__onFocus"></span>
                                     </div>
                                 </div>
@@ -243,7 +243,7 @@ const Home = ({ userData }) => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="description">Description</label>
-                                    <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="120" onChange={(event) => handleData('description', event.target.value)} value={data.description}></textarea>
+                                    <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="200" onChange={(event) => handleData('description', event.target.value)} value={data.description}></textarea>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>

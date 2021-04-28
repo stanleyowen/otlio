@@ -8,7 +8,7 @@ const userSchema = new Schema ({
         trim: true,
         required: true,
         minlength: 6,
-        maxlength: 40
+        maxlength: 60
     },
     password : {
         type: String,
@@ -42,6 +42,10 @@ const userSchema = new Schema ({
         '2FA' : {
             type: Boolean,
             default: false,
+            required: true
+        }, 'backup-codes': {
+            type: Array,
+            default: null,
             required: true
         }
     }

@@ -83,7 +83,7 @@ const Account = ({ userData }) => {
             btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
         }
         if(!password.oldPassword || !password.newPassword || !password.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!password.oldPassword ? 'old-password' : !password.newPassword ? 'new-password' : 'confirm-password').focus(); }
-        else if(password.oldPassword.length < 6 || password.newPassword.length < 6 || password.confirmPassword.length < 6 || password.oldPassword.length > 40 || password.newPassword.length > 40 || password.confirmPassword.length > 40){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 40 characters !'); document.getElementById(password.oldPassword.length < 6 || password.oldPassword.length > 40 ? 'old-password' : password.newPassword.length < 6 || password.newPassword.length > 40 ? 'new-password' : 'confirm-password').focus(); }
+        else if(password.oldPassword.length < 6 || password.newPassword.length < 6 || password.confirmPassword.length < 6 || password.oldPassword.length > 60 || password.newPassword.length > 60 || password.confirmPassword.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(password.oldPassword.length < 6 || password.oldPassword.length > 60 ? 'old-password' : password.newPassword.length < 6 || password.newPassword.length > 60 ? 'new-password' : 'confirm-password').focus(); }
         else if(password.newPassword !== password.confirmPassword) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('confirm-password').focus(); }
         else submitData();
     }
@@ -173,7 +173,7 @@ const Account = ({ userData }) => {
                             </button>
                         </div>
                     </div>
-                    <div className="get_in_touch mt-40"><h1>Security <sup className="required small">Beta</sup></h1></div>
+                    <div className="get_in_touch mt-40"><h1>Security</h1></div>
                     <div className="form">
                         <div className="m-10">
                             <FormControlLabel control={
