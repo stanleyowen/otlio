@@ -284,22 +284,27 @@ router.put('/otp', async (req, res, next) => {
                     User.findById(user._id, (err, data) => {
                         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
                         else if(data){
-                            data.security['2FA'] = !data.security['2FA'];
-                            data.save();
-                            return res.cookie('jwt-token', jwt.sign({
-                                id: user._id,
-                                email: user.email,
-                                auth: {
-                                    '2FA': !user.security['2FA'],
-                                    status: !user.security['2FA']
-                                }
-                            }, jwtSecret, { expiresIn: '1d' }), {
-                                path: '/',
-                                expires: new Date(Date.now() + 86400000),
-                                httpOnly: true,
-                                secure: status,
-                                sameSite: status ? 'none' : 'strict'
-                            }).send(JSON.stringify({ status: info.status, message: info.message }, null, 2));
+                            passport.authenticate('generateToken', { session: false }, (err, token, info) => {
+                                if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
+                                else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
+                                else if(token){
+                                    data.security['2FA'] = !data.security['2FA']; data.save();
+                                    return res.cookie('jwt-token', jwt.sign({
+                                        id: user._id,
+                                        email: user.email,
+                                        auth: {
+                                            '2FA': !user.security['2FA'],
+                                            status: !user.security['2FA']
+                                        }
+                                    }, jwtSecret, { expiresIn: '1d' }), {
+                                        path: '/',
+                                        expires: new Date(Date.now() + 86400000),
+                                        httpOnly: true,
+                                        secure: status,
+                                        sameSite: status ? 'none' : 'strict'
+                                    }).send(JSON.stringify({ status: info.status, message: info.message }, null, 2));
+                                } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
+                            })(req, res, next)
                         } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
                     })
                 } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));

@@ -422,13 +422,34 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', password
     const id = req.body._id;
     OTPToken.findById(tokenId, (err, data) => {
         if(err) return done(err, false);
-        else if(!data) return done(null, false, { status: 400, message: MSG_DESC[32] });
         else if(data && id == decrypt(data.userId, 2) && token === decrypt(data.token, 2)){
             data.remove();
             return done(null, req.body, { status: 200, message: MSG_DESC[5] })
         }else return done(null, false, { status: 400, message: MSG_DESC[38] });
     })
     .catch(err => { return done(err, false) })
+}))
+
+passport.use('generateToken', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false } , (req, email, password, done) => {
+    const {regenerate, _id} = req.body;
+    User.findOne({_id, email}, (err, user) => {
+        if(err) return done(err, false);
+        else if(user){
+            if(regenerate || !user.security['2FA']){
+                let backupCodes = [];
+                for (let x=0; x<10; x++) backupCodes.push(crypto.randomBytes(3).toString('hex'))
+                user.security['backup-codes'].valid = backupCodes;
+                user.security['backup-codes'].invalid = [];
+                user.save();
+                return done(null, user, { status: 200, message: MSG_DESC[42] })
+            }else {
+                user.security['backup-codes'].valid = [];
+                user.security['backup-codes'].invalid = [];
+                user.save();
+                return done(null, user, { status: 200, message: MSG_DESC[42] })
+            }
+        }else return done(null, false, { status: 400, message: MSG_DESC[16] })
+    })
 }))
 
 passport.use('todoData', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
