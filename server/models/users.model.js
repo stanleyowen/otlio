@@ -44,9 +44,8 @@ const userSchema = new Schema ({
             default: false,
             required: true
         }, 'backup-codes': {
-            type: Array,
-            default: null,
-            required: true
+            valid: [{ type: String }],
+            invalid: [{ type: String }]
         }
     }
 }, {
