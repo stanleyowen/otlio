@@ -33,7 +33,7 @@ const transporter = nodemailer.createTransport({
 const listLabel = ["Priority","Secondary","Important","Do Later"];
 
 const validateLabel = (e) => {
-    for (a=0; listLabel.length; a++){
+    for (a=0; a<listLabel.length; a++){
         if(e === listLabel[a].toLowerCase()) return false;
         else if(a === listLabel.length-1 && e !== listLabel[a].toLowerCase()) return true;
     }
@@ -419,15 +419,32 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
 }))
 
 passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', passwordField: 'token', passReqToCallback: true, session: false }, (req, tokenId, token, done) => {
-    const id = req.body._id;
-    OTPToken.findById(tokenId, (err, data) => {
-        if(err) return done(err, false);
-        else if(data && id == decrypt(data.userId, 2) && token === decrypt(data.token, 2)){
-            data.remove();
-            return done(null, req.body, { status: 200, message: MSG_DESC[5] })
-        }else return done(null, false, { status: 400, message: MSG_DESC[38] });
-    })
-    .catch(err => { return done(err, false) })
+    const {_id, email, isBackupCode} = req.body;
+    if(isBackupCode){
+        User.findOne({_id, email}, (err, user) => {
+            if(err) return done(err, false);
+            else if(user){
+                const valid = user.security['backup-codes'].valid;
+                for (a=0; valid.length; a++){
+                    if(token === valid[a]){
+                        user.security['backup-codes'].invalid = [...user.security['backup-codes'].invalid, valid[a]]
+                        user.security['backup-codes'].valid.splice(a, 1)
+                        user.save();
+                        return done(null, req.body, { status: 200, message: MSG_DESC[5] })
+                    }
+                    else if(a === valid.length-1 && token !== valid[a].toLowerCase()) return done(null, false, { status: 400, message: MSG_DESC[43] });
+                }
+            }else return done(null, false, { status: 400, message: MSG_DESC[43] });
+        })
+    }else {
+        OTPToken.findById(tokenId, (err, data) => {
+            if(err) return done(err, false);
+            else if(data && _id == decrypt(data.userId, 2) && token === decrypt(data.token, 2)){
+                data.remove();
+                return done(null, req.body, { status: 200, message: MSG_DESC[5] })
+            }else return done(null, false, { status: 400, message: MSG_DESC[38] });
+        })
+    }
 }))
 
 passport.use('generateToken', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false } , (req, email, password, done) => {
