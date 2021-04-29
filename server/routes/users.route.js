@@ -10,10 +10,17 @@ let User = require('../models/users.model');
 
 const jwtSecret = process.env.JWT_SECRET;
 const status = process.env.NODE_ENV === 'production';
+
 const OTPLimiter = new rateLimit({
     windowMs: 3600000,
     max: 15,
     handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[41]}, null, 2))
+})
+const GenerateLimiter = new rateLimit({
+    windowMs: 3600000,
+    max: 1,
+    skipFailedRequests: true,
+    handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[30]}, null, 2))
 })
 
 router.post('/register', async (req, res, next) => {
@@ -308,6 +315,21 @@ router.put('/otp', async (req, res, next) => {
                         } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
                     })
                 } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
+            })(req, res, next)
+        }else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
+    })(req, res, next)
+})
+
+router.post('/backup-code', GenerateLimiter, async (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
+        else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
+        else if(user && (req.body = {...req.body, ...user._doc})) {
+            passport.authenticate('generateToken', { session: false }, (err, token, info) => {
+                if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
+                else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
+                else if(token) return res.status(info.status).send(JSON.stringify(info, null, 2));
+                else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
             })(req, res, next)
         }else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
     })(req, res, next)

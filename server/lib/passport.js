@@ -431,10 +431,9 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', password
                         user.security['backup-codes'].valid.splice(a, 1)
                         user.save();
                         return done(null, req.body, { status: 200, message: MSG_DESC[5] })
-                    }
-                    else if(a === valid.length-1 && token !== valid[a].toLowerCase()) return done(null, false, { status: 400, message: MSG_DESC[43] });
+                    }else if(a === valid.length-1 && token !== valid[a].toLowerCase()) return done(null, false, { status: 400, message: MSG_DESC[44] });
                 }
-            }else return done(null, false, { status: 400, message: MSG_DESC[43] });
+            }else return done(null, false, { status: 400, message: MSG_DESC[44] });
         })
     }else {
         OTPToken.findById(tokenId, (err, data) => {
@@ -458,12 +457,12 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
                 user.security['backup-codes'].valid = backupCodes;
                 user.security['backup-codes'].invalid = [];
                 user.save();
-                return done(null, user, { status: 200, message: MSG_DESC[42] })
+                return done(null, true, { status: 200, message: MSG_DESC[42], 'backup-codes': backupCodes })
             }else {
                 user.security['backup-codes'].valid = [];
                 user.security['backup-codes'].invalid = [];
                 user.save();
-                return done(null, user, { status: 200, message: MSG_DESC[42] })
+                return done(null, user, { status: 200, message: MSG_DESC[43] })
             }
         }else return done(null, false, { status: 400, message: MSG_DESC[16] })
     })
