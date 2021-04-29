@@ -98,7 +98,7 @@ const OAuth = () => {
                             </div>
                         </div>
                         <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
-                        <button type="submit" className="contact__sendBtn" id="register">Register</button>
+                        <button type="submit" className="contact__sendBtn no-outline" id="register">Register</button>
                         <p className="mt-20 small">Signing up signifies that you have read and agree to the <a className="animation__underline" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a> and our <a className="animation__underline" href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
                     </form>
                 </div>

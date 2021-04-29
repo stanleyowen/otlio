@@ -81,16 +81,11 @@ const Login = ({ userData }) => {
         const btn = document.getElementById('verify');
         async function submitData(){
             btn.innerHTML = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
-            await axios.post(`${SERVER_URL}/account/otp`, { tokenId: data.tokenId, token: data.token }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/otp`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
-                if(err.response.status === 302){
-                    handleChange('verify', true);
-                    handleData('tokenId', err.response.data.tokenId);
-                }else {
-                    setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-                    document.getElementById('code').focus()
-                }
+                setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+                document.getElementById('code').focus()
             })
             btn.innerHTML = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
@@ -102,7 +97,7 @@ const Login = ({ userData }) => {
     return properties.verify ? (
         <div>
             { !data.tokenId ?
-            (<div className="loader"><div className="spin-container full-width">
+            (<div className="loader"><div className="spin-container">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>
                 <div className="shape shape-3"></div>
@@ -130,68 +125,69 @@ const Login = ({ userData }) => {
                             </div>
                             <div className="m-10">
                                 <div className="contact__infoField">
-                                    <label htmlFor="userPassword">Verification Code</label>
+                                    <label htmlFor="code">Verification Code</label>
                                     <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete="one-time-code" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</a></p>
-                            <button type="reset" className="contact__sendBtn solid" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
-                            <button type="submit" className="contact__sendBtn ml-10" id="verify">Verify</button>
+                            <button type="reset" className="contact__sendBtn solid no-outline" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
+                            <button type="submit" className="contact__sendBtn ml-10 no-outline" id="verify">Verify</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     ) : (
-    <div id="form">
-        <div className="form__contact">
-            <div className="get_in_touch"><h1>Login</h1></div>
-            <div className="oauth-container">
-                <button className="oauth-box google" onClick={OAuthGoogle}>
-                    <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
-                </button>
-                <button className="oauth-box github mt-20" onClick={OAuthGitHub}>
-                    <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
-                </button>
-            </div>
-            <div className="form">
-                <form className="contact__form" onSubmit={LogIn}>
-                    <div className="m-10 no-bot">
-                        <div className="contact__infoField">
-                            <label htmlFor="bot-email">Email</label>
-                            <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                            <span className="contact__onFocus"></span>
+        <div id="form">
+            <div className="form__contact">
+                <div className="get_in_touch"><h1>Login</h1></div>
+                <div className="oauth-container">
+                    <button className="oauth-box google" onClick={OAuthGoogle}>
+                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
+                    </button>
+                    <button className="oauth-box github mt-20" onClick={OAuthGitHub}>
+                        <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
+                    </button>
+                </div>
+                <div className="form">
+                    <form className="contact__form" onSubmit={LogIn}>
+                        <div className="m-10 no-bot">
+                            <div className="contact__infoField">
+                                <label htmlFor="bot-email">Email</label>
+                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
+                                <span className="contact__onFocus"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="m-10">
-                        <div className="contact__infoField">
-                            <label htmlFor="userEmail">Email</label>
-                            <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => handleLogin('email', event.target.value)} value={login.email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
-                            <span className="contact__onFocus"></span>
+                        <div className="m-10">
+                            <div className="contact__infoField">
+                                <label htmlFor="userEmail">Email</label>
+                                <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => handleLogin('email', event.target.value)} value={login.email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
+                                <span className="contact__onFocus"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="m-10">
-                        <div className="contact__infoField">
-                            <label htmlFor="userPassword">Password</label>
-                            <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleLogin('password', event.target.value)} value={login.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'current-password'} />
-                            <span className="contact__onFocus"></span>
-                            <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
-                                <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
-                            </IconButton>
+                        <div className="m-10">
+                            <div className="contact__infoField">
+                                <label htmlFor="userPassword">Password</label>
+                                <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleLogin('password', event.target.value)} value={login.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off' : 'current-password' } />
+                                <span className="contact__onFocus"></span>
+                                <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
+                                    <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
+                                </IconButton>
+                            </div>
+                            <div className="m-10 show-password">
+                                <FormControlLabel control={<Checkbox checked={properties.rememberMe} onChange={() => { handleChange('rememberMe', !properties.rememberMe); handleLogin('rememberMe', !properties.rememberMe) }} color="primary"/>}
+                                label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer or WiFi" arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                            </div>
+                            <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
+                            <p className="isCentered mt-10">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
                         </div>
-                        <div className="m-10 show-password">
-                            <FormControlLabel control={<Checkbox checked={properties.rememberMe} onChange={() => { handleChange('rememberMe', !properties.rememberMe); handleLogin('rememberMe', !properties.rememberMe) }} color="primary"/>}
-                            label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer or WiFi" arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
-                        </div>
-                        <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
-                        <p className="isCentered mt-10">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
-                    </div>
-                    <button type="submit" className="contact__sendBtn" id="login">Login</button>
-                </form>
+                        <button type="submit" className="contact__sendBtn" id="login">Login</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>)
+    )
 }
 
 export default Login;

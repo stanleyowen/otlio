@@ -30,9 +30,7 @@ const Register = ({ userData }) => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleRegister = (a, b) => setRegister({ ...register, [a]: b })
 
-    useEffect(() => {
-        if(status === 302 && !properties.verify && verifyAccount) handleChange('verify', true);
-    }, [userData, properties.verify])
+    if(status === 302 && !properties.verify && verifyAccount) handleChange('verify', true);
 
     const Register = (e) => {
         e.preventDefault();
@@ -76,9 +74,9 @@ const Register = ({ userData }) => {
                     <h4 className="mt-20 mb-20 isCentered">Please check your email ({ email ? email : register.email }) to confirm your account.</h4>
                     <hr />
                     <h4 className="mt-20 mb-20 isCentered">If { email ? email : properties.email } is not your email address, please click Logout and enter the correct one.</h4>
-                    <h4 className="mt-20 mb-20 isCentered">If it hasn't arrived after a few minutes, check your spam folder or click on the resend button.</h4>
-                    <button className="contact__sendBtn solid" id="cancel" onClick={() => window.location='/logout'}>Logout</button>
-                    <button className="contact__sendBtn ml-10" id="send-link" onClick={sendLink}>Resend Link</button>
+                    <h4 className="mt-20 mb-20 isCentered">If you don't receive the e-mail in 5 minutes, please check your spam folder or click the resend button.</h4>
+                    <button className="contact__sendBtn solid mb-10" id="cancel" onClick={() => window.location='/logout'}>Logout</button>
+                    <button className="contact__sendBtn ml-10 mb-10" id="send-link" onClick={sendLink}>Resend Link</button>
                 </div>
             </div>
         </div>
@@ -133,7 +131,7 @@ const Register = ({ userData }) => {
                             </div>
                         </div>
                         <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
-                        <button type="submit" className="contact__sendBtn" id="register">Register</button>
+                        <button type="submit" className="contact__sendBtn no-outline" id="register">Register</button>
                         <p className="mt-20 small">Signing up signifies that you have read and agree to the <a className="animation__underline" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a> and our <a className="animation__underline" href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
                     </form>
                 </div>

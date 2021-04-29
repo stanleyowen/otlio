@@ -176,7 +176,7 @@ const Home = ({ userData }) => {
                     { todoList() }
                     { !cacheTodo && !todoData ?
                         (<tr><td colSpan="5" className="no-border">
-                            <div className="full-width spin-container">
+                            <div className="spin-container">
                                 <div className="shape shape-1"></div>
                                 <div className="shape shape-2"></div>
                                 <div className="shape shape-3"></div>
@@ -235,7 +235,7 @@ const Home = ({ userData }) => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="label">Label <span className="required">*</span></label>
-                                    <Select id="label" value={data.label} onChange={(event) => handleData('label', event.target.value)} style={{width: '100%'}} className="mt-10 mb-10">
+                                    <Select id="label" value={data.label} onChange={(event) => handleData('label', event.target.value)} className="mt-10 mb-10 full-width">
                                         { labels.map(c => { return (<MenuItem value={c.toLowerCase()}>{c}</MenuItem>) }) }
                                     </Select>
                                 </div>
@@ -247,7 +247,7 @@ const Home = ({ userData }) => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <button type="submit" id="add-todo" className="btn__outline" style={{outline: 'none'}}>Add</button>
+                            <button type="submit" id="add-todo" className="btn__outline no-outline">Add</button>
                         </form>
                     </div>
                 </div>

@@ -69,7 +69,7 @@ const ResetPassword = ({ userData }) => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <button type="submit" className="contact__sendBtn" id="reset-password">Send</button>
+                            <button type="submit" className="contact__sendBtn no-outline" id="reset-password">Send</button>
                         </form>
                     </div>
                 </div>

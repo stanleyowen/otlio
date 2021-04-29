@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faCheckCircle, faTimesCircle, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -11,7 +11,7 @@ import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeM
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
-    const {email, thirdParty, verified, security, authenticated, isLoading} = userData;
+    const {email, thirdParty, security, authenticated, isLoading} = userData;
     const [password, setPassword] = useState({
         oldPassword: '',
         newPassword: '',
@@ -66,12 +66,10 @@ const Account = ({ userData }) => {
         async function submitData() {
             verifyBtn.innerHTML = "Verifying..."; verifyBtn.setAttribute("disabled", "true"); verifyBtn.classList.add("disabled"); handleChange('disabled', true);
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
-            await axios.put(`${SERVER_URL}/account/user`, {...password, ...data }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.put(`${SERVER_URL}/account/user`, {...password, ...data}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
-                closeModal('password-bg', 'password-modal');
-                closeModal('otp-bg', 'otp-modal');
-                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' });
-                setData({ tokenId: '', token: '' });
+                closeModal('password-bg', 'password-modal'); closeModal('otp-bg', 'otp-modal');
+                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' }); setData({ tokenId: '', token: '' });
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
             .catch(err =>{
@@ -140,7 +138,7 @@ const Account = ({ userData }) => {
     return (
         <div>
             { !authenticated ?
-            (<div className="loader"><div className="spin-container full-width">
+            (<div className="loader"><div className="spin-container">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>
                 <div className="shape shape-3"></div>
@@ -154,11 +152,6 @@ const Account = ({ userData }) => {
                         <div className="m-10 contact__infoField">
                             <label htmlFor="userEmail">Email Address</label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
-                            <Tooltip placement="top" title={ verified ? 'Verified Account' : 'Unverified Account' }>
-                                <IconButton className="view-eye">
-                                    <FontAwesomeIcon icon={ verified ? faCheckCircle : faTimesCircle } style={{ fontSize: '0.8em' }} className={ verified ? 'verified':'unverified' } />
-                                </IconButton>
-                            </Tooltip>
                         </div>
                     </div>
                     <div className="oauth-container">
@@ -196,132 +189,131 @@ const Account = ({ userData }) => {
                         </div>
                     </div>
                     <hr className="mt-20"></hr>
+                    <p className="isCentered mt-20 mb-20"><a href="/terms-and-conditions">Terms of Service</a> | <a href="/privacy-policy">Privacy Policy</a></p>
                     <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                 </div>
-                
-                <div id="password-bg" className="modal hiddenModal">
-                    <div id="password-modal" className="modal__container hiddenModal">
-                        <div className="modal__title">
-                            <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('password-bg', 'password-modal')}>&times;</span>
-                            <h2>Update Password</h2>
-                        </div>
-                        <div className="modal__body">
-                            <form onSubmit={changePassword}>
-                                <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
+            </div>
+
+            <div id="password-bg" className="modal hiddenModal">
+                <div id="password-modal" className="modal__container hiddenModal">
+                    <div className="modal__title">
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('password-bg', 'password-modal')}>&times;</span>
+                        <h2>Update Password</h2>
+                    </div>
+                    <div className="modal__body">
+                        <form onSubmit={changePassword}>
+                            <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
+                            <div className="m-10">
+                                <div className="contact__infoField">
+                                    <label htmlFor="old-password">Old Password <span className="required">*</span></label>
+                                    <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('oldPassword', event.target.value)} value={password.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
+                                    <span className="contact__onFocus"></span>
+                                    <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
+                                        <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
+                                    </IconButton>
+                                </div>
+                            </div>
+                            <div className="form__container">
                                 <div className="m-10">
                                     <div className="contact__infoField">
-                                        <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                        <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handlePassword('oldPassword', event.target.value)} value={password.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
+                                        <label htmlFor="new-password">New Password <span className="required">*</span></label>
+                                        <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('newPassword', event.target.value)} value={password.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
                                         <span className="contact__onFocus"></span>
-                                        <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
-                                            <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
+                                        <IconButton className="view-eye" onClick={() => handleChange('newPassword', !properties.newPassword)} name="newPassword">
+                                            <FontAwesomeIcon icon={properties.newPassword ? faEyeSlash : faEye} />
                                         </IconButton>
                                     </div>
                                 </div>
-                                <div className="form__container">
-                                    <div className="m-10">
-                                        <div className="contact__infoField">
-                                            <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                            <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handlePassword('newPassword', event.target.value)} value={password.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
-                                            <span className="contact__onFocus"></span>
-                                            <IconButton className="view-eye" onClick={() => handleChange('newPassword', !properties.newPassword)} name="newPassword">
-                                                <FontAwesomeIcon icon={properties.newPassword ? faEyeSlash : faEye} />
-                                            </IconButton>
-                                        </div>
-                                    </div>
-                                    <div className="m-10">
-                                        <div className="contact__infoField">
-                                            <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                            <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handlePassword('confirmPassword', event.target.value)} value={password.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
-                                            <span className="contact__onFocus"></span>
-                                            <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)} name="confirmPassword">
-                                                <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
-                                            </IconButton>
-                                        </div>
+                                <div className="m-10">
+                                    <div className="contact__infoField">
+                                        <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
+                                        <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('confirmPassword', event.target.value)} value={password.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                        <span className="contact__onFocus"></span>
+                                        <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)} name="confirmPassword">
+                                            <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
+                                        </IconButton>
                                     </div>
                                 </div>
-                                <p className="isCentered"><a className="animation__underline" href="/reset-password">I forgot my password</a></p>
-                                <div className="inline">
-                                    <button type="submit" id="change-password" className="btn__outline">Update</button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                            <p className="isCentered"><a className="animation__underline" href="/reset-password">I forgot my password</a></p>
+                            <button type="submit" id="change-password" className="btn__outline no-outline">Update</button>
+                        </form>
                     </div>
                 </div>
+            </div>
 
-                <div id="mfa-bg" className="modal hiddenModal">
-                    <div id="mfa-modal" className="modal__container hiddenModal">
-                        <div className="modal__title">
-                            <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('mfa-bg', 'mfa-modal')}>&times;</span>
-                            <h2>Multi Factor Authentication (MFA)</h2>
-                        </div>
-                        <div className="modal__body mt-10">
-                            <ol className="ml-40 ul-mb10">
-                                <li>
-                                    Send Verification Code
-                                    <blockquote className="mt-20">
-                                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
-                                        <span className="info-title">Verification Code</span>
-                                        <p className="mt-10">Verification Code will be sent to <b>{email}</b> via email and will be valid for <b>ONLY 5 (five) minutes</b>.</p>
-                                        <p className="mt-10"><b>Note: Once you enable 2 Factor Authentication (2FA), you will be prompted to enter verification code on every login session.</b></p>
-                                    </blockquote>
-                                    <button id="send-otp" className="btn__outline" onClick={sendOTP}>Send Verification Code</button>
-                                </li>
-                                <li>
-                                    Verify Code
-                                    <blockquote className="mt-20">
-                                        <span><FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: '1.5em' }} /></span>
-                                        <span className="info-title">Account Recovery</span>
-                                        <p className="mt-10"><b>Note: If you do not have access to both your account or email, we are unable to remove 2FA and you will have to create a new account.</b></p>
-                                    </blockquote>
-                                    <form onSubmit={VerifyOTP}>
-                                        <div className="m-10">
-                                            <div className="contact__infoField">
-                                                <label htmlFor="code">Verification Code</label>
-                                                <input title="Old Password" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
-                                                <span className="contact__onFocus"></span>
-                                            </div>
+            <div id="mfa-bg" className="modal hiddenModal">
+                <div id="mfa-modal" className="modal__container hiddenModal">
+                    <div className="modal__title">
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('mfa-bg', 'mfa-modal')}>&times;</span>
+                        <h2>Multi Factor Authentication (MFA)</h2>
+                    </div>
+                    <div className="modal__body mt-10">
+                        <ol className="ml-40 ul-mb10">
+                            <li>
+                                Send Verification Code
+                                <blockquote className="mt-20">
+                                    <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
+                                    <span className="info-title">Verification Code</span>
+                                    <p className="mt-10">Verification Code will be sent to <b>{email}</b> via email and will be valid for only <b>5 (five) minutes</b>.</p>
+                                    <p className="mt-10"><b>Note: Once you enable 2 Factor Authentication (2FA), you will be prompted to enter verification code on every login session.</b></p>
+                                </blockquote>
+                                <button id="send-otp" className="btn__outline no-outline" onClick={sendOTP}>Send Verification Code</button>
+                            </li>
+                            <li>
+                                Verify Code
+                                <blockquote className="mt-20">
+                                    <span><FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: '1.5em' }} /></span>
+                                    <span className="info-title">Account Recovery</span>
+                                    <p className="mt-10"><b>Note: If you do not have access to both your account or email, we are unable to remove 2FA and you will have to create a new account.</b></p>
+                                </blockquote>
+                                <form onSubmit={VerifyOTP}>
+                                    <div className="m-10">
+                                        <div className="contact__infoField">
+                                            <label htmlFor="code">Verification Code</label>
+                                            <input title="Old Password" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required maxLength="6" placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
+                                            <span className="contact__onFocus"></span>
                                         </div>
-                                        <button type="submit" id="verify" className="btn__outline">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
-                                    </form>
-                                </li>
-                            </ol>
-                        </div>
+                                    </div>
+                                    <button type="submit" id="verify" className="btn__outline no-outline">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
+                                </form>
+                            </li>
+                        </ol>
                     </div>
                 </div>
+            </div>
 
-                <div id="otp-bg" className="modal hiddenModal">
-                    <div id="otp-modal" className="modal__container hiddenModal">
-                        <div className="modal__title">
-                            <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('otp-bg', 'otp-modal')}>&times;</span>
-                            <h2>Authentication Required</h2>
-                        </div>
-                        <div className="modal__body mt-10">
-                            <ol className="ml-40 ul-mb10">
-                                <li>
-                                    Send Verification Code
-                                    <blockquote className="mt-20">
-                                        <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
-                                        <span className="info-title">Change Password</span>
-                                        <p className="mt-10">In order to improve our services, qualities, and securities, we will need an <b>OTP Token</b> before users perform Change Password Request.</p>
-                                    </blockquote>
-                                    <button id="send-otp-pass" className="btn__outline" onClick={sendOTP}>Send Verification Code</button>
-                                </li>
-                                <li>
-                                    Verify Code
-                                    <form onSubmit={changePassword}>
-                                        <div className="m-10">
-                                            <div className="contact__infoField">
-                                                <label htmlFor="code">Verification Code</label>
-                                                <input title="Old Password" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
-                                                <span className="contact__onFocus"></span>
-                                            </div>
+            <div id="otp-bg" className="modal hiddenModal">
+                <div id="otp-modal" className="modal__container hiddenModal">
+                    <div className="modal__title">
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('otp-bg', 'otp-modal')}>&times;</span>
+                        <h2>Authentication Required</h2>
+                    </div>
+                    <div className="modal__body mt-10">
+                        <ol className="ml-40 ul-mb10">
+                            <li>
+                                Send Verification Code
+                                <blockquote className="mt-20">
+                                    <span><FontAwesomeIcon icon={faInfo} style={{ fontSize: '1.5em' }} /></span>
+                                    <span className="info-title">Change Password</span>
+                                    <p className="mt-10">In order to improve our services, qualities, and securities, we will need an <b>OTP Token</b> before users perform Change Password Request.</p>
+                                </blockquote>
+                                <button id="send-otp-pass" className="btn__outline no-outline" onClick={sendOTP}>Send Verification Code</button>
+                            </li>
+                            <li>
+                                Verify Code
+                                <form onSubmit={changePassword}>
+                                    <div className="m-10">
+                                        <div className="contact__infoField">
+                                            <label htmlFor="code">Verification Code</label>
+                                            <input title="Old Password" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required maxLength="6" placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
+                                            <span className="contact__onFocus"></span>
                                         </div>
-                                        <button type="submit" id="verify-otp" className="btn__outline">Verify</button>
-                                    </form>
-                                </li>
-                            </ol>
-                        </div>
+                                    </div>
+                                    <button type="submit" id="verify-otp" className="btn__outline no-outline">Verify</button>
+                                </form>
+                            </li>
+                        </ol>
                     </div>
                 </div>
             </div>

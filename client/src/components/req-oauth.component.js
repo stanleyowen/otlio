@@ -32,7 +32,7 @@ const ReqOAuth = ({ userData }) => {
     },[code, pathname])
 
     return(
-        <div className="loader"><div className="spin-container full-width">
+        <div className="loader"><div className="spin-container">
             <div className="shape shape-1"></div>
             <div className="shape shape-2"></div>
             <div className="shape shape-3"></div>

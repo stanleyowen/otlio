@@ -32,7 +32,7 @@ const ResetPassword = () => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b });
 
     useEffect(() => {
-        async function validateData(){
+        async function validateData() {
             await axios.get(`${SERVER_URL}/account/forgot-password`, { params: { token, id, type: 'passwordReset' } })
             .then(res => {
                 handleData('email', res.data.credentials.email)
@@ -50,21 +50,18 @@ const ResetPassword = () => {
                     }
                 }else window.location='/reset-password'
             })
-        }
-        validateData();
+        } validateData();
     },[id, token, data.email])
 
     const Submit = (e) => {
         e.preventDefault();
         const btn = document.getElementById('reset-password');
         async function submitData(){
-            btn.innerHTML = "Changing...";
+            btn.innerHTML = "Changing..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/account/reset-password`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.removeAttribute("disabled");
-            btn.classList.remove("disabled");
-            btn.innerHTML = "Change Password";
+            btn.innerHTML = "Change Password"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;
         else if(!data.email || !data.password || !data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.email ? 'userEmail' : !data.password ? 'userPassword' : 'userConfirmPassword').focus(); }
@@ -72,13 +69,13 @@ const ResetPassword = () => {
         else if(data.email.length < 6 || data.email.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 60 characters !'); document.getElementById('userEmail').focus(); }
         else if(data.password.length < 6 || data.password.length > 60 || data.confirmPassword.length < 6 || data.confirmPassword.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(data.password.length < 6 || data.password.length > 60 ? 'userPassword' : 'userConfirmPassword').focus(); }
         else if(data.password !== data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('userConfirmPassword').focus(); }
-        else { btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); submitData(); }
+        else submitData();
     }
 
     return(
         <div>
             { properties.isLoading ?
-            (<div className="loader"><div className="spin-container full-width">
+            (<div className="loader"><div className="spin-container">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>
                 <div className="shape shape-3"></div>
@@ -108,7 +105,7 @@ const ResetPassword = () => {
                                 <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="userPassword">Password <span className="required">*</span></label>
-                                        <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('password', event.target.value)} value={data.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'new-password'} />
+                                        <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('password', event.target.value)} value={data.password} minLength="6" maxLength="60" required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off' : 'new-password' } />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                             <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
@@ -118,7 +115,7 @@ const ResetPassword = () => {
                                 <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
-                                        <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('confirmPassword', event.target.value)} value={data.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                        <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" onChange={(event) => handleData('confirmPassword', event.target.value)} value={data.confirmPassword} minLength="6" maxLength="60" required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)}>
                                             <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
@@ -126,7 +123,7 @@ const ResetPassword = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" className="contact__sendBtn" id="reset-password">Change Password</button>
+                            <button type="submit" className="contact__sendBtn no-outline" id="reset-password">Change Password</button>
                         </form>
                     </div>
                 </div>

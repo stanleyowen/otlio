@@ -77,7 +77,7 @@ const Edit = ({ userData }) => {
     return (
         <div>
             { properties.isLoading ?
-            (<div className="loader"><div className="spin-container full-width">
+            (<div className="loader"><div className="spin-container">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>
                 <div className="shape shape-3"></div>
@@ -122,7 +122,7 @@ const Edit = ({ userData }) => {
                     <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="label">Label <span className="required">*</span></label>
-                            <Select id="label" value={data.label} onChange={(event) => handleData('label', event.target.value)} style={{width: '100%'}} className="mt-10 mb-10">
+                            <Select id="label" value={data.label} onChange={(event) => handleData('label', event.target.value)} className="mt-10 mb-10 full-width">
                                 { labels.map(c => { return (<MenuItem value={c.toLowerCase()}>{c}</MenuItem>) }) }
                             </Select>
                         </div>
@@ -134,7 +134,7 @@ const Edit = ({ userData }) => {
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    <button type="submit" id="edit-todo" className="btn__outline">Update</button>
+                    <button type="submit" id="edit-todo" className="btn__outline no-outline">Update</button>
                 </form>
             </div>
         </div>
