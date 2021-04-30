@@ -7,15 +7,15 @@ const todoSchema = new Schema ({
         trim: true,
         required: true,
         minlength: 6,
-        maxlength: 40,
+        maxlength: 60
     },
     title: {
         data: {
             type: String,
-            required: true,
+            required: true
         }, iv: {
             type: String,
-            required: true,
+            required: true
         }
     },
     label: {
@@ -37,10 +37,10 @@ const todoSchema = new Schema ({
     date: {
         data: {
             type: String,
-            required: true,
+            required: true
         }, iv: {
             type: String,
-            required: true,
+            required: true
         }
     }
 }, {

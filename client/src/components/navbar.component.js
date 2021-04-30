@@ -9,7 +9,7 @@ const Navbar = ({ userData }) => {
     const [value_a, setValue_a] = useState([]);
     const [value_b, setValue_b] = useState([]);
     const [value_c, setValue_c] = useState();
-    
+
     useEffect(() => {
         if(theme === "dark") document.body.classList.add("dark");
         if(!isLoading && authenticated){

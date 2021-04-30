@@ -24,7 +24,7 @@ const ResetPassword = ({ userData }) => {
             await axios.post(`${SERVER_URL}/account/forgot-password`, {email}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 handleChange('success', true)
-                setNotification(NOTIFICATION_TYPES.SUCCESS, res.message)
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
             })
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
@@ -44,7 +44,8 @@ const ResetPassword = ({ userData }) => {
                 <div className="form__contact">
                     <div className="get_in_touch"><h1>Password Reset Request Sent</h1></div>
                     <div className="form">
-                        <h4 className="mt-20 mb-20">Password Reset Recovery has been sent to {email} for reset your password. If it hasn't arrived after a few minutes, check your spam folder.</h4>
+                        <h4 className="isCentered mt-20 mb-20">Password Reset Recovery has been sent to {email} for resetting your password.</h4>
+                        <h4 className="isCentered mt-20 mb-20">If you don't receive the e-mail in 5 minutes, please check your spam folder.</h4>
                     </div>
                 </div>
             </div>
@@ -68,11 +69,12 @@ const ResetPassword = ({ userData }) => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <button type="submit" className="contact__sendBtn" id="reset-password">Send</button>
+                            <button type="submit" className="contact__sendBtn no-outline" id="reset-password">Send</button>
                         </form>
                     </div>
                 </div>
-            </div>)
+            </div>
+        )
     )
 }
 

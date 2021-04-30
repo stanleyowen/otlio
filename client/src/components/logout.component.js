@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
+
 import { getCSRFToken } from '../libraries/validation';
 
 const Logout = ({ userData }) => {
@@ -16,14 +17,12 @@ const Logout = ({ userData }) => {
         else if(!isLoading && !authenticated) window.location = '/login'
     }, [authenticated])
 
-    return(
-        <div className="loader"><div className="spin-container full-width">
+    return(<div className="loader"><div className="spin-container">
             <div className="shape shape-1"></div>
             <div className="shape shape-2"></div>
             <div className="shape shape-3"></div>
             <div className="shape shape-4"></div>
-        </div></div>
-    )
+        </div></div>)
 }
 
 export default Logout;

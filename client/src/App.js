@@ -57,7 +57,7 @@ export default function App() {
       localStorage.setItem('XSRF-TOKEN', res.data['XSRF-TOKEN'])
     })
     .catch(err => {
-      setUserData({ type: {}, credentials: {}, ...err.response.data, isLoading: false, authenticated: false })
+      setUserData({ type: {}, credentials: {}, security: {}, ...err.response.data, isLoading: false, authenticated: false })
       localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
       if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname !== '/login' && window.location.pathname !== '/logout')) window.location='/login';
       if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname !== '/get-started' && window.location.pathname !== '/logout')) window.location='/get-started';

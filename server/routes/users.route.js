@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = require('express').Router();
+const rateLimit = require('express-rate-limit');
 
 const { encrypt } = require('../lib/crypto');
 const MSG_DESC = require('../lib/callback');
@@ -10,7 +11,19 @@ let User = require('../models/users.model');
 const jwtSecret = process.env.JWT_SECRET;
 const status = process.env.NODE_ENV === 'production';
 
-router.post('/register', (req, res, next) => {
+const OTPLimiter = new rateLimit({
+    windowMs: 3600000,
+    max: 15,
+    handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[41]}, null, 2))
+})
+const GenerateLimiter = new rateLimit({
+    windowMs: 3600000,
+    max: 1,
+    skipFailedRequests: true,
+    handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[30]}, null, 2))
+})
+
+router.post('/register', async (req, res, next) => {
     passport.authenticate('register', (err, user, infos) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(infos && (infos.status ? infos.status >= 300 ? true : false : true)) return res.status(infos.status ? infos.status : infos.status = 400).send(JSON.stringify(infos, null, 2));
@@ -41,7 +54,7 @@ router.post('/register', (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/login', (req, res, next) => {
+router.post('/login', async (req, res, next) => {
     passport.authenticate('login', (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -70,7 +83,7 @@ router.post('/login', (req, res, next) => {
     })(req, res, next)
 })
 
-router.get('/user', (req, res, next) => {
+router.get('/user', async (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0], 'XSRF-TOKEN': req.csrfToken()}, null, 2));
         else if(info && info.status === 302) return res.status(info.status).send(JSON.stringify({...info, 'XSRF-TOKEN': req.csrfToken()}, null, 2));
@@ -91,7 +104,7 @@ router.get('/user', (req, res, next) => {
     })(req, res, next)
 })
 
-router.put('/user', (req, res, next) => {
+router.put('/user', async (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -142,7 +155,7 @@ router.put('/user', (req, res, next) => {
     })(req, res, next)
 })
 
-router.get('/forgot-password', (req, res, next) => {
+router.get('/forgot-password', async (req, res, next) => {
     req.params = req.query;
     passport.authenticate('tokenData', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
@@ -152,7 +165,7 @@ router.get('/forgot-password', (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/forgot-password', (req, res, next) => {
+router.post('/forgot-password', async (req, res, next) => {
     passport.authenticate('forgotPassword', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -161,7 +174,7 @@ router.post('/forgot-password', (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/reset-password', (req, res, next) => {
+router.post('/reset-password', async (req, res, next) => {
     passport.authenticate('resetPassword', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -186,7 +199,7 @@ router.post('/reset-password', (req, res, next) => {
     })(req, res, next)
 })
 
-router.get('/verify', (req, res, next) => {
+router.get('/verify', async (req, res, next) => {
     req.params = req.query;
     passport.authenticate('verifyUser', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
@@ -199,7 +212,7 @@ router.get('/verify', (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/verify', (req, res, next) => {
+router.post('/verify', OTPLimiter, async (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && info.status === 302 && (req.body = info.credentials)){
@@ -215,7 +228,7 @@ router.post('/verify', (req, res, next) => {
     })(req, res, next)
 })
 
-router.get('/otp', (req, res, next) => {
+router.get('/otp', OTPLimiter, async (req, res, next) => {
     passport.authenticate('jwtOTP', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -238,7 +251,7 @@ router.get('/otp', (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/otp', (req, res, next) => {
+router.post('/otp', async (req, res, next) => {
     passport.authenticate('jwtOTP', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -266,7 +279,7 @@ router.post('/otp', (req, res, next) => {
     })(req, res, next)
 })
 
-router.put('/otp', (req, res, next) => {
+router.put('/otp', async (req, res, next) => {
     passport.authenticate('jwtOTP', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -278,22 +291,27 @@ router.put('/otp', (req, res, next) => {
                     User.findById(user._id, (err, data) => {
                         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
                         else if(data){
-                            data.security['2FA'] = !data.security['2FA'];
-                            data.save();
-                            return res.cookie('jwt-token', jwt.sign({
-                                id: user._id,
-                                email: user.email,
-                                auth: {
-                                    '2FA': !user.security['2FA'],
-                                    status: !user.security['2FA']
-                                }
-                            }, jwtSecret, { expiresIn: '1d' }), {
-                                path: '/',
-                                expires: new Date(Date.now() + 86400000),
-                                httpOnly: true,
-                                secure: status,
-                                sameSite: status ? 'none' : 'strict'
-                            }).send(JSON.stringify({ status: info.status, message: info.message }, null, 2));
+                            passport.authenticate('generateToken', { session: false }, (err, token, info) => {
+                                if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
+                                else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
+                                else if(token){
+                                    data.security['2FA'] = !data.security['2FA']; data.save();
+                                    return res.cookie('jwt-token', jwt.sign({
+                                        id: user._id,
+                                        email: user.email,
+                                        auth: {
+                                            '2FA': !user.security['2FA'],
+                                            status: !user.security['2FA']
+                                        }
+                                    }, jwtSecret, { expiresIn: '1d' }), {
+                                        path: '/',
+                                        expires: new Date(Date.now() + 86400000),
+                                        httpOnly: true,
+                                        secure: status,
+                                        sameSite: status ? 'none' : 'strict'
+                                    }).send(JSON.stringify({ status: info.status, message: info.message }, null, 2));
+                                } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
+                            })(req, res, next)
                         } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
                     })
                 } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
@@ -302,7 +320,22 @@ router.put('/otp', (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/logout', (req, res, next) => {
+router.post('/backup-code', GenerateLimiter, async (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
+        else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
+        else if(user && (req.body = {...req.body, ...user._doc})) {
+            passport.authenticate('generateToken', { session: false }, (err, token, info) => {
+                if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
+                else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
+                else if(token) return res.status(info.status).send(JSON.stringify(info, null, 2));
+                else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
+            })(req, res, next)
+        }else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
+    })(req, res, next)
+})
+
+router.post('/logout', async (req, res, next) => {
     passport.authenticate('jwtOTP', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));

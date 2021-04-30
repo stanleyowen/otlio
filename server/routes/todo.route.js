@@ -3,7 +3,7 @@ const router = require('express').Router();
 
 const MSG_DESC = require('../lib/callback');
 
-router.get('/data', (req, res, next) => {
+router.get('/data', async (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -18,7 +18,7 @@ router.get('/data', (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/data', (req, res, next) => {
+router.post('/data', async (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -33,7 +33,7 @@ router.post('/data', (req, res, next) => {
     })(req, res, next)
 })
 
-router.put('/data', (req, res, next) => {
+router.put('/data', async (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -48,7 +48,7 @@ router.put('/data', (req, res, next) => {
     })(req, res, next)
 })
 
-router.delete('/data', (req, res, next) => {
+router.delete('/data', async (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));

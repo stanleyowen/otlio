@@ -8,7 +8,7 @@ const userSchema = new Schema ({
         trim: true,
         required: true,
         minlength: 6,
-        maxlength: 40
+        maxlength: 60
     },
     password : {
         type: String,
@@ -43,6 +43,9 @@ const userSchema = new Schema ({
             type: Boolean,
             default: false,
             required: true
+        }, 'backup-codes': {
+            valid: [{ type: String }],
+            invalid: [{ type: String }]
         }
     }
 }, {

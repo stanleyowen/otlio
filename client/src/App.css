@@ -1,4 +1,4 @@
-/*! Todo Application - CSS Version 0.4.9 Copyright 2021, Stanley Owen */
+/*! Todo Application - CSS Version 0.5.0 Copyright 2021, Stanley Owen */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 * {
@@ -60,7 +60,8 @@ body.dark .footer,
 body.dark .toggleNavbar button,
 body.dark blockquote,
 body.dark .closeBtn,
-body.dark svg {
+body.dark svg,
+body.dark .MuiSelect-root {
     color: #FFFFFF !important;
 }
 body.dark .bar1,
@@ -140,19 +141,15 @@ label { user-select: none; }
     color: #FFF;
     background-color: rgb(66 133 244);
 }
-.change-password {
+.primary {
     color: #FFF;
-    background-color: rgb(73, 81, 185);
+    background-color: rgb(66 133 244);
 }
-.verify-account {
-    color: #FFF;
-    background-color: rgb(48 201 64);
-}
-.logout {
+.danger {
     color: #FFF;
     background-color: rgb(252, 52, 52);
 }
-.oauth-box:hover { opacity: 1; }
+.oauth-box:hover { opacity: 1; transform: scale(1.009); }
 .oauth-box:visited { color: #FFF; }
 .oauth-box svg {
     display: inline-block;
@@ -177,21 +174,25 @@ label { user-select: none; }
     position: relative;
     z-index: 10001;
 }
-.flex { display: flex; }
-.m-10 { margin: 10px; }
+.success { color: rgb(18, 214, 0); margin-right: 5px }
+.danger { color: rgb(252, 52, 52); margin-right: 5px }
+.flex { display: flex !important; }
+.m-10 { margin: 10px !important; }
 .ml-10 { margin-left: 10px !important; }
-.mt-10 { margin-top: 10px; }
-.mt-20 { margin-top: 20px; }
-.mt-40 { margin-top: 40px; }
-.mb-10 { margin-bottom: 10px; }
-.mb-20 { margin-bottom: 20px; }
-.mb-40 { margin-bottom: 40px; }
-.ml-40 { margin-left: 40px; }
-.ml-60 { margin-left: 60px; }
-.ul-ml40 li { margin-left: 40px; }
-.ul-mb10 li { margin-bottom: 10px; }
-.full-width { width: 100%; }
-.no-border { border: none; }
+.mr-10 { margin-right: 10px !important; }
+.mt-10 { margin-top: 10px !important; }
+.mt-20 { margin-top: 20px !important; }
+.mt-40 { margin-top: 40px !important; }
+.mb-10 { margin-bottom: 10px !important; }
+.mb-20 { margin-bottom: 20px !important; }
+.mb-40 { margin-bottom: 40px !important; }
+.ml-40 { margin-left: 40px !important; }
+.ml-60 { margin-left: 60px !important; }
+.ul-ml40 li { margin-left: 40px !important; }
+.ul-mb10 li { margin-bottom: 10px !important; }
+.full-width { width: 100% !important; }
+.no-border, .no-border tr td  { border: none !important; }
+.no-outline { outline: none !important; }
 .disabled {
     cursor: auto;
     opacity: 0.7;
@@ -731,6 +732,7 @@ img {
 }
 .solid { background-color: #1976d2; color: #FFFFFF; }
 .contact__sendBtn:hover { background-color: #1976d2; color: #FFFFFF; }
+.contact__sendBtn:focus { background-color: #116dc9; color: #FFFFFF; }
 .footer {
     z-index: -1;
     padding: 70px 20px 20px 20px;

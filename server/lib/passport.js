@@ -33,7 +33,7 @@ const transporter = nodemailer.createTransport({
 const listLabel = ["Priority","Secondary","Important","Do Later"];
 
 const validateLabel = (e) => {
-    for (a=0; listLabel.length; a++){
+    for (a=0; a<listLabel.length; a++){
         if(e === listLabel[a].toLowerCase()) return false;
         else if(a === listLabel.length-1 && e !== listLabel[a].toLowerCase()) return true;
     }
@@ -45,8 +45,8 @@ passport.deserializeUser((user, done) => done(null, user))
 passport.use('register', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
     const {confirmPassword} = req.body;
     if(!confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] })
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
-    else if(password.length < 6 || password.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] })
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
+    else if(password.length < 6 || password.length > 60 || confirmPassword.length < 6 || confirmPassword.length > 60) return done(null, false, { status: 400, message: MSG_DESC[9] })
     else if(password !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] })
     else {
         User.findOne({email}, (err, user) => {
@@ -80,8 +80,8 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
 passport.use('changePassword', new localStrategy({ usernameField: 'email', passwordField: 'oldPassword', passReqToCallback: true, session: false }, (req, email, password, done) => {
     const {_id: id, newPassword, confirmPassword} = req.body;
     if(!id || !newPassword || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] });
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
-    else if(password.length < 6 || password.length > 40 || newPassword.length < 6 || newPassword.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] });
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
+    else if(password.length < 6 || password.length > 60 || newPassword.length < 6 || newPassword.length > 60 || confirmPassword.length < 6 || confirmPassword.length > 60) return done(null, false, { status: 400, message: MSG_DESC[9] });
     else if(newPassword !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] });
     else {
         User.findOne({ _id: id, email }, (err, user) => {
@@ -180,8 +180,8 @@ passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passw
 passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
     const {id, type, token, confirmPassword} = req.body;
     if(!id || !token || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] });
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
-    else if(password.length < 6 || password.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] });
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
+    else if(password.length < 6 || password.length > 60 || confirmPassword.length < 6 || confirmPassword.length > 60) return done(null, false, { status: 400, message: MSG_DESC[9] });
     else if(password !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] })
     else {
         const userId = id.split('-')[0];
@@ -348,7 +348,7 @@ passport.use('connectGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE
 }))
 
 passport.use('getOAuthData', new localStrategy({ usernameField: 'email', passwordField: 'provider', session: false }, (email, provider, done) => {
-    if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
+    if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else {
         var query = {};
         query['email'] = email; query['thirdParty.'.concat(provider)] = true; query['thirdParty.verified'] = false;
@@ -363,8 +363,8 @@ passport.use('getOAuthData', new localStrategy({ usernameField: 'email', passwor
 passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
     const {provider, confirmPassword} = req.body;
     if(!provider || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[3] });
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return done(null, false, { status: 400, message: MSG_DESC[8] })
-    else if(password.length < 6 || password.length > 40 || confirmPassword.length < 6 || confirmPassword.length > 40) return done(null, false, { status: 400, message: MSG_DESC[9] })
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
+    else if(password.length < 6 || password.length > 60 || confirmPassword.length < 6 || confirmPassword.length > 60) return done(null, false, { status: 400, message: MSG_DESC[9] })
     else if(password !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] })
     else {
         bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
@@ -419,16 +419,53 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
 }))
 
 passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', passwordField: 'token', passReqToCallback: true, session: false }, (req, tokenId, token, done) => {
-    const id = req.body._id;
-    OTPToken.findById(tokenId, (err, data) => {
+    const {_id, email, isBackupCode} = req.body;
+    if(isBackupCode){
+        User.findOne({_id, email}, (err, user) => {
+            if(err) return done(err, false);
+            else if(user){
+                const valid = user.security['backup-codes'].valid;
+                for (a=0; a<valid.length; a++){
+                    if(token === valid[a]){
+                        user.security['backup-codes'].invalid = [...user.security['backup-codes'].invalid, valid[a]]
+                        user.security['backup-codes'].valid.splice(a, 1)
+                        user.save();
+                        return done(null, req.body, { status: 200, message: MSG_DESC[5] })
+                    }else if(a === valid.length-1 && token !== valid[a].toLowerCase()) return done(null, false, { status: 400, message: MSG_DESC[44] });
+                }
+            }else return done(null, false, { status: 400, message: MSG_DESC[44] });
+        })
+    }else {
+        OTPToken.findById(tokenId, (err, data) => {
+            if(err) return done(err, false);
+            else if(data && _id == decrypt(data.userId, 2) && token === decrypt(data.token, 2)){
+                data.remove();
+                return done(null, req.body, { status: 200, message: MSG_DESC[5] })
+            }else return done(null, false, { status: 400, message: MSG_DESC[38] });
+        })
+    }
+}))
+
+passport.use('generateToken', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false } , (req, email, password, done) => {
+    const {regenerate, _id} = req.body;
+    User.findOne({_id, email}, (err, user) => {
         if(err) return done(err, false);
-        else if(!data) return done(null, false, { status: 400, message: MSG_DESC[32] });
-        else if(data && id == decrypt(data.userId, 2) && token === decrypt(data.token, 2)){
-            data.remove();
-            return done(null, req.body, { status: 200, message: MSG_DESC[5] })
-        }else return done(null, false, { status: 400, message: MSG_DESC[38] });
+        else if(user){
+            if(regenerate || !user.security['2FA']){
+                let backupCodes = [];
+                for (let x=0; x<10; x++) backupCodes.push(crypto.randomBytes(3).toString('hex'))
+                user.security['backup-codes'].valid = backupCodes;
+                user.security['backup-codes'].invalid = [];
+                user.save();
+                return done(null, true, { status: 200, message: MSG_DESC[42], 'backup-codes': backupCodes })
+            }else {
+                user.security['backup-codes'].valid = [];
+                user.security['backup-codes'].invalid = [];
+                user.save();
+                return done(null, user, { status: 200, message: MSG_DESC[43] })
+            }
+        }else return done(null, false, { status: 400, message: MSG_DESC[16] })
     })
-    .catch(err => { return done(err, false) })
 }))
 
 passport.use('todoData', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
@@ -472,10 +509,10 @@ passport.use('todoData', new localStrategy({ usernameField: 'email', passwordFie
 passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
     const {title, label, description, date} = req.body;
     if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]});
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[8]});
-    else if(title.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[17]});
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[8]});
+    else if(title.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[17]});
     else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]});
-    else if(description && description.length > 120) return res.status(400).json({status: 400, message: MSG_DESC[19]});
+    else if(description && description.length > 200) return res.status(400).json({status: 400, message: MSG_DESC[19]});
     else {
         new Todo({
             email,
@@ -493,10 +530,10 @@ passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordFiel
 passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, id, done) => {
     const {title, label, description, date} = req.body;
     if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]});
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[8]});
-    else if(title.length > 40) return res.status(400).json({status: 400, message: MSG_DESC[17]});
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[8]});
+    else if(title.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[17]});
     else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]});
-    else if(description && description.length > 120) return res.status(400).json({status: 400, message: MSG_DESC[19]});
+    else if(description && description.length > 200) return res.status(400).json({status: 400, message: MSG_DESC[19]});
     else {
         const data = {
             title: encrypt(title, 1),
