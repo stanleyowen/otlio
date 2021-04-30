@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons';
+import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faQuestionCircle, faExclamationTriangle, faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core';
 import axios from 'axios';
 
@@ -12,6 +12,8 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
     const {email, thirdParty, security, authenticated, isLoading} = userData;
+    const {valid, invalid} = security ? security['backup-codes'] : [];
+
     const [password, setPassword] = useState({
         oldPassword: '',
         newPassword: '',
@@ -39,6 +41,8 @@ const Account = ({ userData }) => {
         const mfaModal = document.getElementById('mfa-modal');
         const otpBg = document.getElementById('otp-bg');
         const otpModal = document.getElementById('otp-modal');
+        const backupBg = document.getElementById('backup-code-bg');
+        const backupModal = document.getElementById('backup-code-modal');
         window.onclick = (e) => {
             if(e.target === passwordBg && !properties.disabled){
                 passwordModal.classList.remove('showModal');
@@ -55,10 +59,36 @@ const Account = ({ userData }) => {
                 otpModal.classList.add('closeModal');
                 otpBg.classList.remove('showBackground');
                 otpBg.classList.add('hideBackground');
+            }else if(e.target === backupBg && !properties.disabled){
+                backupModal.classList.remove('showModal');
+                backupModal.classList.add('closeModal');
+                backupBg.classList.remove('showBackground');
+                backupBg.classList.add('hideBackground');
             }
         }
     }, [properties.disabled])
     
+    const backupCodes = () => {
+        const codes = [...valid, ...invalid]
+        // function validateToken(token) {
+        //     for (let a=0; valid.length; a++){
+        //         if(token === valid[a]) return true
+        //         else if(a === valid.length-1 && token !== valid[a].toLowerCase()) return false
+        //     }
+        // }
+        let table = document.createElement('table')
+        let row = document.createElement('tr')
+        let column = document.createElement('td')
+        table.classList.add('isCentered', 'full-width', 'no-border')
+        for (let x=0; x<codes.length; x++){
+            if(x%2 === 0 && x !== 0){ table.innerHTML += row.outerHTML; column.innerHTML=codes[x]; row.innerHTML=column.outerHTML; }
+            else if(x === codes.length - 1){ column.innerHTML = codes[x]; row.innerHTML += column.outerHTML; table.innerHTML += row.outerHTML; }
+            else {column.innerHTML = codes[x]; row.innerHTML += column.outerHTML;}
+        }
+        console.log(table)
+        return table.outerHTML
+    }
+
     const changePassword = (e) => {
         e.preventDefault();
         const btn = document.getElementById('change-password');
@@ -156,12 +186,12 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="oauth-container">
                         <div className="m-10">
-                            <button className="oauth-box change-password mt-20" onClick={() => openModal('password-bg', 'password-modal', 'old-password')}>
-                                <FontAwesomeIcon icon={faKey} size='2x'/> <p>Update Password</p>
+                            <button className="oauth-box primary mt-20" onClick={() => openModal('password-bg', 'password-modal', 'old-password')}>
+                                <FontAwesomeIcon icon={faKeycdn} size='2x'/> <p>Update Password</p>
                             </button>
                         </div>
                         <div className="m-10">
-                            <button className="oauth-box logout mt-20" onClick={() => window.location='logout'}>
+                            <button className="oauth-box primary mt-20" onClick={() => window.location='logout'}>
                                 <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
                             </button>
                         </div>
@@ -173,6 +203,13 @@ const Account = ({ userData }) => {
                                 <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color={document.body.classList.contains("dark") ? "white" : "primary"}/>
                             } label="Multi Factor Authentication (MFA)" />
                             <Tooltip placement="top" className="ml-10" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                        </div>
+                    </div>
+                    <div className="oauth-container">
+                        <div className="m-10">
+                            <button className="oauth-box primary mt-20" onClick={() => authenticated && security['2FA'] ? openModal('backup-code-bg', 'backup-code-modal') : setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Multi Factor Authentication (MFA) Users')}>
+                                <FontAwesomeIcon icon={faKey} size='2x'/> <p>Backup Codes</p>
+                            </button>
                         </div>
                     </div>
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
@@ -314,6 +351,18 @@ const Account = ({ userData }) => {
                                 </form>
                             </li>
                         </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div id="backup-code-bg" className="modal hiddenModal">
+                <div id="backup-code-modal" className="modal__container hiddenModal">
+                    <div className="modal__title">
+                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('backup-code-bg', 'backup-code-modal')}>&times;</span>
+                        <h2>Backup Codes</h2>
+                    </div>
+                    <div className="modal__body mt-10">
+                        { authenticated && security['2FA'] ? <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div> : null }
                     </div>
                 </div>
             </div>

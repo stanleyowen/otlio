@@ -425,7 +425,7 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', password
             if(err) return done(err, false);
             else if(user){
                 const valid = user.security['backup-codes'].valid;
-                for (a=0; valid.length; a++){
+                for (a=0; a<valid.length; a++){
                     if(token === valid[a]){
                         user.security['backup-codes'].invalid = [...user.security['backup-codes'].invalid, valid[a]]
                         user.security['backup-codes'].valid.splice(a, 1)

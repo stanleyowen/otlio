@@ -141,15 +141,11 @@ label { user-select: none; }
     color: #FFF;
     background-color: rgb(66 133 244);
 }
-.change-password {
+.primary {
     color: #FFF;
-    background-color: rgb(73, 81, 185);
+    background-color: rgb(66 133 244);
 }
-.verify-account {
-    color: #FFF;
-    background-color: rgb(48 201 64);
-}
-.logout {
+.danger {
     color: #FFF;
     background-color: rgb(252, 52, 52);
 }
@@ -178,9 +174,12 @@ label { user-select: none; }
     position: relative;
     z-index: 10001;
 }
+.success { color: rgb(18, 214, 0); margin-right: 5px }
+.danger { color: rgb(252, 52, 52); margin-right: 5px }
 .flex { display: flex !important; }
 .m-10 { margin: 10px !important; }
 .ml-10 { margin-left: 10px !important; }
+.mr-10 { margin-right: 10px !important; }
 .mt-10 { margin-top: 10px !important; }
 .mt-20 { margin-top: 20px !important; }
 .mt-40 { margin-top: 40px !important; }
@@ -192,7 +191,7 @@ label { user-select: none; }
 .ul-ml40 li { margin-left: 40px !important; }
 .ul-mb10 li { margin-bottom: 10px !important; }
 .full-width { width: 100% !important; }
-.no-border { border: none !important; }
+.no-border, .no-border tr td  { border: none !important; }
 .no-outline { outline: none !important; }
 .disabled {
     cursor: auto;
