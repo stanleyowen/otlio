@@ -165,6 +165,23 @@ const Account = ({ userData }) => {
         else submitData();
     }
 
+    const RegenerateToken = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('generate-token');
+        async function generateToken(){
+            btn.innerHTML = "Generating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
+            await axios.post(`${SERVER_URL}/account/backup-code`, { "regenerate": true }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(res => {
+                userData.security['backup-codes'].valid = res.data['backup-codes']
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
+            })
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            btn.innerHTML = "Regenerate Code"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
+        }
+        if(!security['2FA']) setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Multi Factor Authentication (MFA) Users')
+        else generateToken();
+    }
+
     return (
         <div>
             { !authenticated ?
@@ -363,6 +380,7 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="modal__body mt-10">
                         { authenticated && security['2FA'] ? <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div> : null }
+                        <button id="generate-token" className="btn__outline no-outline" onClick={RegenerateToken}>Regenerate Code</button>
                     </div>
                 </div>
             </div>
