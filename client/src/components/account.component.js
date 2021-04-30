@@ -85,8 +85,7 @@ const Account = ({ userData }) => {
             else if(x === codes.length - 1){ column.innerHTML = codes[x]; row.innerHTML += column.outerHTML; table.innerHTML += row.outerHTML; }
             else {column.innerHTML = codes[x]; row.innerHTML += column.outerHTML;}
         }
-        console.log(table)
-        return table.outerHTML
+        return table.outerHTML;
     }
 
     const changePassword = (e) => {

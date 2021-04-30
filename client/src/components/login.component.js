@@ -30,7 +30,8 @@ const Login = ({ userData }) => {
     })
     const [data, setData] = useState({
         tokenId: '',
-        token: ''
+        token: '',
+        isBackupCode: false
     })
 
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
@@ -130,6 +131,7 @@ const Login = ({ userData }) => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
+                            <p className="isCentered">If you're unable to receive a security code, use one of your <a className="animation__underline" onClick={() => handleData('isBackupCode', true)}>Backup Codes</a></p>
                             <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</a></p>
                             <button type="reset" className="contact__sendBtn solid no-outline" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
                             <button type="submit" className="contact__sendBtn ml-10 no-outline" id="verify">Verify</button>

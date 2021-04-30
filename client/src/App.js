@@ -56,13 +56,13 @@ export default function App() {
       })
       localStorage.setItem('XSRF-TOKEN', res.data['XSRF-TOKEN'])
     })
-    // .catch(err => {
-    //   setUserData({ type: {}, credentials: {}, security: {}, ...err.response.data, isLoading: false, authenticated: false })
-    //   localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
-    //   if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname !== '/login' && window.location.pathname !== '/logout')) window.location='/login';
-    //   if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname !== '/get-started' && window.location.pathname !== '/logout')) window.location='/get-started';
-    //   if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-    // })
+    .catch(err => {
+      setUserData({ type: {}, credentials: {}, security: {}, ...err.response.data, isLoading: false, authenticated: false })
+      localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
+      if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname !== '/login' && window.location.pathname !== '/logout')) window.location='/login';
+      if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname !== '/get-started' && window.location.pathname !== '/logout')) window.location='/get-started';
+      if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+    })
     console.log("%c%s","color: red; background: yellow; font-size: 24px;","WARNING!");
     console.log("%c%s","font-size: 18px;","Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand.")
   },[SERVER_URL])
