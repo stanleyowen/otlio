@@ -176,8 +176,11 @@ label { user-select: none; }
 }
 .success { color: rgb(18, 214, 0); margin-right: 5px }
 .danger { color: rgb(252, 52, 52); margin-right: 5px }
-.flex { display: flex !important; }
+.button { font-size: 18px; }
+.flex { display: flex !important; flex-wrap: wrap; }
+.flex p { flex: 50%; }
 .m-10 { margin: 10px !important; }
+.p-12 { padding: 12px !important; }
 .ml-10 { margin-left: 10px !important; }
 .mr-10 { margin-right: 10px !important; }
 .mt-10 { margin-top: 10px !important; }
@@ -193,11 +196,10 @@ label { user-select: none; }
 .full-width { width: 100% !important; }
 .no-border, .no-border tr td  { border: none !important; }
 .no-outline { outline: none !important; }
-.disabled {
+.disabled, .disabled:hover {
     cursor: auto;
     opacity: 0.7;
 }
-.disabled:hover { background-color: transparent!important; color: #1a73e8!important; }
 .loader {
     position: fixed;
     background-color: rgba(255, 255, 255, 0.61);
@@ -827,6 +829,7 @@ blockquote a{
 }
 blockquote a:hover{ color: #666; }
 blockquote em {font-style: italic;}
+.block { display: block; }
 .small { font-size: 14px; }
 .full td { width: 70%; text-align: left; }
 .view-eye {
@@ -1012,6 +1015,7 @@ blockquote em {font-style: italic;}
     .btn__outline { width: 65%; }
     .oauth-box p { font-family: sans-serif; }
     .privacy-policy { margin: 0 15px; }
+    .flex p { flex: 100%; }
 }
 @media (max-width:500px){
     .github-corner:hover .octo-arm{animation:none}

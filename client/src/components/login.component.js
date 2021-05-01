@@ -181,13 +181,16 @@ const Login = ({ userData }) => {
                                 <FormControlLabel control={<Checkbox checked={properties.rememberMe} onChange={() => { handleChange('rememberMe', !properties.rememberMe); handleLogin('rememberMe', !properties.rememberMe) }} color="primary"/>}
                                 label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer or WiFi" arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                             </div>
-                            <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
-                            <p className="isCentered mt-10">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
                         </div>
-                        <button type="submit" className="contact__sendBtn" id="login">Login</button>
+                        <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="login">Login</button>
                     </form>
                 </div>
             </div>
+            <div className="flex isCentered">
+                <p>Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
+                <p>Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
+            </div>
+
         </div>
     )
 }

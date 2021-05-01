@@ -35,15 +35,15 @@ const Register = ({ userData }) => {
     const Register = (e) => {
         e.preventDefault();
         const btn = document.getElementById('register');
+        btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
         async function submitData(){
-            btn.innerHTML = "Registering..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/account/register`, register, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleChange('verify', true)
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Register"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            btn.innerHTML = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;
         else if(!register.email || !register.password || !register.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!register.email ? 'userEmail' : !register.password ? 'userPassword' : 'userConfirmPassword').focus(); }
@@ -83,7 +83,7 @@ const Register = ({ userData }) => {
     ) : (
         <div id="form">
             <div className="form__contact">
-                <div className="get_in_touch"><h1>Register</h1></div>
+                <div className="get_in_touch"><h1>Create your account</h1></div>
                 <div className="oauth-container">
                     <button className="oauth-box google" onClick={OAuthGoogle}>
                         <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Join Us with Google</p>
@@ -130,12 +130,12 @@ const Register = ({ userData }) => {
                                 </div>
                             </div>
                         </div>
-                        <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
-                        <button type="submit" className="contact__sendBtn no-outline" id="register">Register</button>
-                        <p className="mt-20 small">Signing up signifies that you have read and agree to the <a className="animation__underline" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a> and our <a className="animation__underline" href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
+                        <button type="submit" className="oauth-box google isCentered block mt-20 p-12 button" id="register">Create Account</button>
+                        <p className="mt-20 small">Signing up signifies that you have read and agree to the <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a> and our <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
                     </form>
                 </div>
             </div>
+            <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
         </div>
     )
 }
