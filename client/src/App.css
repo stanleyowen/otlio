@@ -79,8 +79,9 @@ body.dark .modal__closeBtn {
     color: #FFFFFF;
 }
 body.dark .main__title,
-body.dark .projects__viewMore {
-    color: #79c3ff;
+body.dark .projects__viewMore,
+body.dark .link {
+    color: #79c3ff !important;
 }
 body.dark .navbar { box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2); }
 body.dark .footer { background-color: #191919; }
@@ -158,7 +159,6 @@ label { user-select: none; }
     padding: 10px;
 }
 .oauth-box p {
-    font-family: cursive;
     font-size: 18px;
     display: inline-block;
     margin-top: auto;
@@ -848,6 +848,12 @@ blockquote em {font-style: italic;}
     font-weight: bold;
     margin-left: 10px;
 }
+.link {
+    text-decoration: none;
+    font-weight: bold;
+}
+.link:focus { color: #004299 !important; }
+.link:visited { color: #0571ff; }
 @keyframes octocat-wave {
     0%,100%{transform:rotate(0)}
     20%,60%{transform:rotate(-25deg)}
@@ -1013,9 +1019,8 @@ blockquote em {font-style: italic;}
 @media only screen and (max-width: 600px) {
     .animation__message { width: 100%; height: auto; }
     .btn__outline { width: 65%; }
-    .oauth-box p { font-family: sans-serif; }
     .privacy-policy { margin: 0 15px; }
-    .flex p { flex: 100%; }
+    .flex p { flex: 100%; margin-bottom: 10px; }
 }
 @media (max-width:500px){
     .github-corner:hover .octo-arm{animation:none}
