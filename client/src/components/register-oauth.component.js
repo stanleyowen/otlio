@@ -40,11 +40,11 @@ const OAuth = () => {
         e.preventDefault();
         const btn = document.getElementById('register');
         async function submitData(){
-            btn.innerHTML = "Registering..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/oauth/${service}/register`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Register"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            btn.innerHTML = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;
         else if(!data.email || !data.password || !data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.email ? 'userEmail' : !data.password ? 'userPassword' : 'userConfirmPassword').focus(); }
@@ -58,7 +58,7 @@ const OAuth = () => {
     return (
         <div id="form">
             <div className="form__contact">
-                <div className="get_in_touch"><h1>Register</h1></div>
+                <div className="get_in_touch"><h1>Create your account</h1></div>
                 <div className="form">
                     <form className="contact__form" name="contact__form" onSubmit={Submit}>
                         <div className="m-10 no-bot">
@@ -97,12 +97,12 @@ const OAuth = () => {
                                 </div>
                             </div>
                         </div>
-                        <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
-                        <button type="submit" className="contact__sendBtn no-outline" id="register">Register</button>
-                        <p className="mt-20 small">Signing up signifies that you have read and agree to the <a className="animation__underline" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a> and our <a className="animation__underline" href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
+                        <button type="submit" className="oauth-box google isCentered block mt-20 p-12 button" id="register">Create Account</button>
+                        <p className="mt-20 small">Signing up signifies that you have read and agree to the <a className="link" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a> and our <a className="link" href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
                     </form>
                 </div>
             </div>
+            <p className="isCentered">Already have an Account? <a className="link" href="/login">Login</a></p>
         </div>
     )
 }

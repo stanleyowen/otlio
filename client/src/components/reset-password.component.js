@@ -123,7 +123,7 @@ const ResetPassword = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" className="contact__sendBtn no-outline" id="reset-password">Change Password</button>
+                            <button type="submit" className="oauth-box google isCentered block mt-20 p-12 button" id="reset-password">Change Password</button>
                         </form>
                     </div>
                 </div>

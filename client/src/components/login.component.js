@@ -186,11 +186,10 @@ const Login = ({ userData }) => {
                     </form>
                 </div>
             </div>
-            <div className="flex isCentered">
-                <p>Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
-                <p>Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
+            <div className="flex isCentered mb-10">
+                <p><a className="link" href="/reset-password">Forgot Password?</a></p>
+                <p>Haven't have an Account? <a className="link" href="/get-started">Get Started</a></p>
             </div>
-
         </div>
     )
 }
