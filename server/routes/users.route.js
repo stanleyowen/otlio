@@ -268,7 +268,7 @@ router.post('/otp', async (req, res, next) => {
                         }
                     }, jwtSecret, { expiresIn: '1d' }), {
                         path: '/',
-                        expires: new Date(Date.now() + 86400000),
+                        expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
                         httpOnly: true,
                         secure: status,
                         sameSite: status ? 'none' : 'strict'
