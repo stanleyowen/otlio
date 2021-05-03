@@ -853,7 +853,7 @@ blockquote em {font-style: italic;}
     font-weight: bold;
 }
 .link:focus { color: #004299 !important; }
-.link:visited { color: #0571ff; }
+.link:visited { color: blue; }
 @keyframes octocat-wave {
     0%,100%{transform:rotate(0)}
     20%,60%{transform:rotate(-25deg)}

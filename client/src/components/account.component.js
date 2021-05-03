@@ -223,7 +223,7 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="oauth-container">
                         <div className="m-10">
-                            <button className="oauth-box primary mt-20" onClick={() => authenticated && security['2FA'] ? openModal('backup-code-bg', 'backup-code-modal') : setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Multi Factor Authentication (MFA) Users')}>
+                            <button className="oauth-box primary mt-20" onClick={() => authenticated && security['2FA'] ? openModal('backup-code-bg', 'backup-code-modal') : setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only available for Multi Factor Authentication (MFA) Users')}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Backup Codes</p>
                             </button>
                         </div>
@@ -242,7 +242,7 @@ const Account = ({ userData }) => {
                         </div>
                     </div>
                     <hr className="mt-20"></hr>
-                    <p className="isCentered mt-20 mb-20"><a href="/terms-and-conditions">Terms of Service</a> | <a href="/privacy-policy">Privacy Policy</a></p>
+                    <p className="isCentered mt-20 mb-20"><a className="link" href="/terms-and-conditions">Terms of Service</a> | <a className="link" href="/privacy-policy">Privacy Policy</a></p>
                     <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                 </div>
             </div>
@@ -258,7 +258,7 @@ const Account = ({ userData }) => {
                             <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
                             <div className="m-10">
                                 <div className="contact__infoField">
-                                    <label htmlFor="old-password">Old Password <span className="required">*</span></label>
+                                    <label htmlFor="old-password">Old Password</label>
                                     <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('oldPassword', event.target.value)} value={password.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
@@ -269,7 +269,7 @@ const Account = ({ userData }) => {
                             <div className="form__container">
                                 <div className="m-10">
                                     <div className="contact__infoField">
-                                        <label htmlFor="new-password">New Password <span className="required">*</span></label>
+                                        <label htmlFor="new-password">New Password</label>
                                         <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('newPassword', event.target.value)} value={password.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => handleChange('newPassword', !properties.newPassword)} name="newPassword">
@@ -279,7 +279,7 @@ const Account = ({ userData }) => {
                                 </div>
                                 <div className="m-10">
                                     <div className="contact__infoField">
-                                        <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
+                                        <label htmlFor="confirm-password">Confirm New Password</label>
                                         <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('confirmPassword', event.target.value)} value={password.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)} name="confirmPassword">
@@ -288,7 +288,7 @@ const Account = ({ userData }) => {
                                     </div>
                                 </div>
                             </div>
-                            <p className="isCentered"><a className="animation__underline" href="/reset-password">I forgot my password</a></p>
+                            <p className="isCentered"><a className="link" href="/reset-password">I forgot my password</a></p>
                             <button type="submit" id="change-password" className="btn__outline no-outline">Update</button>
                         </form>
                     </div>

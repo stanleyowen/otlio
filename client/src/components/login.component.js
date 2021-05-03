@@ -107,7 +107,7 @@ const Login = ({ userData }) => {
             
             <div id="form">
                 <div className="form__contact">
-                    <div className="get_in_touch"><h1>Verification</h1></div>
+                    <div className="get_in_touch"><h1>Verify Your Identity</h1></div>
                     <div className="form">
                         <form className="contact__form" onSubmit={VerifyOTP}>
                             <div className="m-10">
@@ -133,8 +133,10 @@ const Login = ({ userData }) => {
                             </div>
                             <p className="isCentered">If you're unable to receive a security code, use one of your <a className="animation__underline" onClick={() => handleData('isBackupCode', true)}>Backup Codes</a></p>
                             <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</a></p>
-                            <button type="reset" className="contact__sendBtn solid no-outline" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
-                            <button type="submit" className="contact__sendBtn ml-10 no-outline" id="verify">Verify</button>
+                            <div className="flex isCentered">
+                                <p><button type="reset" className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
+                                <p><button type="submit" className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="verify">Verify</button></p>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -179,7 +181,7 @@ const Login = ({ userData }) => {
                             </div>
                             <div className="m-10 show-password">
                                 <FormControlLabel control={<Checkbox checked={properties.rememberMe} onChange={() => { handleChange('rememberMe', !properties.rememberMe); handleLogin('rememberMe', !properties.rememberMe) }} color="primary"/>}
-                                label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer or WiFi" arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                                label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer and WiFi, You'll be logged out after browsing session ends." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                             </div>
                         </div>
                         <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="login">Login</button>

@@ -57,11 +57,11 @@ const ResetPassword = () => {
         e.preventDefault();
         const btn = document.getElementById('reset-password');
         async function submitData(){
-            btn.innerHTML = "Changing..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            btn.innerHTML = "Saving..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/account/reset-password`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Change Password"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            btn.innerHTML = "Save Password"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;
         else if(!data.email || !data.password || !data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.email ? 'userEmail' : !data.password ? 'userPassword' : 'userConfirmPassword').focus(); }
@@ -123,7 +123,7 @@ const ResetPassword = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" className="oauth-box google isCentered block mt-20 p-12 button" id="reset-password">Change Password</button>
+                            <button type="submit" className="oauth-box google isCentered block mt-20 p-12 button" id="reset-password">Save Password</button>
                         </form>
                     </div>
                 </div>
