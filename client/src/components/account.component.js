@@ -12,7 +12,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
     const {email, thirdParty, security, authenticated, isLoading} = userData;
-    const {valid, invalid} = security ? security['backup-codes'] : [];
+    const {valid, invalid} = authenticated ? security['backup-codes'] : [];
 
     const [password, setPassword] = useState({
         oldPassword: '',
@@ -84,8 +84,7 @@ const Account = ({ userData }) => {
             if(x%2 === 0 && x !== 0){ table.innerHTML += row.outerHTML; column.innerHTML=codes[x]; row.innerHTML=column.outerHTML; }
             else if(x === codes.length - 1){ column.innerHTML = codes[x]; row.innerHTML += column.outerHTML; table.innerHTML += row.outerHTML; }
             else {column.innerHTML = codes[x]; row.innerHTML += column.outerHTML;}
-        }
-        return table.outerHTML;
+        } return table.outerHTML;
     }
 
     const backupCode = () => {
@@ -102,11 +101,11 @@ const Account = ({ userData }) => {
     const CopyCode = (e) => {
         e.preventDefault();
         const btn = document.getElementById('copy-code');
-        btn.innerHTML = 'Copying...'
         const code = document.getElementById('backup-codes');
+        btn.innerHTML = 'Copying...';
         code.select(); code.setSelectionRange(0, 99999);
         document.execCommand("copy");
-        btn.innerHTML = 'Copied to Clipboard'
+        btn.innerHTML = 'Copied to Clipboard';
     }
 
     const changePassword = (e) => {
@@ -242,13 +241,13 @@ const Account = ({ userData }) => {
                             <Tooltip placement="top" className="ml-10" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                     </div>
-                    <div className="oauth-container">
+                    { authenticated && security['2FA'] ? (<div className="oauth-container">
                         <div className="m-10">
-                            <button className="oauth-box primary mt-20" onClick={() => authenticated && security['2FA'] ? openModal('backup-code-bg', 'backup-code-modal') : setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only available for Multi Factor Authentication (MFA) Users')}>
+                            <button className="oauth-box primary mt-20" onClick={() => openModal('backup-code-bg', 'backup-code-modal')}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Backup Codes</p>
                             </button>
                         </div>
-                    </div>
+                    </div>) : null }
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
                     <div className="form__container">
                         <div className="m-10">
@@ -345,7 +344,7 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="code">Verification Code</label>
-                                            <input title="Old Password" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
+                                            <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
                                             <span className="contact__onFocus"></span>
                                         </div>
                                     </div>
@@ -379,8 +378,8 @@ const Account = ({ userData }) => {
                                 <form onSubmit={changePassword}>
                                     <div className="m-10">
                                         <div className="contact__infoField">
-                                            <label htmlFor="code">Verification Code</label>
-                                            <input title="Old Password" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
+                                            <label htmlFor="code-otp">Verification Code</label>
+                                            <input title="Old Password" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
                                             <span className="contact__onFocus"></span>
                                         </div>
                                     </div>
@@ -397,7 +396,7 @@ const Account = ({ userData }) => {
                 <span className="contact__onFocus"></span>
             </div>
 
-            <div id="backup-code-bg" className="modal hiddenModal">
+            { authenticated && security['2FA'] ? (<div id="backup-code-bg" className="modal hiddenModal">
                 <div id="backup-code-modal" className="modal__container hiddenModal">
                     <div className="modal__title">
                         <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('backup-code-bg', 'backup-code-modal')}>&times;</span>
@@ -405,12 +404,12 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="modal__body mt-10">
                         <p className="mb-10">Keep these backup codes somewhere safe but accessible. Each backup code can only be used once.</p>
-                        { authenticated && security['2FA'] ? <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div> : null }
+                        <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div>
                         <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button>
                         <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="generate-token" onClick={RegenerateToken}>Regenerate Token</button>
                     </div>
                 </div>
-            </div>
+            </div>) : null }
         </div>
     );
 }
