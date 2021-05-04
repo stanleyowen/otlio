@@ -88,6 +88,27 @@ const Account = ({ userData }) => {
         return table.outerHTML;
     }
 
+    const backupCode = () => {
+        const codes = [...valid, ...invalid]
+        return `       SAVE YOUR BACKUP CODES\n\nKeep these backup codes somewhere safe but accessible.\nEach backup code can only be used once.\n
+1. ${codes[0]}		 6. ${codes[5]}
+2. ${codes[1]}		 7. ${codes[6]}
+3. ${codes[2]}		 8. ${codes[7]}
+4. ${codes[3]}		 9. ${codes[8]}
+5. ${codes[4]}		10. ${codes[9]}\n
+    (stanleyowen06@gmail.com)`
+    }
+
+    const CopyCode = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('copy-code');
+        btn.innerHTML = 'Copying...'
+        const code = document.getElementById('backup-codes');
+        code.select(); code.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        btn.innerHTML = 'Copied to Clipboard'
+    }
+
     const changePassword = (e) => {
         e.preventDefault();
         const btn = document.getElementById('change-password');
@@ -324,7 +345,7 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="code">Verification Code</label>
-                                            <input title="Old Password" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required maxLength="6" placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
+                                            <input title="Old Password" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
                                             <span className="contact__onFocus"></span>
                                         </div>
                                     </div>
@@ -359,7 +380,7 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="code">Verification Code</label>
-                                            <input title="Old Password" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required maxLength="6" placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
+                                            <input title="Old Password" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
                                             <span className="contact__onFocus"></span>
                                         </div>
                                     </div>
@@ -370,6 +391,11 @@ const Account = ({ userData }) => {
                     </div>
                 </div>
             </div>
+            
+            <div className="contact__infoField">
+                <textarea id="backup-codes" className="contact__inputField no-bot" value={authenticated ? backupCode() : null}></textarea>
+                <span className="contact__onFocus"></span>
+            </div>
 
             <div id="backup-code-bg" className="modal hiddenModal">
                 <div id="backup-code-modal" className="modal__container hiddenModal">
@@ -378,8 +404,10 @@ const Account = ({ userData }) => {
                         <h2>Backup Codes</h2>
                     </div>
                     <div className="modal__body mt-10">
+                        <p className="mb-10">Keep these backup codes somewhere safe but accessible. Each backup code can only be used once.</p>
                         { authenticated && security['2FA'] ? <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div> : null }
-                        <button id="generate-token" className="btn__outline no-outline" onClick={RegenerateToken}>Regenerate Code</button>
+                        <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button>
+                        <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="generate-token" onClick={RegenerateToken}>Regenerate Token</button>
                     </div>
                 </div>
             </div>
