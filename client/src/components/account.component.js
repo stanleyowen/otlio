@@ -27,7 +27,8 @@ const Account = ({ userData }) => {
     })
     const [data, setData] = useState({
         tokenId: '',
-        token: ''
+        token: '',
+        isBackupCode: false
     })
 
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
@@ -118,7 +119,7 @@ const Account = ({ userData }) => {
             await axios.put(`${SERVER_URL}/account/user`, {...password, ...data}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('password-bg', 'password-modal'); closeModal('otp-bg', 'otp-modal');
-                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' }); setData({ tokenId: '', token: '' });
+                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' }); setData({ tokenId: '', token: '', isBackupCode: false });
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
             .catch(err =>{
@@ -179,7 +180,7 @@ const Account = ({ userData }) => {
             btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
         }
         if(properties.honeypot) return;
-        else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
+        else if(!data.isBackupCode && !data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
         else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
         else submitData();
     }
@@ -334,7 +335,7 @@ const Account = ({ userData }) => {
                                 <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="send-otp" onClick={sendOTP}>Send Verification Code</button>
                             </li>
                             <li>
-                                Verify Code
+                                Verify Identity
                                 <blockquote className="mt-20">
                                     <span><FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: '1.5em' }} /></span>
                                     <span className="info-title">Account Recovery</span>
@@ -343,11 +344,12 @@ const Account = ({ userData }) => {
                                 <form onSubmit={VerifyOTP}>
                                     <div className="m-10">
                                         <div className="contact__infoField">
-                                            <label htmlFor="code">Verification Code</label>
+                                            <label htmlFor="code">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
                                             <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
                                             <span className="contact__onFocus"></span>
                                         </div>
                                     </div>
+                                    { authenticated && security['2FA'] ? (<p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>) : null }
                                     <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
                                 </form>
                             </li>
@@ -374,15 +376,16 @@ const Account = ({ userData }) => {
                                 <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="send-otp-pass" onClick={sendOTP}>Send Verification Code</button>
                             </li>
                             <li>
-                                Verify Code
+                                Verify Identity
                                 <form onSubmit={changePassword}>
                                     <div className="m-10">
                                         <div className="contact__infoField">
-                                            <label htmlFor="code-otp">Verification Code</label>
+                                            <label htmlFor="code-otp">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
                                             <input title="Verification Code" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
                                             <span className="contact__onFocus"></span>
                                         </div>
                                     </div>
+                                    <p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>
                                     <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify-otp">Verify</button>
                                 </form>
                             </li>
@@ -390,6 +393,7 @@ const Account = ({ userData }) => {
                     </div>
                 </div>
             </div>
+
             { authenticated ? (<div className="contact__infoField"><textarea id="backup-codes" className="contact__inputField no-bot" value={backupCode()}></textarea></div>) : null }
             { authenticated && security['2FA'] ? (<div id="backup-code-bg" className="modal hiddenModal">
                 <div id="backup-code-modal" className="modal__container hiddenModal">

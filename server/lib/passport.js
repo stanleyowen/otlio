@@ -418,9 +418,10 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
     .catch(err => { return done(err, false); })
 }))
 
-passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', passwordField: 'token', passReqToCallback: true, session: false }, (req, tokenId, token, done) => {
-    const {_id, email, isBackupCode} = req.body;
-    if(isBackupCode){
+passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, password, done) => {
+    const {tokenId, token, _id, isBackupCode} = req.body;
+    if((!_id || !email || !token) || (!isBackupCode && !tokenId)) return done(null, false, { status: 428, message: MSG_DESC[37] });
+    else if(isBackupCode && token){
         User.findOne({_id, email}, (err, user) => {
             if(err) return done(err, false);
             else if(user){

@@ -73,10 +73,12 @@ const Register = ({ userData }) => {
                 <div className="form">
                     <h4 className="mt-20 mb-20 isCentered">Please check your email ({ email ? email : register.email }) to confirm your account.</h4>
                     <hr />
-                    <h4 className="mt-20 mb-20 isCentered">If { email ? email : properties.email } is not your email address, please click Logout and enter the correct one.</h4>
+                    <h4 className="mt-20 mb-20 isCentered">If { email ? email : properties.email } is not your email address, click on the back button and enter the correct one.</h4>
                     <h4 className="mt-20 mb-20 isCentered">If you don't receive the e-mail in 5 minutes, please check your spam folder or click the resend button.</h4>
-                    <button className="contact__sendBtn solid mb-10" id="cancel" onClick={() => window.location='/logout'}>Logout</button>
-                    <button className="contact__sendBtn ml-10 mb-10" id="send-link" onClick={sendLink}>Resend Link</button>
+                    <div className="flex isCentered">
+                        <p><button className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Back</button></p>
+                        <p><button className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="send-link" onClick={sendLink}>Resend Link</button></p>
+                    </div>
                 </div>
             </div>
         </div>

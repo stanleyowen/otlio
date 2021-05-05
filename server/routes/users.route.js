@@ -129,10 +129,8 @@ router.put('/user', async (req, res, next) => {
                     message: info.message
                 }, null, 2));
             }
-            if(user.security['2FA'] && (!token || !tokenId)){
-                if(!token && !tokenId) return res.status(428).send(JSON.stringify({ status: 428, message: MSG_DESC[37] }, null, 2));
-                else return res.status(400).send(JSON.stringify({ status: 400, message: MSG_DESC[11] }, null, 2));
-            }else if(user.security['2FA'] && token && tokenId && (req.body = {...req.body, ...user._doc})) {
+            if(user.security['2FA'] && (req.body = {...req.body, ...user._doc})) {
+                console.log('Passed', req.body.email)
                 passport.authenticate('verifyOTP', { session: false }, (err, user, info) => {
                     if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
                     else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
