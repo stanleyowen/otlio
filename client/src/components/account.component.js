@@ -71,7 +71,8 @@ const Account = ({ userData }) => {
         }
         for (let i = 0; i < otp1.length; i++) {
             otp1[i].setAttribute('maxlength', 1); otp1[i].setAttribute('type', 'text');
-            otp1[i].setAttribute('required', true);
+            otp1[i].setAttribute('pattern', '[0-9]'); otp1[i].setAttribute('autocomplete', 'off');
+            otp1[i].setAttribute('inputmode', 'numeric'); otp1[i].setAttribute('required', true);
             otp1[i].addEventListener('keydown', (e) => {
                 if (e.key === "Backspace") {
                     otp1[i].value = '';
@@ -81,16 +82,15 @@ const Account = ({ userData }) => {
                     else if (e.keyCode > 47 && e.keyCode < 58) {
                         otp1[i].value = e.key;
                         if (i !== otp1.length - 1) otp1[i + 1].focus();
-                    }else if (e.keyCode > 64 && e.keyCode < 122) {
-                        otp1[i].value = e.key;
-                        if (i !== otp1.length - 1) otp1[i + 1].focus();
-                    }e.preventDefault();
+                    }else otp1[i].value = '';
+                    e.preventDefault()
                 }
             })
         }
         for (let i = 0; i < otp2.length; i++) {
             otp2[i].setAttribute('maxlength', 1); otp2[i].setAttribute('type', 'text');
-            otp2[i].setAttribute('required', true);
+            otp2[i].setAttribute('pattern', '[0-9]'); otp2[i].setAttribute('autocomplete', 'off');
+            otp2[i].setAttribute('inputmode', 'numeric'); otp2[i].setAttribute('required', true);
             otp2[i].addEventListener('keydown', (e) => {
                 if (e.key === "Backspace") {
                     otp2[i].value = '';
@@ -100,10 +100,8 @@ const Account = ({ userData }) => {
                     else if (e.keyCode > 47 && e.keyCode < 58) {
                         otp2[i].value = e.key;
                         if (i !== otp2.length - 1) otp2[i + 1].focus();
-                    }else if (e.keyCode > 64 && e.keyCode < 122) {
-                        otp2[i].value = e.key;
-                        if (i !== otp2.length - 1) otp2[i + 1].focus();
-                    }e.preventDefault();
+                    }else otp2[i].value = '';
+                    e.preventDefault()
                 }
             })
         }

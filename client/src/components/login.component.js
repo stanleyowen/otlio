@@ -59,7 +59,8 @@ const Login = ({ userData }) => {
         async function OTPInput(){
             for (let i = 0; i < otp.length; i++) {
                 otp[i].setAttribute('maxlength', 1); otp[i].setAttribute('type', 'text');
-                otp[i].setAttribute('required', true);
+                otp[i].setAttribute('pattern', '[0-9]'); otp[i].setAttribute('autocomplete', 'off');
+                otp[i].setAttribute('inputmode', 'numeric'); otp[i].setAttribute('required', true);
                 otp[i].addEventListener('keydown', (e) => {
                     if (e.key === "Backspace") {
                         otp[i].value = '';
@@ -69,10 +70,8 @@ const Login = ({ userData }) => {
                         else if (e.keyCode > 47 && e.keyCode < 58) {
                             otp[i].value = e.key;
                             if (i !== otp.length - 1) otp[i + 1].focus();
-                        }else if (e.keyCode > 64 && e.keyCode < 122) {
-                            otp[i].value = e.key;
-                            if (i !== otp.length - 1) otp[i + 1].focus();
-                        }e.preventDefault()
+                        }else otp[i].value = '';
+                        e.preventDefault()
                     }
                 })
             }
@@ -168,7 +167,7 @@ const Login = ({ userData }) => {
                                     </div>
                                 </div>
                             </div>
-                            <p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>
+                            <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>
                             <p className="isCentered">Hasn't Received the Code? <a className="link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</a></p>
                             <div className="flex isCentered">
                                 <p><button type="reset" className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
