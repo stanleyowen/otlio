@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/';
+import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -96,7 +96,7 @@ const Register = ({ userData }) => {
                     <form className="contact__form" name="contact__form" onSubmit={Register}>
                         <div className="m-10 no-bot">
                             <div className="contact__infoField">
-                                <label htmlFor="bot-email">Email <span className="required">*</span></label>
+                                <label htmlFor="bot-email">Email</label>
                                 <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
@@ -112,7 +112,7 @@ const Register = ({ userData }) => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userPassword">Password <span className="required">*</span></label>
-                                    <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } minLength="6" maxLength="60" className="contact__inputField" onChange={(event) => handleRegister('password', event.target.value)} value={register.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'new-password'} />
+                                    <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' }className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handleRegister('password', event.target.value)} value={register.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                         <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
@@ -122,7 +122,7 @@ const Register = ({ userData }) => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
-                                    <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } minLength="6" maxLength="60" className="contact__inputField" onChange={(event) => handleRegister('confirmPassword', event.target.value)} value={register.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                    <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handleRegister('confirmPassword', event.target.value)} value={register.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)}>
                                         <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />

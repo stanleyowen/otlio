@@ -109,6 +109,7 @@ body.dark .btn__value {
 }
 body.dark .MuiInput-underline:after { border-bottom: 2px solid #FFFFFF !important; }
 body.dark .MuiInput-underline:hover:not(.Mui-disabled):before { border-bottom: 1px solid #7c7c7c !important; }
+.MuiSvgIcon-root { color: #212121; }
 button, a { user-select: none; cursor: pointer; }
 label { user-select: none; }
 .privacy-policy {
@@ -565,6 +566,7 @@ tbody tr:hover {
 .showModal { animation: grow 0.15s ease-in forwards; }
 .closeModal { animation: shrink 0.2s ease-out forwards; }
 .hiddenModal { opacity: 0; visibility: hidden; }
+.float-right { float: right; }
 .modal__body { padding: 10px; text-decoration: none; }
 .modal__bodyImg {
     display: block;
@@ -712,6 +714,7 @@ img {
     box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 2px 6px 2px rgba(60, 64, 67, .15);
 }
 .form__container {
+    width: 100%;
     display: grid;
     grid-template-columns: auto auto;
 }
@@ -1020,7 +1023,8 @@ blockquote em {font-style: italic;}
     .animation__message { width: 100%; height: auto; }
     .btn__outline { width: 65%; }
     .privacy-policy { margin: 0 15px; }
-    .flex p { flex: 100%; margin-bottom: 10px; }
+    .flex p { flex: 100%; }
+    .flex p button { margin-left: 0px !important; margin-right: 0px !important; margin-top: 10px !important; }
 }
 @media (max-width:500px){
     .github-corner:hover .octo-arm{animation:none}

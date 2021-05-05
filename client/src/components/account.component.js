@@ -217,7 +217,7 @@ const Account = ({ userData }) => {
                     <div className="form">
                         <div className="m-10 contact__infoField">
                             <label htmlFor="userEmail">Email Address</label>
-                            <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
+                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={email} disabled={true}/>
                         </div>
                     </div>
                     <div className="oauth-container">
@@ -236,9 +236,9 @@ const Account = ({ userData }) => {
                     <div className="form">
                         <div className="m-10">
                             <FormControlLabel control={
-                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color={document.body.classList.contains("dark") ? "white" : "primary"}/>
+                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color="primary"/>
                             } label="Multi Factor Authentication (MFA)" />
-                            <Tooltip placement="top" className="ml-10" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                            <Tooltip placement="top" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                     </div>
                     { authenticated && security['2FA'] ? (<div className="oauth-container">
@@ -279,7 +279,7 @@ const Account = ({ userData }) => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="old-password">Old Password</label>
-                                    <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('oldPassword', event.target.value)} value={password.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
+                                    <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handlePassword('oldPassword', event.target.value)} value={password.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                         <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
@@ -290,7 +290,7 @@ const Account = ({ userData }) => {
                                 <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="new-password">New Password</label>
-                                        <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('newPassword', event.target.value)} value={password.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
+                                        <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handlePassword('newPassword', event.target.value)} value={password.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => handleChange('newPassword', !properties.newPassword)} name="newPassword">
                                             <FontAwesomeIcon icon={properties.newPassword ? faEyeSlash : faEye} />
@@ -300,7 +300,7 @@ const Account = ({ userData }) => {
                                 <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="confirm-password">Confirm New Password</label>
-                                        <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('confirmPassword', event.target.value)} value={password.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                        <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handlePassword('confirmPassword', event.target.value)} value={password.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)} name="confirmPassword">
                                             <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
@@ -308,8 +308,8 @@ const Account = ({ userData }) => {
                                     </div>
                                 </div>
                             </div>
-                            <p className="isCentered"><a className="link" href="/reset-password">I forgot my password</a></p>
-                            <button type="submit" id="change-password" className="btn__outline no-outline">Update</button>
+                            <p className="isCentered mt-10"><a className="link" href="/reset-password">I forgot my password</a></p>
+                            <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="change-password">Update</button>
                         </form>
                     </div>
                 </div>
@@ -331,7 +331,7 @@ const Account = ({ userData }) => {
                                     <p className="mt-10">Verification Code will be sent to <b>{email}</b> via email and will be valid for only <b>5 (five) minutes</b>.</p>
                                     <p className="mt-10"><b>Note: Once you enable 2 Factor Authentication (2FA), you will be prompted to enter verification code on every login session.</b></p>
                                 </blockquote>
-                                <button id="send-otp" className="btn__outline no-outline" onClick={sendOTP}>Send Verification Code</button>
+                                <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="send-otp" onClick={sendOTP}>Send Verification Code</button>
                             </li>
                             <li>
                                 Verify Code
@@ -348,7 +348,7 @@ const Account = ({ userData }) => {
                                             <span className="contact__onFocus"></span>
                                         </div>
                                     </div>
-                                    <button type="submit" id="verify" className="btn__outline no-outline">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
+                                    <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
                                 </form>
                             </li>
                         </ol>
@@ -371,7 +371,7 @@ const Account = ({ userData }) => {
                                     <span className="info-title">Change Password</span>
                                     <p className="mt-10">In order to improve our services, qualities, and securities, we will need an <b>OTP Token</b> before users perform Change Password Request.</p>
                                 </blockquote>
-                                <button id="send-otp-pass" className="btn__outline no-outline" onClick={sendOTP}>Send Verification Code</button>
+                                <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="send-otp-pass" onClick={sendOTP}>Send Verification Code</button>
                             </li>
                             <li>
                                 Verify Code
@@ -379,23 +379,18 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="code-otp">Verification Code</label>
-                                            <input title="Old Password" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
+                                            <input title="Verification Code" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
                                             <span className="contact__onFocus"></span>
                                         </div>
                                     </div>
-                                    <button type="submit" id="verify-otp" className="btn__outline no-outline">Verify</button>
+                                    <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify-otp">Verify</button>
                                 </form>
                             </li>
                         </ol>
                     </div>
                 </div>
             </div>
-            
-            <div className="contact__infoField">
-                <textarea id="backup-codes" className="contact__inputField no-bot" value={authenticated ? backupCode() : null}></textarea>
-                <span className="contact__onFocus"></span>
-            </div>
-
+            { authenticated ? (<div className="contact__infoField"><textarea id="backup-codes" className="contact__inputField no-bot" value={backupCode()}></textarea></div>) : null }
             { authenticated && security['2FA'] ? (<div id="backup-code-bg" className="modal hiddenModal">
                 <div id="backup-code-modal" className="modal__container hiddenModal">
                     <div className="modal__title">
@@ -405,8 +400,8 @@ const Account = ({ userData }) => {
                     <div className="modal__body mt-10">
                         <p className="mb-10">Keep these backup codes somewhere safe but accessible. Each backup code can only be used once.</p>
                         <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div>
-                        <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button>
                         <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="generate-token" onClick={RegenerateToken}>Regenerate Token</button>
+                        <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button>
                     </div>
                 </div>
             </div>) : null }

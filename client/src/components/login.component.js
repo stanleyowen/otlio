@@ -126,7 +126,7 @@ const Login = ({ userData }) => {
                             </div>
                             <div className="m-10">
                                 <div className="contact__infoField">
-                                    <label htmlFor="code">Verification Code</label>
+                                    <label htmlFor="code">Verification Code <span className="required">*</span></label>
                                     <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete="one-time-code" />
                                     <span className="contact__onFocus"></span>
                                 </div>

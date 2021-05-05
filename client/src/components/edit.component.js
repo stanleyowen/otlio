@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import DateFnsUtils from "@date-io/date-fns";
-import { Select, MenuItem } from '@material-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Select, MenuItem, IconButton } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import axios from 'axios';
 
 import { labels, validateLabel, getCSRFToken } from '../libraries/validation';
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -42,7 +44,7 @@ const Edit = ({ userData }) => {
                     localStorage.setItem('info', JSON.stringify(err.response.data));
                     window.location='/';
                 }
-            });
+            })
         }
         document.querySelectorAll('[data-autoresize]').forEach((e) => {
             e.style.boxSizing = 'border-box';
@@ -58,7 +60,7 @@ const Edit = ({ userData }) => {
 
     const updateData = (e) => {
         e.preventDefault();
-        const btn = document.getElementById('edit-todo');
+        const btn = document.getElementById('update-todo');
         async function submitData() {
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.put(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
@@ -85,7 +87,9 @@ const Edit = ({ userData }) => {
             </div></div>) : null }
 
             <div className="main__projects">
-                <a href="/" className="close" style={{fontSize: '40px', textDecoration: 'none'}}>&times;</a>
+                <IconButton href='/' className="float-right">
+                    <FontAwesomeIcon icon={faTimes} style={{ fontSize: ".8em", color: 'black' }} />
+                </IconButton>
                 <form onSubmit={updateData} className="mt-20">
                     <div className="m-10 no-bot">
                         <div className="contact__infoField">
@@ -134,7 +138,7 @@ const Edit = ({ userData }) => {
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    <button type="submit" id="edit-todo" className="btn__outline no-outline">Update</button>
+                    <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="update-todo">Update</button>
                 </form>
             </div>
         </div>

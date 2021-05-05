@@ -43,13 +43,13 @@ const ResetPassword = ({ userData }) => {
             <div className="form__contact">
                 <div className="get_in_touch"><h1>Reset Password</h1></div>
                 <div className="form">
-                    { properties.success ? (<blockquote>
+                    { properties.success ? (<blockquote className="mt-10">
                         <p className="mt-10">Password reset link has been sent to <b>{email}</b> for resetting your password. Click the link for the following steps.</p>
                         <p className="mt-20">If you don't receive the e-mail in 5 minutes, please check your spam folder.</p>
                     </blockquote>) : (<form className="contact__form" name="contact__form" onSubmit={Submit}>
                         <div className="m-10 no-bot">
                             <div className="contact__infoField">
-                                <label htmlFor="bot-email">Email</label>
+                                <label htmlFor="bot-email">Enter your user account's verified email address and we will send you a password reset link.</label>
                                 <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
@@ -57,7 +57,7 @@ const ResetPassword = ({ userData }) => {
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userEmail">Enter your user account's verified email address and we will send you a password reset link.</label>
-                                <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => setEmail(event.target.value)} placeholder="Email Address" value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
+                                <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => setEmail(event.target.value)} placeholder="Email Address" value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>

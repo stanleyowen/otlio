@@ -247,7 +247,7 @@ const Home = ({ userData }) => {
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <button type="submit" id="add-todo" className="btn__outline no-outline">Add</button>
+                            <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="add-todo">Add</button>
                         </form>
                     </div>
                 </div>
