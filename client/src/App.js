@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification';
-import "./App.min.css";
+import "./App.css";
+// import "./App.min.css";
 
 import Navbar from './components/navbar.component';
 import Welcome from './components/welcome.component';

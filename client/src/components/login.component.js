@@ -40,6 +40,7 @@ const Login = ({ userData }) => {
 
     useEffect(() => {
         const btn = document.getElementById('send-otp');
+        const otp = document.querySelectorAll('#otp > *[id]')
         async function sendOTP(){
             if(!login.email) handleLogin('email', email); properties.verify = true;
             if(btn) btn.innerHTML = "Sending..."; handleChange('disabled', true);
@@ -47,7 +48,7 @@ const Login = ({ userData }) => {
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleData('tokenId', res.data.credentials.tokenId)
-                document.getElementById('code').focus()
+                document.getElementById('token-1').focus()
             })
             .catch(err => {
                 if(err.response.status >= 500) setTimeout(() => sendOTP(), 5000)
@@ -55,8 +56,30 @@ const Login = ({ userData }) => {
             })
             if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false);
         }
+        async function OTPInput(){
+            for (let i = 0; i < otp.length; i++) {
+                otp[i].setAttribute('maxlength', 1); otp[i].setAttribute('type', 'text');
+                otp[i].setAttribute('required', true);
+                otp[i].addEventListener('keydown', (e) => {
+                    if (e.key === "Backspace") {
+                        otp[i].value = '';
+                        if (i !== 0) otp[i - 1].focus();
+                    }else {
+                        if (i === otp.length - 1 && otp[i].value !== '') return true;
+                        else if (e.keyCode > 47 && e.keyCode < 58) {
+                            otp[i].value = e.key;
+                            if (i !== otp.length - 1) otp[i + 1].focus();
+                        }else if (e.keyCode > 64 && e.keyCode < 122) {
+                            otp[i].value = e.key;
+                            if (i !== otp.length - 1) otp[i + 1].focus();
+                        }e.preventDefault()
+                    }
+                })
+            }
+        }
         if((status === 302 && !properties.verify && mfa) || properties.sendOTP){ properties.sendOTP = false; sendOTP(); }
-    }, [userData, properties.verify, properties.sendOTP])
+        OTPInput();
+    }, [userData, properties.verify, properties.sendOTP, data])
 
     const LogIn = (e) => {
         e.preventDefault();
@@ -79,6 +102,12 @@ const Login = ({ userData }) => {
 
     const VerifyOTP = (e) => {
         e.preventDefault();
+        const otp = document.querySelectorAll('#otp > *[id]')
+        let token = '';
+        for (let i = 1; i < otp.length+1; i++) {
+            const data = document.getElementById(`token-${i}`).value
+            token += String(data)
+        } data.token = token;
         const btn = document.getElementById('verify');
         async function submitData(){
             btn.innerHTML = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
@@ -86,13 +115,13 @@ const Login = ({ userData }) => {
             .then(() => window.location = '/')
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-                document.getElementById('code').focus()
+                document.getElementById('token-1').focus()
             })
             btn.innerHTML = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;
         else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
-        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
+        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus(); }
         else submitData();
     }
     return properties.verify ? (
@@ -120,15 +149,23 @@ const Login = ({ userData }) => {
                             <div className="m-10 no-bot">
                                 <div className="contact__infoField">
                                     <label htmlFor="bot-code">Verification Code</label>
-                                    <input title="Verification Code" id="bot-code" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
+                                    <input title="Verification Code" id="bot-code" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="m-10">
                                 <div className="contact__infoField">
-                                    <label htmlFor="code">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
-                                    <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete="one-time-code" />
-                                    <span className="contact__onFocus"></span>
+                                    <label htmlFor="token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
+                                    <div id="otp" className="otp flex justify-center isCentered">
+                                        <input id="token-1" />
+                                        <input id="token-2" />
+                                        <input id="token-3" />
+                                        <input id="token-4" />
+                                        <input id="token-5" />
+                                        <input id="token-6" />
+                                        { data.isBackupCode ? (<input id="token-7" />) : null }
+                                        { data.isBackupCode ? (<input id="token-8" />) : null }
+                                    </div>
                                 </div>
                             </div>
                             <p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>
@@ -159,7 +196,7 @@ const Login = ({ userData }) => {
                         <div className="m-10 no-bot">
                             <div className="contact__infoField">
                                 <label htmlFor="bot-email">Email</label>
-                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
+                                <input title="Email" id="bot-email" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>

@@ -44,6 +44,8 @@ const Account = ({ userData }) => {
         const otpModal = document.getElementById('otp-modal');
         const backupBg = document.getElementById('backup-code-bg');
         const backupModal = document.getElementById('backup-code-modal');
+        const otp1 = document.querySelectorAll('#otp1 > *[id]')
+        const otp2 = document.querySelectorAll('#otp2 > *[id]')
         window.onclick = (e) => {
             if(e.target === passwordBg && !properties.disabled){
                 passwordModal.classList.remove('showModal');
@@ -67,7 +69,45 @@ const Account = ({ userData }) => {
                 backupBg.classList.add('hideBackground');
             }
         }
-    }, [properties.disabled])
+        for (let i = 0; i < otp1.length; i++) {
+            otp1[i].setAttribute('maxlength', 1); otp1[i].setAttribute('type', 'text');
+            otp1[i].setAttribute('required', true);
+            otp1[i].addEventListener('keydown', (e) => {
+                if (e.key === "Backspace") {
+                    otp1[i].value = '';
+                    if (i !== 0) otp1[i - 1].focus();
+                }else {
+                    if (i === otp1.length - 1 && otp1[i].value !== '') return true;
+                    else if (e.keyCode > 47 && e.keyCode < 58) {
+                        otp1[i].value = e.key;
+                        if (i !== otp1.length - 1) otp1[i + 1].focus();
+                    }else if (e.keyCode > 64 && e.keyCode < 122) {
+                        otp1[i].value = e.key;
+                        if (i !== otp1.length - 1) otp1[i + 1].focus();
+                    }e.preventDefault();
+                }
+            })
+        }
+        for (let i = 0; i < otp2.length; i++) {
+            otp2[i].setAttribute('maxlength', 1); otp2[i].setAttribute('type', 'text');
+            otp2[i].setAttribute('required', true);
+            otp2[i].addEventListener('keydown', (e) => {
+                if (e.key === "Backspace") {
+                    otp2[i].value = '';
+                    if (i !== 0) otp2[i - 1].focus();
+                }else {
+                    if (i === otp2.length - 1 && otp2[i].value !== '') return true;
+                    else if (e.keyCode > 47 && e.keyCode < 58) {
+                        otp2[i].value = e.key;
+                        if (i !== otp2.length - 1) otp2[i + 1].focus();
+                    }else if (e.keyCode > 64 && e.keyCode < 122) {
+                        otp2[i].value = e.key;
+                        if (i !== otp2.length - 1) otp2[i + 1].focus();
+                    }e.preventDefault();
+                }
+            })
+        }
+    }, [properties.disabled, data])
     
     const backupCodes = () => {
         const codes = [...valid, ...invalid]
@@ -113,6 +153,12 @@ const Account = ({ userData }) => {
         e.preventDefault();
         const btn = document.getElementById('change-password');
         const verifyBtn = document.getElementById('verify-otp');
+        const otp = document.querySelectorAll('#otp2 > *[id]')
+        let token = '';
+        for (let i = 1; i < otp.length+1; i++) {
+            const data = document.getElementById(`otp-token-${i}`);
+            if(data) token += String(data.value)
+        } data.token = token;
         async function submitData() {
             verifyBtn.innerHTML = "Verifying..."; verifyBtn.setAttribute("disabled", "true"); verifyBtn.classList.add("disabled"); handleChange('disabled', true);
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
@@ -124,7 +170,7 @@ const Account = ({ userData }) => {
             })
             .catch(err =>{
                 if(err.response.status === 428) openModal('otp-bg', 'otp-modal')
-                document.getElementById('code-otp').focus()
+                document.getElementById('otp-token-1').focus()
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
             verifyBtn.innerHTML = "Verify"; verifyBtn.removeAttribute("disabled"); verifyBtn.classList.remove("disabled");
@@ -147,8 +193,8 @@ const Account = ({ userData }) => {
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleData('tokenId', res.data.credentials.tokenId)
-                document.getElementById('code').focus()
-                document.getElementById('code-otp').focus()
+                document.getElementById('token-1').focus()
+                document.getElementById('otp-token-1').focus()
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             passwordBtn.innerHTML = "Send Verification Code"; passwordBtn.removeAttribute("disabled"); passwordBtn.classList.remove("disabled");
@@ -161,6 +207,12 @@ const Account = ({ userData }) => {
     const VerifyOTP = (e) => {
         e.preventDefault();
         const btn = document.getElementById('verify');
+        const otp = document.querySelectorAll('#otp1 > *[id]');
+        let token = '';
+        for (let i = 1; i < otp.length+1; i++) {
+            const data = document.getElementById(`token-${i}`);
+            if(data) token += String(data.value)
+        } data.token = token;
         async function submitData(){
             if (security['2FA']) btn.innerHTML = "Deactivating...";
             else btn.innerHTML = "Activating...";
@@ -173,7 +225,8 @@ const Account = ({ userData }) => {
             })
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-                document.getElementById('code').focus()
+                document.getElementById('token-1').focus()
+                document.getElementById('otp-token-1').focus()
             })
             if (security['2FA']) btn.innerHTML = "Deactivate";
             else btn.innerHTML = "Activate";
@@ -181,7 +234,7 @@ const Account = ({ userData }) => {
         }
         if(properties.honeypot) return;
         else if(!data.isBackupCode && !data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
-        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
+        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus(); }
         else submitData();
     }
 
@@ -344,9 +397,17 @@ const Account = ({ userData }) => {
                                 <form onSubmit={VerifyOTP}>
                                     <div className="m-10">
                                         <div className="contact__infoField">
-                                            <label htmlFor="code">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
-                                            <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
-                                            <span className="contact__onFocus"></span>
+                                            <label htmlFor="token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
+                                            <div id="otp1" className="otp flex justify-center isCentered">
+                                                <input id="token-1" />
+                                                <input id="token-2" />
+                                                <input id="token-3" />
+                                                <input id="token-4" />
+                                                <input id="token-5" />
+                                                <input id="token-6" />
+                                                { data.isBackupCode ? (<input id="token-7" />) : null }
+                                                { data.isBackupCode ? (<input id="token-8" />) : null }
+                                            </div>
                                         </div>
                                     </div>
                                     { authenticated && security['2FA'] ? (<p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>) : null }
@@ -380,9 +441,17 @@ const Account = ({ userData }) => {
                                 <form onSubmit={changePassword}>
                                     <div className="m-10">
                                         <div className="contact__infoField">
-                                            <label htmlFor="code-otp">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
-                                            <input title="Verification Code" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required autoComplete="one-time-code" />
-                                            <span className="contact__onFocus"></span>
+                                            <label htmlFor="otp-token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
+                                            <div id="otp2" className="otp flex justify-center isCentered">
+                                                <input id="otp-token-1" />
+                                                <input id="otp-token-2" />
+                                                <input id="otp-token-3" />
+                                                <input id="otp-token-4" />
+                                                <input id="otp-token-5" />
+                                                <input id="otp-token-6" />
+                                                { data.isBackupCode ? (<input id="otp-token-7" />) : null }
+                                                { data.isBackupCode ? (<input id="otp-token-8" />) : null }
+                                            </div>
                                         </div>
                                     </div>
                                     <p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>

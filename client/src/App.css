@@ -180,6 +180,7 @@ label { user-select: none; }
 .button { font-size: 18px; }
 .flex { display: flex !important; flex-wrap: wrap; }
 .flex p { flex: 50%; }
+.m-5 { margin: 5px !important; }
 .m-10 { margin: 10px !important; }
 .p-12 { padding: 12px !important; }
 .ml-10 { margin-left: 10px !important; }
@@ -857,6 +858,24 @@ blockquote em {font-style: italic;}
 }
 .link:focus { color: #004299 !important; }
 .link:visited { color: blue; }
+.otp input {
+    margin: 3px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #f1f1f1 !important;
+}
+.otp input:focus {
+    color: #3F4254;
+    background-color: #EBEDF3;
+    border-color: #1a73e8 !important;
+    outline: 0;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.justify-center { justify-content: center; }
 @keyframes octocat-wave {
     0%,100%{transform:rotate(0)}
     20%,60%{transform:rotate(-25deg)}
