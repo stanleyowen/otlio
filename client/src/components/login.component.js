@@ -126,12 +126,12 @@ const Login = ({ userData }) => {
                             </div>
                             <div className="m-10">
                                 <div className="contact__infoField">
-                                    <label htmlFor="code">Verification Code <span className="required">*</span></label>
+                                    <label htmlFor="code">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
                                     <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete="one-time-code" />
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
-                            <p className="isCentered">If you're unable to receive a security code, use one of your <a className="animation__underline" onClick={() => handleData('isBackupCode', true)}>Backup Codes</a></p>
+                            <p className="isCentered">If you're unable to receive a security code, use one of your <a className="animation__underline" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>
                             <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</a></p>
                             <div className="flex isCentered">
                                 <p><button type="reset" className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
