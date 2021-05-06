@@ -37,12 +37,10 @@ const VerifyAccount = () => {
                 <img className="animation__message" src={verifiedSuccess} />
                 <div className="get_in_touch"><h1>Account Verified Successfully</h1></div>
             </div>
-        ) : (
-            <div id="form">
+        ) : (<div id="form">
                 <img className="animation__message" src={verifiedError} />
                 <div className="get_in_touch mt-20"><h1>Oops! Looks like the link is expired or invalid.</h1></div>
-            </div>
-        );
+            </div>);
 }
 
 export default VerifyAccount;

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/';
+import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -35,15 +35,15 @@ const Register = ({ userData }) => {
     const Register = (e) => {
         e.preventDefault();
         const btn = document.getElementById('register');
+        btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
         async function submitData(){
-            btn.innerHTML = "Registering..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.post(`${SERVER_URL}/account/register`, register, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleChange('verify', true)
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Register"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            btn.innerHTML = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;
         else if(!register.email || !register.password || !register.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!register.email ? 'userEmail' : !register.password ? 'userPassword' : 'userConfirmPassword').focus(); }
@@ -73,17 +73,19 @@ const Register = ({ userData }) => {
                 <div className="form">
                     <h4 className="mt-20 mb-20 isCentered">Please check your email ({ email ? email : register.email }) to confirm your account.</h4>
                     <hr />
-                    <h4 className="mt-20 mb-20 isCentered">If { email ? email : properties.email } is not your email address, please click Logout and enter the correct one.</h4>
+                    <h4 className="mt-20 mb-20 isCentered">If { email ? email : properties.email } is not your email address, click on the back button and enter the correct one.</h4>
                     <h4 className="mt-20 mb-20 isCentered">If you don't receive the e-mail in 5 minutes, please check your spam folder or click the resend button.</h4>
-                    <button className="contact__sendBtn solid mb-10" id="cancel" onClick={() => window.location='/logout'}>Logout</button>
-                    <button className="contact__sendBtn ml-10 mb-10" id="send-link" onClick={sendLink}>Resend Link</button>
+                    <div className="flex isCentered">
+                        <p><button className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Back</button></p>
+                        <p><button className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="send-link" onClick={sendLink}>Resend Link</button></p>
+                    </div>
                 </div>
             </div>
         </div>
     ) : (
         <div id="form">
             <div className="form__contact">
-                <div className="get_in_touch"><h1>Register</h1></div>
+                <div className="get_in_touch"><h1>Create your account</h1></div>
                 <div className="oauth-container">
                     <button className="oauth-box google" onClick={OAuthGoogle}>
                         <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Join Us with Google</p>
@@ -96,7 +98,7 @@ const Register = ({ userData }) => {
                     <form className="contact__form" name="contact__form" onSubmit={Register}>
                         <div className="m-10 no-bot">
                             <div className="contact__infoField">
-                                <label htmlFor="bot-email">Email <span className="required">*</span></label>
+                                <label htmlFor="bot-email">Email</label>
                                 <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
@@ -112,7 +114,7 @@ const Register = ({ userData }) => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userPassword">Password <span className="required">*</span></label>
-                                    <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } minLength="6" maxLength="60" className="contact__inputField" onChange={(event) => handleRegister('password', event.target.value)} value={register.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'new-password'} />
+                                    <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' }className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handleRegister('password', event.target.value)} value={register.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                         <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
@@ -122,7 +124,7 @@ const Register = ({ userData }) => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
-                                    <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } minLength="6" maxLength="60" className="contact__inputField" onChange={(event) => handleRegister('confirmPassword', event.target.value)} value={register.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                    <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handleRegister('confirmPassword', event.target.value)} value={register.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)}>
                                         <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
@@ -130,12 +132,12 @@ const Register = ({ userData }) => {
                                 </div>
                             </div>
                         </div>
-                        <p className="isCentered">Already have an Account? <a className="animation__underline" href="/login">Login</a></p>
-                        <button type="submit" className="contact__sendBtn no-outline" id="register">Register</button>
-                        <p className="mt-20 small">Signing up signifies that you have read and agree to the <a className="animation__underline" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a> and our <a className="animation__underline" href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
+                        <button type="submit" className="oauth-box google isCentered block mt-20 p-12 button" id="register">Create Account</button>
+                        <p className="mt-20 small">Signing up signifies that you have read and agree to the <a className="link" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a> and our <a className="link" href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
                     </form>
                 </div>
             </div>
+            <p className="isCentered">Already have an Account? <a className="link" href="/login">Login</a></p>
         </div>
     )
 }

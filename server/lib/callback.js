@@ -33,7 +33,7 @@ const MSG_DESC = [
     'It looks like the link is expired or invalid. Please try again.',  // 31
     'No Users Found',                                                   // 32
     'Captcha Verification Failed',                                      // 33
-    'Sorry, we are not able to process your request. Please try again later.', // 34
+    'Sorry, we are not able to process your request right now. Please try again later.', // 34
     'Account Verification Link Sent Successfully',                      // 35
     'Verification Code has been Sent Successfully',                     // 36
     'Authentication Required',                                          // 37

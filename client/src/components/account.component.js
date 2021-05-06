@@ -12,7 +12,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Account = ({ userData }) => {
     const {email, thirdParty, security, authenticated, isLoading} = userData;
-    const {valid, invalid} = security ? security['backup-codes'] : [];
+    const {valid, invalid} = authenticated ? security['backup-codes'] : [];
 
     const [password, setPassword] = useState({
         oldPassword: '',
@@ -27,7 +27,8 @@ const Account = ({ userData }) => {
     })
     const [data, setData] = useState({
         tokenId: '',
-        token: ''
+        token: '',
+        isBackupCode: false
     })
 
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
@@ -43,6 +44,8 @@ const Account = ({ userData }) => {
         const otpModal = document.getElementById('otp-modal');
         const backupBg = document.getElementById('backup-code-bg');
         const backupModal = document.getElementById('backup-code-modal');
+        const otp1 = document.querySelectorAll('#otp1 > *[id]')
+        const otp2 = document.querySelectorAll('#otp2 > *[id]')
         window.onclick = (e) => {
             if(e.target === passwordBg && !properties.disabled){
                 passwordModal.classList.remove('showModal');
@@ -66,7 +69,43 @@ const Account = ({ userData }) => {
                 backupBg.classList.add('hideBackground');
             }
         }
-    }, [properties.disabled])
+        for (let i = 0; i < otp1.length; i++) {
+            otp1[i].setAttribute('maxlength', 1); otp1[i].setAttribute('type', 'text');
+            otp1[i].setAttribute('pattern', '[0-9]'); otp1[i].setAttribute('autocomplete', 'off');
+            otp1[i].setAttribute('inputmode', 'numeric'); otp1[i].setAttribute('required', true);
+            otp1[i].addEventListener('keydown', (e) => {
+                if (e.key === "Backspace") {
+                    otp1[i].value = '';
+                    if (i !== 0) otp1[i - 1].focus();
+                }else {
+                    if (i === otp1.length - 1 && otp1[i].value !== '') return true;
+                    else if ((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
+                        otp1[i].value = e.key;
+                        if (i !== otp1.length - 1) otp1[i + 1].focus();
+                    }else otp1[i].value = '';
+                    e.preventDefault()
+                }
+            })
+        }
+        for (let i = 0; i < otp2.length; i++) {
+            otp2[i].setAttribute('maxlength', 1); otp2[i].setAttribute('type', 'text');
+            otp2[i].setAttribute('pattern', '[0-9]'); otp2[i].setAttribute('autocomplete', 'off');
+            otp2[i].setAttribute('inputmode', 'numeric'); otp2[i].setAttribute('required', true);
+            otp2[i].addEventListener('keydown', (e) => {
+                if (e.key === "Backspace") {
+                    otp2[i].value = '';
+                    if (i !== 0) otp2[i - 1].focus();
+                }else {
+                    if (i === otp2.length - 1 && otp2[i].value !== '') return true;
+                    else if ((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
+                        otp2[i].value = e.key;
+                        if (i !== otp2.length - 1) otp2[i + 1].focus();
+                    }else otp2[i].value = '';
+                    e.preventDefault()
+                }
+            })
+        }
+    }, [properties.disabled, data])
     
     const backupCodes = () => {
         const codes = [...valid, ...invalid]
@@ -84,26 +123,52 @@ const Account = ({ userData }) => {
             if(x%2 === 0 && x !== 0){ table.innerHTML += row.outerHTML; column.innerHTML=codes[x]; row.innerHTML=column.outerHTML; }
             else if(x === codes.length - 1){ column.innerHTML = codes[x]; row.innerHTML += column.outerHTML; table.innerHTML += row.outerHTML; }
             else {column.innerHTML = codes[x]; row.innerHTML += column.outerHTML;}
-        }
-        return table.outerHTML;
+        } return table.outerHTML;
+    }
+
+    const backupCode = () => {
+        const codes = [...valid, ...invalid]
+        return `       SAVE YOUR BACKUP CODES\n\nKeep these backup codes somewhere safe but accessible.\nEach backup code can only be used once.\n
+1. ${codes[0]}		 6. ${codes[5]}
+2. ${codes[1]}		 7. ${codes[6]}
+3. ${codes[2]}		 8. ${codes[7]}
+4. ${codes[3]}		 9. ${codes[8]}
+5. ${codes[4]}		10. ${codes[9]}\n
+    (stanleyowen06@gmail.com)`
+    }
+
+    const CopyCode = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('copy-code');
+        const code = document.getElementById('backup-codes');
+        btn.innerHTML = 'Copying...';
+        code.select(); code.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        btn.innerHTML = 'Copied to Clipboard';
     }
 
     const changePassword = (e) => {
         e.preventDefault();
         const btn = document.getElementById('change-password');
         const verifyBtn = document.getElementById('verify-otp');
+        const otp = document.querySelectorAll('#otp2 > *[id]')
+        let token = '';
+        for (let i = 1; i < otp.length+1; i++) {
+            const data = document.getElementById(`otp-token-${i}`);
+            if(data) token += String(data.value)
+        } data.token = token;
         async function submitData() {
             verifyBtn.innerHTML = "Verifying..."; verifyBtn.setAttribute("disabled", "true"); verifyBtn.classList.add("disabled"); handleChange('disabled', true);
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
             await axios.put(`${SERVER_URL}/account/user`, {...password, ...data}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('password-bg', 'password-modal'); closeModal('otp-bg', 'otp-modal');
-                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' }); setData({ tokenId: '', token: '' });
+                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' }); setData({ tokenId: '', token: '', isBackupCode: false });
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
             .catch(err =>{
                 if(err.response.status === 428) openModal('otp-bg', 'otp-modal')
-                document.getElementById('code-otp').focus()
+                document.getElementById('otp-token-1').focus()
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
             verifyBtn.innerHTML = "Verify"; verifyBtn.removeAttribute("disabled"); verifyBtn.classList.remove("disabled");
@@ -126,8 +191,8 @@ const Account = ({ userData }) => {
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleData('tokenId', res.data.credentials.tokenId)
-                document.getElementById('code').focus()
-                document.getElementById('code-otp').focus()
+                document.getElementById('token-1').focus()
+                document.getElementById('otp-token-1').focus()
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             passwordBtn.innerHTML = "Send Verification Code"; passwordBtn.removeAttribute("disabled"); passwordBtn.classList.remove("disabled");
@@ -140,27 +205,35 @@ const Account = ({ userData }) => {
     const VerifyOTP = (e) => {
         e.preventDefault();
         const btn = document.getElementById('verify');
+        const otp = document.querySelectorAll('#otp1 > *[id]');
+        let token = '';
+        for (let i = 1; i < otp.length+1; i++) {
+            const data = document.getElementById(`token-${i}`);
+            if(data) token += String(data.value)
+        } data.token = token;
         async function submitData(){
             if (security['2FA']) btn.innerHTML = "Deactivating...";
             else btn.innerHTML = "Activating...";
             btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
             await axios.put(`${SERVER_URL}/account/otp`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
-                localStorage.setItem('info', JSON.stringify(res.data))
-                closeModal('mfa-bg', 'mfa-modal')
-                window.location.reload()
+                closeModal('mfa-bg', 'mfa-modal');
+                if(!userData.security['2FA']) userData.security['backup-codes'].valid = res.data['backup-codes']
+                data.tokenId = ''; data.token = ''; data.isBackupCode = false;
+                userData.security['2FA'] = !userData.security['2FA'];
             })
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-                document.getElementById('code').focus()
+                document.getElementById('token-1').focus()
+                document.getElementById('otp-token-1').focus()
             })
             if (security['2FA']) btn.innerHTML = "Deactivate";
             else btn.innerHTML = "Activate";
             btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
         }
         if(properties.honeypot) return;
-        else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
-        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
+        else if(!data.isBackupCode && !data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
+        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus(); }
         else submitData();
     }
 
@@ -197,7 +270,7 @@ const Account = ({ userData }) => {
                     <div className="form">
                         <div className="m-10 contact__infoField">
                             <label htmlFor="userEmail">Email Address</label>
-                            <input title="Email" id="userEmail" type="email" className="contact__inputField" value={email} disabled={true}/>
+                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={email} disabled={true}/>
                         </div>
                     </div>
                     <div className="oauth-container">
@@ -216,18 +289,18 @@ const Account = ({ userData }) => {
                     <div className="form">
                         <div className="m-10">
                             <FormControlLabel control={
-                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color={document.body.classList.contains("dark") ? "white" : "primary"}/>
+                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color="primary"/>
                             } label="Multi Factor Authentication (MFA)" />
-                            <Tooltip placement="top" className="ml-10" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                            <Tooltip placement="top" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                     </div>
-                    <div className="oauth-container">
+                    { authenticated && security['2FA'] ? (<div className="oauth-container">
                         <div className="m-10">
-                            <button className="oauth-box primary mt-20" onClick={() => authenticated && security['2FA'] ? openModal('backup-code-bg', 'backup-code-modal') : setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Multi Factor Authentication (MFA) Users')}>
+                            <button className="oauth-box primary mt-20" onClick={() => openModal('backup-code-bg', 'backup-code-modal')}>
                                 <FontAwesomeIcon icon={faKey} size='2x'/> <p>Backup Codes</p>
                             </button>
                         </div>
-                    </div>
+                    </div>) : null }
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
                     <div className="form__container">
                         <div className="m-10">
@@ -242,7 +315,7 @@ const Account = ({ userData }) => {
                         </div>
                     </div>
                     <hr className="mt-20"></hr>
-                    <p className="isCentered mt-20 mb-20"><a href="/terms-and-conditions">Terms of Service</a> | <a href="/privacy-policy">Privacy Policy</a></p>
+                    <p className="isCentered mt-20 mb-20"><a className="link" href="/terms-and-conditions">Terms of Service</a> | <a className="link" href="/privacy-policy">Privacy Policy</a></p>
                     <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                 </div>
             </div>
@@ -258,8 +331,8 @@ const Account = ({ userData }) => {
                             <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
                             <div className="m-10">
                                 <div className="contact__infoField">
-                                    <label htmlFor="old-password">Old Password <span className="required">*</span></label>
-                                    <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('oldPassword', event.target.value)} value={password.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
+                                    <label htmlFor="old-password">Old Password</label>
+                                    <input title="Old Password" id="old-password" type={ properties.password ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handlePassword('oldPassword', event.target.value)} value={password.oldPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.password ? 'off':'current-password'} />
                                     <span className="contact__onFocus"></span>
                                     <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                         <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
@@ -269,8 +342,8 @@ const Account = ({ userData }) => {
                             <div className="form__container">
                                 <div className="m-10">
                                     <div className="contact__infoField">
-                                        <label htmlFor="new-password">New Password <span className="required">*</span></label>
-                                        <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('newPassword', event.target.value)} value={password.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
+                                        <label htmlFor="new-password">New Password</label>
+                                        <input title="New Password" id="new-password" type={ properties.newPassword ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handlePassword('newPassword', event.target.value)} value={password.newPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.newPassword ? 'off':'new-password'} />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => handleChange('newPassword', !properties.newPassword)} name="newPassword">
                                             <FontAwesomeIcon icon={properties.newPassword ? faEyeSlash : faEye} />
@@ -279,8 +352,8 @@ const Account = ({ userData }) => {
                                 </div>
                                 <div className="m-10">
                                     <div className="contact__infoField">
-                                        <label htmlFor="confirm-password">Confirm New Password <span className="required">*</span></label>
-                                        <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" maxLength="60" onChange={(event) => handlePassword('confirmPassword', event.target.value)} value={password.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
+                                        <label htmlFor="confirm-password">Confirm New Password</label>
+                                        <input title="Confirm New Password" id="confirm-password" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handlePassword('confirmPassword', event.target.value)} value={password.confirmPassword} spellCheck="false" autoCapitalize="none" required autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
                                         <span className="contact__onFocus"></span>
                                         <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)} name="confirmPassword">
                                             <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
@@ -288,8 +361,8 @@ const Account = ({ userData }) => {
                                     </div>
                                 </div>
                             </div>
-                            <p className="isCentered"><a className="animation__underline" href="/reset-password">I forgot my password</a></p>
-                            <button type="submit" id="change-password" className="btn__outline no-outline">Update</button>
+                            <p className="isCentered mt-10"><a className="link" href="/reset-password">I forgot my password</a></p>
+                            <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="change-password">Update</button>
                         </form>
                     </div>
                 </div>
@@ -311,10 +384,10 @@ const Account = ({ userData }) => {
                                     <p className="mt-10">Verification Code will be sent to <b>{email}</b> via email and will be valid for only <b>5 (five) minutes</b>.</p>
                                     <p className="mt-10"><b>Note: Once you enable 2 Factor Authentication (2FA), you will be prompted to enter verification code on every login session.</b></p>
                                 </blockquote>
-                                <button id="send-otp" className="btn__outline no-outline" onClick={sendOTP}>Send Verification Code</button>
+                                <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="send-otp" onClick={sendOTP}>Send Verification Code</button>
                             </li>
                             <li>
-                                Verify Code
+                                Verify Identity
                                 <blockquote className="mt-20">
                                     <span><FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: '1.5em' }} /></span>
                                     <span className="info-title">Account Recovery</span>
@@ -323,12 +396,21 @@ const Account = ({ userData }) => {
                                 <form onSubmit={VerifyOTP}>
                                     <div className="m-10">
                                         <div className="contact__infoField">
-                                            <label htmlFor="code">Verification Code</label>
-                                            <input title="Old Password" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required maxLength="6" placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
-                                            <span className="contact__onFocus"></span>
+                                            <label htmlFor="token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
+                                            <div id="otp1" className="otp flex justify-center isCentered">
+                                                <input id="token-1" />
+                                                <input id="token-2" />
+                                                <input id="token-3" />
+                                                <input id="token-4" />
+                                                <input id="token-5" />
+                                                <input id="token-6" />
+                                                { data.isBackupCode ? (<input id="token-7" />) : null }
+                                                { data.isBackupCode ? (<input id="token-8" />) : null }
+                                            </div>
                                         </div>
                                     </div>
-                                    <button type="submit" id="verify" className="btn__outline no-outline">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
+                                    { authenticated && security['2FA'] ? (<p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>) : null }
+                                    <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
                                 </form>
                             </li>
                         </ol>
@@ -351,19 +433,28 @@ const Account = ({ userData }) => {
                                     <span className="info-title">Change Password</span>
                                     <p className="mt-10">In order to improve our services, qualities, and securities, we will need an <b>OTP Token</b> before users perform Change Password Request.</p>
                                 </blockquote>
-                                <button id="send-otp-pass" className="btn__outline no-outline" onClick={sendOTP}>Send Verification Code</button>
+                                <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="send-otp-pass" onClick={sendOTP}>Send Verification Code</button>
                             </li>
                             <li>
-                                Verify Code
+                                Verify Identity
                                 <form onSubmit={changePassword}>
                                     <div className="m-10">
                                         <div className="contact__infoField">
-                                            <label htmlFor="code">Verification Code</label>
-                                            <input title="Old Password" id="code-otp" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} spellCheck="false" autoCapitalize="none" required maxLength="6" placeholder="6-Digit Verification Code" autoComplete="one-time-code" />
-                                            <span className="contact__onFocus"></span>
+                                            <label htmlFor="otp-token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
+                                            <div id="otp2" className="otp flex justify-center isCentered">
+                                                <input id="otp-token-1" />
+                                                <input id="otp-token-2" />
+                                                <input id="otp-token-3" />
+                                                <input id="otp-token-4" />
+                                                <input id="otp-token-5" />
+                                                <input id="otp-token-6" />
+                                                { data.isBackupCode ? (<input id="otp-token-7" />) : null }
+                                                { data.isBackupCode ? (<input id="otp-token-8" />) : null }
+                                            </div>
                                         </div>
                                     </div>
-                                    <button type="submit" id="verify-otp" className="btn__outline no-outline">Verify</button>
+                                    <p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>
+                                    <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify-otp">Verify</button>
                                 </form>
                             </li>
                         </ol>
@@ -371,18 +462,21 @@ const Account = ({ userData }) => {
                 </div>
             </div>
 
-            <div id="backup-code-bg" className="modal hiddenModal">
+            { authenticated ? (<div className="contact__infoField"><textarea id="backup-codes" className="contact__inputField no-bot" value={backupCode()}></textarea></div>) : null }
+            { authenticated && security['2FA'] ? (<div id="backup-code-bg" className="modal hiddenModal">
                 <div id="backup-code-modal" className="modal__container hiddenModal">
                     <div className="modal__title">
                         <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('backup-code-bg', 'backup-code-modal')}>&times;</span>
                         <h2>Backup Codes</h2>
                     </div>
                     <div className="modal__body mt-10">
-                        { authenticated && security['2FA'] ? <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div> : null }
-                        <button id="generate-token" className="btn__outline no-outline" onClick={RegenerateToken}>Regenerate Code</button>
+                        <p className="mb-10">Keep these backup codes somewhere safe but accessible. Each backup code can only be used once.</p>
+                        <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div>
+                        <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="generate-token" onClick={RegenerateToken}>Regenerate Token</button>
+                        <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button>
                     </div>
                 </div>
-            </div>
+            </div>) : null }
         </div>
     );
 }

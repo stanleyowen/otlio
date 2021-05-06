@@ -40,6 +40,7 @@ const Login = ({ userData }) => {
 
     useEffect(() => {
         const btn = document.getElementById('send-otp');
+        const otp = document.querySelectorAll('#otp > *[id]')
         async function sendOTP(){
             if(!login.email) handleLogin('email', email); properties.verify = true;
             if(btn) btn.innerHTML = "Sending..."; handleChange('disabled', true);
@@ -47,7 +48,7 @@ const Login = ({ userData }) => {
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleData('tokenId', res.data.credentials.tokenId)
-                document.getElementById('code').focus()
+                document.getElementById('token-1').focus()
             })
             .catch(err => {
                 if(err.response.status >= 500) setTimeout(() => sendOTP(), 5000)
@@ -55,8 +56,29 @@ const Login = ({ userData }) => {
             })
             if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false);
         }
+        async function OTPInput(){
+            for (let i = 0; i < otp.length; i++) {
+                otp[i].setAttribute('maxlength', 1); otp[i].setAttribute('type', 'text');
+                otp[i].setAttribute('pattern', '[0-9]'); otp[i].setAttribute('autocomplete', 'off');
+                otp[i].setAttribute('inputmode', 'numeric'); otp[i].setAttribute('required', true);
+                otp[i].addEventListener('keydown', (e) => {
+                    if (e.key === "Backspace") {
+                        otp[i].value = '';
+                        if (i !== 0) otp[i - 1].focus();
+                    }else {
+                        if (i === otp.length - 1 && otp[i].value !== '') return true;
+                        else if ((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
+                            otp[i].value = e.key;
+                            if (i !== otp.length - 1) otp[i + 1].focus();
+                        }else otp[i].value = '';
+                        e.preventDefault()
+                    }
+                })
+            }
+        }
         if((status === 302 && !properties.verify && mfa) || properties.sendOTP){ properties.sendOTP = false; sendOTP(); }
-    }, [userData, properties.verify, properties.sendOTP])
+        OTPInput();
+    }, [userData, properties.verify, properties.sendOTP, data])
 
     const LogIn = (e) => {
         e.preventDefault();
@@ -79,20 +101,26 @@ const Login = ({ userData }) => {
 
     const VerifyOTP = (e) => {
         e.preventDefault();
+        const otp = document.querySelectorAll('#otp > *[id]')
+        let token = '';
+        for (let i = 1; i < otp.length+1; i++) {
+            const data = document.getElementById(`token-${i}`).value
+            token += String(data)
+        } data.token = token;
         const btn = document.getElementById('verify');
         async function submitData(){
             btn.innerHTML = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
-            await axios.post(`${SERVER_URL}/account/otp`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/otp`, {...data, rememberMe: login.rememberMe}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-                document.getElementById('code').focus()
+                document.getElementById('token-1').focus()
             })
             btn.innerHTML = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
         }
         if(properties.honeypot) return;
         else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
-        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('code').focus(); }
+        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus(); }
         else submitData();
     }
     return properties.verify ? (
@@ -107,7 +135,7 @@ const Login = ({ userData }) => {
             
             <div id="form">
                 <div className="form__contact">
-                    <div className="get_in_touch"><h1>Verification</h1></div>
+                    <div className="get_in_touch"><h1>Verify Your Identity</h1></div>
                     <div className="form">
                         <form className="contact__form" onSubmit={VerifyOTP}>
                             <div className="m-10">
@@ -120,21 +148,31 @@ const Login = ({ userData }) => {
                             <div className="m-10 no-bot">
                                 <div className="contact__infoField">
                                     <label htmlFor="bot-code">Verification Code</label>
-                                    <input title="Verification Code" id="bot-code" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
+                                    <input title="Verification Code" id="bot-code" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                     <span className="contact__onFocus"></span>
                                 </div>
                             </div>
                             <div className="m-10">
                                 <div className="contact__infoField">
-                                    <label htmlFor="code">Verification Code</label>
-                                    <input title="Verification Code" id="code" type="text" className="contact__inputField" onChange={(event) => handleData('token', event.target.value)} value={data.token} required spellCheck="false" autoCapitalize="none" autoComplete="one-time-code" />
-                                    <span className="contact__onFocus"></span>
+                                    <label htmlFor="token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
+                                    <div id="otp" className="otp flex justify-center isCentered">
+                                        <input id="token-1" />
+                                        <input id="token-2" />
+                                        <input id="token-3" />
+                                        <input id="token-4" />
+                                        <input id="token-5" />
+                                        <input id="token-6" />
+                                        { data.isBackupCode ? (<input id="token-7" />) : null }
+                                        { data.isBackupCode ? (<input id="token-8" />) : null }
+                                    </div>
                                 </div>
                             </div>
-                            <p className="isCentered">If you're unable to receive a security code, use one of your <a className="animation__underline" onClick={() => handleData('isBackupCode', true)}>Backup Codes</a></p>
-                            <p className="isCentered">Hasn't Received the Code? <a className="animation__underline" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</a></p>
-                            <button type="reset" className="contact__sendBtn solid no-outline" id="cancel" onClick={() => window.location='/logout'}>Cancel</button>
-                            <button type="submit" className="contact__sendBtn ml-10 no-outline" id="verify">Verify</button>
+                            <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>
+                            <p className="isCentered">Hasn't Received the Code? <a className="link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</a></p>
+                            <div className="flex isCentered">
+                                <p><button type="reset" className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
+                                <p><button type="submit" className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="verify">Verify</button></p>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -157,7 +195,7 @@ const Login = ({ userData }) => {
                         <div className="m-10 no-bot">
                             <div className="contact__infoField">
                                 <label htmlFor="bot-email">Email</label>
-                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
+                                <input title="Email" id="bot-email" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
                                 <span className="contact__onFocus"></span>
                             </div>
                         </div>
@@ -179,14 +217,16 @@ const Login = ({ userData }) => {
                             </div>
                             <div className="m-10 show-password">
                                 <FormControlLabel control={<Checkbox checked={properties.rememberMe} onChange={() => { handleChange('rememberMe', !properties.rememberMe); handleLogin('rememberMe', !properties.rememberMe) }} color="primary"/>}
-                                label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer or WiFi" arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                                label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer and WiFi, You'll be logged out after browsing session ends." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                             </div>
-                            <p className="isCentered">Having trouble logging in? <a className="animation__underline" href="/reset-password">Reset Password</a></p>
-                            <p className="isCentered mt-10">Haven't have an Account? <a className="animation__underline" href="/get-started">Get Started</a></p>
                         </div>
-                        <button type="submit" className="contact__sendBtn" id="login">Login</button>
+                        <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="login">Login</button>
                     </form>
                 </div>
+            </div>
+            <div className="flex isCentered mb-10">
+                <p><a className="link" href="/reset-password">Forgot Password?</a></p>
+                <p>Haven't have an Account? <a className="link" href="/get-started">Get Started</a></p>
             </div>
         </div>
     )

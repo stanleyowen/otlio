@@ -129,8 +129,7 @@ router.put('/user', async (req, res, next) => {
                     message: info.message
                 }, null, 2));
             }
-            if(user.security['2FA'] && (!token || !tokenId)) return res.status(428).send(JSON.stringify({ status: 428, message: MSG_DESC[37] }, null, 2));
-            else if(user.security['2FA'] && token && tokenId && (req.body = {...req.body, ...user._doc})) {
+            if(user.security['2FA'] && (req.body = {...req.body, ...user._doc})) {
                 passport.authenticate('verifyOTP', { session: false }, (err, user, info) => {
                     if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
                     else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
@@ -268,7 +267,7 @@ router.post('/otp', async (req, res, next) => {
                         }
                     }, jwtSecret, { expiresIn: '1d' }), {
                         path: '/',
-                        expires: new Date(Date.now() + 86400000),
+                        expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
                         httpOnly: true,
                         secure: status,
                         sameSite: status ? 'none' : 'strict'
@@ -309,7 +308,7 @@ router.put('/otp', async (req, res, next) => {
                                         httpOnly: true,
                                         secure: status,
                                         sameSite: status ? 'none' : 'strict'
-                                    }).send(JSON.stringify({ status: info.status, message: info.message }, null, 2));
+                                    }).send(JSON.stringify(info, null, 2));
                                 } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));
                             })(req, res, next)
                         } else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34] }, null, 2));

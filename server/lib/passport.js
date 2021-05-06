@@ -394,7 +394,7 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
                     if(err) return done(err, false);
                     else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
                     else {
-                        const token = crypto.randomBytes(3).toString("hex");
+                        const token = crypto.randomInt(Math.pow(10, 6-1), Math.pow(10, 6)).toString()
                         new OTPToken({ ipAddr: ip, userId: encrypt(id, 2), token: encrypt(token, 2) }).save((err, data) => {
                             if(err) return done(err, false);
                             else{
@@ -418,9 +418,10 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
     .catch(err => { return done(err, false); })
 }))
 
-passport.use('verifyOTP', new localStrategy({ usernameField: 'tokenId', passwordField: 'token', passReqToCallback: true, session: false }, (req, tokenId, token, done) => {
-    const {_id, email, isBackupCode} = req.body;
-    if(isBackupCode){
+passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, password, done) => {
+    const {tokenId, token, _id, isBackupCode} = req.body;
+    if((!_id || !email || !token) || (!isBackupCode && !tokenId)) return done(null, false, { status: 428, message: MSG_DESC[37] });
+    else if(isBackupCode && token){
         User.findOne({_id, email}, (err, user) => {
             if(err) return done(err, false);
             else if(user){
@@ -453,7 +454,7 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
         else if(user){
             if(regenerate || !user.security['2FA']){
                 let backupCodes = [];
-                for (let x=0; x<10; x++) backupCodes.push(crypto.randomBytes(3).toString('hex'))
+                for (let x=0; x<10; x++) backupCodes.push(crypto.randomInt(Math.pow(10, 8-1), Math.pow(10, 8)).toString())
                 user.security['backup-codes'].valid = backupCodes;
                 user.security['backup-codes'].invalid = [];
                 user.save();

@@ -7,13 +7,15 @@ const Logout = ({ userData }) => {
     const {isLoading, authenticated, status} = userData;
 
     useEffect(() => {
-        async function Logout(){
+        async function logout(){
             await axios.post(`${process.env.REACT_APP_SERVER_URL}/account/logout`, {}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true})
-            .then(() => localStorage.setItem('info', JSON.stringify({ status: 200, message: 'You have been logged out successfully.' })))
+            .then(() => {
+                if(status !== 302) localStorage.setItem('info', JSON.stringify({ status: 200, message: 'You have been logged out successfully.' }))
+            })
             .catch(err => localStorage.setItem('info', JSON.stringify(err.response.data)))
             window.location = '/login'
         }
-        if(authenticated || status === 302) Logout()
+        if(authenticated || status === 302) logout()
         else if(!isLoading && !authenticated) window.location = '/login'
     }, [authenticated])
 
