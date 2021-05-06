@@ -217,9 +217,10 @@ const Account = ({ userData }) => {
             btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
             await axios.put(`${SERVER_URL}/account/otp`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
-                localStorage.setItem('info', JSON.stringify(res.data))
-                closeModal('mfa-bg', 'mfa-modal')
-                window.location.reload()
+                closeModal('mfa-bg', 'mfa-modal');
+                if(!userData.security['2FA']) userData.security['backup-codes'].valid = res.data['backup-codes']
+                data.tokenId = ''; data.token = ''; data.isBackupCode = false;
+                userData.security['2FA'] = !userData.security['2FA'];
             })
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
