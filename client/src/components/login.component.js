@@ -67,7 +67,7 @@ const Login = ({ userData }) => {
                         if (i !== 0) otp[i - 1].focus();
                     }else {
                         if (i === otp.length - 1 && otp[i].value !== '') return true;
-                        else if (e.keyCode > 47 && e.keyCode < 58) {
+                        else if ((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
                             otp[i].value = e.key;
                             if (i !== otp.length - 1) otp[i + 1].focus();
                         }else otp[i].value = '';

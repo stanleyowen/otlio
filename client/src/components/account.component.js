@@ -79,7 +79,7 @@ const Account = ({ userData }) => {
                     if (i !== 0) otp1[i - 1].focus();
                 }else {
                     if (i === otp1.length - 1 && otp1[i].value !== '') return true;
-                    else if (e.keyCode > 47 && e.keyCode < 58) {
+                    else if ((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
                         otp1[i].value = e.key;
                         if (i !== otp1.length - 1) otp1[i + 1].focus();
                     }else otp1[i].value = '';
@@ -97,7 +97,7 @@ const Account = ({ userData }) => {
                     if (i !== 0) otp2[i - 1].focus();
                 }else {
                     if (i === otp2.length - 1 && otp2[i].value !== '') return true;
-                    else if (e.keyCode > 47 && e.keyCode < 58) {
+                    else if ((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
                         otp2[i].value = e.key;
                         if (i !== otp2.length - 1) otp2[i + 1].focus();
                     }else otp2[i].value = '';
