@@ -23,12 +23,7 @@ const GenerateLimiter = new rateLimit({
     handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[30]}, null, 2))
 })
 
-router.post('/register', new rateLimit({
-    max: 1,
-    windowMs: 86400000, // 1 day
-    skipFailedRequests: true,
-    handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[30]}, null, 2))
-}), async (req, res, next) => {
+router.post('/register', async (req, res, next) => {
     passport.authenticate('register', (err, user, infos) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(infos && (infos.status ? infos.status >= 300 ? true : false : true)) return res.status(infos.status ? infos.status : infos.status = 400).send(JSON.stringify(infos, null, 2));
@@ -59,12 +54,7 @@ router.post('/register', new rateLimit({
     })(req, res, next)
 })
 
-router.post('/login', new rateLimit({
-    max: 15,
-    windowMs: 1800000,
-    skipSuccessfulRequests: true,
-    handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[30]}, null, 2))
-}) , async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
     passport.authenticate('login', (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({status: info.status, message: info.message}, null, 2));
