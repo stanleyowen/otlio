@@ -43,90 +43,90 @@ passport.serializeUser((user, done) => done(null, user))
 passport.deserializeUser((user, done) => done(null, user))
 
 passport.use('register', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
-    const {confirmPassword} = req.body;
+    const {confirmPassword} = req.body
     if(!confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] })
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(password.length < 6 || password.length > 60 || confirmPassword.length < 6 || confirmPassword.length > 60) return done(null, false, { status: 400, message: MSG_DESC[9] })
     else if(password !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] })
     else {
         User.findOne({email}, (err, user) => {
-            if(err) return done(err, false);
+            if(err) return done(err, false)
+            else if(user) return done(null, false, { status: 400, message: MSG_DESC[1] })
             else if(!user) {
                 bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
                     if(err) return done(err, false);
                     else new User ({ email, password: hash }).save((err, data) => {
                             if(err) return done(err, false);
-                            else return done(null, data, { status: 200, message: MSG_DESC[4] })
+                            else return done(null, {...data._doc, _id: String(data._id)}, { status: 200, message: MSG_DESC[4] })
                         })
                 })
-            }else if(user) return done(null, false, { status: 400, message: MSG_DESC[1] })
+            }
         })
     }
 }))
 
 passport.use('login', new localStrategy({ usernameField: 'email', passwordField: 'password', session: false }, (email, password, done) => {
     User.findOne({email}, (err, user) => {
-        if(err) return done(err, false);
+        if(err) return done(err, false)
         else if(user){
-            bcrypt.compare(password, user.password, (err, isMatch) => {
-                if(err) return done(err, false);
-                else if(isMatch) return done(null, user, { status: 200, message: MSG_DESC[2] });
-                else return done(null, false, { status: 400, message: MSG_DESC[10] });
+            bcrypt.compare(password, user.password, (err, match) => {
+                if(err) return done(err, false)
+                else if(match) return done(null, user, { status: user.security['2FA'] ? 302 : 200, message: MSG_DESC[2] })
+                else return done(null, false, { status: 400, message: MSG_DESC[10] })
             })
-        }else done(null, false, { status: 400, message: MSG_DESC[10] });
+        }else done(null, false, { status: 400, message: MSG_DESC[10] })
     })
 }))
 
 passport.use('changePassword', new localStrategy({ usernameField: 'email', passwordField: 'oldPassword', passReqToCallback: true, session: false }, (req, email, password, done) => {
-    const {_id: id, newPassword, confirmPassword} = req.body;
-    if(!id || !newPassword || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] });
+    const {_id, newPassword, confirmPassword} = req.body
+    if(!_id || !newPassword || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] })
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
-    else if(password.length < 6 || password.length > 60 || newPassword.length < 6 || newPassword.length > 60 || confirmPassword.length < 6 || confirmPassword.length > 60) return done(null, false, { status: 400, message: MSG_DESC[9] });
-    else if(newPassword !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] });
+    else if(password.length < 6 || password.length > 60 || newPassword.length < 6 || newPassword.length > 60 || confirmPassword.length < 6 || confirmPassword.length > 60) return done(null, false, { status: 400, message: MSG_DESC[9] })
+    else if(newPassword !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] })
     else {
-        User.findOne({ _id: id, email }, (err, user) => {
-            if(err) return done(err, false);
+        User.findOne({_id, email}, (err, user) => {
+            if(err) return done(err, false)
             else if(user) {
                 bcrypt.compare(password, user.password, (err, match) => {
-                    if(err) return done(err, false);
+                    if(err) return done(err, false)
                     else if(match){
                         bcrypt.hash(newPassword, SALT_WORK_FACTOR, (err, hash) => {
-                            if(err) return done(err, false);
+                            if(err) return done(err, false)
                             else {
-                                new RevokedToken ({ userId: id, token: encrypt(req.cookies['jwt-token'], 1) }).save()
+                                new RevokedToken ({ userId: _id, token: encrypt(req.cookies['jwt-token'], 1) }).save()
                                 user.password = hash; user.save()
                                 const mailOptions = {
                                     to: email,
                                     replyTo: process.env.MAIL_REPLY_TO,
                                     subject: '[TodoApp] Password Changed',
                                     html: `Hi ${email},<br><br>We wanted to inform that your Todo Application password has changed.<br><br> If you did not perform this action, you can recover access by entering ${email} into the form at ${CLIENT_URL}/reset-password<br><br> Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.`
-                                };
+                                }
                                 transporter.sendMail(mailOptions, (err) => {
-                                    if(err) done(err, false);
-                                    else return done(null, user, { status: 200, message: MSG_DESC[6] });
-                                });
+                                    if(err) done(err, false)
+                                    else return done(null, user, { status: 200, message: MSG_DESC[6] })
+                                })
                             }
                         })
-                    }else return done(null, false, { status: 401, message: MSG_DESC[10] });
+                    }else return done(null, false, { status: 401, message: MSG_DESC[10] })
                 })
-            }else return done(null, false, { status: 401, message: MSG_DESC[10] });
+            }else return done(null, false, { status: 401, message: MSG_DESC[10] })
         })
     }
 }))
 
 passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField: 'token', passReqToCallback: true, session: false }, (req, id, token, done) => {
-    const {type} = req.params;
-    const userId = id.split('-')[0];
-    const tokenId = id.split('-')[1];
-    if(!type) return done(null, false, { status: 400, message: MSG_DESC[11] });
-    if(!userId || !tokenId) return done(null, false, { status: 400, message: MSG_DESC[39] });
+    const {type} = req.params
+    const userId = id.split('-')[0]
+    const tokenId = id.split('-')[1]
+    if(!type || !userId || !tokenId) return done(null, false, { status: 400, message: MSG_DESC[11] })
     else {
         var query = {}; query['_id'] = tokenId; query['type.'.concat(type)] = true;
         Token.findOne(query, (err, user) => {
-            if(err) return done(err, false);
+            if(err) return done(err, false)
             else if(user && userId === decrypt(user.userId, 3) && token === decrypt(user.token, 3)){
                 User.findById(userId, (err, user) => {
-                    if(err) done(err, false);
+                    if(err) done(err, false)
                     else if(user) return done(null, user, {
                         status: 200,
                         message: MSG_DESC[5],
@@ -134,10 +134,10 @@ passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField
                             id: user.id,
                             email: user.email
                         }
-                    });
-                    else return done(null, false, { status: 400, message: MSG_DESC[31] });
+                    })
+                    else return done(null, false, { status: 400, message: MSG_DESC[31] })
                 })
-            }else return done(null, false, { status: 400, message: MSG_DESC[31] });
+            }else return done(null, false, { status: 400, message: MSG_DESC[31] })
         })
     }
 }))
@@ -217,40 +217,40 @@ passport.use('resetPassword', new localStrategy({ usernameField: 'email', passwo
     }
 }))
 
-passport.use('verifyAccount', new localStrategy({ usernameField: 'email', passwordField: 'id', session: false }, (email, id, done) => {
+passport.use('verifyAccount', new localStrategy({ usernameField: 'email', passwordField: 'id', session: false }, (email, _id, done) => {
     axios.get('https://api.ipify.org/?format=json')
     .then(async res => {
-        const ip = res.data.ip;
+        const ip = res.data.ip
         Token.find({ ipAddr: ip }, (err, data) => {
-            if(err) return done(err, false);
-            else if(data && data.length >= 5) return done(null, false, { status: 403, message: MSG_DESC[30] });
+            if(err) return done(err, false)
+            else if(data && data.length >= 5) return done(null, false, { status: 403, message: MSG_DESC[30] })
             else if(!data || data.length < 5){
-                User.findOne({ _id: id, email, verified: false }, (err, user) => {
-                    if(err) return done(err, false);
-                    else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] });
-                    else {
-                        const token = crypto.randomBytes(60).toString("hex");
-                        new Token({ ipAddr: ip, 'type.accountVerification': true, userId: encrypt(id, 1), token: encrypt(token, 1) }).save((err, data) => {
-                            if(err) return done(err, false);
+                User.findOne({ _id, email, verified: false }, (err, user) => {
+                    if(err) return done(err, false)
+                    else if(!user) return done(null, false, { status: 400, message: MSG_DESC[11] })
+                    else if(user) {
+                        const token = crypto.randomBytes(50).toString("hex")
+                        new Token({ ipAddr: ip, 'type.accountVerification': true, userId: encrypt(_id, 3), token: encrypt(token, 3) }).save((err, data) => {
+                            if(err) return done(err, false)
                             else {
                                 const mailOptions = {
                                     to: email,
                                     subject: '[TodoApp] Account Verification',
-                                    html: `<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"><head><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1" name="viewport"><meta name="x-apple-disable-message-reformatting"><meta http-equiv="X-UA-Compatible" content="IE=edge"><!--[if (mso 16)]><style type="text/css">a{text-decoration:none;}</style><![endif]--><!--[if gte mso 9]><style>sup{font-size:100% !important}</style><![endif]--><!--[if gte mso 9]> <xml><o:OfficeDocumentSettings><o:AllowPNG></o:AllowPNG><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]--></head><body><div class="es-wrapper-color"><!--[if gte mso 9]> <v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t"><v:fill type="tile" color="#f4f4f4"></v:fill></v:background><![endif]--><table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0"><tr><td class="esd-email-paddings" valign="top"><table class="es-header" cellspacing="0" cellpadding="0" align="center"><tr><td class="esd-stripe" esd-custom-block-id="6339" style="background-color: rgb(8 72 179); padding: 10px; border-radius: 10px;" bgcolor="#7c72dc" align="center"><table class="es-header-body" width="600" cellspacing="0" cellpadding="0" align="center"><tr><table width="100%" cellspacing="0" cellpadding="0"><tr><td class="esd-block-image es-p25t es-p25b es-p10r es-p10l" align="center" style="font-size: 0px;"><img src="https://raw.githubusercontent.com/stanleyowen/todo-application/v0.4.3/client/public/logo512.png" alt style="display: block;" width="40"></td></tr></table></tr></table></td></tr></table><table class="es-content" cellspacing="0" cellpadding="0" align="center"><tr><td class="esd-stripe" align="center"><table class="es-content-body" style="background-color: #ffffff;" width="600" cellspacing="0" cellpadding="10" bgcolor="#ffffff" align="center"><tr><td bgcolor="#ffffff" align="left"><h2 style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; text-align: center;">Verify Email</h2><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Thanks for creating account in Todo Application. You're almost done - we just need to verify your email.</p><div style="display: block; width: 100%; text-align: center; margin: 30px 0;"><a href="${CLIENT_URL}/verify/${id}-${data.id}/${token}" style="padding: 15px 30px; background-color: rgb(8 72 179); color: white; text-decoration: none; border-radius: 5px; font-family: Cambria, Georgia, Times, 'Times New Roman', serif; font-weight: bold;">Verify Email</a></div><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">This link will expires after one hour. To get a account verification link, please request it through Account Settings.</p><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Best Regards,<br>Todo Application</p></td></tr><tr><td align="center"><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; color: gray; font-size: 15px;">You're receiving this email because your email was provided for registration on Todo Application.</p></td></tr></table></td></tr></table></td></tr></table></div></body></html>`
-                                };
+                                    html: `<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"><head><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1" name="viewport"><meta name="x-apple-disable-message-reformatting"><meta http-equiv="X-UA-Compatible" content="IE=edge"><!--[if (mso 16)]><style type="text/css">a{text-decoration:none;}</style><![endif]--><!--[if gte mso 9]><style>sup{font-size:100% !important}</style><![endif]--><!--[if gte mso 9]> <xml><o:OfficeDocumentSettings><o:AllowPNG></o:AllowPNG><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]--></head><body><div class="es-wrapper-color"><!--[if gte mso 9]> <v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t"><v:fill type="tile" color="#f4f4f4"></v:fill></v:background><![endif]--><table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0"><tr><td class="esd-email-paddings" valign="top"><table class="es-header" cellspacing="0" cellpadding="0" align="center"><tr><td class="esd-stripe" esd-custom-block-id="6339" style="background-color: rgb(8 72 179); padding: 10px; border-radius: 10px;" bgcolor="#7c72dc" align="center"><table class="es-header-body" width="600" cellspacing="0" cellpadding="0" align="center"><tr><table width="100%" cellspacing="0" cellpadding="0"><tr><td class="esd-block-image es-p25t es-p25b es-p10r es-p10l" align="center" style="font-size: 0px;"><img src="https://raw.githubusercontent.com/stanleyowen/todo-application/v0.4.3/client/public/logo512.png" alt style="display: block;" width="40"></td></tr></table></tr></table></td></tr></table><table class="es-content" cellspacing="0" cellpadding="0" align="center"><tr><td class="esd-stripe" align="center"><table class="es-content-body" style="background-color: #ffffff;" width="600" cellspacing="0" cellpadding="10" bgcolor="#ffffff" align="center"><tr><td bgcolor="#ffffff" align="left"><h2 style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; text-align: center;">Verify Email</h2><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Thanks for creating account in Todo Application. You're almost done - we just need to verify your email.</p><div style="display: block; width: 100%; text-align: center; margin: 30px 0;"><a href="${CLIENT_URL}/verify/${_id}-${data.id}/${token}" style="padding: 15px 30px; background-color: rgb(8 72 179); color: white; text-decoration: none; border-radius: 5px; font-family: Cambria, Georgia, Times, 'Times New Roman', serif; font-weight: bold;">Verify Email</a></div><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">This link will expires after one hour. To get a account verification link, please request it through Account Settings.</p><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Best Regards,<br>Todo Application</p></td></tr><tr><td align="center"><p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; color: gray; font-size: 15px;">You're receiving this email because your email was provided for registration on Todo Application.</p></td></tr></table></td></tr></table></td></tr></table></div></body></html>`
+                                }
                                 transporter.sendMail(mailOptions, (err) => {
-                                    if(err) return done(err, false);
-                                    else return done(null, user, { status: 200, message: MSG_DESC[35] });
-                                });
+                                    if(err) return done(err, false)
+                                    else return done(null, user, { status: 200, message: MSG_DESC[35] })
+                                })
                             }
-                        });
+                        })
                     }
                 })
             }
         })
         .catch(err => { return done(err, false) })
     })
-    .catch(err => { return done(err, false); })
+    .catch(err => { return done(err, false) })
 }))
 
 passport.use('verifyUser', new localStrategy({ usernameField: 'id', passwordField: 'token', passReqToCallback: true, session: false }, (req, id, token, done) => {
@@ -261,7 +261,7 @@ passport.use('verifyUser', new localStrategy({ usernameField: 'id', passwordFiel
     query['_id'] = tokenId; query['type.'.concat(type)] = true;
     Token.findOne(query, (err, data) => {
         if(err) return done(err, false);
-        else if(data && userId === decrypt(data.userId, 1) && token === decrypt(data.token, 1)){
+        else if(data && userId === decrypt(data.userId, 3) && token === decrypt(data.token, 3)){
             User.findById(userId, (err, user) => {
                 if(err) done(err, false);
                 else if(user){
@@ -382,7 +382,7 @@ passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwo
     }
 }))
 
-passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordField: 'id', session: false }, (email, id, done) => {
+passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordField: '_id', session: false }, (email, id, done) => {
     axios.get('https://api.ipify.org/?format=json')
     .then(async res => {
         const ip = res.data.ip;
@@ -405,7 +405,7 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
                                 };
                                 transporter.sendMail(mailOptions, (err) => {
                                     if(err) return done(err, false);
-                                    else return done(null, { email: user.email, id: user.id, tokenId: data.id }, { status: 200, message: MSG_DESC[36] });
+                                    else return done(null, { email: user.email, userId: user.id, tokenId: data.id }, { status: 200, message: MSG_DESC[36] });
                                 });
                             }
                         });
@@ -418,9 +418,9 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
     .catch(err => { return done(err, false); })
 }))
 
-passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, password, done) => {
-    const {tokenId, token, _id, isBackupCode} = req.body;
-    if((!_id || !email || !token) || (!isBackupCode && !tokenId)) return done(null, false, { status: 428, message: MSG_DESC[37] });
+passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, _id, done) => {
+    const {tokenId, token, isBackupCode} = req.body;
+    if(!token || (!isBackupCode && !tokenId)) return done(null, false, { status: 428, message: MSG_DESC[37] });
     else if(isBackupCode && token){
         User.findOne({_id, email}, (err, user) => {
             if(err) return done(err, false);
@@ -440,17 +440,16 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordFi
         OTPToken.findById(tokenId, (err, data) => {
             if(err) return done(err, false);
             else if(data && _id == decrypt(data.userId, 2) && token === decrypt(data.token, 2)){
-                data.remove();
-                return done(null, req.body, { status: 200, message: MSG_DESC[5] })
+                data.remove(); return done(null, req.body, { status: 200, message: MSG_DESC[5] })
             }else return done(null, false, { status: 400, message: MSG_DESC[38] });
         })
     }
 }))
 
-passport.use('generateToken', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false } , (req, email, password, done) => {
-    const {regenerate, _id} = req.body;
+passport.use('generateToken', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false } , (req, email, _id, done) => {
+    const {regenerate} = req.body;
     User.findOne({_id, email}, (err, user) => {
-        if(err) return done(err, false);
+        if(err) return done(err, false)
         else if(user){
             if(regenerate || !user.security['2FA']){
                 let backupCodes = [];
@@ -574,27 +573,19 @@ passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
                     else if(data.length){
                         for (x=0; data.length; x++){
                             if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
-                            else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, user);
+                            else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, {...user._doc, _id: String(user._doc._id)});
                         }
-                    }else if(!data.length) return done(null, user);
+                    }else if(!data.length) return done(null, {...user._doc, _id: String(user._doc._id)});
                 })
-            }else if(!user.verified) return done(null, false, {
+            }else if(!user.verified) return done(null, {id: String(user._id), email: user.email}, {
                     status: 302,
                     message: MSG_DESC[37],
-                    type: { mfa: false, verifyAccount: true },
-                    credentials: {
-                        id: user.id,
-                        email: user.email
-                    }
+                    type: { mfa: false, verifyAccount: true }
                 })
-            else return done(null, false, {
+            else return done(null, {id: String(user._id), email: user.email}, {
                 status: 302,
                 message: MSG_DESC[37],
-                type: { mfa: true, verifyAccount: false },
-                credentials: {
-                    id: user.id,
-                    email: user.email
-                }
+                type: { mfa: true, verifyAccount: false }
             })
         }else return done(null, false, { status: 401, message: MSG_DESC[16] });
     })
@@ -609,9 +600,9 @@ passport.use('jwtOTP', new JWTStrategy(opts, (req, payload, done) => {
                 else if(data.length){
                     for (x=0; data.length; x++){
                         if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
-                        else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, user);
+                        else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, {...user._doc, _id: String(user._doc._id)});
                     }
-                }else if(!data.length) return done(null, user);
+                }else if(!data.length) return done(null, {...user._doc, _id: String(user._doc._id)});
             })
         }else return done(null, false, { status: 401, message: MSG_DESC[16] });
     })
