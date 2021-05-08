@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons';
 import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faQuestionCircle, faExclamationTriangle, faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core';
+import download from 'js-file-download'
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -242,13 +243,27 @@ const Account = ({ userData }) => {
         const btn = document.getElementById('generate-token');
         async function generateToken(){
             btn.innerHTML = "Generating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
-            await axios.post(`${SERVER_URL}/account/backup-code`, { "regenerate": true }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/backup-code`, { regenerate: true }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 userData.security['backup-codes'].valid = res.data['backup-codes']
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerHTML = "Regenerate Code"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
+        }
+        if(!security['2FA']) setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Multi Factor Authentication (MFA) Users')
+        else generateToken();
+    }
+
+    const DownloadOTP = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('download-otp');
+        async function generateToken(){
+            btn.innerHTML = "Downloading..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
+            await axios.get(`${SERVER_URL}/account/backup-code`, { responseType: 'blob', withCredentials: true })
+            .then(res => download(res.data, 'Backup Codes.txt'))
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            btn.innerHTML = "Download"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
         }
         if(!security['2FA']) setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Multi Factor Authentication (MFA) Users')
         else generateToken();
@@ -473,7 +488,10 @@ const Account = ({ userData }) => {
                         <p className="mb-10">Keep these backup codes somewhere safe but accessible. Each backup code can only be used once.</p>
                         <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div>
                         <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="generate-token" onClick={RegenerateToken}>Regenerate Token</button>
-                        <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button>
+                        <div className="flex isCentered">
+                            <p><button className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button></p>
+                            <p><button className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="download-otp" onClick={DownloadOTP}>Download</button></p>
+                        </div>
                     </div>
                 </div>
             </div>) : null }
