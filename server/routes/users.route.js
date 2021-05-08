@@ -3,7 +3,7 @@ const passport = require('passport');
 const router = require('express').Router();
 const rateLimit = require('express-rate-limit');
 
-const { encrypt } = require('../lib/crypto');
+const { encrypt, decrypt } = require('../lib/crypto');
 const MSG_DESC = require('../lib/callback');
 let RevokedToken = require('../models/revoke-token.model');
 let User = require('../models/users.model');
@@ -89,7 +89,10 @@ router.get('/user', async (req, res, next) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0], 'XSRF-TOKEN': req.csrfToken()}, null, 2));
         else if(info && info.status === 302) return res.status(info.status).send(JSON.stringify({...info, credentials: user, 'XSRF-TOKEN': req.csrfToken()}, null, 2));
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify({...info, 'XSRF-TOKEN': req.csrfToken()}, null, 2));
-        else if(user) return res.send(JSON.stringify({
+        else if(user){
+            user.security['backup-codes'].valid = user.security['backup-codes'].valid.map(a => { return(decrypt(a, 4)) })
+            user.security['backup-codes'].invalid = user.security['backup-codes'].invalid.map(a => { return(decrypt(a, 4)) })
+            return res.send(JSON.stringify({
                 status: 200,
                 message: MSG_DESC[5],
                 credentials: {
@@ -98,9 +101,10 @@ router.get('/user', async (req, res, next) => {
                     authenticated: true,
                     thirdParty: user.thirdParty,
                     verified: user.verified,
-                    security: user.security
+                    security: user.security,
                 }, 'XSRF-TOKEN': req.csrfToken()
-            }, null, 2));
+            }, null, 2))
+        }
         else return res.status(504).send(JSON.stringify({ status: 504, message: MSG_DESC[34], 'XSRF-TOKEN': req.csrfToken() }, null, 2));
     })(req, res, next)
 })

@@ -434,7 +434,7 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
         else if(user){
             if(regenerate || !user.security['2FA']){
                 let backupCodes = [];
-                for (let x=0; x<10; x++) backupCodes.push(crypto.randomInt(Math.pow(10, 8-1), Math.pow(10, 8)).toString())
+                for (let x=0; x<10; x++) backupCodes.push(encrypt((crypto.randomInt(Math.pow(10, 8-1), Math.pow(10, 8)).toString()), 4))
                 user.security['backup-codes'].valid = backupCodes;
                 user.security['backup-codes'].invalid = [];
                 user.save();
