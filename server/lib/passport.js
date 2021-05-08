@@ -164,7 +164,7 @@ passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passw
                                 }
                                 transporter.sendMail(mailOptions, (err) => {
                                     if(err) return done(err, false);
-                                    else return done(null, user, { status: 200, message: MSG_DESC[29] });
+                                    else return done(null, true, { status: 200, message: MSG_DESC[29] });
                                 })
                             }
                         });
@@ -177,9 +177,9 @@ passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passw
 }))
 
 passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 'token', passReqToCallback: true, session: false }, (req, id, token, done) => {
-    const {type, email, password, confirmPassword} = req.body;
-    const userId = id.split('-')[0];
-    const tokenId = id.split('-')[1];
+    const {type, email, password, confirmPassword} = req.body
+    const userId = id.split('-')[0]
+    const tokenId = id.split('-')[1]
     if(!type || !userId || !tokenId) return done(null, false, { status: 400, message: MSG_DESC[11] })
     else if(type === 'passwordReset'){
         if(!email || !password || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] })
@@ -210,8 +210,8 @@ passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 't
                             html: `Hi ${email},<br><br>We wanted to inform that your Todo Application password has changed.<br><br> If you did not perform this action, you can recover access by entering ${email} into the form at ${CLIENT_URL}/reset-password<br><br> Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.`
                         }
                         transporter.sendMail(mailOptions, (err) => {
-                            if(err) return done(err, false);
-                            else return done(null, user, { status: 200, message: MSG_DESC[6] });
+                            if(err) return done(err, false)
+                            else return done(null, user, { status: 200, message: MSG_DESC[6] })
                         })
                     }else  return done(null, user, { status: 200, message: MSG_DESC[5] })
                 }else return done(null, false, { status: 401, message: MSG_DESC[10] })
