@@ -463,7 +463,7 @@ passport.use('todoData', new localStrategy({ usernameField: 'email', passwordFie
                     label: decrypt(data.label, 1),
                     description: data.description.data === '' ? '' : decrypt(data.description, 1),
                     date: decrypt(data.date, 1)
-                };
+                }
                 return done(null, todoData)
             }
         })

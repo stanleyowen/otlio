@@ -1,3 +1,4 @@
+const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = require('express').Router();
@@ -305,6 +306,29 @@ router.put('/otp', async (req, res, next) => {
                     })
                 } else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
             })(req, res, next)
+        }else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
+    })(req, res, next)
+})
+
+router.get('/backup-code', async (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
+        else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
+        else if(user) {
+            const rawToken = user.security['backup-codes']
+            const encryptedToken = [...rawToken.valid, ...rawToken.invalid]
+            const token = encryptedToken.map(a => { return decrypt(a, 4) })
+            const content = `
+                SAVE YOUR BACKUP CODES\n\nKeep these backup codes somewhere safe but accessible.\nEach backup code can only be used once.\n
+            1. ${token[0]}		 6. ${token[5]}
+            2. ${token[1]}		 7. ${token[6]}
+            3. ${token[2]}		 8. ${token[7]}
+            4. ${token[3]}		 9. ${token[8]}
+            5. ${token[4]}		10. ${token[9]}\n
+                (stanleyowen06@gmail.com)`;
+            fs.writeFileSync(`${__dirname}/token.txt`, content)
+            res.download(`${__dirname}/token.txt`)
+            // return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
         }else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
     })(req, res, next)
 })
