@@ -406,10 +406,10 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordFi
         User.findOne({_id, email}, (err, user) => {
             if(err) return done(err, false);
             else if(user){
-                const valid = user.security['backup-codes'].valid;
+                const valid = user.security['backup-codes'].valid.map(a => { return decrypt(a, 4) })
                 for (a=0; a<valid.length; a++){
                     if(token === valid[a]){
-                        user.security['backup-codes'].invalid = [...user.security['backup-codes'].invalid, valid[a]]
+                        user.security['backup-codes'].invalid = [...user.security['backup-codes'].invalid, user.security['backup-codes'].valid[a]]
                         user.security['backup-codes'].valid.splice(a, 1)
                         user.save();
                         return done(null, req.body, { status: 200, message: MSG_DESC[5] })
@@ -438,7 +438,8 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
                 user.security['backup-codes'].valid = backupCodes;
                 user.security['backup-codes'].invalid = [];
                 user.save();
-                return done(null, true, { status: 200, message: MSG_DESC[42], 'backup-codes': backupCodes })
+                const decryptedToken = backupCodes.map(a => { return decrypt(a, 4) })
+                return done(null, true, { status: 200, message: MSG_DESC[42], 'backup-codes': decryptedToken })
             }else {
                 user.security['backup-codes'].valid = [];
                 user.security['backup-codes'].invalid = [];
