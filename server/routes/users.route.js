@@ -318,17 +318,15 @@ router.get('/backup-code', async (req, res, next) => {
             const rawToken = user.security['backup-codes']
             const encryptedToken = [...rawToken.valid, ...rawToken.invalid]
             const token = encryptedToken.map(a => { return decrypt(a, 4) })
-            const content = `
-                SAVE YOUR BACKUP CODES\n\nKeep these backup codes somewhere safe but accessible.\nEach backup code can only be used once.\n
-            1. ${token[0]}		 6. ${token[5]}
-            2. ${token[1]}		 7. ${token[6]}
-            3. ${token[2]}		 8. ${token[7]}
-            4. ${token[3]}		 9. ${token[8]}
-            5. ${token[4]}		10. ${token[9]}\n
-                (stanleyowen06@gmail.com)`;
-            fs.writeFileSync(`${__dirname}/token.txt`, content)
-            res.download(`${__dirname}/token.txt`)
-            // return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
+            fs.writeFileSync(`${__dirname}/Backup Codes.txt`, `
+            SAVE YOUR BACKUP CODES\n\nKeep these backup codes somewhere safe but accessible.\nEach backup code can only be used once.\n
+        1. ${token[0]}		 6. ${token[5]}
+        2. ${token[1]}		 7. ${token[6]}
+        3. ${token[2]}		 8. ${token[7]}
+        4. ${token[3]}		 9. ${token[8]}
+        5. ${token[4]}		10. ${token[9]}\n
+            (stanleyowen06@gmail.com)`)
+            return res.download(`${__dirname}/Backup Codes.txt`, () => fs.unlinkSync(`${__dirname}/Backup Codes.txt`))
         }else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
     })(req, res, next)
 })
