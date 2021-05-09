@@ -129,13 +129,13 @@ const Account = ({ userData }) => {
 
     const backupCode = () => {
         const codes = [...valid, ...invalid]
-        return `       SAVE YOUR BACKUP CODES\n\nKeep these backup codes somewhere safe but accessible.\nEach backup code can only be used once.\n
+        return `SAVE YOUR BACKUP CODES\n\nKeep these backup codes somewhere safe but accessible.\nEach backup code can only be used once.\n
 1. ${codes[0]}		 6. ${codes[5]}
 2. ${codes[1]}		 7. ${codes[6]}
 3. ${codes[2]}		 8. ${codes[7]}
 4. ${codes[3]}		 9. ${codes[8]}
 5. ${codes[4]}		10. ${codes[9]}\n
-    (stanleyowen06@gmail.com)`
+(stanleyowen06@gmail.com)`
     }
 
     const CopyCode = (e) => {
@@ -258,15 +258,9 @@ const Account = ({ userData }) => {
     const DownloadOTP = (e) => {
         e.preventDefault();
         const btn = document.getElementById('download-otp');
-        async function generateToken(){
-            btn.innerHTML = "Downloading..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
-            await axios.get(`${SERVER_URL}/account/backup-code`, { responseType: 'blob', withCredentials: true })
-            .then(res => download(res.data, 'Backup Codes.txt'))
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Download"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
-        }
-        if(!security['2FA']) setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Multi Factor Authentication (MFA) Users')
-        else generateToken();
+        btn.innerHTML = "Downloading..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
+        download(backupCode(), 'Backup Codes.txt')
+        btn.innerHTML = "Download"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
     }
 
     return (
