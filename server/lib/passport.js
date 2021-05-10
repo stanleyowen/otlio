@@ -452,90 +452,78 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
 
 passport.use('todoData', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
     if(req.query.id){
-        Todo.findOne({ _id: req.query.id, email }, (err, data) => {
-            if(err) return done(err, false);
-            else if(!data) return done(err, null, {status: 404, message: MSG_DESC[13]});
-            else if(data){
-                const todoData = {
-                    _id: data.id,
-                    email: data.email,
-                    title: decrypt(data.title, 1),
-                    label: decrypt(data.label, 1),
-                    description: data.description.data === '' ? '' : decrypt(data.description, 1),
-                    date: decrypt(data.date, 1)
-                }
-                return done(null, todoData)
-            }
+        Todo.findOne({_id: req.query.id, email}, (err, data) => {
+            if(err) return done(err, false)
+            else if(!data) return done(err, null, {status: 404, message: MSG_DESC[13]})
+            return done(null, {
+                _id: data.id,
+                email: data.email,
+                title: decrypt(data.title, 1),
+                label: decrypt(data.label, 1),
+                description: data.description.data ? decrypt(data.description, 1) : '',
+                date: decrypt(data.date, 1)
+            })
         })
     }else {
-        Todo.find({ email }, (err, data) => {
-            if(err) return done(err, false);
-            else {
-                let todoData = [];
-                for (let x=0; x<data.length; x++){
-                    const loopData = {
-                        _id: data[x]._id,
-                        email: data[x].email,
-                        title: decrypt(data[x].title, 1),
-                        label: decrypt(data[x].label, 1),
-                        description: data[x].description.data === '' ? '' : decrypt(data[x].description, 1),
-                        date: decrypt(data[x].date, 1)
-                    };
-                    todoData.push(loopData);
-                } return done(null, todoData)
-            }
+        Todo.find({email}, (err, data) => {
+            if(err) return done(err, false)
+            let todoData = []
+            data.map(a =>
+                todoData.push({
+                    _id: a._id,
+                    email: a.email,
+                    title: decrypt(a.title, 1),
+                    label: decrypt(a.label, 1),
+                    description: a.description.data ? decrypt(a.description, 1) : '',
+                    date: decrypt(a.date, 1)
+                })
+            ); return done(null, todoData)
         })
     }
 }))
 
 passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
-    const {title, label, description, date} = req.body;
-    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]});
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[8]});
-    else if(title.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[17]});
-    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]});
-    else if(description && description.length > 200) return res.status(400).json({status: 400, message: MSG_DESC[19]});
-    else {
-        new Todo({
-            email,
-            title: encrypt(title, 1),
-            label: encrypt(label, 1),
-            description: description ? encrypt(description, 1) : { data: '', iv: '' },
-            date: encrypt(date, 1)
-        }).save((err, data) => {
-            if(err) done(err, null);
-            else return done(null, data, {status: 200, message: MSG_DESC[23]});
-        })
-    }
+    const {title, label, description, date} = req.body
+    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]})
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[8]})
+    else if(title.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[17]})
+    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]})
+    else if(description && description.length > 200) return res.status(400).json({status: 400, message: MSG_DESC[19]})
+    new Todo({
+        email,
+        title: encrypt(title, 1),
+        label: encrypt(label, 1),
+        description: description ? encrypt(description, 1) : {data: '', iv: ''},
+        date: encrypt(date, 1)
+    }).save((err) => {
+        if(err) return done(err, false)
+        return done(null, true, { status: 200, message: MSG_DESC[23] })
+    })
 }))
 
-passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, id, done) => {
-    const {title, label, description, date} = req.body;
-    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]});
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[8]});
-    else if(title.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[17]});
-    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]});
-    else if(description && description.length > 200) return res.status(400).json({status: 400, message: MSG_DESC[19]});
-    else {
-        const data = {
-            title: encrypt(title, 1),
-            label: encrypt(label, 1),
-            description: description ? encrypt(description, 1) : { data: '', iv: '' },
-            date: encrypt(date, 1)
-        }
-        Todo.findOneAndUpdate({ _id: id, email }, data, (err, data) => {
-            if(err) return done(err, false);
-            else if(data) return done(null, data, { status: 200, message: MSG_DESC[21] })
-            else return done(null, false, { status: 403, message: MSG_DESC[16] })
-        })
-    }
-}))
-
-passport.use('deleteTodo', new localStrategy({ usernameField: 'email', passwordField: 'objId', session: false }, (email, id, done) => {
-    Todo.findOneAndDelete({ _id: id, email }, (err, data) => {
+passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, _id, done) => {
+    const {title, label, description, date} = req.body
+    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]})
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[8]})
+    else if(title.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[17]})
+    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]})
+    else if(description && description.length > 200) return res.status(400).json({status: 400, message: MSG_DESC[19]})
+    Todo.findOneAndUpdate({_id, email}, {
+        title: encrypt(title, 1),
+        label: encrypt(label, 1),
+        description: description ? encrypt(description, 1) : {data: '', iv: ''},
+        date: encrypt(date, 1)
+    }, (err) => {
         if(err) return done(err, false);
-        else if(data) return done(null, data, { status: 200, message: MSG_DESC[22] });
-        else return done(null, false, { status: 403, message: MSG_DESC[16] })
+        return done(null, true, { status: 200, message: MSG_DESC[21] })
+    })
+}))
+
+passport.use('deleteTodo', new localStrategy({ usernameField: 'email', passwordField: 'objId', session: false }, (email, _id, done) => {
+    Todo.findOneAndDelete({_id, email}, (err, data) => {
+        if(err) return done(err, false)
+        else if(!data) return done(null, false, { status: 403, message: MSG_DESC[16] })
+        else if(data) return done(null, data, { status: 200, message: MSG_DESC[22] })
     })
 }))
 
