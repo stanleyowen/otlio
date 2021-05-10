@@ -257,9 +257,9 @@ passport.use('verifyAccount', new localStrategy({ usernameField: 'email', passwo
 }))
 
 passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: process.env.GITHUB_CALLBACK }, (accessToken, refreshToken, profile, done) => {
-    const email = profile._json.email;
+    const email = profile._json.email
     User.findOne({email}, (err, user) => {
-        if(err) return done(err, false);
+        if(err) return done(err, false)
         else if(!user){
             new User ({
                 email,
@@ -268,34 +268,36 @@ passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, cl
                     isThirdParty: true,
                     github: true
                 }
-            }).save();
+            }).save()
             return done(null, false, { status: 302, type: 'redirect', url: `/auth/github/${encodeURIComponent(email)}` })
         }else if(user){
-            if(user.thirdParty.isThirdParty && user.thirdParty.github && !user.thirdParty.verified) return done(null, false, { status: 302, type: 'redirect', url: `/auth/github/${encodeURIComponent(email)}` });
-            else if(user.thirdParty.isThirdParty && user.thirdParty.github && user.thirdParty.verified) return done(null, user, { status: 200, message: MSG_DESC[5] });
-            else return done(null, false, { status: 403, message: MSG_DESC[16] });
+            if(user.thirdParty.isThirdParty && user.thirdParty.github && !user.thirdParty.verified) return done(null, false, { status: 302, type: 'redirect', url: `/auth/github/${encodeURIComponent(email)}` })
+            else if(user.thirdParty.isThirdParty && user.thirdParty.github && user.thirdParty.verified) return done(null, user, { status: user.security['2FA'] ? 302 : 200, message: MSG_DESC[5] })
+            else return done(null, false, { status: 403, message: MSG_DESC[16] })
         }
     })
 }))
 
 passport.use('connectGitHub', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: `${process.env.GITHUB_CALLBACK}/connect`, passReqToCallback: true }, (req, accessToken, refreshToken, profile, done) => {
-    const {_id: id, email} = req.body;
-    User.findOne({email: profile._json.email, 'thirdParty.github': false}, (err, user) => {
-        if(err) return done(err, false);
-        else if(user && String(id) === String(user._id) && email === user.email){
+    const {_id, email} = req.body;
+    if(profile._json.email !== email) return done(null, false, { status: 403, message: MSG_DESC[27] })
+    User.findOne({_id, email: profile._json.email, 'thirdParty.github': false}, (err, user) => {
+        if(err) return done(err, false)
+        else if(!user) return done(null, false, { status: 403, message: MSG_DESC[27] })
+        else if(user){
             user.thirdParty.isThirdParty = true
             user.thirdParty.github = true
             user.thirdParty.verified = true
             user.save()
-            return done(null, user, { status: 200, message: MSG_DESC[26] });
-        }else return done(null, false, { status: 403, message: MSG_DESC[27] });
+            return done(null, user, { status: 200, message: MSG_DESC[26] })
+        }
     })
 }))
 
 passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: process.env.GOOGLE_CALLBACK }, (accessToken, refreshToken, profile, done) => {
     const email = profile._json.email;
     User.findOne({email}, (err, user) => {
-        if(err) return done(err, false);
+        if(err) return done(err, false)
         else if(!user){
             new User ({
                 email,
@@ -304,63 +306,59 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
                     isThirdParty: true,
                     google: true
                 }
-            }).save();
+            }).save()
             return done(null, false, { status: 302, type: 'redirect', url: `/auth/google/${encodeURIComponent(email)}` })
         }else if(user){
-            if(user.thirdParty.isThirdParty && user.thirdParty.google && !user.thirdParty.verified) return done(null, false, { status: 302, type: 'redirect', url: `/auth/google/${encodeURIComponent(email)}` });
-            else if(user.thirdParty.isThirdParty && user.thirdParty.google && user.thirdParty.verified) return done(null, user, { status: 200, message: MSG_DESC[5] });
-            else return done(null, false, { status: 403, message: MSG_DESC[16] });
+            if(user.thirdParty.isThirdParty && user.thirdParty.google && !user.thirdParty.verified) return done(null, false, { status: 302, type: 'redirect', url: `/auth/google/${encodeURIComponent(email)}` })
+            else if(user.thirdParty.isThirdParty && user.thirdParty.google && user.thirdParty.verified) return done(null, user, { status: user.security['2FA'] ? 302 : 200, message: MSG_DESC[5] })
+            else return done(null, false, { status: 403, message: MSG_DESC[16] })
         }
     })
 }))
 
 passport.use('connectGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: `${process.env.GOOGLE_CALLBACK}/connect`, passReqToCallback: true }, (req, accessToken, refreshToken, profile, done) => {
-    const {_id: id, email} = req.body;
-    User.findOne({email: profile._json.email, 'thirdParty.google': false}, (err, user) => {
-        if(err) return done(err, false);
-        else if(user && String(id) === String(user._id) && email === user.email){
+    const {_id, email} = req.body;
+    if(profile._json.email !== email) return done(null, false, { status: 403, message: MSG_DESC[27] })
+    User.findOne({_id, email: profile._json.email, 'thirdParty.google': false}, (err, user) => {
+        if(err) return done(err, false)
+        else if(!user) return done(null, false, { status: 403, message: MSG_DESC[25] })
+        else if(user){
             user.thirdParty.isThirdParty = true
             user.thirdParty.google = true
             user.thirdParty.verified = true
             user.save()
-            return done(null, user, { status: 200, message: MSG_DESC[24] });
-        }else return done(null, false, { status: 403, message: MSG_DESC[25] });
+            return done(null, user, { status: 200, message: MSG_DESC[24] })
+        }
     })
 }))
 
 passport.use('getOAuthData', new localStrategy({ usernameField: 'email', passwordField: 'provider', session: false }, (email, provider, done) => {
     if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
-    else {
-        var query = {};
-        query['email'] = email; query['thirdParty.'.concat(provider)] = true; query['thirdParty.verified'] = false;
-        User.findOne(query, (err, user) => {
-            if(err) return done(err, false);
-            else if(user) return done(null, user, { status: 200, message: MSG_DESC[5] });
-            else done(null, false, { status: 401, message: MSG_DESC[10] });
-        })
-    }
+    var query = {}
+    query['email'] = email; query['thirdParty.'.concat(provider)] = true; query['thirdParty.verified'] = false;
+    User.findOne(query, (err, user) => {
+        if(err) return done(err, false)
+        else if(!user) done(null, false, { status: 401, message: MSG_DESC[10] })
+        else if(user) return done(null, user, { status: 200, message: MSG_DESC[5] })
+    })
 }))
 
 passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true, session: false }, (req, email, password, done) => {
-    const {provider, confirmPassword} = req.body;
-    if(!provider || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[3] });
+    const {provider, confirmPassword} = req.body
+    if(!provider || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[3] })
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(password.length < 6 || password.length > 60 || confirmPassword.length < 6 || confirmPassword.length > 60) return done(null, false, { status: 400, message: MSG_DESC[9] })
     else if(password !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] })
-    else {
-        bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
-            if(err) return done(err, false);
-            else {
-                var query = {};
-                query['email'] = email; query['thirdParty.'.concat(provider)] = true; query['thirdParty.verified'] = false;
-                User.findOneAndUpdate(query, { password: hash, verified: true, 'thirdParty.verified': true }, (err, user) => {
-                    if(err) return done(err, false);
-                    else if(user) return done(null, user, { status: 200, message: MSG_DESC[4] });
-                    else done(null, false, { status: 401, message: MSG_DESC[10] });
-                })
-            }
+    bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
+        if(err) return done(err, false)
+        var query = {};
+        query['email'] = email; query['thirdParty.'.concat(provider)] = true; query['thirdParty.verified'] = false;
+        User.findOneAndUpdate(query, { password: hash, verified: true, 'thirdParty.verified': true }, (err, user) => {
+            if(err) return done(err, false)
+            else if(!user) return done(null, false, { status: 401, message: MSG_DESC[10] })
+            else if(user) return done(null, user, { status: 200, message: MSG_DESC[4] })
         })
-    }
+    })
 }))
 
 passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordField: '_id', session: false }, (email, id, done) => {

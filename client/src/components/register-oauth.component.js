@@ -29,8 +29,8 @@ const OAuth = () => {
 
     useEffect(() => {
         async function validateData() {
-            await axios.post(`${SERVER_URL}/oauth/${service}/validate`, { email: data.email }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then().catch(() => window.location = '/login');
+            await axios.get(`${SERVER_URL}/oauth/${service}/register`, { params: {email: data.email}, headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then().catch(() => window.location='/login')
         }
         validateData();
     },[service, data.email])
