@@ -534,35 +534,36 @@ const opts = {
 };
 
 passport.use('jwt', new JWTStrategy(opts, (req, payload, done) => {
-    User.findOne({ _id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA'] }, (err, user) => {
-        if(err) return done(err, false);
+    User.findOne({_id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA']}, (err, user) => {
+        if(err) return done(err, false)
+        else if(!user) return done(null, false, {status: 401, message: MSG_DESC[16]})
         else if(user){
-            if(user.security['2FA'] === payload.auth.status && user.verified){
-                RevokedToken.find({ userId: user.id }, (err, data) => {
-                    if(err) return done(err, false);
+            if(user.security['2FA'] === payload.auth.status && user.verified)
+                RevokedToken.find({userId: user.id}, (err, data) => {
+                    if(err) return done(err, false)
                     else if(data.length){
                         for (x=0; data.length; x++){
-                            if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] });
-                            else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, {...user._doc, _id: String(user._doc._id)});
+                            if(decrypt(data[x].token, 1) === req.cookies['jwt-token']) return done(null, false, { status: 403, message: MSG_DESC[15] })
+                            else if(x === data.length-1 && decrypt(data[x].token, 1) !== req.cookies['jwt-token']) return done(null, {...user._doc, _id: String(user._doc._id)})
                         }
-                    }else if(!data.length) return done(null, {...user._doc, _id: String(user._doc._id)});
+                    }else if(!data.length) return done(null, {...user._doc, _id: String(user._doc._id)})
                 })
-            }else if(!user.verified) return done(null, {id: String(user._id), email: user.email}, {
+            else if(user.security['2FA'] !== payload.auth.status) return done(null, {id: String(user._id), email: user.email}, {
+                    status: 302,
+                    message: MSG_DESC[37],
+                    type: { mfa: true, verifyAccount: false }
+                })
+            else if(!user.verified) return done(null, {id: String(user._id), email: user.email}, {
                     status: 302,
                     message: MSG_DESC[37],
                     type: { mfa: false, verifyAccount: true }
                 })
-            else return done(null, {id: String(user._id), email: user.email}, {
-                status: 302,
-                message: MSG_DESC[37],
-                type: { mfa: true, verifyAccount: false }
-            })
-        }else return done(null, false, { status: 401, message: MSG_DESC[16] });
+        }
     })
 }))
 
 passport.use('jwtOTP', new JWTStrategy(opts, (req, payload, done) => {
-    User.findOne({ _id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA'] }, (err, user) => {
+    User.findOne({_id: payload.id, email: payload.email, 'security.2FA': payload.auth['2FA']}, (err, user) => {
         if(err) return done(err, false);
         else if(user){
             RevokedToken.find({ userId: user.id }, (err, data) => {
