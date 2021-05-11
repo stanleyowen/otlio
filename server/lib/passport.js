@@ -13,7 +13,7 @@ const MSG_DESC = require('./callback')
 let User = require('../models/users.model')
 let Todo = require('../models/todo.model')
 let Token = require('../models/token.model')
-let OTPToken = require('../models/otp-token.model')
+let OTPToken = require('../models/otp.model')
 let RevokedToken = require('../models/revoke-token.model')
 
 const SALT_WORK_FACTOR = 12

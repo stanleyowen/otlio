@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const userSchema = new Schema ({
     email : {
@@ -48,8 +48,6 @@ const userSchema = new Schema ({
             invalid: [{ type: Object }]
         }
     }
-}, {
-    timestamps: true
-});
+}, { timestamps: true })
 
-module.exports = User = mongoose.model('users', userSchema);
+module.exports = User = mongoose.model('users', userSchema)
