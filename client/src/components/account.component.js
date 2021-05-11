@@ -150,8 +150,8 @@ const Account = ({ userData }) => {
 
     const changePassword = (e) => {
         e.preventDefault();
-        const btn = document.getElementById('change-password');
-        const verifyBtn = document.getElementById('verify-otp');
+        const btn = document.getElementById('change-password')
+        const verifyBtn = document.getElementById('verify-otp')
         const otp = document.querySelectorAll('#otp2 > *[id]')
         let token = '';
         for (let i = 1; i < otp.length+1; i++) {
@@ -165,6 +165,7 @@ const Account = ({ userData }) => {
             .then(res => {
                 closeModal('password-bg', 'password-modal'); closeModal('otp-bg', 'otp-modal');
                 setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' }); setData({ tokenId: '', token: '', isBackupCode: false });
+                for (let x=1; x<otp.length+1; x++) document.getElementById(`token-${x}`).value = '';
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
             .catch(err =>{
@@ -221,6 +222,7 @@ const Account = ({ userData }) => {
                 closeModal('mfa-bg', 'mfa-modal');
                 if(!userData.security['2FA']) userData.security['backup-codes'].valid = res.data['backup-codes']
                 data.tokenId = ''; data.token = ''; data.isBackupCode = false;
+                for (let x=1; x<otp.length+1; x++) document.getElementById(`token-${x}`).value = '';
                 userData.security['2FA'] = !userData.security['2FA'];
             })
             .catch(err => {
