@@ -44,6 +44,8 @@ const MSG_DESC = [
     'Backup Codes Generated Successfully',                              // 42
     'Backup Code(s) Revoked Successfully.',                             // 43
     'Backup Code is Invalid or Has Already Been Used.',                 // 44
+    'Account Disconnected Successfully to Google',                      // 45
+    'Account Disconnected Successfully to GitHub',                      // 46
 ];
 
 module.exports = MSG_DESC;

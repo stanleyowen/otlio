@@ -273,15 +273,15 @@ passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, cl
 passport.use('connectGitHub', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: `${process.env.GITHUB_CALLBACK}/connect`, passReqToCallback: true }, (req, accessToken, refreshToken, profile, done) => {
     const {_id, email} = req.body
     if(profile._json.email !== email) return done(null, false, { status: 403, message: MSG_DESC[27] })
-    User.findOne({_id, email: profile._json.email, 'thirdParty.github': false}, (err, user) => {
+    User.findOne({_id, email: profile._json.email}, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 403, message: MSG_DESC[27] })
         else if(user){
-            user.thirdParty.isThirdParty = true
-            user.thirdParty.github = true
-            user.thirdParty.verified = true
+            user.thirdParty.github = !user.thirdParty.github
+            user.thirdParty.isThirdParty = user.thirdParty.google ? true : false
+            user.thirdParty.verified = user.thirdParty.google ? true : false
             user.save()
-            return done(null, user, { status: 200, message: MSG_DESC[26] })
+            return done(null, user, { status: 200, message: MSG_DESC[user.thirdParty.github ? 26 : 46] })
         }
     })
 }))
@@ -311,15 +311,15 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
 passport.use('connectGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: `${process.env.GOOGLE_CALLBACK}/connect`, passReqToCallback: true }, (req, accessToken, refreshToken, profile, done) => {
     const {_id, email} = req.body
     if(profile._json.email !== email) return done(null, false, { status: 403, message: MSG_DESC[27] })
-    User.findOne({_id, email: profile._json.email, 'thirdParty.google': false}, (err, user) => {
+    User.findOne({_id, email: profile._json.email}, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 403, message: MSG_DESC[25] })
         else if(user){
-            user.thirdParty.isThirdParty = true
-            user.thirdParty.google = true
-            user.thirdParty.verified = true
+            user.thirdParty.google = !user.thirdParty.google
+            user.thirdParty.isThirdParty = user.thirdParty.github ? true : false
+            user.thirdParty.verified = user.thirdParty.github ? true : false
             user.save()
-            return done(null, user, { status: 200, message: MSG_DESC[24] })
+            return done(null, user, { status: 200, message: MSG_DESC[user.thirdParty.google ? 24 : 45] })
         }
     })
 }))
