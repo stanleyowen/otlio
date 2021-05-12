@@ -126,12 +126,10 @@ const Login = ({ userData }) => {
     return properties.verify ? (
         <div>
             { !data.tokenId ?
-            (<div className="loader"><div className="spin-container">
-                <div className="shape shape-1"></div>
-                <div className="shape shape-2"></div>
-                <div className="shape shape-3"></div>
-                <div className="shape shape-4"></div>
-            </div></div>) : null }
+            (<div className="loader"><div className="spin-container"><div class="loading">
+                <div></div><div></div><div></div>
+                <div></div><div></div>
+            </div></div></div>) : null }
             
             <div id="form">
                 <div className="form__contact">

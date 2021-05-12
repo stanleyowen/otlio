@@ -67,6 +67,7 @@ body.dark .MuiSelect-root {
 body.dark .bar1,
 body.dark .bar2,
 body.dark .bar3,
+body.dark .loading div:after,
 body.dark .navbar .animation__underline:after,
 body.dark .contact__body .animation__underline:after,
 body.dark .modal__body .animation__underline:after,
@@ -209,58 +210,50 @@ label { user-select: none; }
     position: fixed;
     background-color: rgba(255, 255, 255, 0.61);
     width: 100%;
-    height: 50%;
-    padding-top: 50vh;
+    height: 100%;
+    padding-top: 42vh;
     z-index: 1000;
 }
 .spin-container {
     position: relative;
-    width: 30px;
-    height: 30px;
+    width: 50px;
     margin-right: auto;
     margin-left: auto;
     border-radius: 15px;
-    -webkit-animation: rotation 1s infinite;
-            animation: rotation 1s infinite;
 }
-.spin-container .shape {
+.loading {
+    display: inline-block;
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+.loading div {
+    animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 40px 40px;
+}
+.loading div:after {
+    content: " ";
+    display: block;
     position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(0, 0, 0);
+    margin: -4px 0 0 -4px;
 }
-.spin-container .shape.shape-1 {
-    left: 0;
-    background-color: #4285F4;
-}
-.spin-container .shape.shape-2 {
-    right: 0;
-    background-color: #34A853;
-}
-.spin-container .shape.shape-3 {
-    bottom: 0;
-    background-color: #FBBC05;
-}
-.spin-container .shape.shape-4 {
-    bottom: 0;
-    right: 0;
-    background-color: #EA4335;
-}
-.spin-container .shape-1 {
-    -webkit-animation: shape1 0.5s infinite alternate;
-            animation: shape1 0.5s infinite alternate;
-}
-.spin-container .shape-2 {
-    -webkit-animation: shape2 0.5s infinite alternate;
-            animation: shape2 0.5s infinite alternate;
-}
-.spin-container .shape-3 {
-    -webkit-animation: shape3 0.5s infinite alternate;
-            animation: shape3 0.5s infinite alternate;
-}
-.spin-container .shape-4 {
-    -webkit-animation: shape4 0.5s infinite alternate;
-            animation: shape4 0.5s infinite alternate;
+.loading div:nth-child(1) { animation-delay: -0.036s; }
+.loading div:nth-child(1):after { top: 63px; left: 63px; }
+.loading div:nth-child(2) { animation-delay: -0.072s; }
+.loading div:nth-child(2):after { top: 68px; left: 56px; }
+.loading div:nth-child(3) { animation-delay: -0.108s; }
+.loading div:nth-child(3):after { top: 71px; left: 48px; }
+.loading div:nth-child(4) { animation-delay: -0.144s; }
+.loading div:nth-child(4):after { top: 72px; left: 40px; }
+.loading div:nth-child(5) { animation-delay: -0.18s; }
+.loading div:nth-child(5):after { top: 71px; left: 32px; }
+@keyframes loading {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 ::-webkit-scrollbar {
     width: 10px;
@@ -901,106 +894,6 @@ blockquote em {font-style: italic;}
         opacity: 0;
         visibility: hidden;
         transform: scale(0.8);
-    }
-}
-@-webkit-keyframes rotation {
-    from {
-      -webkit-transform: rotate(0deg);
-              transform: rotate(0deg);
-    }
-    to {
-      -webkit-transform: rotate(360deg);
-              transform: rotate(360deg);
-    }
-}
-@keyframes rotation {
-    from {
-      -webkit-transform: rotate(0deg);
-              transform: rotate(0deg);
-    }
-    to {
-      -webkit-transform: rotate(360deg);
-              transform: rotate(360deg);
-    }
-}
-@-webkit-keyframes shape1 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(20px, 20px);
-              transform: translate(20px, 20px);
-    }
-}
-@keyframes shape1 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(20px, 20px);
-              transform: translate(20px, 20px);
-    }
-}
-@-webkit-keyframes shape2 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(-20px, 20px);
-              transform: translate(-20px, 20px);
-    }
-}
-@keyframes shape2 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(-20px, 20px);
-              transform: translate(-20px, 20px);
-    }
-}
-@-webkit-keyframes shape3 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(20px, -20px);
-              transform: translate(20px, -20px);
-    }
-}
-@keyframes shape3 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(20px, -20px);
-              transform: translate(20px, -20px);
-    }
-}
-@-webkit-keyframes shape4 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(-20px, -20px);
-              transform: translate(-20px, -20px);
-    }
-}
-@keyframes shape4 {
-    from {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    to {
-      -webkit-transform: translate(-20px, -20px);
-              transform: translate(-20px, -20px);
     }
 }
 @media only screen and (max-width: 1024px) {
