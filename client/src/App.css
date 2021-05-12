@@ -1,4 +1,4 @@
-/*! Todo Application - CSS Version 0.5.1 Copyright 2021, Stanley Owen */
+/*! Todo Application - CSS Version 0.5.2 Copyright 2021 */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 * {
@@ -198,6 +198,9 @@ label { user-select: none; }
 .full-width { width: 100% !important; }
 .no-border, .no-border tr td  { border: none !important; }
 .no-outline { outline: none !important; }
+.oauth-box span#disconnect { display: none !important; }
+.oauth-box:hover span#connect { display: none !important; }
+.oauth-box:hover span#disconnect { display: inline !important; }
 .disabled, .disabled:hover {
     cursor: auto;
     opacity: 0.7;

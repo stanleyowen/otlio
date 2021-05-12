@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const todoSchema = new Schema ({
     email: {
@@ -15,7 +15,9 @@ const todoSchema = new Schema ({
             required: true
         }, iv: {
             type: String,
-            required: true
+            required: true,
+            minlength: 32,
+            maxlength: 32
         }
     },
     label: {
@@ -24,15 +26,14 @@ const todoSchema = new Schema ({
             required: true
         }, iv: {
             type: String,
-            required: true
+            required: true,
+            minlength: 32,
+            maxlength: 32
         }
     },
     description: {
-        data: {
-            type: String
-        }, iv: {
-            type: String
-        }
+        data: { type: String },
+        iv: { type: String }
     },
     date: {
         data: {
@@ -40,12 +41,12 @@ const todoSchema = new Schema ({
             required: true
         }, iv: {
             type: String,
-            required: true
+            required: true,
+            minlength: 32,
+            maxlength: 32
         }
     }
-}, {
-    timestamps: true
-});
+}, { timestamps: true })
 
-const Exercise = mongoose.model('todo', todoSchema);
-module.exports = Exercise;
+const Todo = mongoose.model('todo', todoSchema)
+module.exports = Todo

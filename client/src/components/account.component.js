@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons';
 import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faQuestionCircle, faExclamationTriangle, faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core';
+import download from 'js-file-download';
 import axios from 'axios';
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
@@ -128,13 +129,13 @@ const Account = ({ userData }) => {
 
     const backupCode = () => {
         const codes = [...valid, ...invalid]
-        return `       SAVE YOUR BACKUP CODES\n\nKeep these backup codes somewhere safe but accessible.\nEach backup code can only be used once.\n
+        return `SAVE YOUR BACKUP CODES\n\nKeep these backup codes somewhere safe but accessible.\nEach backup code can only be used once.\n
 1. ${codes[0]}		 6. ${codes[5]}
 2. ${codes[1]}		 7. ${codes[6]}
 3. ${codes[2]}		 8. ${codes[7]}
 4. ${codes[3]}		 9. ${codes[8]}
 5. ${codes[4]}		10. ${codes[9]}\n
-    (stanleyowen06@gmail.com)`
+(stanleyowen06@gmail.com)`
     }
 
     const CopyCode = (e) => {
@@ -149,8 +150,8 @@ const Account = ({ userData }) => {
 
     const changePassword = (e) => {
         e.preventDefault();
-        const btn = document.getElementById('change-password');
-        const verifyBtn = document.getElementById('verify-otp');
+        const btn = document.getElementById('change-password')
+        const verifyBtn = document.getElementById('verify-otp')
         const otp = document.querySelectorAll('#otp2 > *[id]')
         let token = '';
         for (let i = 1; i < otp.length+1; i++) {
@@ -164,6 +165,7 @@ const Account = ({ userData }) => {
             .then(res => {
                 closeModal('password-bg', 'password-modal'); closeModal('otp-bg', 'otp-modal');
                 setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' }); setData({ tokenId: '', token: '', isBackupCode: false });
+                for (let x=1; x<otp.length+1; x++) document.getElementById(`token-${x}`).value = '';
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
             })
             .catch(err =>{
@@ -220,6 +222,7 @@ const Account = ({ userData }) => {
                 closeModal('mfa-bg', 'mfa-modal');
                 if(!userData.security['2FA']) userData.security['backup-codes'].valid = res.data['backup-codes']
                 data.tokenId = ''; data.token = ''; data.isBackupCode = false;
+                for (let x=1; x<otp.length+1; x++) document.getElementById(`token-${x}`).value = '';
                 userData.security['2FA'] = !userData.security['2FA'];
             })
             .catch(err => {
@@ -242,7 +245,7 @@ const Account = ({ userData }) => {
         const btn = document.getElementById('generate-token');
         async function generateToken(){
             btn.innerHTML = "Generating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
-            await axios.post(`${SERVER_URL}/account/backup-code`, { "regenerate": true }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/account/backup-code`, { regenerate: true }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 userData.security['backup-codes'].valid = res.data['backup-codes']
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
@@ -252,6 +255,14 @@ const Account = ({ userData }) => {
         }
         if(!security['2FA']) setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Multi Factor Authentication (MFA) Users')
         else generateToken();
+    }
+
+    const DownloadOTP = (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('download-otp');
+        btn.innerHTML = "Downloading..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
+        download(backupCode(), 'Backup Codes.txt')
+        btn.innerHTML = "Download"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
     }
 
     return (
@@ -304,13 +315,13 @@ const Account = ({ userData }) => {
                     <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
                     <div className="form__container">
                         <div className="m-10">
-                            <button className="oauth-box google" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.google ? null : ConnectOAuthGoogle : ConnectOAuthGoogle}>
-                                <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? 'Connected' : 'Connect' : 'Connect' } with Google</p>
+                            <button className="oauth-box google" onClick={authenticated ? ConnectOAuthGoogle : null}>
+                                <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with Google</p>
                             </button>
                         </div>
                         <div className="m-10">
-                            <button className="oauth-box github" onClick={isLoading ? null : thirdParty.isThirdParty ? thirdParty.github ? null : ConnectOAuthGitHub : ConnectOAuthGitHub}>
-                                <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? 'Connected' : 'Connect' : 'Connect' } with GitHub</p>
+                            <button className="oauth-box github" onClick={authenticated ? ConnectOAuthGitHub : null}>
+                                <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with GitHub</p>
                             </button>
                         </div>
                     </div>
@@ -473,7 +484,10 @@ const Account = ({ userData }) => {
                         <p className="mb-10">Keep these backup codes somewhere safe but accessible. Each backup code can only be used once.</p>
                         <div dangerouslySetInnerHTML={{__html: backupCodes()}}></div>
                         <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="generate-token" onClick={RegenerateToken}>Regenerate Token</button>
-                        <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button>
+                        <div className="flex isCentered">
+                            <p><button className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button></p>
+                            <p><button className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="download-otp" onClick={DownloadOTP}>Download</button></p>
+                        </div>
                     </div>
                 </div>
             </div>) : null }

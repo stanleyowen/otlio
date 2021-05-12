@@ -6,23 +6,12 @@ const tokenSchema = new Schema ({
         type: String,
         required: true
     },
-    type: {
-        passwordReset: {
-            type: Boolean,
-            default: false,
-            required: true
-        }, accountVerification: {
-            type: Boolean,
-            default: false,
-            required: true
-        }
-    },
     userId: {
         data: {
             type: String,
             required: true,
             minlength: 32,
-            maxlength: 32
+            maxlength: 64
         }, iv: {
             type: String,
             required: true,
@@ -33,17 +22,21 @@ const tokenSchema = new Schema ({
     token: {
         data: {
             type: String,
-            required: true
+            required: true,
+            minlength: 32,
+            maxlength: 32
         }, iv: {
             type: String,
-            required: true
+            required: true,
+            minlength: 32,
+            maxlength: 32
         }
     },
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 3600
+        expires: 300 // 5 minutes
     }
 },{ timestamps: true })
 
-module.exports = Token = mongoose.model('token', tokenSchema)
+module.exports = OTPToken = mongoose.model('otp-token', tokenSchema)
