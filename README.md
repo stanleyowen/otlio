@@ -32,7 +32,7 @@ Todo Application is an **open source** project, completed with **highest standar
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.5.1.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.5.2.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
@@ -49,9 +49,7 @@ Todo Application is an **open source** project, completed with **highest standar
     - Inside `server` directory, create a new file named `.env` which stores about sensitive information, which is `ATLAS_URI`, `SECRET_KEY`, and `TOKEN_KEY`
       - `ATLAS_URI` stores the Database URI provided by [MongoDB](https://www.mongodb.com/2)
       - `JWT_SECRET` stores first JWT secret (Make it secret, hard to guess, and different from the second JWT Secret)
-      - `SECRET_KEY_1` stores secret key for encyption method (Approximately 32 chars) (Make it secret, hard to guess, and different from others secret key)
-      - `SECRET_KEY_2` stores secret key for encyption method (Approximately 32 chars) (Make it secret, hard to guess, and different from others secret key)
-      - `SECRET_KEY_3` stores secret key for encyption method (Approximately 32 chars) (Make it secret, hard to guess, and different from others secret key)
+      - `SECRET_KEY_1`, `SECRET_KEY_2`, `SECRET_KEY_3`, `SECRET_KEY_4`, `SECRET_KEY_5` stores secret key for encyption method (Approximately 32 chars) (Make it secret, hard to guess, and different from others secret key)
       - `CLIENT_URL` stores the whitelisted domain for `CORS` Policy
       - `NODE_ENV` stores the status of an application, whether it is in `development` or `production` status.
       - `GITHUB_ID` stores the client id for GitHub OAuth provided by [GitHub OAuth](https://github.com/settings/applications/new)
@@ -67,6 +65,8 @@ Todo Application is an **open source** project, completed with **highest standar
           SECRET_KEY_1    = SpFcG29lKzfx9SxjLRjujaYxzSswhihd
           SECRET_KEY_2    = fAgW6nV97IVloZB1C2j2ABYDUoCmUEJa
           SECRET_KEY_3    = 68Lqcfi2MD1RuqT5v1GNKNYzacmoezdR
+          SECRET_KEY_4    = 98yNuI8bxpUWIJIodl9ltchPEuscraNz
+          SECRET_KEY_5    = DOC7uNZ3etiHw9OLDMFLuIJbwWdGOKbF
           NODE_ENV        = development
           CLIENT_URL      = http://localhost:3000
 
