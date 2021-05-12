@@ -258,6 +258,7 @@ label { user-select: none; }
     100% { transform: rotate(360deg); }
 }
 ::-webkit-scrollbar {
+    height: 5px;
     width: 10px;
 }
 ::-webkit-scrollbar-track {
@@ -406,12 +407,16 @@ label { user-select: none; }
 }
 .main__table {
     width: 100%;
-    overflow: auto;
     margin-top: 40px;
     border-collapse: collapse;
     transition: margin .4s;
 }
+.main__table td:nth-child(1){
+    max-width: 30vw;
+    overflow-x: auto;
+}
 th, td {
+    width: auto;
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid;
@@ -505,7 +510,7 @@ tbody tr:hover {
 .secondary { background-color: rgb(255, 115, 1); }
 .important { background-color: rgb(118, 44, 255); }
 .do-later { background-color: green; }
-.btn-config { margin-right: 10px; }
+.btn-config:nth-child(1) { margin-right: 10px; }
 .btn-config .MuiButtonBase-root { color: #333; z-index: 1; }
 .modal {
     left: 0;
