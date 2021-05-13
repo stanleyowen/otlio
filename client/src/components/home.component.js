@@ -99,9 +99,10 @@ const Home = ({ userData }) => {
     const addTodo = (e) => {
         e.preventDefault();
         const btn = document.getElementById('add-todo');
+        const description = data.description.replace(/\n/g, '<br>');
         async function submitData() {
             btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
-            await axios.post(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.post(`${SERVER_URL}/todo/data`, {...data, description}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('background','modal')
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
@@ -130,7 +131,7 @@ const Home = ({ userData }) => {
         if(b) return b.map(a => {
             return(
                 <tr key={a._id}>
-                    <td>{a.title}<br/>{a.description}</td>
+                    <td>{a.title}<br/><div dangerouslySetInnerHTML={{__html: a.description}} /></td>
                     <td>{parseLabel(titleCase(a.label))}</td>
                     <td>{parseDate(formatDate(a.date), formatDate())}</td>
                     <td>

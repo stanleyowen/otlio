@@ -61,9 +61,10 @@ const Edit = ({ userData }) => {
     const updateData = (e) => {
         e.preventDefault();
         const btn = document.getElementById('update-todo');
+        const description = data.description.replace(/\n/g, '<br>');
         async function submitData() {
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
-            await axios.put(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.put(`${SERVER_URL}/todo/data`, {...data, description}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => { localStorage.setItem('info', JSON.stringify(res.data)); window.location='/'; })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
             btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
