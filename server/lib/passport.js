@@ -180,15 +180,12 @@ passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 't
         else if(password !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] })
     }
     var query = {}; query['_id'] = tokenId; query['type.'.concat(type)] = true;
-    Token.findOne(query, (err, data) => {
+    Token.findOne(query, async (err, data) => {
         if(err) done(err, false)
         else if(data && userId === decrypt(data.userId, 3) && token === decrypt(data.token, 3)){
             var query = {}; query['_id'] = userId; email ? query['email'] = email : null;
             var updateData = {}
-            if(type === 'passwordReset') bcrypt.hash(password, SALT_WORK_FACTOR, (err, hash) => {
-                if(err) done(err, false)
-                else updateData['password'] = hash
-            })
+            if(type === 'passwordReset') updateData['password'] = await bcrypt.hash(password, SALT_WORK_FACTOR)
             else updateData['verified'] = true
             User.findOneAndUpdate(query, updateData, (err, user) => {
                 if(err) done(err, false)
