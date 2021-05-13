@@ -10,7 +10,7 @@ const tokenSchema = new Schema ({
         data: {
             type: String,
             required: true,
-            minlength: 32,
+            minlength: 64,
             maxlength: 64
         }, iv: {
             type: String,
