@@ -157,10 +157,10 @@ const Account = ({ userData }) => {
             btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.put(`${SERVER_URL}/account/user`, {...password, ...data}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
-                closeModal('password-bg', 'password-modal'); closeModal('otp-bg', 'otp-modal');
-                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' }); setData({ tokenId: '', token: '', isBackupCode: false });
-                for (let x=1; x<otp.length+1; x++) document.getElementById(`token-${x}`).value = '';
-                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
+                closeModal('password-bg', 'password-modal'); closeModal('otp-bg', 'otp-modal')
+                setPassword({ oldPassword: '', newPassword: '', confirmPassword: '' }); setData({ tokenId: '', token: '', isBackupCode: false })
+                for (let x=0; x<otp.length; x++) otp[x].value = ''
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
             })
             .catch(err =>{
                 if(err.response.status === 428) openModal('otp-bg', 'otp-modal')
@@ -212,11 +212,11 @@ const Account = ({ userData }) => {
             btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true)
             await axios.put(`${SERVER_URL}/account/otp`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
-                closeModal('mfa-bg', 'mfa-modal');
+                closeModal('mfa-bg', 'mfa-modal')
                 if(!userData.security['2FA']) userData.security['backup-codes'].valid = res.data['backup-codes']
-                data.tokenId = ''; data.token = ''; data.isBackupCode = false;
-                for (let x=1; x<otp.length+1; x++) document.getElementById(`token-${x}`).value = '';
-                userData.security['2FA'] = !userData.security['2FA'];
+                setData({ tokenId: '', token: '', isBackupCode: false })
+                for (let x=0; x<otp.length; x++) otp[x].value = '';
+                userData.security['2FA'] = !userData.security['2FA']
             })
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
