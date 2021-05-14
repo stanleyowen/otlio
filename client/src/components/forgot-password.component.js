@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react'
+import axios from 'axios'
 
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { getCSRFToken } from '../libraries/validation';
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
+import { getCSRFToken } from '../libraries/validation'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const SERVER_URL = process.env.REACT_APP_SERVER_URL
+const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const ResetPassword = ({ userData }) => {
-    const [email, setEmail] = useState(userData.email ? userData.email : '');
+    const [email, setEmail] = useState(userData.email ? userData.email : '')
     const [properties, setProperties] = useState({
         honeypot: '',
         success: false
-    });
+    })
     
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     const Submit = (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('reset-password');
+        e.preventDefault()
+        const btn = document.getElementById('reset-password')
         async function submitData(){
-            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/forgot-password`, {email}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 handleChange('success', true)
@@ -29,13 +29,13 @@ const ResetPassword = ({ userData }) => {
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
                 document.getElementById('userEmail').focus()
-            });
-            btn.innerHTML = "Send"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            })
+            btn.innerHTML = "Send"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
-        if(properties.honeypot) return;
+        if(properties.honeypot) return
         else if(!email) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')
-        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
-        else submitData();
+        else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus() }
+        else submitData()
     }
 
     return(
@@ -70,4 +70,4 @@ const ResetPassword = ({ userData }) => {
     )
 }
 
-export default ResetPassword;
+export default ResetPassword

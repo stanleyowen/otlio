@@ -1,62 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import DateFnsUtils from "@date-io/date-fns";
-import { IconButton, Tooltip, Select, MenuItem } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons/';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import DateFnsUtils from "@date-io/date-fns"
+import { IconButton, Tooltip, Select, MenuItem } from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons/'
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
+import axios from 'axios'
 
-import { labels, validateLabel, getCSRFToken, openModal, closeModal } from '../libraries/validation';
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
+import { labels, validateLabel, getCSRFToken, openModal, closeModal } from '../libraries/validation'
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
 const formatDate = (e) => {
-    var d = e ? new Date(e) : new Date();
-    var month = d.getMonth() + 1;
-    var day = d.getDate();
-    var year = d.getFullYear();
-    if (month <= 9) month = '0' + month;
-    if (day <= 9) day = '0' + day;
-    return [day, month, year].join('-');
+    var d = e ? new Date(e) : new Date()
+    var month = d.getMonth() + 1
+    var day = d.getDate()
+    var year = d.getFullYear()
+    if (month <= 9) month = '0' + month
+    if (day <= 9) day = '0' + day
+    return [day, month, year].join('-')
 }
 
 const parseDate = (a, b) => {
-    var data = parseInt(a.split('-')[0]);
-    var yesterday = parseInt(b.split('-')[0]) - 1;
-    var today = parseInt(b.split('-')[0]);
-    var tomorrow = parseInt(b.split('-')[0]) + 1;
-    if(data === yesterday) return <b>Yesterday</b>;
-    else if(data === today) return <b>Today</b>;
-    else if(data === tomorrow) return <b>Tomorrow</b>;
-    else return a;
+    var data = parseInt(a.split('-')[0])
+    var yesterday = parseInt(b.split('-')[0]) - 1
+    var today = parseInt(b.split('-')[0])
+    var tomorrow = parseInt(b.split('-')[0]) + 1
+    if(data === yesterday) return <b>Yesterday</b>
+    else if(data === today) return <b>Today</b>
+    else if(data === tomorrow) return <b>Tomorrow</b>
+    else return a
 }
 
 const parseLabel = (a) => {
-    var _labelClass = null;
+    var _labelClass = null
     if(a[1]){ if(a[0]+" "+a[1] === labels[3]) _labelClass="do-later" }
     else {
         if(a[0] === labels[0]) _labelClass="priority"
         else if(a[0] === labels[1]) _labelClass="secondary"
         else if(a[0] === labels[2]) _labelClass="important"
     }
-    return <span className={"label "+_labelClass}>{a}</span>;
+    return <span className={"label "+_labelClass}>{a}</span>
 }
 
 const Home = ({ userData }) => {
-    const {email, authenticated, isLoading} = userData;
-    const cacheTodo = JSON.parse(localStorage.getItem('todoData'));
-    const [todoData, setTodoData] = useState();
+    const {email, authenticated, isLoading} = userData
+    const cacheTodo = JSON.parse(localStorage.getItem('todoData'))
+    const [todoData, setTodoData] = useState()
     const [data, setData] = useState({
         title: '',
         date: new Date(),
         label: labels[0].toLowerCase(),
         description: ''
-    });
+    })
     const [properties, setProperties] = useState({
         honeypot: '',
         disabled: false
-    });
+    })
 
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
@@ -64,66 +64,66 @@ const Home = ({ userData }) => {
     async function getTodoData() {
         await axios.get(`${SERVER_URL}/todo/data`, { withCredentials: true })
         .then(res => {
-            setTodoData(res.data);
-            localStorage.setItem('todoData', JSON.stringify(res.data));
+            setTodoData(res.data)
+            localStorage.setItem('todoData', JSON.stringify(res.data))
         })
         .catch(err => {
-            setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message);
+            setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             if(err.response.status >= 500) setTimeout(() => getTodoData(), 5000)
-        });
+        })
     }
 
     useEffect(() => {
-        const background = document.getElementById('background');
-        const modal = document.getElementById('modal');
+        const background = document.getElementById('background')
+        const modal = document.getElementById('modal')
         window.onclick = function(e){
             if(e.target === background && !properties.disabled){
-                modal.classList.remove('showModal');
-                modal.classList.add('closeModal');
-                background.classList.remove('showBackground');
-                background.classList.add('hideBackground');
+                modal.classList.remove('showModal')
+                modal.classList.add('closeModal')
+                background.classList.remove('showBackground')
+                background.classList.add('hideBackground')
             }
         }
         document.querySelectorAll('[data-autoresize]').forEach((e) => {
-            e.style.boxSizing = 'border-box';
-            var offset = e.offsetHeight - e.clientHeight;
+            e.style.boxSizing = 'border-box'
+            var offset = e.offsetHeight - e.clientHeight
             e.addEventListener('input', (a) => {
-              a.target.style.height = '-10px';
-              a.target.style.height = a.target.scrollHeight + offset + 'px';
-            });
-            e.removeAttribute('data-autoresize');
-        });
+              a.target.style.height = '-10px'
+              a.target.style.height = a.target.scrollHeight + offset + 'px'
+            })
+            e.removeAttribute('data-autoresize')
+        })
         if(!isLoading && authenticated) getTodoData()
-    }, [userData, properties.disabled]);
+    }, [userData, properties.disabled])
 
     const addTodo = (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('add-todo');
+        e.preventDefault()
+        const btn = document.getElementById('add-todo')
         async function submitData() {
-            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true);
+            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true)
             await axios.post(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('background','modal')
-                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message);
+                setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 setData({ title: '', date: new Date(), label: labels[0].toLowerCase(), description: '' })
-                getTodoData();
+                getTodoData()
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false);
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            btn.innerHTML = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
         }
-        if(properties.honeypot) return;
-        else if(!data.title || !data.date || !data.label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus(); }
-        else if(data.title.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 60 characters !"); document.getElementById('title').focus(); }
-        else if(validateLabel(data.label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus(); }
-        else if(data.description && data.description.length > 200){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 200 characters !"); document.getElementById('description').focus(); }
-        else submitData();
+        if(properties.honeypot) return
+        else if(!data.title || !data.date || !data.label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus() }
+        else if(data.title.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 60 characters !"); document.getElementById('title').focus() }
+        else if(validateLabel(data.label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus() }
+        else if(data.description && data.description.length > 200){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 200 characters !"); document.getElementById('description').focus() }
+        else submitData()
     }
 
     const deleteData = async id => {
         await axios.delete(`${SERVER_URL}/todo/data`, { data: { objId: id }, headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
         .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
-        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-        getTodoData();
+        .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+        getTodoData()
     }
 
     const todoList = (b = todoData ? todoData : cacheTodo) => {
@@ -154,10 +154,10 @@ const Home = ({ userData }) => {
     }
 
     const titleCase = (a) => {
-        var sentence = a.toLowerCase().split(" ");
-        for (var i = 0; i < sentence.length; i++) sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
-        sentence.join(" ");
-        return sentence;
+        var sentence = a.toLowerCase().split(" ")
+        for (var i = 0; i < sentence.length; i++) sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1)
+        sentence.join(" ")
+        return sentence
     }
 
     return (
@@ -253,7 +253,7 @@ const Home = ({ userData }) => {
                 </div>
             </div>
        </div>
-    );
+    )
 }
 
-export default Home;
+export default Home

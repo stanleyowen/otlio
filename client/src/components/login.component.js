@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core';
-import { faQuestionCircle, faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons/';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
+import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core'
+import { faQuestionCircle, faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons/'
+import axios from 'axios'
 
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation';
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
+import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const SERVER_URL = process.env.REACT_APP_SERVER_URL
+const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Login = ({ userData }) => {
-    const {status} = userData;
-    const {mfa} = userData.type;
-    const {email} = userData.credentials;
+    const {status} = userData
+    const {mfa} = userData.type
+    const {email} = userData.credentials
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,
@@ -39,11 +39,11 @@ const Login = ({ userData }) => {
     const handleData = (a, b) => setData({ ...data, [a]: b })
 
     useEffect(() => {
-        const btn = document.getElementById('send-otp');
+        const btn = document.getElementById('send-otp')
         const otp = document.querySelectorAll('#otp > *[id]')
         async function sendOTP(){
-            if(!login.email) handleLogin('email', email); properties.verify = true;
-            if(btn) btn.innerHTML = "Sending..."; handleChange('disabled', true);
+            if(!login.email) handleLogin('email', email); properties.verify = true
+            if(btn) btn.innerHTML = "Sending..."; handleChange('disabled', true)
             await axios.get(`${SERVER_URL}/account/otp`, { withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
@@ -54,13 +54,13 @@ const Login = ({ userData }) => {
                 if(err.response.status >= 500) setTimeout(() => sendOTP(), 5000)
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
-            if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false);
+            if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false)
         }
         async function OTPInput(){
             for (let i = 0; i < otp.length; i++) {
-                otp[i].setAttribute('maxlength', 1); otp[i].setAttribute('type', 'text');
-                otp[i].setAttribute('pattern', '[0-9]'); otp[i].setAttribute('autocomplete', 'off');
-                otp[i].setAttribute('inputmode', 'numeric'); otp[i].setAttribute('required', true);
+                otp[i].setAttribute('maxlength', 1); otp[i].setAttribute('type', 'text')
+                otp[i].setAttribute('pattern', '[0-9]'); otp[i].setAttribute('autocomplete', 'off')
+                otp[i].setAttribute('inputmode', 'numeric'); otp[i].setAttribute('required', true)
                 otp[i].addEventListener('keydown', (e) => {
                     if(e.key === "Backspace") {
                         if(i !== 0) otp[i-1].focus()
@@ -73,52 +73,52 @@ const Login = ({ userData }) => {
                 })
             }
         }
-        if((status === 302 && !properties.verify && mfa) || properties.sendOTP){ properties.sendOTP = false; sendOTP(); }
-        OTPInput();
+        if((status === 302 && !properties.verify && mfa) || properties.sendOTP){ properties.sendOTP = false; sendOTP() }
+        OTPInput()
     }, [userData, properties.verify, properties.sendOTP, data])
 
     const LogIn = (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('login');
+        e.preventDefault()
+        const btn = document.getElementById('login')
         async function submitData(){
-            btn.innerHTML = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            btn.innerHTML = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/login`, login, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
-                if(err.response.status === 302){ handleChange('sendOTP', true); handleChange('verify', true); }
+                if(err.response.status === 302){ handleChange('sendOTP', true); handleChange('verify', true) }
                 else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
-            btn.innerHTML = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            btn.innerHTML = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
-        if(properties.honeypot) return;
-        else if(!login.email || !login.password) { setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!login.email ? 'userEmail' : 'userPassword').focus(); }
-        else if(EMAIL_VAL.test(String(login.email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Email Address !"); document.getElementById('userEmail').focus(); }
-        else submitData();
+        if(properties.honeypot) return
+        else if(!login.email || !login.password) { setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!login.email ? 'userEmail' : 'userPassword').focus() }
+        else if(EMAIL_VAL.test(String(login.email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Email Address !"); document.getElementById('userEmail').focus() }
+        else submitData()
     }
 
     const VerifyOTP = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         const otp = document.querySelectorAll('#otp > *[id]')
-        let token = '';
+        let token = ''
         for (let i = 1; i < otp.length+1; i++) {
             const data = document.getElementById(`token-${i}`).value
             token += String(data)
-        } data.token = token;
-        const btn = document.getElementById('verify');
+        } data.token = token
+        const btn = document.getElementById('verify')
         async function submitData(){
-            btn.innerHTML = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            btn.innerHTML = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/otp`, {...data, rememberMe: login.rememberMe}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
                 document.getElementById('token-1').focus()
             })
-            btn.innerHTML = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            btn.innerHTML = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
-        if(properties.honeypot) return;
-        else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.");
-        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus(); }
-        else submitData();
+        if(properties.honeypot) return
+        else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
+        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus() }
+        else submitData()
     }
     return properties.verify ? (
         <div>
@@ -227,4 +227,4 @@ const Login = ({ userData }) => {
     )
 }
 
-export default Login;
+export default Login
