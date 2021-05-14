@@ -75,15 +75,12 @@ const Account = ({ userData }) => {
             otp1[i].setAttribute('pattern', '[0-9]'); otp1[i].setAttribute('autocomplete', 'off');
             otp1[i].setAttribute('inputmode', 'numeric'); otp1[i].setAttribute('required', true);
             otp1[i].addEventListener('keydown', (e) => {
-                if (e.key === "Backspace") {
-                    otp1[i].value = '';
-                    if (i !== 0) otp1[i - 1].focus();
-                }else {
-                    if (i === otp1.length - 1 && otp1[i].value !== '') return true;
-                    else if ((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
-                        otp1[i].value = e.key;
-                        if (i !== otp1.length - 1) otp1[i + 1].focus();
-                    }else otp1[i].value = '';
+                if(e.key === "Backspace") {
+                    if(i !== 0) otp1[i-1].focus()
+                    otp1[i].value = ''
+                }else if((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
+                    if (i !== otp1.length-1) otp1[i+1].focus()
+                    otp1[i].value = e.key
                     e.preventDefault()
                 }
             })
@@ -93,15 +90,12 @@ const Account = ({ userData }) => {
             otp2[i].setAttribute('pattern', '[0-9]'); otp2[i].setAttribute('autocomplete', 'off');
             otp2[i].setAttribute('inputmode', 'numeric'); otp2[i].setAttribute('required', true);
             otp2[i].addEventListener('keydown', (e) => {
-                if (e.key === "Backspace") {
-                    otp2[i].value = '';
-                    if (i !== 0) otp2[i - 1].focus();
-                }else {
-                    if (i === otp2.length - 1 && otp2[i].value !== '') return true;
-                    else if ((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
-                        otp2[i].value = e.key;
-                        if (i !== otp2.length - 1) otp2[i + 1].focus();
-                    }else otp2[i].value = '';
+                if(e.key === "Backspace") {
+                    if (i !== 0) otp2[i-1].focus()
+                    otp2[i].value = ''
+                }else if((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
+                    if (i !== otp2.length-1) otp2[i+1].focus()
+                    otp2[i].value = e.key
                     e.preventDefault()
                 }
             })

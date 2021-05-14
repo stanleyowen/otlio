@@ -175,7 +175,6 @@ router.post('/forgot-password', async (req, res, next) =>
 
 router.post('/reset-password', async (req, res, next) =>
     passport.authenticate('token', { session: false }, (err, user, info) => {
-        console.log(err)
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
         else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
         else if(user) return res.cookie('jwt-token', jwt.sign({

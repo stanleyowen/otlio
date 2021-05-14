@@ -62,15 +62,12 @@ const Login = ({ userData }) => {
                 otp[i].setAttribute('pattern', '[0-9]'); otp[i].setAttribute('autocomplete', 'off');
                 otp[i].setAttribute('inputmode', 'numeric'); otp[i].setAttribute('required', true);
                 otp[i].addEventListener('keydown', (e) => {
-                    if (e.key === "Backspace") {
-                        otp[i].value = '';
-                        if (i !== 0) otp[i - 1].focus();
-                    }else {
-                        if (i === otp.length - 1 && otp[i].value !== '') return true;
-                        else if ((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
-                            otp[i].value = e.key;
-                            if (i !== otp.length - 1) otp[i + 1].focus();
-                        }else otp[i].value = '';
+                    if(e.key === "Backspace") {
+                        if(i !== 0) otp[i-1].focus()
+                        otp[i].value = ''
+                    }else if((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
+                        if (i !== otp.length-1) otp[i+1].focus()
+                        otp[i].value = e.key
                         e.preventDefault()
                     }
                 })
