@@ -627,7 +627,6 @@ img {
     position: relative;
     font-weight: bold;
     display: block;
-    overflow: hidden;
     width: 100%;
 }
 .contact__infoField .contact__inputField {
@@ -638,12 +637,13 @@ img {
     outline: none;
     padding: 10px;
     font-size: 20px;
-    background-color: transparent;
+    box-sizing: border-box;
+    background-color: transparent !important;
     border-bottom: 1px solid #7c7c7c;
 }
 .datepicker > .MuiFormControl-root {
     width: 100%!important;
-    margin-top: 2px;
+    margin-top: 1.5px;
 }
 .MuiInput-underline:after { border-bottom: 2px solid #1a73e8 !important; }
 .MuiInput-underline:not(.Mui-disabled):before { border-bottom: 1px solid #7c7c7c !important; }
@@ -698,7 +698,7 @@ img {
     background: #1a73e8;
     transition: width 0.35s ease 0s, left 0.35s ease 0s;
 }
-.contact__infoField .contact__inputField:focus + .contact__onFocus { width: 105%; left: 0; }
+.contact__infoField .contact__inputField:focus + .contact__onFocus { width: 100%; left: 0; }
 #form {
     width: 60%;
     padding-top: 100px;
