@@ -1,42 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { IconButton, Tooltip } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers, faChartLine } from '@fortawesome/free-solid-svg-icons/';
+import React, { useEffect, useState } from 'react'
+import { IconButton, Tooltip } from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers, faChartLine } from '@fortawesome/free-solid-svg-icons/'
 
 const Navbar = ({ userData }) => {
-    const {authenticated, isLoading} = userData;
-    const theme = localStorage.getItem('__theme');
-    const [value_a, setValue_a] = useState([]);
-    const [value_b, setValue_b] = useState([]);
-    const [value_c, setValue_c] = useState();
+    const {authenticated, isLoading} = userData
+    const theme = localStorage.getItem('__theme')
+    const [value_a, setValue_a] = useState([])
+    const [value_b, setValue_b] = useState([])
+    const [value_c, setValue_c] = useState()
 
     useEffect(() => {
-        if(theme === "dark") document.body.classList.add("dark");
-        if(!isLoading && authenticated){
-            setValue_a(['Dashboard','/', <FontAwesomeIcon icon={faListUl} style={{ fontSize: "1.5em" }} />]);
-            setValue_b(['Sign Out','/logout', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />]);
-            setValue_c(['Account Settings','/account', <FontAwesomeIcon icon={faUser} style={{ fontSize: "1.4em" }} />]);
+        if(theme === "dark") document.body.classList.add("dark")
+        if(!isLoading && authenticated) {
+            setValue_a(['Dashboard','/', <FontAwesomeIcon icon={faListUl} style={{ fontSize: "1.5em" }} />])
+            setValue_b(['Sign Out','/logout', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />])
+            setValue_c(['Account Settings','/account', <FontAwesomeIcon icon={faUser} style={{ fontSize: "1.4em" }} />])
         }else {
-            setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />]);
-            setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />]);
+            setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />])
+            setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />])
         }
-    },[userData, theme]);
+    },[userData, theme])
 
     const toggleNavbar = (e) => {
-        e.preventDefault();
-        var menu = document.getElementById("navbar__menu");
-        var icon = document.getElementById("navbar-icon");
-        icon.classList.toggle("closeIcon");
-        if(menu.style.display === "block") menu.style.display = "none";
-        else menu.style.display = "block";
+        e.preventDefault()
+        document.getElementById("navbar-icon").classList.toggle("closeIcon")
+        var menu = document.getElementById("navbar__menu")
+        if(menu.style.display === "block") menu.style.display = "none"
+        else menu.style.display = "block"
     }
 
     const changeMode = (e) => {
-        e.preventDefault();
-        let theme = "light";
-        document.body.classList.toggle("dark");
-        if(document.body.classList.contains("dark")) theme = "dark";
-        localStorage.setItem("__theme", theme);
+        e.preventDefault()
+        let theme = "light"
+        document.body.classList.toggle("dark")
+        if(document.body.classList.contains("dark")) theme = "dark"
+        localStorage.setItem("__theme", theme)
     }
 
     return (
@@ -89,7 +88,7 @@ const Navbar = ({ userData }) => {
                 </svg>
             </a>
         </div>
-    );
+    )
 }
 
-export default Navbar;
+export default Navbar

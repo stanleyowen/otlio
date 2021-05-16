@@ -215,7 +215,7 @@ const Account = ({ userData }) => {
                 closeModal('mfa-bg', 'mfa-modal')
                 if(!userData.security['2FA']) userData.security['backup-codes'].valid = res.data['backup-codes']
                 setData({ tokenId: '', token: '', isBackupCode: false })
-                for (let x=0; x<otp.length; x++) otp[x].value = '';
+                for (let x=0; x<otp.length; x++) otp[x].value = ''
                 userData.security['2FA'] = !userData.security['2FA']
             })
             .catch(err => {
@@ -357,7 +357,7 @@ const Account = ({ userData }) => {
                                 </div>
                             </div>
                             <p className="isCentered mt-10"><a className="link" href="/reset-password">I forgot my password</a></p>
-                            <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="change-password">Update</button>
+                            <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="change-password">Update</button>
                         </form>
                     </div>
                 </div>
@@ -379,7 +379,7 @@ const Account = ({ userData }) => {
                                     <p className="mt-10">Verification Code will be sent to <b>{email}</b> via email and will be valid for only <b>5 (five) minutes</b>.</p>
                                     <p className="mt-10"><b>Note: Once you enable 2 Factor Authentication (2FA), you will be prompted to enter verification code on every login session.</b></p>
                                 </blockquote>
-                                <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="send-otp" onClick={sendOTP}>Send Verification Code</button>
+                                <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="send-otp" onClick={sendOTP}>Send Verification Code</button>
                             </li>
                             <li>
                                 Verify Identity
@@ -405,7 +405,7 @@ const Account = ({ userData }) => {
                                         </div>
                                     </div>
                                     { authenticated && security['2FA'] ? (<p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>) : null }
-                                    <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
+                                    <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
                                 </form>
                             </li>
                         </ol>
@@ -476,7 +476,7 @@ const Account = ({ userData }) => {
                 </div>
             </div>) : null }
         </div>
-    );
+    )
 }
 
-export default Account;
+export default Account

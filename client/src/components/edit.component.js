@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import DateFnsUtils from "@date-io/date-fns"
+import DateFnsUtils from '@date-io/date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Select, MenuItem, IconButton } from '@material-ui/core'
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
@@ -84,11 +84,9 @@ const Edit = ({ userData }) => {
                 <div></div><div></div>
             </div></div></div>) : null }
 
-            <div className="main__projects">
-                <IconButton href='/' className="float-right">
-                    <FontAwesomeIcon icon={faTimes} style={{ fontSize: ".8em", color: 'black' }} />
-                </IconButton>
-                <form onSubmit={updateData} className="mt-20">
+            <div className="main__projects" style={{paddingTop: '80px'}}>
+                <IconButton href='/' className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
+                <form onSubmit={updateData}>
                     <div className="m-10 no-bot">
                         <div className="contact__infoField">
                             <label htmlFor="bot-title">Title</label>
@@ -136,7 +134,7 @@ const Edit = ({ userData }) => {
                             <span className="contact__onFocus"></span>
                         </div>
                     </div>
-                    <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="update-todo">Update</button>
+                    <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="update-todo">Update</button>
                 </form>
             </div>
         </div>

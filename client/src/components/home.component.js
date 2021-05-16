@@ -11,7 +11,7 @@ import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotificatio
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
-const formatDate = (e) => {
+const timestamp = (e) => {
     var d = e ? new Date(e) : new Date()
     var month = d.getMonth() + 1
     var day = d.getDate()
@@ -30,17 +30,6 @@ const parseDate = (a, b) => {
     else if(data === today) return <b>Today</b>
     else if(data === tomorrow) return <b>Tomorrow</b>
     else return a
-}
-
-const parseLabel = (a) => {
-    var _labelClass = null
-    if(a[1]){ if(a[0]+" "+a[1] === labels[3]) _labelClass="do-later" }
-    else {
-        if(a[0] === labels[0]) _labelClass="priority"
-        else if(a[0] === labels[1]) _labelClass="secondary"
-        else if(a[0] === labels[2]) _labelClass="important"
-    }
-    return <span className={"label "+_labelClass}>{a}</span>
 }
 
 const Home = ({ userData }) => {
@@ -126,13 +115,21 @@ const Home = ({ userData }) => {
         getTodoData()
     }
 
+    const titleCase = (a) => {
+        var sentence = a.toLowerCase().split(" ")
+        for (var i = 0; i < sentence.length; i++) sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1)
+        sentence.join(" ")
+        return sentence
+    }
+
     const todoList = (b = todoData ? todoData : cacheTodo) => {
         if(b) return b.map(a => {
+            const labelClass = a.label.split(' ').join('-').toLowerCase()
             return(
                 <tr key={a._id}>
                     <td>{a.title}<br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
-                    <td>{parseLabel(titleCase(a.label))}</td>
-                    <td>{parseDate(formatDate(a.date), formatDate())}</td>
+                    <td><span className={"label "+labelClass}>{titleCase(a.label)}</span></td>
+                    <td>{parseDate(timestamp(a.date), timestamp())}</td>
                     <td>
                         <span className="btn-config">
                             <Tooltip title="Edit Task">
@@ -153,13 +150,6 @@ const Home = ({ userData }) => {
         })
     }
 
-    const titleCase = (a) => {
-        var sentence = a.toLowerCase().split(" ")
-        for (var i = 0; i < sentence.length; i++) sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1)
-        sentence.join(" ")
-        return sentence
-    }
-
     return (
         <div className="main__projects">
             <p>Hi, Welcome Back {email}</p>
@@ -175,14 +165,10 @@ const Home = ({ userData }) => {
                 <tbody>
                     { todoList() }
                     { !cacheTodo && !todoData ?
-                        (<tr><td colSpan="5" className="no-border">
-                            <div className="spin-container">
-                                <div className="shape shape-1"></div>
-                                <div className="shape shape-2"></div>
-                                <div className="shape shape-3"></div>
-                                <div className="shape shape-4"></div>
-                            </div>
-                        </td></tr>) : null }
+                    (<tr><td colSpan="5" className="no-border"><div className="spin-container"><div class="loading">
+                        <div></div><div></div><div></div>
+                        <div></div><div></div>
+                    </div></div></td></tr>) : null }
                 </tbody>
             </table>
             
@@ -213,6 +199,7 @@ const Home = ({ userData }) => {
                                         <label htmlFor="title">Title <span className="required">*</span></label>
                                         <input title="Title" id="title" type="text" className="contact__inputField" maxLength="60" onChange={(event) => handleData('title', event.target.value)} value={data.title} required />
                                         <span className="contact__onFocus"></span>
+                                        {/* <p className="length">{data.title.length}/60</p> */}
                                     </div>
                                 </div>
                                 <div className="m-10">
@@ -245,9 +232,10 @@ const Home = ({ userData }) => {
                                     <label htmlFor="description">Description</label>
                                     <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="200" onChange={(event) => handleData('description', event.target.value)} value={data.description}></textarea>
                                     <span className="contact__onFocus"></span>
+                                    {/* <p className="length">{data.description.length}/200</p> */}
                                 </div>
                             </div>
-                            <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="add-todo">Add</button>
+                            <button className="oauth-box google isCentered block mt-25 mb-10 p-12 button" id="add-todo">Add</button>
                         </form>
                     </div>
                 </div>
