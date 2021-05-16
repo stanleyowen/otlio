@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const PrivacyPolicy = () => {
     return (
@@ -132,4 +132,4 @@ const PrivacyPolicy = () => {
     )
 }
 
-export default PrivacyPolicy;
+export default PrivacyPolicy

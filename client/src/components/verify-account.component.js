@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import axios from 'axios'
 
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import verifiedSuccess from '../img/verified-success.gif';
-import verifiedError from '../img/verified-error.gif';
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
+import verifiedSuccess from '../img/verified-success.gif'
+import verifiedError from '../img/verified-error.gif'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
 const VerifyAccount = () => {
-    const {id, token} = useParams();
+    const {id, token} = useParams()
     const [properties, setProperties] = useState({
         isLoading: true,
         success: false
     })
+    
     useEffect(() => {
         async function validateData() {
             await axios.get(`${SERVER_URL}/account/verify`, { params: { id, token, type: 'accountVerification' } })
@@ -24,7 +25,7 @@ const VerifyAccount = () => {
                 if(err.response.data.message || err.response.data.error_description) setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message ? err.response.data.message : err.response.data.error_description)
             })
         }
-        validateData();
+        validateData()
     },[id, token])
 
     return properties.isLoading ?
@@ -42,4 +43,4 @@ const VerifyAccount = () => {
             </div>)
 }
 
-export default VerifyAccount;
+export default VerifyAccount

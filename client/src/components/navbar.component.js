@@ -24,18 +24,14 @@ const Navbar = ({ userData }) => {
 
     const toggleNavbar = (e) => {
         e.preventDefault()
+        document.getElementById("navbar__menu").classList.toggle("block")
         document.getElementById("navbar-icon").classList.toggle("closeIcon")
-        var menu = document.getElementById("navbar__menu")
-        if(menu.style.display === "block") menu.style.display = "none"
-        else menu.style.display = "block"
     }
 
     const changeMode = (e) => {
         e.preventDefault()
-        let theme = "light"
         document.body.classList.toggle("dark")
-        if(document.body.classList.contains("dark")) theme = "dark"
-        localStorage.setItem("__theme", theme)
+        localStorage.setItem("__theme", document.body.classList.contains('dark') ? 'dark' : 'light')
     }
 
     return (
@@ -55,11 +51,11 @@ const Navbar = ({ userData }) => {
                     </a>
                     {value_c ? (
                         <a className="animation__underline" id={value_c[0]} href={value_c[1]}>
-                        <span className="icons"><Tooltip title={value_c[0] ? value_c[0]:""}><span>{value_c[2]}</span></Tooltip></span>
+                        <span className="icons"><Tooltip title={value_c[0] ? value_c[0] : ''}><span>{value_c[2]}</span></Tooltip></span>
                         <span className="description">{value_c[0]}</span>
                     </a>) : null}
                     <a className="animation__underline" id={value_b[0]} href={value_b[1]} onClick={value_b[3]}>
-                        <span className="icons"><Tooltip title={value_b[0] ? value_b[0]:""}><span>{value_b[2]}</span></Tooltip></span>
+                        <span className="icons"><Tooltip title={value_b[0] ? value_b[0] : ''}><span>{value_b[2]}</span></Tooltip></span>
                         <span className="description">{value_b[0]}</span>
                     </a>
                 </div>

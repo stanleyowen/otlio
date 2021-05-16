@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { IconButton } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import { IconButton } from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/'
+import axios from 'axios'
 
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { getCSRFToken } from '../libraries/validation';
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
+import { getCSRFToken } from '../libraries/validation'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const SERVER_URL = process.env.REACT_APP_SERVER_URL
+const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const OAuth = () => {
-    const {service, email: rawEmail} = useParams();
+    const {service, email: rawEmail} = useParams()
     const [data, setData] = useState({
         email: decodeURIComponent(rawEmail),
         password: '',
@@ -24,7 +24,7 @@ const OAuth = () => {
         confirmPassword: false
     })
 
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: b });
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
 
     useEffect(() => {
@@ -32,27 +32,27 @@ const OAuth = () => {
             await axios.get(`${SERVER_URL}/oauth/${service}/register`, { params: {email: data.email}, headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then().catch(() => window.location='/login')
         }
-        validateData();
+        validateData()
     },[service, data.email])
 
 
     const Submit = (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('register');
+        e.preventDefault()
+        const btn = document.getElementById('register')
         async function submitData(){
-            btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/oauth/${service}/register`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            btn.innerHTML = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
-        if(properties.honeypot) return;
-        else if(!data.email || !data.password || !data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.email ? 'userEmail' : !data.password ? 'userPassword' : 'userConfirmPassword').focus(); }
-        else if(EMAIL_VAL.test(String(data.email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
-        else if(data.email.length < 6 || data.email.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 60 characters !'); document.getElementById('userEmail').focus(); }
-        else if(data.password.length < 6 || data.password.length > 60 || data.confirmPassword.length < 6 || data.confirmPassword.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(data.password.length < 6 || data.password.length > 60 ? 'userPassword' : 'userConfirmPassword').focus(); }
-        else if(data.password !== data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('userConfirmPassword').focus(); }
-        else submitData();
+        if(properties.honeypot) return
+        else if(!data.email || !data.password || !data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.email ? 'userEmail' : !data.password ? 'userPassword' : 'userConfirmPassword').focus() }
+        else if(EMAIL_VAL.test(String(data.email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus() }
+        else if(data.email.length < 6 || data.email.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 60 characters !'); document.getElementById('userEmail').focus() }
+        else if(data.password.length < 6 || data.password.length > 60 || data.confirmPassword.length < 6 || data.confirmPassword.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(data.password.length < 6 || data.password.length > 60 ? 'userPassword' : 'userConfirmPassword').focus() }
+        else if(data.password !== data.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('userConfirmPassword').focus() }
+        else submitData()
     }
 
     return (
@@ -107,4 +107,4 @@ const OAuth = () => {
     )
 }
 
-export default OAuth;
+export default OAuth
