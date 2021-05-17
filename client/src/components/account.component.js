@@ -37,72 +37,36 @@ const Account = ({ userData }) => {
     const handleData = (a, b) => setData({ ...data, [a]: b })
     
     useEffect(() => {
-        const passwordBg = document.getElementById('password-bg')
-        const passwordModal = document.getElementById('password-modal')
-        const mfaBg = document.getElementById('mfa-bg')
-        const mfaModal = document.getElementById('mfa-modal')
-        const otpBg = document.getElementById('otp-bg')
-        const otpModal = document.getElementById('otp-modal')
-        const backupBg = document.getElementById('backup-code-bg')
-        const backupModal = document.getElementById('backup-code-modal')
-        const otp1 = document.querySelectorAll('#otp1 > *[id]')
-        const otp2 = document.querySelectorAll('#otp2 > *[id]')
-        window.onclick = (e) => {
-            if(e.target === passwordBg && !properties.disabled){
-                passwordModal.classList.remove('showModal')
-                passwordModal.classList.add('closeModal')
-                passwordBg.classList.remove('showBackground')
-                passwordBg.classList.add('hideBackground')
-            }else if(e.target === mfaBg && !properties.disabled){
-                mfaModal.classList.remove('showModal')
-                mfaModal.classList.add('closeModal')
-                mfaBg.classList.remove('showBackground')
-                mfaBg.classList.add('hideBackground')
-            }else if(e.target === otpBg && !properties.disabled){
-                otpModal.classList.remove('showModal')
-                otpModal.classList.add('closeModal')
-                otpBg.classList.remove('showBackground')
-                otpBg.classList.add('hideBackground')
-            }else if(e.target === backupBg && !properties.disabled){
-                backupModal.classList.remove('showModal')
-                backupModal.classList.add('closeModal')
-                backupBg.classList.remove('showBackground')
-                backupBg.classList.add('hideBackground')
+        window.onclick = (e) =>
+            ['password', 'mfa', 'otp', 'backup-code'].forEach(a => {
+                const modal = document.getElementById(`${a}-modal`)
+                const background = document.getElementById(`${a}-bg`)
+                if(e.target === background && !properties.disabled){
+                    modal.classList.remove('showModal')
+                    modal.classList.add('closeModal')
+                    background.classList.remove('showBackground')
+                    background.classList.add('hideBackground')
+                }
+            })
+        for (let x=1; x<3; x++) {
+            const otp = document.querySelectorAll(`#otp${x} > *[id]`)
+            for (let i=0; i<otp.length; i++) {
+                Object.assign(otp[i], {
+                    type: 'text', maxLength: 1,
+                    pattern: '[0-9]', autoComplete: 'off',
+                    inputmode: 'numeric', required: true
+                })
+                otp[i].addEventListener('keydown', (e) => {
+                    if(e.key === "Backspace") {
+                        if(i !== 0) otp[i-1].focus()
+                        otp[i].value = ''
+                    }else if((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
+                        if (i !== otp.length-1) otp[i+1].focus()
+                        otp[i].value = e.key
+                        e.preventDefault()
+                    }
+                })
             }
-        }
-        for (let i=0; i<otp1.length; i++) {
-            Object.assign(otp1[i], {
-                type: 'text', maxLength: 1,
-                pattern: '[0-9]', autoComplete: 'off',
-                inputmode: 'numeric', required: true
-            })
-            otp1[i].addEventListener('keydown', (e) => {
-                if(e.key === "Backspace") {
-                    if(i !== 0) otp1[i-1].focus()
-                    otp1[i].value = ''
-                }else if((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
-                    if (i !== otp1.length-1) otp1[i+1].focus()
-                    otp1[i].value = e.key
-                    e.preventDefault()
-                }
-            })
-        }
-        for (let i=0; i<otp2.length; i++) {
-            Object.assign(otp2[i], {
-                type: 'text', maxLength: 1,
-                pattern: '[0-9]', autoComplete: 'off',
-                inputmode: 'numeric', required: true
-            })
-            otp2[i].addEventListener('keydown', (e) => {
-                if(e.key === "Backspace") {
-                    if (i !== 0) otp2[i-1].focus()
-                    otp2[i].value = ''
-                }else if((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
-                    if (i !== otp2.length-1) otp2[i+1].focus()
-                    otp2[i].value = e.key
-                    e.preventDefault()
-                }
-            })
         }
     }, [properties.disabled, data])
     
