@@ -106,6 +106,15 @@ const Account = ({ userData }) => {
         const code = document.getElementById('backup-codes')
         code.select(); code.setSelectionRange(0, 99999); document.execCommand("copy")
         btn.innerHTML = "Copied to Clipboard"
+        setTimeout(() => btn.innerHTML = "Copy to Clipboard", 3000)
+    }
+
+    const DownloadCode = (e) => {
+        e.preventDefault()
+        const btn = document.getElementById('download-code')
+        download(BackupCode(), 'Backup Codes.txt')
+        btn.innerHTML = "Downloaded"
+        setTimeout(() => btn.innerHTML = "Download", 3000)
     }
 
     const changePassword = (e) => {
@@ -434,7 +443,7 @@ const Account = ({ userData }) => {
                         <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="generate-token" onClick={RegenerateToken}>Regenerate Token</button>
                         <div className="flex isCentered">
                             <p><button className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button></p>
-                            <p><button className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" onClick={() => download(BackupCode(), 'Backup Codes.txt')}>Download</button></p>
+                            <p><button className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="download-code" onClick={DownloadCode}>Download</button></p>
                         </div>
                     </div>
                 </div>

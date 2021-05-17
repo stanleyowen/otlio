@@ -190,6 +190,7 @@ label { user-select: none; }
 .mr-10 { margin-right: 10px !important; }
 .mt-10 { margin-top: 10px !important; }
 .mt-20 { margin-top: 20px !important; }
+.mt-30 { margin-top: 30px !important; }
 .mt-40 { margin-top: 40px !important; }
 .mb-10 { margin-bottom: 10px !important; }
 .mb-20 { margin-bottom: 20px !important; }
@@ -405,6 +406,8 @@ label { user-select: none; }
     padding: 2px;
     transition: all .4s;
 }
+.responsive-table { overflow-x: auto; }
+.bold { font-weight: bold; }
 .main__table {
     width: 100%;
     margin-top: 40px;
@@ -836,7 +839,7 @@ blockquote a{
 }
 blockquote a:hover{ color: #666; }
 blockquote em {font-style: italic;}
-.block { display: block; }
+.block { display: block !important; }
 .small { font-size: 14px; }
 .full td { width: 70%; text-align: left; }
 .view-eye {
@@ -849,6 +852,16 @@ blockquote em {font-style: italic;}
 .view-eye svg {
     font-size: 0.7em;
     color: #212121;
+}
+.length {
+    float: right;
+    right: 10px;
+    margin-top: 5px;
+    font-size: 12px;
+    font-weight: lighter;
+    position: absolute;
+    color: rgb(148, 148, 148);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 .info-title {
     font-size: 20px;

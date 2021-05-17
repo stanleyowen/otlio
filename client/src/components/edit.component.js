@@ -100,6 +100,7 @@ const Edit = ({ userData }) => {
                                 <label htmlFor="title">Title <span className="required">*</span></label>
                                 <input title="Title" id="title" type="text" className="contact__inputField" maxLength="60" onChange={(event) => handleData('title', event.target.value)} value={data.title} required />
                                 <span className="contact__onFocus"></span>
+                                <p className="length">{data.title.length}/60</p>
                             </div>
                         </div>
                         <div className="m-10">
@@ -132,9 +133,10 @@ const Edit = ({ userData }) => {
                             <label htmlFor="description">Description</label>
                             <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="200" onChange={(event) => handleData('description', event.target.value)} value={data.description}></textarea>
                             <span className="contact__onFocus"></span>
+                            <p className="length">{data.description.length}/200</p>
                         </div>
                     </div>
-                    <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="update-todo">Update</button>
+                    <button className="oauth-box google isCentered block mt-30 mb-10 p-12 button" id="update-todo">Update</button>
                 </form>
             </div>
         </div>

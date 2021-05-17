@@ -127,7 +127,7 @@ const Home = ({ userData }) => {
             const labelClass = a.label.split(' ').join('-').toLowerCase()
             return(
                 <tr key={a._id}>
-                    <td>{a.title}<br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
+                    <td><span className={a.description ? 'bold' : ''}>{a.title}</span><br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
                     <td><span className={"label "+labelClass}>{titleCase(a.label)}</span></td>
                     <td>{parseDate(timestamp(a.date), timestamp())}</td>
                     <td>
@@ -152,25 +152,27 @@ const Home = ({ userData }) => {
 
     return (
         <div className="main__projects">
-            <p>Hi, Welcome Back {email}</p>
-            <table className="main__table">
-                <thead>
-                    <tr>
-                        <th>Activity Name</th>
-                        <th>Labels</th>
-                        <th>Due Date</th>
-                        <th>&nbsp;</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    { todoList() }
-                    { !cacheTodo && !todoData ?
-                    (<tr><td colSpan="5" className="no-border"><div className="spin-container"><div class="loading">
-                        <div></div><div></div><div></div>
-                        <div></div><div></div>
-                    </div></div></td></tr>) : null }
-                </tbody>
-            </table>
+            <p>Hi, Welcome Back <b>{email}</b></p>
+            <div className="responsive-table mb-40">
+                <table className="main__table">
+                    <thead>
+                        <tr>
+                            <th>Activity Name</th>
+                            <th>Labels</th>
+                            <th>Due Date</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { todoList() }
+                        { !cacheTodo && !todoData ?
+                        (<tr><td colSpan="5" className="no-border"><div className="spin-container"><div class="loading">
+                            <div></div><div></div><div></div>
+                            <div></div><div></div>
+                        </div></div></td></tr>) : null }
+                    </tbody>
+                </table>
+            </div>
             
             <Tooltip title="Add Task" placement="top">
                 <button className="btn__changeMode" aria-label="Add Todo" onClick={() => authenticated ? openModal('background','modal','title') : null} id="addTodo" style={{bottom: '17vh'}}>
@@ -199,7 +201,7 @@ const Home = ({ userData }) => {
                                         <label htmlFor="title">Title <span className="required">*</span></label>
                                         <input title="Title" id="title" type="text" className="contact__inputField" maxLength="60" onChange={(event) => handleData('title', event.target.value)} value={data.title} required />
                                         <span className="contact__onFocus"></span>
-                                        {/* <p className="length">{data.title.length}/60</p> */}
+                                        <p className="length">{data.title.length}/60</p>
                                     </div>
                                 </div>
                                 <div className="m-10">
@@ -232,10 +234,10 @@ const Home = ({ userData }) => {
                                     <label htmlFor="description">Description</label>
                                     <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="200" onChange={(event) => handleData('description', event.target.value)} value={data.description}></textarea>
                                     <span className="contact__onFocus"></span>
-                                    {/* <p className="length">{data.description.length}/200</p> */}
+                                    <p className="length">{data.description.length}/200</p>
                                 </div>
                             </div>
-                            <button className="oauth-box google isCentered block mt-25 mb-10 p-12 button" id="add-todo">Add</button>
+                            <button className="oauth-box google isCentered block mt-30 mb-10 p-12 button" id="add-todo">Add</button>
                         </form>
                     </div>
                 </div>
