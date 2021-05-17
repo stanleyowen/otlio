@@ -211,7 +211,7 @@ router.get('/verify', async (req, res, next) => {
 router.post('/verify', OTPLimiter, async (req, res, next) =>
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
-        else if(info && info.status === 302 && (req.body = user)){
+        else if(info && info.status === 302 && (req.body = {...user, _id: user.id})){
             passport.authenticate('verifyAccount', { session: false }, (err, user, info) => {
                 if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
                 else if(info && (info.status ? info.status >= 300 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
