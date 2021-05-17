@@ -56,7 +56,7 @@ const Login = ({ userData }) => {
             if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false)
         }
         async function OTPInput() {
-            for (let i = 0; i < otp.length; i++) {
+            for (let i=0; i<otp.length; i++) {
                 otp[i].setAttribute('maxlength', 1); otp[i].setAttribute('type', 'text')
                 otp[i].setAttribute('pattern', '[0-9]'); otp[i].setAttribute('autocomplete', 'off')
                 otp[i].setAttribute('inputmode', 'numeric'); otp[i].setAttribute('required', true)
