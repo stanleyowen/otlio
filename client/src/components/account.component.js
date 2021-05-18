@@ -144,9 +144,9 @@ const Account = ({ userData }) => {
             btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
         }
         if(!authenticated) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        else if(!password.oldPassword || !password.newPassword || !password.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!password.oldPassword ? 'old-password' : !password.newPassword ? 'new-password' : 'confirm-password').focus() }
-        else if(password.oldPassword.length < 6 || password.newPassword.length < 6 || password.confirmPassword.length < 6 || password.oldPassword.length > 60 || password.newPassword.length > 60 || password.confirmPassword.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(password.oldPassword.length < 6 || password.oldPassword.length > 60 ? 'old-password' : password.newPassword.length < 6 || password.newPassword.length > 60 ? 'new-password' : 'confirm-password').focus() }
-        else if(password.newPassword !== password.confirmPassword) { setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('confirm-password').focus() }
+        else if(!password.oldPassword || !password.newPassword || !password.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!password.oldPassword ? 'old-password' : !password.newPassword ? 'new-password' : 'confirm-password').focus()}
+        else if(password.oldPassword.length < 6 || password.newPassword.length < 6 || password.confirmPassword.length < 6 || password.oldPassword.length > 60 || password.newPassword.length > 60 || password.confirmPassword.length > 60) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(password.oldPassword.length < 6 || password.oldPassword.length > 60 ? 'old-password' : password.newPassword.length < 6 || password.newPassword.length > 60 ? 'new-password' : 'confirm-password').focus()}
+        else if(password.newPassword !== password.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('confirm-password').focus()}
         else submitData()
     }
 
@@ -202,7 +202,7 @@ const Account = ({ userData }) => {
         }
         if(properties.honeypot) return
         else if(!data.isBackupCode && !data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus() }
+        else if(!data.token) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus()}
         else submitData()
     }
 
@@ -226,7 +226,7 @@ const Account = ({ userData }) => {
     return (
         <div>
             { !authenticated ?
-            (<div className="loader"><div className="spin-container"><div class="loading">
+            (<div className="loader"><div className="spin-container"><div className="loading">
                 <div></div><div></div><div></div>
                 <div></div><div></div>
             </div></div></div>) : null }
@@ -237,7 +237,7 @@ const Account = ({ userData }) => {
                     <div className="form">
                         <div className="m-10 contact__infoField">
                             <label htmlFor="userEmail">Email Address</label>
-                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={email} disabled={true}/>
+                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={email} readOnly />
                         </div>
                     </div>
                     <div className="oauth-container">
@@ -296,7 +296,7 @@ const Account = ({ userData }) => {
                     </div>
                     <div className="modal__body">
                         <form onSubmit={changePassword}>
-                            <input type="text" className="contact__inputField" value={email} required autoComplete="username" readOnly style={{ display: 'none' }} />
+                            <input type="text" className="contact__inputField" value={email} required readOnly style={{ display: 'none' }} autoComplete="username" />
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="old-password">Old Password</label>
@@ -377,7 +377,7 @@ const Account = ({ userData }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    { authenticated && security['2FA'] ? (<p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>) : null }
+                                    { authenticated && security['2FA'] ? (<p className="isCentered">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</button></p>) : null }
                                     <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
                                 </form>
                             </li>
@@ -421,7 +421,7 @@ const Account = ({ userData }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="isCentered">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>
+                                    <p className="isCentered">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</button></p>
                                     <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify-otp">Verify</button>
                                 </form>
                             </li>
@@ -430,7 +430,7 @@ const Account = ({ userData }) => {
                 </div>
             </div>
 
-            { authenticated ? (<div className="contact__infoField"><textarea id="backup-codes" className="contact__inputField no-bot" value={BackupCode()}></textarea></div>) : null }
+            { authenticated ? (<div className="contact__infoField"><textarea id="backup-codes" className="contact__inputField no-bot" value={BackupCode()} readOnly></textarea></div>) : null }
             { authenticated && security['2FA'] ? (<div id="backup-code-bg" className="modal hiddenModal">
                 <div id="backup-code-modal" className="modal__container hiddenModal">
                     <div className="modal__title">

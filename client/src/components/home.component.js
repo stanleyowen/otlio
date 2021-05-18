@@ -95,16 +95,15 @@ const Home = ({ userData }) => {
                 closeModal('background','modal')
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 setData({ title: '', date: new Date(), label: labels[0].toLowerCase(), description: '' })
-                getTodoData()
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerHTML = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
         }
         if(properties.honeypot) return
-        else if(!data.title || !data.date || !data.label){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus() }
-        else if(data.title.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 60 characters !"); document.getElementById('title').focus() }
-        else if(validateLabel(data.label)){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus() }
-        else if(data.description && data.description.length > 200){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 200 characters !"); document.getElementById('description').focus() }
+        else if(!data.title || !data.date || !data.label) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus()}
+        else if(data.title.length > 60) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Title less than 60 characters !"); document.getElementById('title').focus()}
+        else if(validateLabel(data.label)) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label"); document.getElementById('label').focus()}
+        else if(data.description && data.description.length > 200) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description Less than 200 characters !"); document.getElementById('description').focus()}
         else submitData()
     }
 
@@ -166,7 +165,7 @@ const Home = ({ userData }) => {
                     <tbody>
                         { todoList() }
                         { !cacheTodo && !todoData ?
-                        (<tr><td colSpan="5" className="no-border"><div className="spin-container"><div class="loading">
+                        (<tr><td colSpan="5" className="no-border"><div className="spin-container"><div className="loading">
                             <div></div><div></div><div></div>
                             <div></div><div></div>
                         </div></div></td></tr>) : null }
@@ -225,7 +224,7 @@ const Home = ({ userData }) => {
                                 <div className="contact__infoField">
                                     <label htmlFor="label">Label <span className="required">*</span></label>
                                     <Select id="label" value={data.label} onChange={(event) => handleData('label', event.target.value)} className="mt-10 mb-10 full-width">
-                                        { labels.map(c => { return (<MenuItem value={c.toLowerCase()}>{c}</MenuItem>) }) }
+                                        { labels.map(c => { return (<MenuItem key={c.toLowerCase()} value={c.toLowerCase()}>{c}</MenuItem>) }) }
                                     </Select>
                                 </div>
                             </div>

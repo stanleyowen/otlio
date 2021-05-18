@@ -72,7 +72,7 @@ const Login = ({ userData }) => {
                 })
             }
         }
-        if((userData.status === 302 && !properties.verify && mfa) || properties.sendOTP){ properties.sendOTP = false; sendOTP() }
+        if((userData.status === 302 && !properties.verify && mfa) || properties.sendOTP) {properties.sendOTP = false; sendOTP()}
         OTPInput()
     }, [userData, properties, data])
 
@@ -120,7 +120,7 @@ const Login = ({ userData }) => {
     return properties.verify ?
     (<div>
         { !data.tokenId ?
-        (<div className="loader"><div className="spin-container"><div class="loading">
+        (<div className="loader"><div className="spin-container"><div className="loading">
             <div></div><div></div><div></div>
             <div></div><div></div>
         </div></div></div>) : null }
@@ -159,8 +159,8 @@ const Login = ({ userData }) => {
                                 </div>
                             </div>
                         </div>
-                        <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <a className="link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</a></p>
-                        <p className="isCentered">Hasn't Received the Code? <a className="link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</a></p>
+                        <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</button></p>
+                        <p className="isCentered">Hasn't Received the Code? <button type="button" className="link-btn link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</button></p>
                         <div className="flex isCentered">
                             <p><button type="reset" className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
                             <p><button type="submit" className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="verify">Verify</button></p>

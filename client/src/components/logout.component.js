@@ -17,7 +17,7 @@ const Logout = ({ userData }) => {
         else if(!isLoading && !authenticated) window.location = '/login'
     }, [userData])
 
-    return(<div className="loader"><div className="spin-container"><div class="loading">
+    return(<div className="loader"><div className="spin-container"><div className="loading">
         <div></div><div></div><div></div>
         <div></div><div></div>
     </div></div></div>)

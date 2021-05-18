@@ -75,7 +75,7 @@ const ResetPassword = () => {
     return(
         <div>
             { properties.isLoading ?
-            (<div className="loader"><div className="spin-container"><div class="loading">
+            (<div className="loader"><div className="spin-container"><div className="loading">
                 <div></div><div></div><div></div>
                 <div></div><div></div>
             </div></div></div>) : null }
