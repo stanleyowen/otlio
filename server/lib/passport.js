@@ -434,12 +434,12 @@ passport.use('todoData', new localStrategy({ usernameField: 'email', passwordFie
 
 passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
     const {title, label, description, date} = req.body
-    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]})
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[8]})
-    else if(title.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[17]})
-    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]})
-    else if(description && description.length > 200) return res.status(400).json({status: 400, message: MSG_DESC[19]})
-    new Todo({
+    if(!title || !label || !date) return done(null, false, {status: 400, message: MSG_DESC[11]})
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, {status: 400, message: MSG_DESC[8]})
+    else if(title.length > 60) return done(null, false, {status: 400, message: MSG_DESC[17]})
+    else if(validateLabel(label)) return done(null, false, {status: 400, message: MSG_DESC[18]})
+    else if(description && description.length > 200) return done(null, false, {status: 400, message: MSG_DESC[19]})
+    new Todo ({
         email,
         title: encrypt(title, 1),
         label: encrypt(label, 1),
@@ -453,11 +453,11 @@ passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordFiel
 
 passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, _id, done) => {
     const {title, label, description, date} = req.body
-    if(!title || !label || !date) return res.status(400).json({status: 400, message: MSG_DESC[11]})
-    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[8]})
-    else if(title.length > 60) return res.status(400).json({status: 400, message: MSG_DESC[17]})
-    else if(validateLabel(label)) return res.status(400).json({status: 400, message: MSG_DESC[18]})
-    else if(description && description.length > 200) return res.status(400).json({status: 400, message: MSG_DESC[19]})
+    if(!title || !label || !date) return done(null, false, {status: 400, message: MSG_DESC[11]})
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, {status: 400, message: MSG_DESC[8]})
+    else if(title.length > 60) return done(null, false, {status: 400, message: MSG_DESC[17]})
+    else if(validateLabel(label)) return done(null, false, {status: 400, message: MSG_DESC[18]})
+    else if(description && description.length > 200) return done(null, false, {status: 400, message: MSG_DESC[19]})
     Todo.findOneAndUpdate({_id, email}, {
         title: encrypt(title, 1),
         label: encrypt(label, 1),
