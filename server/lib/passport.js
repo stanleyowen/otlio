@@ -250,11 +250,11 @@ passport.use('connectGitHub', new GitHubStrategy ({ clientID: process.env.GITHUB
     User.findOne({_id, email: profile._json.email}, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 403, message: MSG_DESC[27] })
-        else if(user){
-            user.thirdParty.github = !user.thirdParty.github
-            user.thirdParty.isThirdParty = user.thirdParty.google ? true : false
-            user.thirdParty.verified = user.thirdParty.google ? true : false
-            user.save()
+        user.thirdParty.github = !user.thirdParty.github
+        user.thirdParty.isThirdParty = user.thirdParty.github ? true : user.thirdParty.google ? true : false
+        user.thirdParty.verified = user.thirdParty.github ? true : user.thirdParty.google ? true : false
+        user.save(err => {
+            if(err) return done(err, false)
             return done(null, user, { status: 200, message: MSG_DESC[user.thirdParty.github ? 26 : 46] })
         }
     })
@@ -288,11 +288,11 @@ passport.use('connectGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE
     User.findOne({_id, email: profile._json.email}, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 403, message: MSG_DESC[25] })
-        else if(user){
-            user.thirdParty.google = !user.thirdParty.google
-            user.thirdParty.isThirdParty = user.thirdParty.github ? true : false
-            user.thirdParty.verified = user.thirdParty.github ? true : false
-            user.save()
+        user.thirdParty.google = !user.thirdParty.google
+        user.thirdParty.isThirdParty = user.thirdParty.google ? true : user.thirdParty.github ? true : false
+        user.thirdParty.verified = user.thirdParty.google ? true : user.thirdParty.github ? true : false
+        user.save(err => {
+            if(err) return done(err, false)
             return done(null, user, { status: 200, message: MSG_DESC[user.thirdParty.google ? 24 : 45] })
         }
     })

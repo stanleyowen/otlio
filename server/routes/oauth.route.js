@@ -13,6 +13,7 @@ router.get('/github/auth/connect', passport.authenticate('connectGitHub', { scop
 router.get('/github', async (req, res, next) =>
     passport.authenticate('github', (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
+        else if(info && !user && info.status === 302) return res.status(info.status).send(JSON.stringify(info, null, 2))
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
         else if(user) return res.cookie('jwt-token', jwt.sign({
                 id: user._id,
@@ -53,6 +54,7 @@ router.get('/google/auth/connect', passport.authenticate('connectGoogle', { scop
 router.get('/google', async (req, res, next) =>
     passport.authenticate('google', (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
+        else if(info && !user && info.status === 302) return res.status(info.status).send(JSON.stringify(info, null, 2))
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
         else if(user) return res.cookie('jwt-token', jwt.sign({
                 id: user._id,
