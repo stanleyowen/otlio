@@ -624,7 +624,6 @@ img {
     height: 350px !important;
     object-fit: cover !important;
 }
-.form { display:block; min-width: 300px; }
 .contact__form { padding: 15px; }
 .contact__infoField {
     position: relative;
@@ -872,8 +871,17 @@ blockquote em {font-style: italic;}
     text-decoration: none;
     font-weight: bold;
 }
-.link:focus { color: #004299 !important; }
+.link:focus { color: #004aac !important; }
 .link:visited { color: blue; }
+.link-btn {
+    color: blue;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: inherit;
+    background: none!important;
+    font-weight: bold !important;
+}
 .otp input {
     margin: 3px;
     width: 40px;
