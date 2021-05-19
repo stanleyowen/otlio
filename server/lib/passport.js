@@ -186,7 +186,6 @@ passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 't
                         if(type === 'passwordReset') {
                             const mailOptions = {
                                 to: email,
-                                replyTo: process.env.MAIL_REPLY_TO,
                                 subject: '[TodoApp] Password Changed',
                                 html: `Hi ${email},<br><br>We wanted to inform that your Todo Application password has changed.<br><br> If you did not perform this action, you can recover access by entering ${email} into the form at ${CLIENT_URL}/reset-password<br><br> Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.`
                             }
