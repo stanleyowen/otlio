@@ -18,7 +18,7 @@ const VerifyAccount = () => {
                 if(err.response.status >= 500) setTimeout(() => validateData(), 5000)
                 else {
                     localStorage.setItem('info', JSON.stringify(err.response.data))
-                    window.location = '/login'
+                    window.location = '/get-started'
                 }
             })
         }

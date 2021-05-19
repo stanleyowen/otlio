@@ -55,7 +55,6 @@ body.dark input,
 body.dark textarea,
 body.dark select,
 body.dark .contact__sendBtn,
-body.dark .modal__body a,
 body.dark .footer,
 body.dark .toggleNavbar button,
 body.dark blockquote,
@@ -82,9 +81,8 @@ body.dark .otp input {
 }
 body.dark .main__title,
 body.dark .projects__viewMore,
-body.dark .link {
-    color: #79c3ff !important;
-}
+body.dark .link { color: #79c3ff !important; }
+body.dark .link:focus { color: #5cb5ff !important; }
 body.dark .otp input { border-color: rgb(59, 57, 57); }
 body.dark .navbar { box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2); }
 body.dark .footer { background-color: #191919; }
@@ -806,13 +804,13 @@ img {
 }
 .bar1 { margin-top: none!important; }
 .closeIcon .bar1 {
-    -webkit-transform: rotate(-45deg) translate(-9px, 6px);
-    transform: rotate(-45deg) translate(-5px, 5.8px);
+    -webkit-transform: rotate(-45deg) translate(-9px, 9px);
+    transform: rotate(-45deg) translate(-5px, 5px);
 }
 .closeIcon .bar2 { opacity: 0; }
 .closeIcon .bar3 {
     -webkit-transform: rotate(45deg) translate(-2px, 0px);
-    transform: rotate(045deg) translate(-2px, -4.5px);
+    transform: rotate(45deg) translate(-3px, -4px);
 }
 blockquote{
     display: block;
@@ -978,5 +976,5 @@ blockquote em {font-style: italic;}
     .main__button { width: 50%; }
     .footer__socialBtn { width: 100%; }
     .btn__outline { width: 85%; }
-    .badges { position: relative; margin-top: 20px; }
+    .badges { position: relative; margin-top: 30px; }
 }

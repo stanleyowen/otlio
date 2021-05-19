@@ -208,7 +208,7 @@ const Login = ({ userData }) => {
                         </div>
                         <div className="m-10 show-password">
                             <FormControlLabel control={<Checkbox checked={properties.rememberMe} onChange={() => { handleChange('rememberMe', !properties.rememberMe); handleLogin('rememberMe', !properties.rememberMe) }} color="primary"/>}
-                            label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer and WiFi, You'll be logged out after browsing session ends." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
+                            label="Stay Signed In"/><Tooltip placement="top" title="Not recommended for Public Computer and WiFi" arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
                         </div>
                     </div>
                     <button type="submit" className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="login">Login</button>

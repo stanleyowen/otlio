@@ -95,8 +95,7 @@ const ResetPassword = () => {
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userEmail">Email</label>
-                                    <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} autoFocus required disabled="true" autoComplete="username"/>
-                                    <span className="contact__onFocus"></span>
+                                    <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} required readOnly autoComplete="username"/>
                                 </div>
                             </div>
                             <div className="form__container">
