@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { IconButton } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/';
-import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import axios from 'axios';
+import React, { useState } from 'react'
+import { IconButton } from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/'
+import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
+import axios from 'axios'
 
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification';
-import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation';
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
+import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const SERVER_URL = process.env.REACT_APP_SERVER_URL
+const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Register = ({ userData }) => {
-    const {status} = userData;
-    const {verifyAccount} = userData.type;
-    const {email} = userData.credentials;
+    const {status} = userData
+    const {verifyAccount} = userData.type
+    const {email} = userData.credentials
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,
@@ -30,40 +30,40 @@ const Register = ({ userData }) => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleRegister = (a, b) => setRegister({ ...register, [a]: b })
 
-    if(status === 302 && !properties.verify && verifyAccount) handleChange('verify', true);
+    if(status === 302 && !properties.verify && verifyAccount) handleChange('verify', true)
 
     const Register = (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('register');
-        btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+        e.preventDefault()
+        const btn = document.getElementById('register')
         async function submitData(){
+            btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/register`, register, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleChange('verify', true)
             })
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            btn.innerHTML = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
-        if(properties.honeypot) return;
-        else if(!register.email || !register.password || !register.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!register.email ? 'userEmail' : !register.password ? 'userPassword' : 'userConfirmPassword').focus(); }
-        else if(EMAIL_VAL.test(String(register.email).toLocaleLowerCase()) === false){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus(); }
-        else if(register.email.length < 6 || register.email.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 60 characters !'); document.getElementById('userEmail').focus(); }
-        else if(register.password.length < 6 || register.password.length > 60 || register.confirmPassword.length < 6 || register.confirmPassword.length > 60){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(register.password.length < 6 || register.password.length > 60 ? 'userPassword' : 'userConfirmPassword').focus(); }
-        else if(register.password !== register.confirmPassword){ setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('userConfirmPassword').focus(); }
-        else submitData();
+        if(properties.honeypot) return
+        else if(!register.email || !register.password || !register.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!register.email ? 'userEmail' : !register.password ? 'userPassword' : 'userConfirmPassword').focus()}
+        else if(EMAIL_VAL.test(String(register.email).toLocaleLowerCase()) === false) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus()}
+        else if(register.email.length < 6 || register.email.length > 60) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 60 characters !'); document.getElementById('userEmail').focus()}
+        else if(register.password.length < 6 || register.password.length > 60 || register.confirmPassword.length < 6 || register.confirmPassword.length > 60) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(register.password.length < 6 || register.password.length > 60 ? 'userPassword' : 'userConfirmPassword').focus()}
+        else if(register.password !== register.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('userConfirmPassword').focus()}
+        else submitData()
     }
 
     const sendLink = (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('send-link');
+        e.preventDefault()
+        const btn = document.getElementById('send-link')
         async function submitData() {
-            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled");
+            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/verify`, null, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
-            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message));
-            btn.innerHTML = "Resend Link"; btn.removeAttribute("disabled"); btn.classList.remove("disabled");
-        } submitData();
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            btn.innerHTML = "Resend Link"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+        } submitData()
     }
 
     return properties.verify ? (
@@ -142,4 +142,4 @@ const Register = ({ userData }) => {
     )
 }
 
-export default Register;
+export default Register

@@ -32,7 +32,7 @@ Todo Application is an **open source** project, completed with **highest standar
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
     - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.5.2.zip)
+    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.5.3.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
@@ -80,7 +80,6 @@ Todo Application is an **open source** project, completed with **highest standar
           MAIL_SERVICE    = /* Your Email Service Provider */
           MAIL_EMAIL      = /* Your Email Address */
           MAIL_PASSWORD   = /* Your Email Password */
-          MAIL_REPLY_TO   = /* Reply To Property */
           ```
   4. Run and Compile it
       - In the `client` directory, type `npm start` in command line

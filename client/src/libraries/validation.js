@@ -1,32 +1,32 @@
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
-export const labels = ["Priority", "Secondary", "Important", "Do Later"];
+export const labels = ["Priority", "Secondary", "Important", "Do Later"]
 
 export const validateLabel = (e) => {
-    for (let a=0; labels.length; a++){
-        if(e === labels[a].toLowerCase()) return false;
-        else if(a === labels.length-1 && e !== labels[a].toLowerCase()) return true;
+    for (let a=0; a<labels.length; a++){
+        if(e === labels[a].toLowerCase()) return false
+        else if(a === labels.length-1 && e !== labels[a].toLowerCase()) return true
     }
 }
 
 export const OAuthGitHub = (e) => {
-    e.preventDefault();
-    window.location = `${SERVER_URL}/oauth/github/auth`;
+    e.preventDefault()
+    window.location = `${SERVER_URL}/oauth/github/auth`
 }
 
 export const ConnectOAuthGitHub = (e) => {
-    e.preventDefault();
-    window.location = `${SERVER_URL}/oauth/github/auth/connect`;
+    e.preventDefault()
+    window.location = `${SERVER_URL}/oauth/github/auth/connect`
 }
 
 export const OAuthGoogle = (e) => {
-    e.preventDefault();
-    window.location = `${SERVER_URL}/oauth/google/auth`;
+    e.preventDefault()
+    window.location = `${SERVER_URL}/oauth/google/auth`
 }
 
 export const ConnectOAuthGoogle = (e) => {
-    e.preventDefault();
-    window.location = `${SERVER_URL}/oauth/google/auth/connect`;
+    e.preventDefault()
+    window.location = `${SERVER_URL}/oauth/google/auth/connect`
 }
 
 export const getCSRFToken = () => {
@@ -34,21 +34,21 @@ export const getCSRFToken = () => {
 }
 
 export const openModal = (a, b, c) => {
-    const background = document.getElementById(a);
-    const modal = document.getElementById(b);
-    modal.classList.add('showModal');
-    modal.classList.remove('closeModal', 'hiddenModal');
-    background.classList.add('showBackground');
-    background.classList.remove('hideBackground', 'hiddenModal');
+    const background = document.getElementById(a)
+    const modal = document.getElementById(b)
+    modal.classList.add('showModal')
+    modal.classList.remove('closeModal', 'hiddenModal')
+    background.classList.add('showBackground')
+    background.classList.remove('hideBackground', 'hiddenModal')
     if(c) setTimeout(() => document.getElementById(c).focus(), 300)
 }
 
 export const closeModal = (a, b) => {
-    const background = document.getElementById(a);
-    const modal = document.getElementById(b);
-    modal.classList.remove('showModal');
-    modal.classList.add('closeModal');
-    background.classList.remove('showBackground');
-    background.classList.add('hideBackground');
-    return false;
+    const background = document.getElementById(a)
+    const modal = document.getElementById(b)
+    modal.classList.remove('showModal')
+    modal.classList.add('closeModal')
+    background.classList.remove('showBackground')
+    background.classList.add('hideBackground')
+    return false
 }

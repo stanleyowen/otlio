@@ -1,44 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import axios from 'axios'
 
-import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification';
-import "./App.min.css";
+import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification'
+import "./App.min.css"
 
-import Navbar from './components/navbar.component';
-import Welcome from './components/welcome.component';
-import Register from './components/register.component';
-import Login from './components/login.component';
-import Logout from './components/logout.component';
-import OAuth from './components/register-oauth.component';
-import ReqOAuth from './components/req-oauth.component';
-import Home from './components/home.component';
-import Account from './components/account.component';
-import EditTodo from './components/edit.component';
-import ResetPassword from './components/reset-password.component';
-import ReqResetPassword from './components/forgot-password.component';
-import VerifyAccount from './components/verify-account.component';
-import PrivacyPolicy from './components/privacy-policy.component';
-import TermsAndConditions from './components/terms-and-condition.component';
+import Navbar from './components/navbar.component'
+import Welcome from './components/welcome.component'
+import Register from './components/register.component'
+import Login from './components/login.component'
+import Logout from './components/logout.component'
+import OAuth from './components/register-oauth.component'
+import ReqOAuth from './components/req-oauth.component'
+import Home from './components/home.component'
+import Account from './components/account.component'
+import EditTodo from './components/edit.component'
+import ResetPassword from './components/reset-password.component'
+import ReqResetPassword from './components/forgot-password.component'
+import VerifyAccount from './components/verify-account.component'
+import PrivacyPolicy from './components/privacy-policy.component'
+import TermsAndConditions from './components/terms-and-condition.component'
 
 export default function App() {
-  const [userData, setUserData] = useState({ isLoading: true, type: {}, credentials: {} });
-  const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-  const redirectRoute = ['welcome', 'login', 'get-started'];
-  const privateRoute = ['', 'edit', 'account'];
-  const info = JSON.parse(localStorage.getItem('info'));
+  const [userData, setUserData] = useState({ isLoading: true, type: {}, credentials: {} })
+  const SERVER_URL = process.env.REACT_APP_SERVER_URL
+  const redirectRoute = ['welcome', 'login', 'get-started']
+  const privateRoute = ['', 'edit', 'account']
+  const info = JSON.parse(localStorage.getItem('info'))
   if(info && info.status && info.message){
-    setNotification(info.status === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER, info.message);
-    localStorage.removeItem('info');
+    setNotification(info.status === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER, info.message)
+    localStorage.removeItem('info')
   }
   if(!userData.isLoading && userData.authenticated){
     redirectRoute.forEach(a => {
-      if(window.location.pathname.split('/')[1] === a) window.location='/';
-    });
+      if(window.location.pathname.split('/')[1] === a) window.location='/'
+    })
   }else if(!userData.isLoading && !userData.authenticated){
     privateRoute.forEach(a => {
-      if(window.location.pathname.split('/')[1] === a) window.location='/welcome';
-    });
+      if(window.location.pathname.split('/')[1] === a) window.location='/welcome'
+    })
   }
   
   useEffect(() => {
@@ -59,12 +59,12 @@ export default function App() {
     .catch(err => {
       setUserData({ type: {}, credentials: {}, security: {}, ...err.response.data, isLoading: false, authenticated: false })
       localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
-      if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname !== '/login' && window.location.pathname !== '/logout')) window.location='/login';
-      if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname !== '/get-started' && window.location.pathname !== '/logout')) window.location='/get-started';
+      if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname !== '/login' && window.location.pathname !== '/logout')) window.location='/login'
+      if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname !== '/get-started' && window.location.pathname !== '/logout' && window.location.pathname.split('/')[1] !== 'verify' )) window.location='/get-started'
       if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
     })
-    console.log("%c%s","color: red; background: yellow; font-size: 24px;","WARNING!");
-    console.log("%c%s","font-size: 18px;","Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand.")
+    console.log("%c%s","color: red; background: yellow; font-size: 24px","WARNING!")
+    console.log("%c%s","font-size: 18px","Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand.")
   },[SERVER_URL])
 
   return (
@@ -85,5 +85,5 @@ export default function App() {
       <Route path='/privacy-policy' component={PrivacyPolicy} />
       <Route path='/terms-and-conditions' component={TermsAndConditions} />
     </Router>
-  );
+  )
 }
