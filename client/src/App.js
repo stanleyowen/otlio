@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import axios from 'axios'
 
 import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification'
@@ -18,6 +18,7 @@ import EditTodo from './components/edit.component'
 import ResetPassword from './components/reset-password.component'
 import ReqResetPassword from './components/forgot-password.component'
 import VerifyAccount from './components/verify-account.component'
+import PageNotFound from './components/404.component'
 import PrivacyPolicy from './components/privacy-policy.component'
 import TermsAndConditions from './components/terms-and-condition.component'
 
@@ -70,20 +71,23 @@ export default function App() {
   return (
     <Router>
       <Navbar userData={userData} />
-      <Route path='/' exact component={() => <Home userData={userData} />} />
-      <Route path='/welcome' component={Welcome} />
-      <Route path='/get-started' component={() => <Register userData={userData} />} />
-      <Route path='/login' component={() => <Login userData={userData} />} />
-      <Route path='/logout' component={() => <Logout userData={userData} />} />
-      <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
-      <Route path='/oauth' component={() => <ReqOAuth userData={userData} />} />
-      <Route path='/auth/:service/:email' component={OAuth} />
-      <Route path='/account' component={() => <Account userData={userData} />} />
-      <Route path='/reset-password' exact component={() => <ReqResetPassword userData={userData} />} />
-      <Route path='/reset-password/:id/:token' component={ResetPassword} />
-      <Route path='/verify/:id/:token' component={VerifyAccount} />
-      <Route path='/privacy-policy' component={PrivacyPolicy} />
-      <Route path='/terms-and-conditions' component={TermsAndConditions} />
+      <Switch>
+        <Route path='*' component={() => <PageNotFound userData={userData} />} />
+        <Route path='/' exact component={() => <Home userData={userData} />} />
+        <Route path='/welcome' component={Welcome} />
+        <Route path='/get-started' component={() => <Register userData={userData} />} />
+        <Route path='/login' component={() => <Login userData={userData} />} />
+        <Route path='/logout' component={() => <Logout userData={userData} />} />
+        <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
+        <Route path='/oauth' component={() => <ReqOAuth userData={userData} />} />
+        <Route path='/auth/:service/:email' component={OAuth} />
+        <Route path='/account' component={() => <Account userData={userData} />} />
+        <Route path='/reset-password' exact component={() => <ReqResetPassword userData={userData} />} />
+        <Route path='/reset-password/:id/:token' component={ResetPassword} />
+        <Route path='/verify/:id/:token' component={VerifyAccount} />
+        <Route path='/privacy-policy' component={PrivacyPolicy} />
+        <Route path='/terms-and-conditions' component={TermsAndConditions} />
+      </Switch>
     </Router>
   )
 }
