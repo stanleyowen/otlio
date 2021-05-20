@@ -150,7 +150,7 @@ const Home = ({ userData }) => {
     }
 
     return (
-        <div className="main__projects">
+        <div className="main">
             <p>Hi, Welcome Back <b>{email}</b></p>
             <div className="responsive-table mb-40">
                 <table className="main__table">

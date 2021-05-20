@@ -84,7 +84,7 @@ const Edit = ({ userData }) => {
                 <div></div><div></div>
             </div></div></div>) : null }
 
-            <div className="main__projects" style={{paddingTop: '80px'}}>
+            <div className="main" style={{paddingTop: '80px'}}>
                 <IconButton href='/' className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
                 <form onSubmit={updateData}>
                     <div className="m-10 no-bot">
