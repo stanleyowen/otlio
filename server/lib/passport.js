@@ -115,7 +115,7 @@ passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField
     const userId = id.split('-')[0]
     const tokenId = id.split('-')[1]
     if(!type || !userId || !tokenId) return done(null, false, { status: 400, message: MSG_DESC[11] })
-    var query = {}; query['_id'] = tokenId; query['type.'.concat(type)] = true;
+    var query = {}; query['_id'] = tokenId; query['type.'.concat(type)] = true
     Token.findOne(query, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 400, message: MSG_DESC[31] })
@@ -141,7 +141,7 @@ passport.use('forgotPassword', new localStrategy({ usernameField: 'email', passw
         else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] })
         else if(user) {
             const id = user.id; const token = crypto.randomBytes(60).toString("hex")
-            new Token({ 'type.passwordReset': true, userId: encrypt(id, 3), token: encrypt(token, 3) }).save((err, data) => {
+            new Token ({ 'type.passwordReset': true, userId: encrypt(id, 3), token: encrypt(token, 3) }).save((err, data) => {
                 if(err) return done(err, false)
                 const mailOptions = {
                     to: email,
