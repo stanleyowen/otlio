@@ -9,14 +9,14 @@ const PageNotFound = ({ userData }) => {
     return (
         <div className="main">
             <div className="contact__container">
-                <img src={Image} className="center-object"/>
+                <img className="center-object" src={Image} alt="Page Not Found" />
                 <div className="center-object">
                     <h1 className="blue-text monospace large">404</h1>
                     <h1 className="blue-text monospace">Page Not Found</h1>
                     <h3 className="mt-20 monospace">Oops! We are sorry, we can't find the page you were looking for.</h3>
                     <h3 className="mt-20 monospace">If you're experiencing a critical issue, please <a className="animation__underline" href="mailto:stanleyowen06@gmail.com">email support</a>.</h3>
                     <button className="oauth-box google isCentered block mt-30 mb-20 p-12 button" onClick={() => userData.authenticated ? window.location='/' : window.location='/welcome'}>Back to Home</button>
-                    <div class="footer__socialBtn mb-20">
+                    <div className="footer__socialBtn mb-20">
                         <Tooltip title="Email Support" arrow><a href="mailto:stanleyowen06@gmail.com">
                             <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>

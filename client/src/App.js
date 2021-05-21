@@ -72,7 +72,6 @@ export default function App() {
     <Router>
       <Navbar userData={userData} />
       <Switch>
-        <Route path='*' component={() => <PageNotFound userData={userData} />} />
         <Route path='/' exact component={() => <Home userData={userData} />} />
         <Route path='/welcome' component={Welcome} />
         <Route path='/get-started' component={() => <Register userData={userData} />} />
@@ -87,6 +86,7 @@ export default function App() {
         <Route path='/verify/:id/:token' component={VerifyAccount} />
         <Route path='/privacy-policy' component={PrivacyPolicy} />
         <Route path='/terms-and-conditions' component={TermsAndConditions} />
+        <Route path='*' component={() => <PageNotFound userData={userData} />} />
       </Switch>
     </Router>
   )
