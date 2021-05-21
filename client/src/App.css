@@ -1,6 +1,6 @@
 /*! Todo Application - CSS Version 0.5.3 Copyright 2021 */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -157,7 +157,7 @@ label { user-select: none; }
     color: #FFF;
     background-color: rgb(252, 52, 52);
 }
-.oauth-box:hover { opacity: 1; transform: scale(1.009); }
+.oauth-box:hover { opacity: 1; transform: scale(1.02); }
 .oauth-box:visited { color: #FFF; }
 .oauth-box svg {
     display: inline-block;
@@ -902,6 +902,28 @@ blockquote em {font-style: italic;}
 .large { font-size: 60px; }
 .center-object { margin: auto; max-width: 70%; }
 .justify-center { justify-content: center; }
+.text-animation {
+    font-size: 40px;
+    color: #1a73e8;
+    letter-spacing: 2px;
+    font-family: 'Noto Sans', sans-serif;
+}
+.cursor {
+    width: 3px;
+    height: 60px;
+    display: inline-block;
+    background-color: #1a73e8;
+    animation: blink .75s step-end infinite;
+}
+.none { display: none !important; }
+@keyframes blink {
+    from, to {
+        background-color: transparent;
+    }
+    50% {
+        background-color: #1a73e8;
+    }
+}
 @keyframes octocat-wave {
     0%,100%{transform:rotate(0)}
     20%,60%{transform:rotate(-25deg)}
@@ -963,6 +985,7 @@ blockquote em {font-style: italic;}
     .footer__socialBtn { width: 75%; }
     .btn__outline { width: 50%; margin-top: 20px; }
     .privacy-policy { margin: 0 20px; }
+    .center-object { max-width: 100%; }
 }
 @media only screen and (max-width: 600px) {
     .animation__message { width: 100%; height: auto; }

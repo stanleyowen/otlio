@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import Image from '../img/7c27535f88bae9519ceb14a8983c57ff.webp'
 import axios from 'axios'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
@@ -10,6 +11,31 @@ const Landing = () => {
     const currentversion = process.env.REACT_APP_VERSION
 
     useEffect(() => {
+        const element = document.querySelector('.text-animation')
+        const cursor = document.querySelector('.cursor')
+        const data = element.getAttribute('data-elements').split(',')
+        var x = 0; var index = 0; var interval;
+        function type() {
+            var text = data[x].substring(0, index+1)
+            element.innerHTML = text
+            index++
+            if(text === data[x]){
+                clearInterval(interval)
+                setTimeout(() => interval = setInterval(backspace, 25), 3000)
+            }
+        }
+        function backspace() {
+            var text = data[x].substring(0, index-1)
+            element.innerHTML = text
+            index--
+            if(text === ''){
+                clearInterval(interval)
+                if(x === (data.length-1)) x = 0
+                else x++
+                index = 0
+                setTimeout(() => interval = setInterval(type, 100), 200)
+            }
+        }
         async function getRepoInfo() {
             await axios.get(GITHUB_API)
             .then(async res => {
@@ -30,13 +56,24 @@ const Landing = () => {
             })
         }
         getRepoInfo()
+        interval = setInterval(type, 100)
     },[currentversion])
     
     return (
         <div>
-            <div className="main isCentered pt-180">
-                <h1 className="main__title">Organizing Easier</h1><h1 style={{fontSize: '50px'}}>Improve Your <span className="green__text">Productivity</span></h1>
-                <a href="get-started" className="btn__outline">Get Started</a>
+            <div className="main">
+                <div className="contact__container">
+                    <div className="center-object">
+                        <div className="inline">
+                            <span className="blue-text monospace text-animation" data-elements="Organizing Easier, Improve Your Productivity"></span>
+                            <span className="cursor large">&nbsp;</span>
+                        </div>
+                        <h1 className="monospace" style={{fontSize: '40px'}}>with Todo Application</h1>
+                        <h3 className="mt-20 monospace">An open source project, completed with <b>highest standard security</b>, which is easy to use and easy to organize!</h3>
+                        <button className="oauth-box google isCentered block mt-30 mb-20 p-12 button" onClick={() => window.location='/'}>Back to Home</button>
+                    </div>
+                    <img className="center-object" src={Image} alt="Organzing Easier" />
+                </div>
             </div>
             <div className="isCentered badges">
                 <a href="https://github.com/stanleyowen/todo-application/"><button className="btn__label">Stars</button><button className="btn__value">{repoInfo[0]}</button></a>
