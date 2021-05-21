@@ -12,7 +12,6 @@ const Landing = () => {
 
     useEffect(() => {
         const element = document.querySelector('.text-animation')
-        const cursor = document.querySelector('.cursor')
         const data = element.getAttribute('data-elements').split(',')
         var x = 0; var index = 0; var interval;
         function type() {
@@ -65,20 +64,20 @@ const Landing = () => {
                 <div className="contact__container">
                     <div className="center-object">
                         <div className="inline">
-                            <span className="blue-text monospace text-animation" data-elements="Organizing Easier, Improve Your Productivity"></span>
+                            <span className="blue-text monospace text-animation" data-elements="Organizing Easier, Improve Productivity"></span>
                             <span className="cursor large">&nbsp;</span>
                         </div>
                         <h1 className="monospace" style={{fontSize: '40px'}}>with Todo Application</h1>
-                        <h3 className="mt-20 monospace">An open source project, completed with <b>highest standard security</b>, which is easy to use and easy to organize!</h3>
-                        <button className="oauth-box google isCentered block mt-30 mb-20 p-12 button" onClick={() => window.location='/'}>Back to Home</button>
+                        <h3 className="mt-40 monospace">An open source project, completed with <b>highest standard security</b>, which is easy to use and easy to organize!</h3>
+                        <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="/get-started">Get Started</a>
                     </div>
                     <img className="center-object" src={Image} alt="Organzing Easier" />
                 </div>
             </div>
-            <div className="isCentered badges">
-                <a href="https://github.com/stanleyowen/todo-application/"><button className="btn__label">Stars</button><button className="btn__value">{repoInfo[0]}</button></a>
-                <a href="https://github.com/stanleyowen/todo-application/stargazers"><button className="btn__label">License</button><button className="btn__value">{repoInfo[1]}</button></a>
-                <a href="https://github.com/stanleyowen/todo-application/releases"><button className="btn__label">Version</button><button className="btn__value">{currentversion}</button></a>
+            <div className="isCentered badges mt-40 mb-40">
+                <a href="https://github.com/stanleyowen/todo-application/stargazers" target="_blank" rel="noreferrer"><button className="btn__label">Stars</button><button className="btn__value">{repoInfo[0]}</button></a>
+                <a href="https://github.com/stanleyowen/todo-application/blob/master/LICENSE" target="_blank" rel="noreferrer"><button className="btn__label">License</button><button className="btn__value">{repoInfo[1]}</button></a>
+                <a href="https://github.com/stanleyowen/todo-application/releases" target="_blank" rel="noreferrer"><button className="btn__label">Version</button><button className="btn__value">{currentversion}</button></a>
             </div>
         </div>
     )

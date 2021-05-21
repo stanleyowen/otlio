@@ -158,7 +158,6 @@ label { user-select: none; }
     background-color: rgb(252, 52, 52);
 }
 .oauth-box:hover { opacity: 1; transform: scale(1.02); }
-.oauth-box:visited { color: #FFF; }
 .oauth-box svg {
     display: inline-block;
     margin-top: auto;
@@ -183,7 +182,10 @@ label { user-select: none; }
 }
 .success { color: rgb(18, 214, 0); margin-right: 5px }
 .danger { color: rgb(252, 52, 52); margin-right: 5px }
-.button { font-size: 18px; }
+.button {
+    font-size: 18px;
+    box-sizing: border-box;
+}
 .flex { display: flex !important; flex-wrap: wrap; }
 .flex p { flex: 50%; }
 .m-5 { margin: 5px !important; }
@@ -395,10 +397,8 @@ label { user-select: none; }
 .btn__outline:focus { background-color: #116dc9; color: #FFFFFF; }
 .green__text { color: #23c739; }
 .badges {
-    position: absolute;
     bottom: 10px;
     width: 100%;
-    z-index: -1;
 }
 .badges a { margin-left: 10px; }
 .badges button {
@@ -916,6 +916,15 @@ blockquote em {font-style: italic;}
     animation: blink .75s step-end infinite;
 }
 .none { display: none !important; }
+.outline-blue {
+    color: #212121;
+    background: transparent;
+    border: 2px solid #1a73e8;
+}
+.outline-blue:hover {
+    color: #FFF;
+    background: #1a73e8;
+}
 @keyframes blink {
     from, to {
         background-color: transparent;
