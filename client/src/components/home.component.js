@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import DateFnsUtils from "@date-io/date-fns"
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { IconButton, Tooltip, Select, MenuItem } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons/'
@@ -121,31 +122,45 @@ const Home = ({ userData }) => {
         return sentence
     }
 
+    const handleOnDragEnd = (res) => {
+        if (!res.destination) return
+        const items = Array.from(todoData)
+        const [reorderedItem] = items.splice(res.source.index, 1)
+        items.splice(res.destination.index, 0, reorderedItem)
+        setTodoData(items)
+        // localStorage.setItem('todoData', JSON.stringify(items))
+    }
+
     const todoList = (b = todoData ? todoData : cacheTodo) => {
-        if(b) return b.map(a => {
+        if(b) return b.map((a, index) => {
             const labelClass = a.label.split(' ').join('-').toLowerCase()
             return(
-                <tr key={a._id}>
-                    <td><span className={a.description ? 'bold' : ''}>{a.title}</span><br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
-                    <td><span className={"label "+labelClass}>{titleCase(a.label)}</span></td>
-                    <td>{parseDate(timestamp(a.date), timestamp())}</td>
-                    <td>
-                        <span className="btn-config">
-                            <Tooltip title="Edit Task">
-                                <IconButton href={`/edit/${a._id}`}>
-                                    <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
-                                </IconButton>
-                            </Tooltip>
-                        </span>
-                        <span className="btn-config">
-                            <Tooltip title="Delete Task">
-                                <IconButton onClick={() => deleteData(a._id)}>
-                                    <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
-                                </IconButton>
-                            </Tooltip>
-                        </span>
-                    </td>
-                </tr>)
+                <Draggable key={a._id} draggableId={a._id} index={index}>
+                    {(provided) => (
+                        <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                            <td><span className={a.description ? 'bold' : ''}>{a.title}</span><br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
+                            <td><span className={"label "+labelClass}>{titleCase(a.label)}</span></td>
+                            <td>{parseDate(timestamp(a.date), timestamp())}</td>
+                            <td>
+                                <span className="btn-config">
+                                    <Tooltip title="Edit Task">
+                                        <IconButton href={`/edit/${a._id}`}>
+                                            <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                </span>
+                                <span className="btn-config">
+                                    <Tooltip title="Delete Task">
+                                        <IconButton onClick={() => deleteData(a._id)}>
+                                            <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                </span>
+                            </td>
+                        </tr>
+                    )}
+                </Draggable>
+            )
         })
     }
 
@@ -162,14 +177,21 @@ const Home = ({ userData }) => {
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        { todoList() }
-                        { !cacheTodo && !todoData ?
-                        (<tr><td colSpan="5" className="no-border"><div className="spin-container"><div className="loading">
-                            <div></div><div></div><div></div>
-                            <div></div><div></div>
-                        </div></div></td></tr>) : null }
-                    </tbody>
+                    <DragDropContext onDragEnd={handleOnDragEnd}>
+                        <Droppable droppableId="todo">
+                            {(provided) => (
+                                <tbody className="todo" {...provided.droppableProps} ref={provided.innerRef}>
+                                    { todoList() }
+                                    { provided.placeholder }
+                                    { !cacheTodo && !todoData ?
+                                    (<tr><td colSpan="5" className="no-border"><div className="spin-container"><div className="loading">
+                                        <div></div><div></div><div></div>
+                                        <div></div><div></div>
+                                    </div></div></td></tr>) : null }
+                                </tbody>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
                 </table>
             </div>
             
