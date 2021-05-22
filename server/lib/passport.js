@@ -33,7 +33,6 @@ const type = ["Question","Improvement","Security Issue/Bug","Account Management"
 
 const validateTicketType = (e) => {
     for (a=0; a<type.length; a++){
-        console.log(a, e, type[a], e === type[a].toLowerCase())
         if(e === type[a]) return false
         else if(a === type.length-1 && e !== type[a]) return true
     }
@@ -375,7 +374,6 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordFi
                 const valid = user.security['backup-codes'].valid.map(a => { return decrypt(a, 4) })
                 for (a=0; a<valid.length; a++){
                     if(token === valid[a]) {
-                        console.log(valid[a])
                         user.security['backup-codes'].invalid = [...user.security['backup-codes'].invalid, user.security['backup-codes'].valid[a]]
                         user.security['backup-codes'].valid.splice(a, 1)
                         user.save()
@@ -419,10 +417,10 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
     })
 }))
 
-passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwordField: 'type', passReqToCallback: true, session: false }, (req, email, type, done) => {
-    const {subject, description} = req.body
-    if(!subject || !description) return done(null, false, {status: 400, message: MSG_DESC[11]})
-    if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
+passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, id, done) => {
+    const {type, subject, description, verified} = req.body
+    if(!type || !subject || !description || !verified) return done(null, false, {status: 400, message: MSG_DESC[11]})
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(subject.length < 15 || subject.length > 50) return done(null, false, {status: 400, message: MSG_DESC[50]})
     else if(validateTicketType(type)) return done(null, false, {status: 400, message: MSG_DESC[49]})
     else if(description.length > 5000) return done(null, false, {status: 400, message: MSG_DESC[50]})
