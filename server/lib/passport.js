@@ -425,7 +425,7 @@ passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwo
     if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(subject.length < 15 || subject.length > 50) return done(null, false, {status: 400, message: MSG_DESC[50]})
     else if(validateTicketType(type)) return done(null, false, {status: 400, message: MSG_DESC[49]})
-    else if(description.length > 1000) return done(null, false, {status: 400, message: MSG_DESC[50]})
+    else if(description.length > 5000) return done(null, false, {status: 400, message: MSG_DESC[50]})
     const mailOptions = {
         to: process.env.MAIL_SUPPORT,
         subject: `[TodoApp] ${subject}`,

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Image from '../img/7c27535f88bae9519ceb14a8983c57ff.webp'
 import axios from 'axios'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
@@ -71,7 +70,7 @@ const Landing = () => {
                         <h3 className="mt-40 monospace">An open source project, completed with <b>highest standard security</b>, which is easy to use and easy to organize!</h3>
                         <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="/get-started">Get Started</a>
                     </div>
-                    <img className="center-object" src={Image} alt="Organzing Easier" />
+                    <img className="center-object" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621693325/todoapp/7c27535f88bae9519ceb14a8983c57ff_xhd84x.webp" alt="Organzing Easier" />
                 </div>
             </div>
             <div className="isCentered badges mt-40 mb-40">

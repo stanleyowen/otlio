@@ -1,15 +1,14 @@
 import React from 'react'
+import { Tooltip } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { Tooltip } from '@material-ui/core'
-import Image from '../img/4f4adcbf8c6f66dcfc8a3282ac2bf10a.webp'
 
 const PageNotFound = ({ userData }) => {
     return (
         <div className="main">
             <div className="contact__container">
-                <img className="center-object" src={Image} alt="Page Not Found" />
+                <img className="center-object" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621693324/todoapp/4f4adcbf8c6f66dcfc8a3282ac2bf10a_zu0aqt.webp" alt="Page Not Found" />
                 <div className="center-object">
                     <h1 className="blue-text monospace large">404</h1>
                     <h1 className="blue-text monospace">Page Not Found</h1>
