@@ -2,8 +2,8 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import Image from '../img/4f4adcbf8c6f66dcfc8a3282ac2bf10a.webp'
 import { Tooltip } from '@material-ui/core'
+import Image from '../img/4f4adcbf8c6f66dcfc8a3282ac2bf10a.webp'
 
 const PageNotFound = ({ userData }) => {
     return (

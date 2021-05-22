@@ -114,6 +114,7 @@ body.dark .MuiInput-underline:hover:not(.Mui-disabled):before { border-bottom: 1
 .MuiSvgIcon-root { color: #212121; }
 button, a { user-select: none; cursor: pointer; }
 label { user-select: none; }
+.resize-y { resize: vertical !important; }
 .monospace {
     font-weight: lighter;
     font-family: 'Roboto Mono', monospace;
@@ -205,6 +206,7 @@ label { user-select: none; }
 .ml-60 { margin-left: 60px !important; }
 .ul-ml40 li { margin-left: 40px !important; }
 .ul-mb10 li { margin-bottom: 10px !important; }
+.no-padding { padding: 0px !important; }
 .full-width { width: 100% !important; }
 .no-border, .no-border tr td  { border: none !important; }
 .no-outline { outline: none !important; }

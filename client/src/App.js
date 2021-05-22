@@ -11,6 +11,7 @@ import Register from './components/register.component'
 import Login from './components/login.component'
 import Logout from './components/logout.component'
 import OAuth from './components/register-oauth.component'
+import Support from './components/support.component'
 import ReqOAuth from './components/req-oauth.component'
 import Home from './components/home.component'
 import Account from './components/account.component'
@@ -81,6 +82,7 @@ export default function App() {
         <Route path='/oauth' component={() => <ReqOAuth userData={userData} />} />
         <Route path='/auth/:service/:email' component={OAuth} />
         <Route path='/account' component={() => <Account userData={userData} />} />
+        <Route path='/support' component={() => <Support userData={userData} />} />
         <Route path='/reset-password' exact component={() => <ReqResetPassword userData={userData} />} />
         <Route path='/reset-password/:id/:token' component={ResetPassword} />
         <Route path='/verify/:id/:token' component={VerifyAccount} />
