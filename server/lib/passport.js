@@ -29,6 +29,15 @@ const transporter = nodemailer.createTransport({
 })
 
 const listLabel = ["Priority","Secondary","Important","Do Later"]
+const type = ["Question","Improvement","Security Issue/Bug","Account Management","Others"]
+
+const validateTicketType = (e) => {
+    for (a=0; a<type.length; a++){
+        console.log(a, e, type[a], e === type[a].toLowerCase())
+        if(e === type[a]) return false
+        else if(a === type.length-1 && e !== type[a]) return true
+    }
+}
 
 const validateLabel = (e) => {
     for (a=0; a<listLabel.length; a++){
@@ -407,6 +416,24 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
             user.save()
             return done(null, user, { status: 200, message: MSG_DESC[43] })
         }
+    })
+}))
+
+passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwordField: 'type', passReqToCallback: true, session: false }, (req, email, type, done) => {
+    const {subject, description} = req.body
+    if(!subject || !description) return done(null, false, {status: 400, message: MSG_DESC[11]})
+    if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
+    else if(subject.length < 15 || subject.length > 50) return done(null, false, {status: 400, message: MSG_DESC[50]})
+    else if(validateTicketType(type)) return done(null, false, {status: 400, message: MSG_DESC[49]})
+    else if(description.length > 1000) return done(null, false, {status: 400, message: MSG_DESC[50]})
+    const mailOptions = {
+        to: process.env.MAIL_SUPPORT,
+        subject: `[TodoApp] ${subject}`,
+        html: `Email: ${email}<br>Ticket Type: ${type}<br>Subject: ${subject}<br>Description: ${description}`
+    }
+    transporter.sendMail(mailOptions, err => {
+        if(err) done(err, false)
+        return done(null, true, { status: 200, message: MSG_DESC[51] })
     })
 }))
 

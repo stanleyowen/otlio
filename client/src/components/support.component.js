@@ -37,6 +37,27 @@ const Support = ({ userData }) => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
 
+    const submitTicket = (e) => {
+        e.preventDefault()
+        const btn = document.getElementById('send-request')
+        async function openTicket(){
+            btn.innerHTML = 'Sending...'; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            await axios.post(`${SERVER_URL}/account/support`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            .then(() => {
+                setData({email, type: ticketTypes[0], subject: '', description: ''})
+                handleChange('messageSent', true)
+            })
+            .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
+            btn.innerHTML = "Send Request"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+        }
+        if(!data.email) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
+        else if(!data.type || !data.subject || !data.description) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.type ? 'type' : !data.subject ? 'subject' : 'description').focus()}  
+        else if(validateType(data.type)) setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid Label")
+        else if(data.subject.length < 15 || data.subject.length > 60) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Subject between 15 ~ 60 chracters"); document.getElementById('subject').focus()}
+        else if(data.description.length < 30 || data.description.length > 1000) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Description between 30 ~ 1000 chracters"); document.getElementById('description').focus()}
+        else openTicket()
+    }
+
     return (
         <div>
             { !authenticated ?

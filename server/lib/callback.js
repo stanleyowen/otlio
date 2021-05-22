@@ -47,7 +47,10 @@ const MSG_DESC = [
     'Account Disconnected Successfully from Google',                    // 45
     'Account Disconnected Successfully from GitHub',                    // 46
     'Account Verified Successfully',                                    // 47
-    'Email Address Mismatch'                                            // 48
+    'Email Address Mismatch',                                           // 48
+    'Invalid Ticket Type',                                              // 49
+    'Invalid Subject Format',                                           // 50
+    'Support Ticket has been Opened Successfully.',                     // 51
 ]
 
 module.exports = MSG_DESC
