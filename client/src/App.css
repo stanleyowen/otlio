@@ -206,6 +206,7 @@ label { user-select: none; }
 .ml-60 { margin-left: 60px !important; }
 .ul-ml40 li { margin-left: 40px !important; }
 .ul-mb10 li { margin-bottom: 10px !important; }
+.no-margin { margin: 0px !important; }
 .no-padding { padding: 0px !important; }
 .full-width { width: 100% !important; }
 .no-border, .no-border tr td  { border: none !important; }
@@ -756,7 +757,7 @@ img {
 }
 .footer__socialBtn {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
     width: 100%;
     margin: auto;
 }
