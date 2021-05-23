@@ -556,9 +556,9 @@ tbody tr:hover {
 .modal__title {
     display: block;
     padding: 10px;
+    margin-top: 10px;
     font-weight: bold;
     text-align: center;
-    border-bottom: 1px solid;
 }
 .modal__closeBtn {
     float: right;

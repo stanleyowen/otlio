@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { IconButton } from '@material-ui/core'
+import { IconButton, Tooltip } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/'
+import { faEye, faEyeSlash, faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons/'
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
 import axios from 'axios'
 
@@ -75,11 +75,23 @@ const Register = ({ userData }) => {
                     <hr />
                     <h4 className="mt-20 mb-20 isCentered">If { email ? email : properties.email } is not your email address, click on the back button and enter the correct one.</h4>
                     <h4 className="mt-20 mb-20 isCentered">If you don't receive the e-mail in 5 minutes, please check your spam folder or click the resend button.</h4>
+                    <h4 className="mt-20 isCentered">If you're experiencing a critical issue, please <a className="link" href="/support">contact support</a>.</h4>
                     <div className="flex isCentered">
                         <p><button className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Back</button></p>
                         <p><button className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="send-link" onClick={sendLink}>Resend Link</button></p>
                     </div>
                 </div>
+            </div>
+            <div className="footer__socialBtn mt-20 mb-20">
+                <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener noreferrer">
+                    <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
+                <Tooltip title="Current Status" arrow><a href="https://todoapp.freshstatus.io/" target="_blank" rel="noreferrer">
+                    <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
+                <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noreferrer">
+                    <FontAwesomeIcon icon={faGithub} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
             </div>
         </div>
     ) : (

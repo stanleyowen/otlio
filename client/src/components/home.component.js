@@ -3,7 +3,7 @@ import DateFnsUtils from "@date-io/date-fns"
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { IconButton, Tooltip, Select, MenuItem } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons/'
+import { faPen, faTrash, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons/'
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import axios from 'axios'
 
@@ -203,10 +203,8 @@ const Home = ({ userData }) => {
 
             <div id="background" className="modal hiddenModal">
                 <div id="modal" className="modal__container hiddenModal">
-                    <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('background','modal')}>&times;</span>
-                        <h2>Add Todo</h2>
-                    </div>
+                    <IconButton onClick={() => closeModal('background','modal')} className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
+                    <h2 className="modal__title">Add Todo</h2>
                     <div className="modal__body">
                         <form onSubmit={addTodo}>
                             <div className="m-10 no-bot">

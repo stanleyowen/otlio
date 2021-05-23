@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons'
-import { faCheck, faInfo, faKey, faSignOutAlt, faEyeSlash, faEye, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faInfo, faKey, faTimes, faSignOutAlt, faEyeSlash, faEye, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core'
 import download from 'js-file-download'
 import axios from 'axios'
@@ -233,9 +233,9 @@ const Account = ({ userData }) => {
 
             <div id="form">
                 <div className="form__contact">
-                    <div className="get_in_touch"><h1>Account</h1></div>
-                    <div className="form">
-                        <div className="m-10 contact__infoField">
+                    <div className="get_in_touch"><h1 className="monospace">Account</h1></div>
+                    <div className="m-10">
+                        <div className="contact__infoField">
                             <label htmlFor="userEmail">Email Address</label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={email} readOnly />
                         </div>
@@ -290,10 +290,8 @@ const Account = ({ userData }) => {
 
             <div id="password-bg" className="modal hiddenModal">
                 <div id="password-modal" className="modal__container hiddenModal">
-                    <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('password-bg', 'password-modal')}>&times;</span>
-                        <h2>Update Password</h2>
-                    </div>
+                    <IconButton onClick={() => closeModal('password-bg', 'password-modal')} className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
+                    <h2 className="modal__title">Update Password</h2>
                     <div className="modal__body">
                         <form onSubmit={changePassword}>
                             <input type="text" className="contact__inputField" value={email} required readOnly style={{ display: 'none' }} autoComplete="username" />
@@ -330,7 +328,7 @@ const Account = ({ userData }) => {
                                 </div>
                             </div>
                             <p className="isCentered mt-10"><a className="link" href="/reset-password">I forgot my password</a></p>
-                            <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="change-password">Update</button>
+                            <button className="oauth-box google isCentered block mt-20 p-12 button" id="change-password">Update</button>
                         </form>
                     </div>
                 </div>
@@ -338,10 +336,8 @@ const Account = ({ userData }) => {
 
             <div id="mfa-bg" className="modal hiddenModal">
                 <div id="mfa-modal" className="modal__container hiddenModal">
-                    <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('mfa-bg', 'mfa-modal')}>&times;</span>
-                        <h2>Multi Factor Authentication (MFA)</h2>
-                    </div>
+                    <IconButton onClick={() => closeModal('mfa-bg', 'mfa-modal')} className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
+                    <h2 className="modal__title">Multi Factor Authentication (MFA)</h2>
                     <div className="modal__body mt-10">
                         <ol className="ml-40 ul-mb10">
                             <li>
@@ -388,10 +384,8 @@ const Account = ({ userData }) => {
 
             <div id="otp-bg" className="modal hiddenModal">
                 <div id="otp-modal" className="modal__container hiddenModal">
-                    <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('otp-bg', 'otp-modal')}>&times;</span>
-                        <h2>Authentication Required</h2>
-                    </div>
+                    <IconButton onClick={() => closeModal('otp-bg', 'otp-modal')} className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
+                    <h2 className="modal__title">Authentication Required</h2>
                     <div className="modal__body mt-10">
                         <ol className="ml-40 ul-mb10">
                             <li>
@@ -430,13 +424,12 @@ const Account = ({ userData }) => {
                 </div>
             </div>
 
-            { authenticated ? (<div className="contact__infoField"><textarea id="backup-codes" className="contact__inputField no-bot" value={BackupCode()} readOnly></textarea></div>) : null }
-            { authenticated && security['2FA'] ? (<div id="backup-code-bg" className="modal hiddenModal">
+            { authenticated && security['2FA'] ? (<textarea id="backup-codes" className="contact__inputField no-bot" value={BackupCode()} readOnly />) : null }
+            { authenticated && security['2FA'] ?
+            (<div id="backup-code-bg" className="modal hiddenModal">
                 <div id="backup-code-modal" className="modal__container hiddenModal">
-                    <div className="modal__title">
-                        <span className="modal__closeFireUI modal__closeBtn" onClick={() => closeModal('backup-code-bg', 'backup-code-modal')}>&times;</span>
-                        <h2>Backup Codes</h2>
-                    </div>
+                    <IconButton onClick={() => closeModal('backup-code-bg', 'backup-code-modal')} className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
+                    <h2 className="modal__title">Backup Codes</h2>
                     <div className="modal__body mt-10">
                         <p className="mb-10">Keep these backup codes somewhere safe but accessible. Each backup code can only be used once.</p>
                         <div dangerouslySetInnerHTML={{__html: BackupCodes()}}></div>

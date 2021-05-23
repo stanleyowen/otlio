@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
 import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core'
-import { faQuestionCircle, faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons/'
+import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons/'
 import axios from 'axios'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
@@ -127,7 +127,7 @@ const Login = ({ userData }) => {
         
         <div id="form">
             <div className="form__contact">
-                <div className="get_in_touch"><h1>Verify Your Identity</h1></div>
+                <div className="get_in_touch"><h2 className="monospace">Verify Your Identity</h2></div>
                 <div className="form">
                     <form className="contact__form" onSubmit={VerifyOTP}>
                         <div className="m-10">
@@ -167,6 +167,17 @@ const Login = ({ userData }) => {
                         </div>
                     </form>
                 </div>
+            </div>
+            <div className="footer__socialBtn mb-20">
+                <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener noreferrer">
+                    <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
+                <Tooltip title="Current Status" arrow><a href="https://todoapp.freshstatus.io/" target="_blank" rel="noreferrer">
+                    <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
+                <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noreferrer">
+                    <FontAwesomeIcon icon={faGithub} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
             </div>
         </div>
     </div>) :

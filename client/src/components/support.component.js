@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChartLine, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
-import { NOTIFICATION_TYPES, setNotification } from '../libraries/setNotification'
 import { getCSRFToken } from '../libraries/validation'
+import { NOTIFICATION_TYPES, setNotification } from '../libraries/setNotification'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const ticketTypes = ["Question","Improvement","Security Issue/Bug","Account Management","Others"]
@@ -81,7 +81,7 @@ const Support = ({ userData }) => {
                             </a></Tooltip>
                         </div>
                     </div>
-                    {properties.success ?
+                    { properties.success ?
                     (<div className="center-object">
                         <h1 className="blue-text monospace">Message Sent</h1>
                         <h3 className="mt-20 monospace">Thank you for submitting the details. We have received your issue(s) and or enhancement(s), and you should receive an email from us after 48 hours.</h3>
@@ -95,8 +95,7 @@ const Support = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="userEmail">From</label>
-                                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} required disabled="true" autoComplete="username" />
-                                            <span className="contact__onFocus"></span>
+                                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} required readOnly autoComplete="username" />
                                         </div>
                                     </div>
                                     <div className="m-10 no-bot">
