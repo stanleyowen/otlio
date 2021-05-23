@@ -419,15 +419,16 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
 
 passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, id, done) => {
     const {type, subject, description, verified} = req.body
-    if(!type || !subject || !description || !verified) return done(null, false, {status: 400, message: MSG_DESC[11]})
+    if(!type || !subject || !description) return done(null, false, {status: 400, message: MSG_DESC[11]})
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(subject.length < 15 || subject.length > 50) return done(null, false, {status: 400, message: MSG_DESC[50]})
     else if(validateTicketType(type)) return done(null, false, {status: 400, message: MSG_DESC[49]})
     else if(description.length > 5000) return done(null, false, {status: 400, message: MSG_DESC[50]})
     const mailOptions = {
         to: process.env.MAIL_SUPPORT,
+        replyTo: email,
         subject: `[TodoApp] ${subject}`,
-        html: `Email: ${email}<br>Ticket Type: ${type}<br>Subject: ${subject}<br>Description: ${description}`
+        text: `---------- User Details ---------\nID: ${id}\nEmail Address: ${email}\nVerified Account: ${verified}\n\n---------- Ticket Description ---------\nTicket Type: ${type}\nSubject: ${subject}\nDescription:\n${description}`
     }
     transporter.sendMail(mailOptions, err => {
         if(err) done(err, false)
