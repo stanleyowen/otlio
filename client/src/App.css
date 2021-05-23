@@ -1,6 +1,7 @@
 /*! Todo Application - CSS Version 0.5.3 Copyright 2021 */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -119,6 +120,7 @@ label { user-select: none; }
     font-weight: lighter;
     font-family: 'Roboto Mono', monospace;
 }
+.raleway { font-family: 'Raleway', sans-serif; }
 .privacy-policy {
     font-family: 'Noto Sans JP', sans-serif;
     margin: auto 150px;
@@ -903,6 +905,7 @@ blockquote em {font-style: italic;}
     transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .large { font-size: 60px; }
+.medium { font-size: 15px; }
 .center-object { margin: auto; max-width: 70%; }
 .justify-center { justify-content: center; }
 .text-animation {
