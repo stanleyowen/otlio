@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Tooltip, CardActionArea } from '@material-ui/core'
+import { CardActionArea } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons/'
 import axios from 'axios'
@@ -82,23 +82,40 @@ const Landing = () => {
                 <a href="https://github.com/stanleyowen/todo-application/releases" target="_blank" rel="noreferrer"><button className="btn__label">Version</button><button className="btn__value">{currentversion}</button></a>
             </div>
             <h1 className="mt-40 isCentered monospace">Features</h1>
-            <div className="contact__container mb-40">
+            <div className="contact__container mb-20">
                 <img className="center-object" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621746924/todoapp/e91e6348157868de9dd8b25c81aebfb9_dejbmo.webp" alt="Organzing Easier" />
-                <div id="form" className="center-object">
+                <div id="form" className="center-object full-width">
                     <CardActionArea>
                         <div className="p-12">
-                            <h1 className="raleway mb-20">Built in Security</h1>
+                            <h1 className="raleway mb-20">Built-in Security</h1>
                             <h3 className="raleway">Todo Application Service Security is secure by default which uses</h3>
                             <ul className="ul-ml40 ul-mb10 medium">
                                 <li className="mt-20">Up-to-date Dependencies</li>
                                 <li><a className="link" href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard" target="_blank" rel="noopener noreferrer">Advanced Encryption Standard</a> Algorithm (aes-256-cbc)</li>
-                                <li>TSL (Transport Layer Security) and SSL (Secure Socket Layer) <Tooltip title="SSL/TLS provide end-to-end encryption and integrity for all web requests to ensure information is transmitted securely." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip></li>
+                                <li>TSL (Transport Layer Security) and SSL (Secure Socket Layer)</li>
                                 <li>Rate Limiter to Mitigate DDoS Attacks</li>
                                 <li>Technology to protect app from some well-known web vulnerabilities by setting HTTP headers appropriately.</li>
                             </ul>
                         </div>
                     </CardActionArea>
                 </div>
+            </div>
+            <div className="contact__container mb-20">
+                <div id="form" className="center-object full-width">
+                    <CardActionArea>
+                        <div className="p-12">
+                            <h1 className="raleway mb-20">Fast and Reliable</h1>
+                            <h3 className="raleway">Todo Application Infrastructures are hosted on:</h3>
+                            <ul className="ul-ml40 ul-mb10 medium mb-20">
+                                <li className="mt-20">Netlify (Frontend)</li>
+                                <li>Heroku (Backend)</li>
+                                <li>Cloudinary (Images and Videos CDN)</li>
+                            </ul>
+                            <h3 className="raleway">Therefore, our services will always online and available on any region including Europe, South America, Asia, and Australia.</h3>
+                        </div>
+                    </CardActionArea>
+                </div>
+                <img className="center-object" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621757770/todoapp/af051c89597cd018ce51bd8fd53014ff_qzec3g.webp" alt="Organzing Easier" />
             </div>
         </div>
     )
