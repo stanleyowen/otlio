@@ -108,7 +108,7 @@ passport.use('changePassword', new localStrategy({ usernameField: 'email', passw
                                     html: `Hi ${email},<br><br>We wanted to inform that your Todo Application password has changed.<br><br> If you did not perform this action, you can recover access by entering ${email} into the form at ${CLIENT_URL}/reset-password<br><br>If you run into problems, please email us at stanleyowen06@gmail.com<br><br>Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.`
                                 }
                                 transporter.sendMail(mailOptions, err => {
-                                    if(err) done(err, false)
+                                    if(err) return done(err, false)
                                     return done(null, user, { status: 200, message: MSG_DESC[6] })
                                 })
                             })
@@ -129,7 +129,7 @@ passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField
         else if(!user) return done(null, false, { status: 400, message: MSG_DESC[31] })
         else if(user && userId === decrypt(user.userId, 3) && token === decrypt(user.token, 3))
             User.findById(userId, (err, user) => {
-                if(err) done(err, false)
+                if(err) return done(err, false)
                 else if(!user) return done(null, false, { status: 400, message: MSG_DESC[31] })
                 else if(user) return done(null, true, {
                     status: 200,
@@ -178,7 +178,7 @@ passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 't
     }
     var query = {}; query['_id'] = tokenId; query['type.'.concat(type)] = true;
     Token.findOne(query, async (err, data) => {
-        if(err) done(err, false)
+        if(err) return done(err, false)
         else if(!data) return done(null, false, { status: 400, message: MSG_DESC[16] })
         else if(data && userId === decrypt(data.userId, 3) && token === decrypt(data.token, 3)){
             var query = {}; query['_id'] = userId; email ? query['email'] = email : null;
@@ -186,7 +186,7 @@ passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 't
             if(type === 'passwordReset') updateData['password'] = await bcrypt.hash(password, SALT_WORK_FACTOR)
             else updateData['verified'] = true
             User.findOneAndUpdate(query, updateData, (err, user) => {
-                if(err) done(err, false)
+                if(err) return done(err, false)
                 else if(!user) return done(null, false, { status: 401, message: MSG_DESC[10] })
                 else if(user) {
                     data.remove(err => {
@@ -319,7 +319,7 @@ passport.use('getOAuthData', new localStrategy({ usernameField: 'email', passwor
     query['email'] = email; query['thirdParty.'.concat(provider)] = true; query['thirdParty.verified'] = false
     User.findOne(query, (err, user) => {
         if(err) return done(err, false)
-        else if(!user) done(null, false, { status: 401, message: MSG_DESC[10] })
+        else if(!user) return done(null, false, { status: 401, message: MSG_DESC[10] })
         return done(null, user, { status: 200, message: MSG_DESC[5] })
     })
 }))
@@ -431,7 +431,7 @@ passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwo
         text: `---------- User Details ---------\nID: ${id}\nEmail Address: ${email}\nVerified Account: ${verified}\n\n---------- Ticket Description ---------\nTicket Type: ${type}\nSubject: ${subject}\nDescription:\n${description}`
     }
     transporter.sendMail(mailOptions, err => {
-        if(err) done(err, false)
+        if(err) return done(err, false)
         return done(null, true, { status: 200, message: MSG_DESC[51] })
     })
 }))
