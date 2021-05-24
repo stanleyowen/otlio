@@ -194,6 +194,7 @@ label { user-select: none; }
 .m-5 { margin: 5px !important; }
 .m-10 { margin: 10px !important; }
 .p-12 { padding: 12px !important; }
+.p-5p { padding: 5% !important; }
 .pt-180 { padding-top: 180px !important; }
 .ml-10 { margin-left: 10px !important; }
 .mr-10 { margin-right: 10px !important; }
@@ -470,6 +471,19 @@ tbody tr:hover {
     flex: 0.8;
     width: 50%;
     color: #FFFFFF;
+}
+.account-container {
+    display: flex;
+}
+.flex35 {
+    display: flex;
+    flex: .35;
+    flex-direction: column;
+}
+.flex65 {
+    display: flex;
+    flex: .65;
+    flex-direction: column;
 }
 .projects { margin: 100px 10px; }
 .projects h1 { text-align: center; }
@@ -973,6 +987,10 @@ blockquote em {font-style: italic;}
     .projects__container { grid-template-columns: auto auto; }
     .privacy-policy { margin: 0 100px; }
 }
+@media only screen and (max-width: 800px) {
+    .flex35 { display: none; }
+    .flex65 { flex: 1; }
+}
 @media only screen and (max-width: 768px) {
     .navbar a {
         display: block;
@@ -993,7 +1011,6 @@ blockquote em {font-style: italic;}
     .projects__container { grid-template-columns: auto; }
     .contact { margin: auto 25px -70px 25px; }
     .contact__me { padding: 10px; text-align: center; }
-    .contact__container { grid-template-columns: auto; }
     .modal__container { margin: 5% auto; }
     #form { width: 100%; }
     .form__container { grid-template-columns: auto; }
@@ -1003,6 +1020,7 @@ blockquote em {font-style: italic;}
     .center-object { max-width: 100%; }
 }
 @media only screen and (max-width: 600px) {
+    .contact__container { grid-template-columns: auto; }
     .animation__message { width: 100%; height: auto; }
     .btn__outline { width: 65%; }
     .privacy-policy { margin: 0 15px; }

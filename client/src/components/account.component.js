@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons'
-import { faCheck, faInfo, faKey, faTimes, faSignOutAlt, faEyeSlash, faEye, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { FormControlLabel, IconButton, Tooltip, Switch } from '@material-ui/core'
+import { FormControlLabel, IconButton, Switch } from '@material-ui/core'
+import { faCheck, faInfo, faKey, faTimes, faSignOutAlt, faEyeSlash, faEye, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import download from 'js-file-download'
 import axios from 'axios'
 
@@ -32,9 +32,9 @@ const Account = ({ userData }) => {
         isBackupCode: false
     })
 
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
-    const handlePassword = (a, b) => setPassword({ ...password, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
+    const handlePassword = (a, b) => setPassword({ ...password, [a]: b })
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     
     useEffect(() => {
         window.onclick = (e) =>
@@ -219,7 +219,7 @@ const Account = ({ userData }) => {
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerHTML = "Regenerate Code"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
         }
-        if(!security['2FA']) setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Multi Factor Authentication (MFA) Users')
+        if(!security['2FA']) setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle in Two Factor Authentication (2FA) Users')
         else generateToken()
     }
 
@@ -231,60 +231,68 @@ const Account = ({ userData }) => {
                 <div></div><div></div>
             </div></div></div>) : null }
 
-            <div id="form">
-                <div className="form__contact">
-                    <div className="get_in_touch"><h1 className="monospace">Account</h1></div>
-                    <div className="m-10">
-                        <div className="contact__infoField">
-                            <label htmlFor="userEmail">Email Address</label>
-                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={email} readOnly />
-                        </div>
+            <div className="main">
+            <div className="account-container">
+                    <div className="flex35 center-object p-5p">
+                        <img src="https://res.cloudinary.com/stanleyowen/image/upload/v1621831898/todoapp/d0d4cf7a79acbcb98834d05980edc55d_akoavd.webp" alt="Organzing Easier" />
+                        <h2 className="isCentered mt-20 mb-20 monospace">Introducing 2FA</h2>
+                        <p className="isCentered monospace">Two-Factor Authentication is a security control that requires users to verify their identities by providing multiple pieces of evidence before gaining access to a device or application.</p>
                     </div>
-                    <div className="oauth-container">
-                        <div className="m-10">
-                            <button className="oauth-box primary mt-20" onClick={() => openModal('password-bg', 'password-modal', 'old-password')}>
-                                <FontAwesomeIcon icon={faKeycdn} size='2x'/> <p>Update Password</p>
-                            </button>
-                        </div>
-                        <div className="m-10">
-                            <button className="oauth-box primary mt-20" onClick={() => window.location='logout'}>
-                                <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
-                            </button>
-                        </div>
-                    </div>
-                    <div className="get_in_touch mt-40"><h1>Security</h1></div>
-                    <div className="form">
-                        <div className="m-10">
-                            <FormControlLabel control={
-                                <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color="primary"/>
-                            } label="Multi Factor Authentication (MFA)" />
-                            <Tooltip placement="top" title="Two-Factor Authentication (2FA) is a good way to add an extra layer of security to your account to make sure that only you have the ability to log in." arrow><span><FontAwesomeIcon icon={faQuestionCircle} size="sm" /></span></Tooltip> 
-                        </div>
-                    </div>
-                    { authenticated && security['2FA'] ?
-                        (<div className="oauth-container">
+                    <div className="no-padding mb-20 flex65">
+                        <div className="form__contact no-margin">
+                            <div className="get_in_touch"><h1 className="monospace">Account</h1></div>
                             <div className="m-10">
-                                <button className="oauth-box primary mt-20" onClick={() => openModal('backup-code-bg', 'backup-code-modal')}>
-                                    <FontAwesomeIcon icon={faKey} size='2x'/> <p>Backup Codes</p>
-                                </button>
+                                <div className="contact__infoField">
+                                    <label htmlFor="userEmail">Email Address</label>
+                                    <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={email} readOnly />
+                                </div>
                             </div>
-                        </div>) : null }
-                    <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
-                    <div className="form__container">
-                        <div className="m-10">
-                            <button className="oauth-box google" onClick={authenticated ? ConnectOAuthGoogle : null}>
-                                <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with Google</p>
-                            </button>
-                        </div>
-                        <div className="m-10">
-                            <button className="oauth-box github" onClick={authenticated ? ConnectOAuthGitHub : null}>
-                                <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with GitHub</p>
-                            </button>
+                            <div className="oauth-container">
+                                <div className="m-10">
+                                    <button className="oauth-box primary mt-20" onClick={() => openModal('password-bg', 'password-modal', 'old-password')}>
+                                        <FontAwesomeIcon icon={faKeycdn} size='2x'/> <p>Update Password</p>
+                                    </button>
+                                </div>
+                                <div className="m-10">
+                                    <button className="oauth-box primary mt-20" onClick={() => window.location='logout'}>
+                                        <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="get_in_touch mt-40"><h1>Security</h1></div>
+                            <div className="form">
+                                <div className="m-10">
+                                    <FormControlLabel control={
+                                        <Switch checked={!isLoading ? security['2FA'] : false} onClick={() => !isLoading ? openModal('mfa-bg', 'mfa-modal') : null} color="primary"/>
+                                    } label="Two Factor Authentication (2FA)" />
+                                </div>
+                            </div>
+                            { authenticated && security['2FA'] ?
+                                (<div className="oauth-container">
+                                    <div className="m-10">
+                                        <button className="oauth-box primary mt-20" onClick={() => openModal('backup-code-bg', 'backup-code-modal')}>
+                                            <FontAwesomeIcon icon={faKey} size='2x'/> <p>Backup Codes</p>
+                                        </button>
+                                    </div>
+                                </div>) : null }
+                            <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
+                            <div className="contact__container">
+                                <div className="m-10">
+                                    <button className="oauth-box google" onClick={authenticated ? ConnectOAuthGoogle : null}>
+                                        <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with Google</p>
+                                    </button>
+                                </div>
+                                <div className="m-10">
+                                    <button className="oauth-box github" onClick={authenticated ? ConnectOAuthGitHub : null}>
+                                        <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with GitHub</p>
+                                    </button>
+                                </div>
+                            </div>
+                            <hr className="mt-20"></hr>
+                            <p className="isCentered mt-20 mb-20"><a className="link" href="/terms-and-conditions">Terms of Service</a> | <a className="link" href="/privacy-policy">Privacy Policy</a></p>
+                            <p className="isCentered mt-20 mb-20 monospace">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                         </div>
                     </div>
-                    <hr className="mt-20"></hr>
-                    <p className="isCentered mt-20 mb-20"><a className="link" href="/terms-and-conditions">Terms of Service</a> | <a className="link" href="/privacy-policy">Privacy Policy</a></p>
-                    <p className="isCentered mt-20 mb-20">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                 </div>
             </div>
 
@@ -337,7 +345,7 @@ const Account = ({ userData }) => {
             <div id="mfa-bg" className="modal hiddenModal">
                 <div id="mfa-modal" className="modal__container hiddenModal">
                     <IconButton onClick={() => closeModal('mfa-bg', 'mfa-modal')} className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
-                    <h2 className="modal__title">Multi Factor Authentication (MFA)</h2>
+                    <h2 className="modal__title">Two Factor Authentication (2FA)</h2>
                     <div className="modal__body mt-10">
                         <ol className="ml-40 ul-mb10">
                             <li>
