@@ -70,13 +70,13 @@ const Support = ({ userData }) => {
                     <div className="center-object">
                         <img src={properties.success ? MessageSent : CustomerService} alt={properties.success ?  "Message Sent" : "Contact Us"} />
                         <div className="footer__socialBtn mt-20 mb-20">
-                            <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener noreferrer">
+                            <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener">
                                 <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
                             </a></Tooltip>
-                            <Tooltip title="Current Status" arrow><a href="https://todoapp.freshstatus.io/" target="_blank" rel="noopener noreferrer">
+                            <Tooltip title="Current Status" arrow><a href="https://todoapp.freshstatus.io/" target="_blank" rel="noreferrer">
                                 <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
                             </a></Tooltip>
-                            <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noreferrer">
+                            <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noopener">
                                 <FontAwesomeIcon icon={faGithub} style={{ fontSize: "1.8em" }} />
                             </a></Tooltip>
                         </div>

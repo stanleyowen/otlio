@@ -98,7 +98,7 @@ const OAuth = () => {
                             </div>
                         </div>
                         <button type="submit" className="oauth-box google isCentered block mt-20 p-12 button" id="register">Create Account</button>
-                        <p className="mt-20 small">Signing up signifies that you have read and agree to the <a className="link" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a> and our <a className="link" href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
+                        <p className="mt-20 small">Signing up signifies that you have read and agree to the <a className="link" href="/terms-and-conditions" target="_blank" rel="noopener">Terms of Service</a> and our <a className="link" href="/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>.</p>
                     </form>
                 </div>
             </div>

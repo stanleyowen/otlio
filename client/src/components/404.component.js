@@ -16,13 +16,13 @@ const PageNotFound = ({ userData }) => {
                     <h3 className="mt-20 monospace">If you're experiencing a critical issue, please <a className="animation__underline" href="/support">contact support</a>.</h3>
                     <button className="oauth-box google isCentered block mt-30 mb-20 p-12 button" onClick={() => userData.authenticated ? window.location='/' : window.location='/welcome'}>Back to Home</button>
                     <div className="footer__socialBtn mb-20">
-                        <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener noreferrer">
+                        <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener">
                             <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>
                         <Tooltip title="Current Status" arrow><a href="https://todoapp.freshstatus.io/" target="_blank" rel="noreferrer">
                             <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>
-                        <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noreferrer">
+                        <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noopener">
                             <FontAwesomeIcon icon={faGithub} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>
                     </div>
