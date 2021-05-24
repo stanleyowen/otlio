@@ -1,14 +1,16 @@
+import axios from 'axios'
+import dompurify from 'dompurify'
+import download from 'js-file-download'
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons'
 import { FormControlLabel, IconButton, Switch } from '@material-ui/core'
 import { faCheck, faInfo, faKey, faTimes, faSignOutAlt, faEyeSlash, faEye, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import download from 'js-file-download'
-import axios from 'axios'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal } from '../libraries/validation'
 
+const sanitizer = dompurify.sanitize
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
 const Account = ({ userData }) => {
@@ -69,7 +71,7 @@ const Account = ({ userData }) => {
             }
         }
     }, [properties.disabled, data])
-    
+
     const BackupCodes = () => {
         const codes = [...valid, ...invalid]
         // function validateToken(token) {
@@ -440,7 +442,7 @@ const Account = ({ userData }) => {
                     <h2 className="modal__title">Backup Codes</h2>
                     <div className="modal__body mt-10">
                         <p className="mb-10">Keep these backup codes somewhere safe but accessible. Each backup code can only be used once.</p>
-                        <div dangerouslySetInnerHTML={{__html: BackupCodes()}}></div>
+                        <div dangerouslySetInnerHTML={{__html: sanitizer(BackupCodes())}}></div>
                         <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="generate-token" onClick={RegenerateToken}>Regenerate Token</button>
                         <div className="flex isCentered">
                             <p><button className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button></p>

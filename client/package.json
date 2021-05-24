@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^13.1.9",
     "axios": "^0.21.1",
     "date-fns": "^2.21.3",
+    "dompurify": "^2.2.8",
     "dotenv": "^10.0.0",
     "js-file-download": "^0.4.12",
     "react": "^17.0.2",
