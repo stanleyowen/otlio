@@ -13,24 +13,21 @@ import { labels, validateLabel, getCSRFToken, openModal, closeModal } from '../l
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
 const timestamp = (e) => {
-    var d = e ? new Date(e) : new Date()
-    var month = d.getMonth() + 1
-    var day = d.getDate()
-    var year = d.getFullYear()
-    if (month <= 9) month = '0' + month
-    if (day <= 9) day = '0' + day
-    return [day, month, year].join('-')
-}
-
-const parseDate = (a, b) => {
-    var data = parseInt(a.split('-')[0])
-    var yesterday = parseInt(b.split('-')[0]) - 1
-    var today = parseInt(b.split('-')[0])
-    var tomorrow = parseInt(b.split('-')[0]) + 1
-    if(data === yesterday) return <b>Yesterday</b>
-    else if(data === today) return <b>Today</b>
-    else if(data === tomorrow) return <b>Tomorrow</b>
-    else return a
+    var data = new Date(e)
+    var today = new Date()
+    var yesterday = new Date(new Date(today).setDate(today.getDate()-1)).getDate()
+    var tomorrow = new Date(new Date(today).setDate(today.getDate()+1)).getDate()
+    if(yesterday === data.getDate()) return <b>Yesterday</b>
+    else if(today.getDate() === data.getDate()) return <b>Today</b>
+    else if(tomorrow === data.getDate()) return <b>Tomorrow</b>
+    else {
+        var day = data.getDate()
+        var month = data.getMonth() + 1
+        var year = data.getFullYear()
+        if (month <= 9) month = '0' + month
+        if (day <= 9) day = '0' + day
+        return [day, month, year].join('/')
+    }
 }
 
 const Home = ({ userData }) => {
@@ -137,7 +134,7 @@ const Home = ({ userData }) => {
                         <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                             <td><span className={a.description ? 'bold' : ''}>{a.title}</span><br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
                             <td><span className={"label "+a.label.split(' ').join('-').toLowerCase()}>{titleCase(a.label)}</span></td>
-                            <td>{parseDate(timestamp(a.date), timestamp())}</td>
+                            <td>{timestamp(a.date)}</td>
                             <td>
                                 <span className="btn-config">
                                     <Tooltip title="Edit Task"><IconButton href={`/edit/${a._id}`}>
