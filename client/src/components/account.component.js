@@ -39,7 +39,7 @@ const Account = ({ userData }) => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     
     useEffect(() => {
-        window.onclick = (e) =>
+        window.onclick = e =>
             ['password', 'mfa', 'otp', 'backup-code'].forEach(a => {
                 const modal = document.getElementById(`${a}-modal`)
                 const background = document.getElementById(`${a}-bg`)
@@ -238,7 +238,7 @@ const Account = ({ userData }) => {
                         <h2 className="isCentered mt-20 mb-20 monospace">Introducing 2FA</h2>
                         <p className="isCentered monospace">Two-Factor Authentication is a security control that requires users to verify their identities by providing multiple pieces of evidence before gaining access to a device or application.</p>
                     </div>
-                    <div className="no-padding mb-20 flex65">
+                    <div className="no-padding mb-40 flex65">
                         <div className="form__contact no-margin">
                             <div className="get_in_touch"><h1 className="monospace">Account</h1></div>
                             <div className="m-10">

@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
 import axios from 'axios'
+import React, { useState } from 'react'
+import { Tooltip } from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
+import { faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons'
 
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 import { getCSRFToken } from '../libraries/validation'
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -67,6 +71,17 @@ const ResetPassword = ({ userData }) => {
                     </form>) }
                 </div>
                 <p className="isCentered mt-10 mb-10"><a className="link" href="/login">Login</a> or <a className="link" href="/get-started">Get Started</a></p>
+            </div>
+            <div className="footer__socialBtn mb-20">
+                <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener">
+                    <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
+                <Tooltip title="Current Status" arrow><a href="https://todoapp.freshstatus.io/" target="_blank" rel="noreferrer">
+                    <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
+                <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noopener">
+                    <FontAwesomeIcon icon={faGithub} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
             </div>
         </div>
     )

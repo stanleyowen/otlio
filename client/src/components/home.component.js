@@ -1,3 +1,4 @@
+import axios from 'axios'
 import DateFnsUtils from '@date-io/date-fns'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -5,7 +6,6 @@ import { IconButton, Tooltip, Select, MenuItem } from '@material-ui/core'
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen, faTrash, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons/'
-import axios from 'axios'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 import { labels, validateLabel, getCSRFToken, openModal, closeModal } from '../libraries/validation'
@@ -48,8 +48,8 @@ const Home = ({ userData }) => {
         disabled: false
     })
 
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     async function getTodoData() {
         await axios.get(`${SERVER_URL}/todo/data`, { withCredentials: true })
@@ -66,7 +66,7 @@ const Home = ({ userData }) => {
     useEffect(() => {
         const background = document.getElementById('background')
         const modal = document.getElementById('modal')
-        window.onclick = function(e){
+        window.onclick = e => {
             if(e.target === background && !properties.disabled){
                 modal.classList.remove('showModal')
                 modal.classList.add('closeModal')
@@ -190,7 +190,7 @@ const Home = ({ userData }) => {
                 </button>
             </Tooltip>
 
-            {authenticated ?
+            { authenticated ?
             (<div id="background" className="modal hiddenModal">
                 <div id="modal" className="modal__container hiddenModal">
                     <IconButton onClick={() => closeModal('background','modal')} className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
@@ -201,7 +201,7 @@ const Home = ({ userData }) => {
                                 <div className="contact__infoField">
                                     <label htmlFor="bot-title">Title</label>
                                     <input title="Title" id="bot-title" type="text" className="contact__inputField" onChange={(e) => handleChange('honeypot', e.target.value)} value={properties.honeypot} autoComplete="off" />
-                                    <span className="contact__onFocus"></span>
+                                    <span className="contact__onFocus" />
                                 </div>
                             </div>
                             <div className="form__container">
@@ -209,18 +209,16 @@ const Home = ({ userData }) => {
                                     <div className="contact__infoField">
                                         <label htmlFor="title">Title <span className="required">*</span></label>
                                         <input title="Title" id="title" type="text" className="contact__inputField" maxLength="60" onChange={(e) => handleData('title', e.target.value)} value={data.title} required />
-                                        <span className="contact__onFocus"></span>
+                                        <span className="contact__onFocus" />
                                         <p className="length">{data.title.length}/60</p>
                                     </div>
                                 </div>
                                 <div className="m-10">
                                     <div className="contact__infoField">
                                         <label htmlFor="date">Date <span className="required">*</span></label>
-                                        <div className="datepicker">
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                                <KeyboardDatePicker margin="normal" format="dd/MM/yyyy" id="date" value={data.date} onChange={(e) => handleData('date', e)} />
-                                            </MuiPickersUtilsProvider>
-                                        </div>
+                                        <div className="datepicker"><MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                            <KeyboardDatePicker margin="normal" format="dd/MM/yyyy" id="date" value={data.date} onChange={(e) => handleData('date', e)} />
+                                        </MuiPickersUtilsProvider></div>
                                     </div>
                                 </div>
                             </div>
@@ -236,7 +234,7 @@ const Home = ({ userData }) => {
                                 <div className="contact__infoField">
                                     <label htmlFor="description">Description</label>
                                     <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="200" onChange={(e) => handleData('description', e.target.value)} value={data.description} />
-                                    <span className="contact__onFocus"></span>
+                                    <span className="contact__onFocus" />
                                     <p className="length">{data.description.length}/200</p>
                                 </div>
                             </div>
