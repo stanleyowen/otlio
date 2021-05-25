@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { IconButton, Tooltip } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers, faChartLine } from '@fortawesome/free-solid-svg-icons/'
+import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/'
 
 const Navbar = ({ userData }) => {
     const {authenticated, isLoading} = userData
@@ -39,12 +39,6 @@ const Navbar = ({ userData }) => {
             <div className="navbar">
                 <a className="navbar__logo" href={ authenticated ? '/' : '/welcome' }>TodoApp</a>
                 <div className="navbar__menu" id="navbar__menu">
-                    <a className="animation__underline" href="https://todoapp.freshstatus.io/" target="_blank" rel="noreferrer">
-                        <span className="icons">
-                            <Tooltip title="Status"><span><FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.5em" }} /></span></Tooltip>
-                        </span>
-                        <span className="description">Status</span>
-                    </a>
                     <a className="animation__underline" href={value_a[1]}>
                         <span className="icons"><Tooltip title={value_a[0] ? value_a[0] : ''}><span>{value_a[2]}</span></Tooltip></span>
                         <span className="description">{value_a[0]}</span>
@@ -60,15 +54,13 @@ const Navbar = ({ userData }) => {
                     </a>
                 </div>
                 <div className="toggleNavbar">
-                    <Tooltip title="Menu">
-                        <IconButton onClick={toggleNavbar}>
-                            <div className="container-bar" id="navbar-icon">
-                                <div className="bar1"></div>
-                                <div className="bar2"></div>
-                                <div className="bar3"></div>
-                            </div>
-                        </IconButton>
-                    </Tooltip>
+                    <Tooltip title="Menu"><IconButton onClick={toggleNavbar}>
+                        <div className="container-bar" id="navbar-icon">
+                            <div className="bar1"></div>
+                            <div className="bar2"></div>
+                            <div className="bar3"></div>
+                        </div>
+                    </IconButton></Tooltip>
                 </div>
             </div>
 		    <Tooltip title="Change Mode">

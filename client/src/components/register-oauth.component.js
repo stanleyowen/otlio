@@ -65,14 +65,14 @@ const OAuth = () => {
                             <div className="contact__infoField">
                                 <label htmlFor="bot-email">Email</label>
                                 <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                                <span className="contact__onFocus"></span>
+                                <span className="contact__onFocus" />
                             </div>
                         </div>
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userEmail">Email</label>
                                 <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} autoFocus required disabled="true" autoComplete="username"/>
-                                <span className="contact__onFocus"></span>
+                                <span className="contact__onFocus" />
                             </div>
                         </div>
                         <div className="form__container">
@@ -80,7 +80,7 @@ const OAuth = () => {
                                 <div className="contact__infoField">
                                     <label htmlFor="userPassword">Password <span className="required">*</span></label>
                                     <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handleData('password', event.target.value)} value={data.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off':'new-password'} />
-                                    <span className="contact__onFocus"></span>
+                                    <span className="contact__onFocus" />
                                     <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                         <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
                                     </IconButton>
@@ -90,7 +90,7 @@ const OAuth = () => {
                                 <div className="contact__infoField">
                                     <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
                                     <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handleData('confirmPassword', event.target.value)} value={data.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
-                                    <span className="contact__onFocus"></span>
+                                    <span className="contact__onFocus" />
                                     <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)}>
                                         <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
                                     </IconButton>

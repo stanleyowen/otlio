@@ -102,14 +102,14 @@ const Support = ({ userData }) => {
                                         <div className="contact__infoField">
                                             <label htmlFor="bot-subject">Subject <span className="required">*</span></label>
                                             <input title="Subject" id="bot-subject" type="text" className="contact__inputField" onChange={(e) => handleChange('honeypot', e.target.value)} value={properties.honeypot} autoComplete="off" />
-                                            <span className="contact__onFocus"></span>
+                                            <span className="contact__onFocus" />
                                         </div>
                                     </div>
                                     <div className="m-10 mt-20">
                                         <div className="contact__infoField">
                                             <label htmlFor="subject">Subject <span className="required">*</span></label>
                                             <input title="Subject" id="subject" type="text" className="contact__inputField" minLength="15" maxLength="60" value={data.subject} onChange={(e) => handleData('subject', e.target.value)} autoFocus required />
-                                            <span className="contact__onFocus"></span>
+                                            <span className="contact__onFocus" />
                                             <p className="length">{data.subject.length}/60</p>
                                         </div>
                                     </div>
@@ -125,7 +125,7 @@ const Support = ({ userData }) => {
                                         <div className="contact__infoField">
                                             <label htmlFor="description">Description <span className="required">*</span></label>
                                             <textarea id="description" className="contact__inputField resize-y" rows="4" minLength="30" maxLength="5000" onChange={(e) => handleData('description', e.target.value)} value={data.description} required />
-                                            <span className="contact__onFocus"></span>
+                                            <span className="contact__onFocus" />
                                             <p className="length">{data.description.length}/5000</p>
                                         </div>
                                     </div>

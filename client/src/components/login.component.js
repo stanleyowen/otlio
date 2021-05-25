@@ -1,12 +1,12 @@
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
 import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core'
 import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons/'
-import axios from 'axios'
 
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation'
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -33,13 +33,30 @@ const Login = ({ userData }) => {
         isBackupCode: false
     })
 
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
-    const handleLogin = (a, b) => setLogin({ ...login, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
+    const handleLogin = (a, b) => setLogin({ ...login, [a]: b })
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     useEffect(() => {
         const btn = document.getElementById('send-otp')
         const otp = document.querySelectorAll('#otp > *[id]')
+        for (let i=0; i<otp.length; i++) {
+            Object.assign(otp[i], {
+                type: 'text', maxLength: 1,
+                pattern: '[0-9]', autocomplete: 'off',
+                inputMode: 'numeric', required: true
+            })
+            otp[i].addEventListener('keydown', e => {
+                if(e.key === "Backspace") {
+                    if(i !== 0) otp[i-1].focus()
+                    otp[i].value = ''
+                }else if((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
+                    if (i !== otp.length-1) otp[i+1].focus()
+                    otp[i].value = e.key
+                    e.preventDefault()
+                }
+            })
+        }
         async function sendOTP() {
             if(!login.email) handleLogin('email', email); properties.verify = true
             if(btn) btn.innerHTML = "Sending..."; handleChange('disabled', true)
@@ -55,36 +72,18 @@ const Login = ({ userData }) => {
             })
             if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false)
         }
-        async function OTPInput() {
-            for (let i=0; i<otp.length; i++) {
-                otp[i].setAttribute('maxlength', 1); otp[i].setAttribute('type', 'text')
-                otp[i].setAttribute('pattern', '[0-9]'); otp[i].setAttribute('autocomplete', 'off')
-                otp[i].setAttribute('inputmode', 'numeric'); otp[i].setAttribute('required', true)
-                otp[i].addEventListener('keydown', (e) => {
-                    if(e.key === "Backspace") {
-                        if(i !== 0) otp[i-1].focus()
-                        otp[i].value = ''
-                    }else if((e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 95 && e.keyCode < 106)) {
-                        if (i !== otp.length-1) otp[i+1].focus()
-                        otp[i].value = e.key
-                        e.preventDefault()
-                    }
-                })
-            }
-        }
         if((userData.status === 302 && !properties.verify && mfa) || properties.sendOTP) {properties.sendOTP = false; sendOTP()}
-        OTPInput()
     }, [userData, properties, data])
 
     const LogIn = (e) => {
         e.preventDefault()
         const btn = document.getElementById('login')
-        async function submitData(){
+        async function submitData() {
             btn.innerHTML = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/login`, login, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
-                if(err.response.status === 302){ handleChange('sendOTP', true); handleChange('verify', true) }
+                if(err.response.status === 302) {handleChange('sendOTP', true); handleChange('verify', true)}
                 else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
             btn.innerHTML = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
@@ -114,7 +113,7 @@ const Login = ({ userData }) => {
         }
         if(properties.honeypot) return
         else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
-        else if(!data.token){ setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus() }
+        else if(!data.token) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus()}
         else submitData()
     }
     return properties.verify ?
@@ -127,35 +126,30 @@ const Login = ({ userData }) => {
         
         <div id="form">
             <div className="form__contact">
-                <div className="get_in_touch"><h2 className="monospace">Verify Your Identity</h2></div>
+                <div className="get_in_touch"><h2>Verify Your Identity</h2></div>
                 <div className="form">
                     <form className="contact__form" onSubmit={VerifyOTP}>
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userEmail">Email</label>
                                 <input title="Email" id="userEmail" type="email" className="contact__inputField" value={login.email} required readOnly disabled/>
-                                <span className="contact__onFocus"></span>
+                                <span className="contact__onFocus" />
                             </div>
                         </div>
                         <div className="m-10 no-bot">
                             <div className="contact__infoField">
                                 <label htmlFor="bot-code">Verification Code</label>
                                 <input title="Verification Code" id="bot-code" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                                <span className="contact__onFocus"></span>
+                                <span className="contact__onFocus" />
                             </div>
                         </div>
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
                                 <div id="otp" className="otp flex justify-center isCentered">
-                                    <input id="token-1" />
-                                    <input id="token-2" />
-                                    <input id="token-3" />
-                                    <input id="token-4" />
-                                    <input id="token-5" />
-                                    <input id="token-6" />
-                                    { data.isBackupCode ? (<input id="token-7" />) : null }
-                                    { data.isBackupCode ? (<input id="token-8" />) : null }
+                                    <input id="token-1" /><input id="token-2" /><input id="token-3" />
+                                    <input id="token-4" /><input id="token-5" /><input id="token-6" />
+                                    { data.isBackupCode ? ([<input id="token-7" />,<input id="token-8" />]) : null }
                                 </div>
                             </div>
                         </div>
@@ -198,21 +192,21 @@ const Login = ({ userData }) => {
                         <div className="contact__infoField">
                             <label htmlFor="bot-email">Email</label>
                             <input title="Email" id="bot-email" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                            <span className="contact__onFocus"></span>
+                            <span className="contact__onFocus" />
                         </div>
                     </div>
                     <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="userEmail">Email</label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => handleLogin('email', event.target.value)} value={login.email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
-                            <span className="contact__onFocus"></span>
+                            <span className="contact__onFocus" />
                         </div>
                     </div>
                     <div className="m-10">
                         <div className="contact__infoField">
                             <label htmlFor="userPassword">Password</label>
                             <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" onChange={(event) => handleLogin('password', event.target.value)} value={login.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off' : 'current-password' } />
-                            <span className="contact__onFocus"></span>
+                            <span className="contact__onFocus" />
                             <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                 <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
                             </IconButton>
@@ -226,8 +220,8 @@ const Login = ({ userData }) => {
                 </form>
             </div>
         </div>
-        <div className="flex isCentered mb-10">
-            <p><a className="link" href="/reset-password">Forgot Password?</a></p>
+        <div className="contact__container isCentered mb-10">
+            <p className="mb-10"><a className="link" href="/reset-password">Forgot Password?</a></p>
             <p>Haven't have an Account? <a className="link" href="/get-started">Get Started</a></p>
         </div>
     </div>)
