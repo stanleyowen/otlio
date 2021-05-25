@@ -53,14 +53,14 @@ const ResetPassword = ({ userData }) => {
                             <div className="contact__infoField">
                                 <label htmlFor="bot-email">Enter your user account's verified email address and we will send you a password reset link.</label>
                                 <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                                <span className="contact__onFocus"></span>
+                                <span className="contact__onFocus" />
                             </div>
                         </div>
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userEmail">Enter your user account's verified email address and we will send you a password reset link.</label>
                                 <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => setEmail(event.target.value)} placeholder="Email Address" value={email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
-                                <span className="contact__onFocus"></span>
+                                <span className="contact__onFocus" />
                             </div>
                         </div>
                         <button className="oauth-box google isCentered block mt-20 p-12 button" id="reset-password">Send</button>
