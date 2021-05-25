@@ -279,12 +279,12 @@ const Account = ({ userData }) => {
                                 </div>) : null }
                             <div className="get_in_touch mt-40"><h2>Third Party</h2></div>
                             <div className="contact__container">
-                                <div className="m-10">
+                                <div className="pr-10">
                                     <button className="oauth-box google" onClick={authenticated ? ConnectOAuthGoogle : null}>
                                         <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with Google</p>
                                     </button>
                                 </div>
-                                <div className="m-10">
+                                <div className="pl-10">
                                     <button className="oauth-box github" onClick={authenticated ? ConnectOAuthGitHub : null}>
                                         <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with GitHub</p>
                                     </button>
@@ -444,9 +444,9 @@ const Account = ({ userData }) => {
                         <p className="mb-10">Keep these backup codes somewhere safe but accessible. Each backup code can only be used once.</p>
                         <div dangerouslySetInnerHTML={{__html: sanitizer(BackupCodes())}}></div>
                         <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="generate-token" onClick={RegenerateToken}>Regenerate Token</button>
-                        <div className="flex isCentered">
-                            <p><button className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button></p>
-                            <p><button className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="download-code" onClick={DownloadCode}>Download</button></p>
+                        <div className="contact__container isCentered no-padding">
+                            <p className="pr-10"><button className="oauth-box google isCentered block mt-10 mb-10 p-12 button" id="copy-code" onClick={CopyCode}>Copy to Clipboard</button></p>
+                            <p className="pl-10"><button className="oauth-box google isCentered block mt-10 p-12 button" id="download-code" onClick={DownloadCode}>Download</button></p>
                         </div>
                     </div>
                 </div>
