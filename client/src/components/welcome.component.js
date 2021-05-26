@@ -81,7 +81,7 @@ const Landing = () => {
             <h1 className="mt-40 isCentered monospace">Features</h1>
             <div className="contact__container mb-20">
                 <img className="center-object" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621746924/todoapp/e91e6348157868de9dd8b25c81aebfb9_dejbmo.webp" alt="Organzing Easier" />
-                <div id="form" className="center-object full-width">
+                <div className="center-object full-width">
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">Built-in Security</h1>
@@ -98,7 +98,8 @@ const Landing = () => {
                 </div>
             </div>
             <div className="contact__container mb-20">
-                <div id="form" className="center-object full-width">
+                <img className="center-object phone-device" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621757770/todoapp/af051c89597cd018ce51bd8fd53014ff_qzec3g.webp" alt="Organzing Easier" />
+                <div className="center-object full-width">
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">Fast and Reliable</h1>
@@ -111,11 +112,11 @@ const Landing = () => {
                         </div>
                     </CardActionArea>
                 </div>
-                <img className="center-object" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621757770/todoapp/af051c89597cd018ce51bd8fd53014ff_qzec3g.webp" alt="Organzing Easier" />
+                <img className="center-object pc-device" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621757770/todoapp/af051c89597cd018ce51bd8fd53014ff_qzec3g.webp" alt="Organzing Easier" />
             </div>
             <div className="contact__container mb-40">
                 <img className="center-object" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621778423/todoapp/589612f86db2a2b483b007bc2a1e9665_sap5gy.webp" alt="Organzing Easier" />
-                <div id="form" className="center-object full-width">
+                <div className="center-object full-width">
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">Open Source Project</h1>

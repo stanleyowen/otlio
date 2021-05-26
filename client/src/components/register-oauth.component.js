@@ -102,7 +102,17 @@ const OAuth = () => {
                     </form>
                 </div>
             </div>
-            <p className="isCentered">Already have an Account? <a className="link" href="/login">Login</a></p>
+            <div className="footer__socialBtn mb-20">
+                <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener">
+                    <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
+                <Tooltip title="Current Status" arrow><a href="https://todoapp.freshstatus.io/" target="_blank" rel="noreferrer">
+                    <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
+                <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noopener">
+                    <FontAwesomeIcon icon={faGithub} style={{ fontSize: "1.8em" }} />
+                </a></Tooltip>
+            </div>
         </div>
     )
 }

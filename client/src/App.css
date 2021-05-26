@@ -619,7 +619,7 @@ select {
     grid-template-columns: 50% 50%;
     padding: 10px;
 }
-.contact__body, .contact__me { padding: 15px; }
+.phone-device { display: none; }
 .contact__body .animation__underline:after { background-color: #FFFFFF; }
 .contact__body a { color: #FFFFFF; }
 .contact__btn {
@@ -815,7 +815,6 @@ img {
 .g-recaptcha { display: inline-block; }
 .unverified path { color: hsl(16, 100%, 50%) !important; }
 .verified path { color: rgb(66, 196, 49) !important; }
-.github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
 .show-password { user-select: none; text-align: center; }
 .container-bar { display: inline-block; }
 .bar1, .bar2, .bar3 {
@@ -1002,7 +1001,6 @@ blockquote em {font-style: italic;}
     .navbar .icons { display: none; }
     .navbar .description { display: inline-flex; }
     .navbar__menu { display: none; float: none; }
-    .github-corner { display: none; }
     .toggleNavbar { display: block; }
     .main__divider { width: 60%; }
     .main__button { width: 40%; }
@@ -1024,15 +1022,13 @@ blockquote em {font-style: italic;}
 @media only screen and (max-width: 600px) {
     .contact__container p { padding: 0px !important; }
     .contact__container { grid-template-columns: auto; }
+    .phone-device { display: block; }
+    .pc-device { display: none; }
     .animation__message { width: 100%; height: auto; }
     .btn__outline { width: 65%; }
     .privacy-policy { margin: 0 15px; }
     .flex p { flex: 100%; }
     .flex p button { margin-left: 0px !important; margin-right: 0px !important; margin-top: 10px !important; }
-}
-@media (max-width:500px){
-    .github-corner:hover .octo-arm{animation:none}
-    .github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}
 }
 @media only screen and (max-width: 480px) {
     .main__divider { width: 80%; }
