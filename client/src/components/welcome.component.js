@@ -16,7 +16,7 @@ const Landing = () => {
         var x = 0; var index = 0; var interval
         function type() {
             var text = data[x].substring(0, index+1)
-            element.innerHTML = text
+            element.innerText = text
             index++
             if(text === data[x]) {
                 clearInterval(interval)
@@ -25,7 +25,7 @@ const Landing = () => {
         }
         function backspace() {
             var text = data[x].substring(0, index-1)
-            element.innerHTML = text
+            element.innerText = text
             index--
             if(text === '') {
                 clearInterval(interval)

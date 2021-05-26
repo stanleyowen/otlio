@@ -42,11 +42,11 @@ const Support = ({ userData }) => {
         e.preventDefault()
         const btn = document.getElementById('send-request')
         async function openTicket() {
-            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            btn.innerText = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/support`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => handleChange('success', true))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Send Request"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Send Request"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
         if(properties.honeypot) return
         else if(!data.email || EMAIL_VAL.test(String(data.email).toLocaleLowerCase()) === false) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")

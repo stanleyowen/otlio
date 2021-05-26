@@ -59,7 +59,7 @@ const Login = ({ userData }) => {
         }
         async function sendOTP() {
             if(!login.email) handleLogin('email', email); properties.verify = true
-            if(btn) btn.innerHTML = "Sending..."; handleChange('disabled', true)
+            if(btn) btn.innerText = "Sending..."; handleChange('disabled', true)
             await axios.get(`${SERVER_URL}/account/otp`, { withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
@@ -70,7 +70,7 @@ const Login = ({ userData }) => {
                 if(err.response.status >= 500) setTimeout(() => sendOTP(), 5000)
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
-            if(btn) btn.innerHTML = "Resend"; handleChange('disabled', false)
+            if(btn) btn.innerText = "Resend"; handleChange('disabled', false)
         }
         if((userData.status === 302 && !properties.verify && mfa) || properties.sendOTP) {properties.sendOTP = false; sendOTP()}
     }, [userData, properties, data])
@@ -79,14 +79,14 @@ const Login = ({ userData }) => {
         e.preventDefault()
         const btn = document.getElementById('login')
         async function submitData() {
-            btn.innerHTML = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            btn.innerText = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/login`, login, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
                 if(err.response.status === 302) {handleChange('sendOTP', true); handleChange('verify', true)}
                 else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
-            btn.innerHTML = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Login"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
         if(properties.honeypot) return
         else if(!login.email || !login.password) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!login.email ? 'userEmail' : 'userPassword').focus()}
@@ -102,14 +102,14 @@ const Login = ({ userData }) => {
         for (let x=0; x<otp.length; x++) token += otp[x].value
         data.token = token
         async function submitData() {
-            btn.innerHTML = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            btn.innerText = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/otp`, {...data, rememberMe: login.rememberMe}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
                 document.getElementById('token-1').focus()
             })
-            btn.innerHTML = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Verify"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
         if(properties.honeypot) return
         else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")

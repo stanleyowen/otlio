@@ -24,7 +24,7 @@ const ResetPassword = ({ userData }) => {
         e.preventDefault()
         const btn = document.getElementById('reset-password')
         async function submitData() {
-            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            btn.innerText = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/forgot-password`, {email}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 handleChange('success', true)
@@ -34,7 +34,7 @@ const ResetPassword = ({ userData }) => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
                 document.getElementById('userEmail').focus()
             })
-            btn.innerHTML = "Send"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Send"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
         if(properties.honeypot) return
         else if(!email) setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure to Fill Out All the Required Fields !')

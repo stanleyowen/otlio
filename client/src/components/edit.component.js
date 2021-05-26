@@ -62,11 +62,11 @@ const Edit = ({ userData }) => {
         e.preventDefault()
         const btn = document.getElementById('update-todo')
         async function submitData() {
-            btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            btn.innerText = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.put(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => { localStorage.setItem('info', JSON.stringify(res.data)); window.location='/' })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
         if(properties.honeypot) return
         else if(!data.title || !data.date || !data.label) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus()}

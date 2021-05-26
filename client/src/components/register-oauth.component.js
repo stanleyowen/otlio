@@ -41,11 +41,11 @@ const OAuth = () => {
         e.preventDefault()
         const btn = document.getElementById('register')
         async function submitData() {
-            btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            btn.innerText = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/oauth/${service}/register`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
         if(properties.honeypot) return
         else if(!data.email || !data.password || !data.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.email ? 'userEmail' : !data.password ? 'userPassword' : 'userConfirmPassword').focus()}

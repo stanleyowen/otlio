@@ -87,7 +87,7 @@ const Home = ({ userData }) => {
         e.preventDefault()
         const btn = document.getElementById('add-todo')
         async function submitData() {
-            btn.innerHTML = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true)
+            btn.innerText = "Adding..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true)
             await axios.post(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('background','modal')
@@ -95,7 +95,7 @@ const Home = ({ userData }) => {
                 setData({ title: '', date: new Date(), label: labels[0].toLowerCase(), description: '' })
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
+            btn.innerText = "Add"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
         }
         if(properties.honeypot) return
         else if(!data.title || !data.date || !data.label) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus()}

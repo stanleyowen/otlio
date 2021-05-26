@@ -107,16 +107,16 @@ const Account = ({ userData }) => {
         const btn = document.getElementById('copy-code')
         const code = document.getElementById('backup-codes')
         code.select(); code.setSelectionRange(0, 99999); document.execCommand("copy")
-        btn.innerHTML = "Copied to Clipboard"
-        setTimeout(() => btn.innerHTML = "Copy to Clipboard", 3000)
+        btn.innerText = "Copied to Clipboard"
+        setTimeout(() => btn.innerText = "Copy to Clipboard", 3000)
     }
 
     const DownloadCode = (e) => {
         e.preventDefault()
         const btn = document.getElementById('download-code')
         download(BackupCode(), 'Backup Codes.txt')
-        btn.innerHTML = "Downloaded"
-        setTimeout(() => btn.innerHTML = "Download", 3000)
+        btn.innerText = "Downloaded"
+        setTimeout(() => btn.innerText = "Download", 3000)
     }
 
     const changePassword = (e) => {
@@ -128,8 +128,8 @@ const Account = ({ userData }) => {
         for (let x=0; x<otp.length; x++) token += otp[x].value
         data.token = token
         async function submitData() {
-            verifyBtn.innerHTML = "Verifying..."; verifyBtn.setAttribute("disabled", "true"); verifyBtn.classList.add("disabled"); handleChange('disabled', true)
-            btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            verifyBtn.innerText = "Verifying..."; verifyBtn.setAttribute("disabled", "true"); verifyBtn.classList.add("disabled"); handleChange('disabled', true)
+            btn.innerText = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.put(`${SERVER_URL}/account/user`, {...password, ...data}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 closeModal('password-bg', 'password-modal'); closeModal('otp-bg', 'otp-modal')
@@ -142,8 +142,8 @@ const Account = ({ userData }) => {
                 document.getElementById('otp-token-1').focus()
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
-            verifyBtn.innerHTML = "Verify"; verifyBtn.removeAttribute("disabled"); verifyBtn.classList.remove("disabled")
-            btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
+            verifyBtn.innerText = "Verify"; verifyBtn.removeAttribute("disabled"); verifyBtn.classList.remove("disabled")
+            btn.innerText = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
         }
         if(!authenticated) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!password.oldPassword || !password.newPassword || !password.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!password.oldPassword ? 'old-password' : !password.newPassword ? 'new-password' : 'confirm-password').focus()}
@@ -157,8 +157,8 @@ const Account = ({ userData }) => {
         const btn = document.getElementById('send-otp')
         const passwordBtn = document.getElementById('send-otp-pass')
         async function sendToken() {
-            passwordBtn.innerHTML = "Sending..."; passwordBtn.setAttribute("disabled", "true"); passwordBtn.classList.add("disabled"); handleChange('disabled', true)
-            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            passwordBtn.innerText = "Sending..."; passwordBtn.setAttribute("disabled", "true"); passwordBtn.classList.add("disabled"); handleChange('disabled', true)
+            btn.innerText = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.get(`${SERVER_URL}/account/otp`, { withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
@@ -167,8 +167,8 @@ const Account = ({ userData }) => {
                 document.getElementById('otp-token-1').focus()
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            passwordBtn.innerHTML = "Send Verification Code"; passwordBtn.removeAttribute("disabled"); passwordBtn.classList.remove("disabled")
-            btn.innerHTML = "Send Verification Code"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
+            passwordBtn.innerText = "Send Verification Code"; passwordBtn.removeAttribute("disabled"); passwordBtn.classList.remove("disabled")
+            btn.innerText = "Send Verification Code"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
         }
         if(!authenticated) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else sendToken()
@@ -182,7 +182,7 @@ const Account = ({ userData }) => {
         for (let x=0; x<otp.length; x++) token += otp[x].value
         data.token = token
         async function submitData(){
-            btn.innerHTML = security['2FA'] ? "Deactivating..." : "Activating..."
+            btn.innerText = security['2FA'] ? "Deactivating..." : "Activating..."
             btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true)
             await axios.put(`${SERVER_URL}/account/otp`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
@@ -197,7 +197,7 @@ const Account = ({ userData }) => {
                 document.getElementById('token-1').focus()
                 document.getElementById('otp-token-1').focus()
             })
-            btn.innerHTML = security['2FA'] ? "Deactivate" : "Activate"
+            btn.innerText = security['2FA'] ? "Deactivate" : "Activate"
             btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
         }
         if(properties.honeypot) return
@@ -210,14 +210,14 @@ const Account = ({ userData }) => {
         e.preventDefault()
         const btn = document.getElementById('generate-token')
         async function generateToken() {
-            btn.innerHTML = "Generating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true)
+            btn.innerText = "Generating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled"); handleChange('disabled', true)
             await axios.post(`${SERVER_URL}/account/backup-code`, { regenerate: true }, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 userData.security['backup-codes'].valid = res.data['backup-codes']
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Regenerate Code"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
+            btn.innerText = "Regenerate Code"; btn.removeAttribute("disabled"); btn.classList.remove("disabled"); handleChange('disabled', false)
         }
         if(!security['2FA']) setNotification(NOTIFICATION_TYPES.WARNING, 'Backup Codes are only eligle for Two Factor Authentication (2FA) Users')
         else generateToken()

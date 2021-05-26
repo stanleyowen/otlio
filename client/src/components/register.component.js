@@ -36,14 +36,14 @@ const Register = ({ userData }) => {
         e.preventDefault()
         const btn = document.getElementById('register')
         async function submitData() {
-            btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            btn.innerText = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/register`, register, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleChange('verify', true)
             })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
         if(properties.honeypot) return
         else if(!register.email || !register.password || !register.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!register.email ? 'userEmail' : !register.password ? 'userPassword' : 'userConfirmPassword').focus()}
@@ -58,11 +58,11 @@ const Register = ({ userData }) => {
         e.preventDefault()
         const btn = document.getElementById('send-link')
         async function submitData() {
-            btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            btn.innerText = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/verify`, null, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message))
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Resend Link"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Resend Link"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         } submitData()
     }
 
