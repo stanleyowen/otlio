@@ -8,7 +8,7 @@ const GITHUB_API = "https://api.github.com/repos/stanleyowen/todo-application"
 
 const Landing = () => {
     const [repoInfo, setRepoInfo] = useState([])
-    const currentversion = process.env.REACT_APP_VERSION
+    const currentversion = document.querySelector('meta[name="version"]').content
 
     useEffect(() => {
         const element = document.querySelector('.text-animation')
