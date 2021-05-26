@@ -373,7 +373,7 @@ const Account = ({ userData }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    { authenticated && security['2FA'] ? (<p className="isCentered">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</button></p>) : null }
+                                    { authenticated && security['2FA'] ? (<p className="isCentered">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => {handleData('isBackupCode', !data.isBackupCode); document.getElementById('token-1').focus()}}>Backup Codes</button></p>) : null }
                                     <button className="oauth-box google isCentered block mt-20 p-12 button" id="verify">{ !isLoading ? security['2FA'] ? 'Deactivate' : 'Activate' : 'Activate' }</button>
                                 </form>
                             </li>
@@ -410,7 +410,7 @@ const Account = ({ userData }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="isCentered">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</button></p>
+                                    <p className="isCentered">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => {handleData('isBackupCode', !data.isBackupCode); document.getElementById('otp-token-1').focus()}}>Backup Codes</button></p>
                                     <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="verify-otp">Verify</button>
                                 </form>
                             </li>

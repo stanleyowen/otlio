@@ -50,7 +50,7 @@ const OAuth = () => {
         if(properties.honeypot) return
         else if(!data.email || !data.password || !data.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.email ? 'userEmail' : !data.password ? 'userPassword' : 'userConfirmPassword').focus()}
         else if(EMAIL_VAL.test(String(data.email).toLocaleLowerCase()) === false) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Valid Email Address !'); document.getElementById('userEmail').focus()}
-        else if(data.email.length < 6 || data.email.length > 60) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 60 characters !'); document.getElementById('userEmail').focus() }
+        else if(data.email.length < 6 || data.email.length > 60) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide an Email between 6 ~ 60 characters !'); document.getElementById('userEmail').focus()}
         else if(data.password.length < 6 || data.password.length > 60 || data.confirmPassword.length < 6 || data.confirmPassword.length > 60) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(data.password.length < 6 || data.password.length > 60 ? 'userPassword' : 'userConfirmPassword').focus()}
         else if(data.password !== data.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('userConfirmPassword').focus()}
         else submitData()

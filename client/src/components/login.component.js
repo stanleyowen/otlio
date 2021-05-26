@@ -153,7 +153,7 @@ const Login = ({ userData }) => {
                                 </div>
                             </div>
                         </div>
-                        <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</button></p>
+                        <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => {handleData('isBackupCode', !data.isBackupCode); document.getElementById('token-1').focus()}}>Backup Codes</button></p>
                         <p className="isCentered mt-10">Hasn't Received the Code? <button type="button" className="link-btn link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</button></p>
                         <div className="flex isCentered">
                             <p><button type="reset" className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
