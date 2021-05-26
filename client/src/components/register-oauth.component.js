@@ -1,12 +1,13 @@
+import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { IconButton } from '@material-ui/core'
+import { Tooltip, IconButton } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/'
-import axios from 'axios'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
+import { faEye, faEyeSlash, faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons/'
 
-import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 import { getCSRFToken } from '../libraries/validation'
+import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -24,12 +25,12 @@ const OAuth = () => {
         confirmPassword: false
     })
 
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     useEffect(() => {
         async function validateData() {
-            await axios.get(`${SERVER_URL}/oauth/${service}/register`, { params: {email: data.email}, headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.get(`${SERVER_URL}/oauth/${service}/register`, { params: {email: data.email}, withCredentials: true })
             .then().catch(() => window.location='/login')
         }
         validateData()
@@ -39,7 +40,7 @@ const OAuth = () => {
     const Submit = (e) => {
         e.preventDefault()
         const btn = document.getElementById('register')
-        async function submitData(){
+        async function submitData() {
             btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/oauth/${service}/register`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
@@ -64,15 +65,14 @@ const OAuth = () => {
                         <div className="m-10 no-bot">
                             <div className="contact__infoField">
                                 <label htmlFor="bot-email">Email</label>
-                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
+                                <input title="Email" id="bot-email" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off" />
                                 <span className="contact__onFocus" />
                             </div>
                         </div>
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="userEmail">Email</label>
-                                <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} autoFocus required disabled="true" autoComplete="username"/>
-                                <span className="contact__onFocus" />
+                                <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} autoFocus required readOnly autoComplete="username" />
                             </div>
                         </div>
                         <div className="form__container">

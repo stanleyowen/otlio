@@ -7,8 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons'
 import { faCheck, faInfo, faKey, faTimes, faSignOutAlt, faEyeSlash, faEye, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
+import { getCSRFToken, openModal, closeModal } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
-import { ConnectOAuthGitHub, ConnectOAuthGoogle, getCSRFToken, openModal, closeModal } from '../libraries/validation'
 
 const sanitizer = dompurify.sanitize
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
@@ -159,7 +159,7 @@ const Account = ({ userData }) => {
         async function sendToken() {
             passwordBtn.innerHTML = "Sending..."; passwordBtn.setAttribute("disabled", "true"); passwordBtn.classList.add("disabled"); handleChange('disabled', true)
             btn.innerHTML = "Sending..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
-            await axios.get(`${SERVER_URL}/account/otp`, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+            await axios.get(`${SERVER_URL}/account/otp`, { withCredentials: true })
             .then(res => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
                 handleData('tokenId', res.data.credentials.tokenId)
@@ -275,16 +275,16 @@ const Account = ({ userData }) => {
                             </div>) : null }
                             <div className="get_in_touch mt-40"><h1 className="monospace">Third Party</h1></div>
                             <div className="contact__container mt-10">
-                                <div className="pr-10">
-                                    <button className="oauth-box google" onClick={authenticated ? ConnectOAuthGoogle : null}>
+                                <p className="pr-10">
+                                    <button className="oauth-box google mt-10 mb-10" onClick={() => authenticated ? window.location = `${SERVER_URL}/oauth/google/auth/connect` : null}>
                                         <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with Google</p>
                                     </button>
-                                </div>
-                                <div className="pl-10">
-                                    <button className="oauth-box github" onClick={authenticated ? ConnectOAuthGitHub : null}>
+                                </p>
+                                <p className="pl-10">
+                                    <button className="oauth-box github mt-10" onClick={() => authenticated ? window.location = `${SERVER_URL}/oauth/github/auth/connect` : null}>
                                         <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with GitHub</p>
                                     </button>
-                                </div>
+                                </p>
                             </div>
                             <hr className="mt-20"></hr>
                             <p className="isCentered mt-20 mb-20"><a className="link" href="https://github.com/stanleyowen/todo-application" target="_blank" rel="noreferrer">GitHub</a> | <a className="link" href="https://todoapp.freshstatus.io/" target="_blank" rel="noopener">System Status</a> | <a className="link" href="/terms-and-conditions">Terms of Service</a> | <a className="link" href="/privacy-policy">Privacy Policy</a></p>

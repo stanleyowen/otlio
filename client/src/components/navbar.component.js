@@ -37,7 +37,7 @@ const Navbar = ({ userData }) => {
     return (
         <div>
             <div className="navbar">
-                <a className="navbar__logo" href={ authenticated ? '/' : '/welcome' }>TodoApp</a>
+                <a className="navbar__logo" href={ authenticated ? '/':'/welcome' }>TodoApp</a>
                 <div className="navbar__menu" id="navbar__menu">
                     <a className="animation__underline" href={value_a[1]}>
                         <span className="icons"><Tooltip title={value_a[0] ? value_a[0] : ''}><span>{value_a[2]}</span></Tooltip></span>
@@ -56,9 +56,9 @@ const Navbar = ({ userData }) => {
                 <div className="toggleNavbar">
                     <Tooltip title="Menu"><IconButton onClick={toggleNavbar}>
                         <div className="container-bar" id="navbar-icon">
-                            <div className="bar1"></div>
-                            <div className="bar2"></div>
-                            <div className="bar3"></div>
+                            <div className="bar1" />
+                            <div className="bar2" />
+                            <div className="bar3" />
                         </div>
                     </IconButton></Tooltip>
                 </div>

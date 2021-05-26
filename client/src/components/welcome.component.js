@@ -1,6 +1,6 @@
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { CardActionArea } from '@material-ui/core'
-import axios from 'axios'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
@@ -13,12 +13,12 @@ const Landing = () => {
     useEffect(() => {
         const element = document.querySelector('.text-animation')
         const data = element.getAttribute('data-elements').split(',')
-        var x = 0; var index = 0; var interval;
+        var x = 0; var index = 0; var interval
         function type() {
             var text = data[x].substring(0, index+1)
             element.innerHTML = text
             index++
-            if(text === data[x]){
+            if(text === data[x]) {
                 clearInterval(interval)
                 setTimeout(() => interval = setInterval(backspace, 25), 3000)
             }
@@ -27,10 +27,9 @@ const Landing = () => {
             var text = data[x].substring(0, index-1)
             element.innerHTML = text
             index--
-            if(text === ''){
+            if(text === '') {
                 clearInterval(interval)
-                if(x === (data.length-1)) x = 0
-                else x++
+                x === (data.length-1) ? x=0 : x++
                 index = 0
                 setTimeout(() => interval = setInterval(type, 100), 200)
             }
@@ -107,7 +106,6 @@ const Landing = () => {
                             <ul className="ul-ml40 ul-mb10 medium mb-20">
                                 <li className="mt-20">Netlify (Frontend)</li>
                                 <li>Heroku (Backend)</li>
-                                <li>Cloudinary (Images and Videos CDN)</li>
                             </ul>
                             <h3 className="raleway">Therefore, our services will always online and available on any region including Europe, South America, Asia, and Australia.</h3>
                         </div>

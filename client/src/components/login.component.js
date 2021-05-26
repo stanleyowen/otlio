@@ -5,7 +5,7 @@ import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
 import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core'
 import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons/'
 
-import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation'
+import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
@@ -154,7 +154,7 @@ const Login = ({ userData }) => {
                             </div>
                         </div>
                         <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => handleData('isBackupCode', !data.isBackupCode)}>Backup Codes</button></p>
-                        <p className="isCentered">Hasn't Received the Code? <button type="button" className="link-btn link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</button></p>
+                        <p className="isCentered mt-10">Hasn't Received the Code? <button type="button" className="link-btn link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</button></p>
                         <div className="flex isCentered">
                             <p><button type="reset" className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
                             <p><button type="submit" className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="verify">Verify</button></p>
@@ -179,10 +179,10 @@ const Login = ({ userData }) => {
         <div className="form__contact">
             <div className="get_in_touch"><h1>Login</h1></div>
             <div className="oauth-container">
-                <button className="oauth-box google" onClick={OAuthGoogle}>
+                <button className="oauth-box google" onClick={() => window.location = `${SERVER_URL}/oauth/google/auth`}>
                     <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
                 </button>
-                <button className="oauth-box github mt-20" onClick={OAuthGitHub}>
+                <button className="oauth-box github mt-20" onClick={() => window.location = `${SERVER_URL}/oauth/github/auth`}>
                     <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
                 </button>
             </div>

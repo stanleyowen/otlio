@@ -5,8 +5,8 @@ import { faEye, faEyeSlash, faEnvelope, faChartLine } from '@fortawesome/free-so
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
 import axios from 'axios'
 
+import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
-import { OAuthGitHub, OAuthGoogle, getCSRFToken } from '../libraries/validation'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -27,15 +27,15 @@ const Register = ({ userData }) => {
         confirmPassword: ''
     })
 
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleRegister = (a, b) => setRegister({ ...register, [a]: b })
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     if(status === 302 && !properties.verify && verifyAccount) handleChange('verify', true)
 
     const Register = (e) => {
         e.preventDefault()
         const btn = document.getElementById('register')
-        async function submitData(){
+        async function submitData() {
             btn.innerHTML = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/register`, register, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => {
