@@ -120,7 +120,7 @@ const Landing = () => {
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">Open Source Project</h1>
-                            <h3 className="raleway">Otlio is completely open source project which is hosted publicly on <a className="link" href="https://github.com/stanleyowen/otlio">GitHub Cloud Platform</a>. Some objectives we made this project into Open Source are:</h3>
+                            <h3 className="raleway">Otlio is completely open source project which is hosted publicly on <a className="link" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">GitHub Cloud Platform</a>. Some objectives we made this project into Open Source are:</h3>
                             <ul className="ul-ml40 ul-mb10 medium mb-20">
                                 <li className="mt-20">Flexibility, which can be customized to meet some prerequisites.</li>
                                 <li>Transparency, which allow everyone to get full visibility into the code base, discussions, etc.</li>

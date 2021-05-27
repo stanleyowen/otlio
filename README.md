@@ -1,19 +1,19 @@
-# Todo Application
+# Otlio
 
 <div align="center">
-  <img height=200 src="https://user-images.githubusercontent.com/69080584/119517399-c6f10280-bda1-11eb-9af9-4bdc197dcd65.png" alt="Todo Application" />
+  <img height=200 src="https://user-images.githubusercontent.com/69080584/119517399-c6f10280-bda1-11eb-9af9-4bdc197dcd65.png" alt="Otlio" />
 
-  [![Github Issues](https://img.shields.io/github/issues/stanleyowen/todo-application)](https://github.com/stanleyowen/todo-application/issues)
-  [![Github Forks](https://img.shields.io/github/forks/stanleyowen/todo-application)](https://github.com/stanleyowen/todo-application/network/members)
-  [![Github Stars](https://img.shields.io/github/stars/stanleyowen/todo-application)](https://github.com/stanleyowen/todo-application/stargazers)
-  [![MIT License](https://img.shields.io/github/license/stanleyowen/todo-application)](https://github.com/stanleyowen/todo-application/blob/master/LICENSE)
+  [![Github Issues](https://img.shields.io/github/issues/stanleyowen/otlio)](https://github.com/stanleyowen/otlio/issues)
+  [![Github Forks](https://img.shields.io/github/forks/stanleyowen/otlio)](https://github.com/stanleyowen/otlio/network/members)
+  [![Github Stars](https://img.shields.io/github/stars/stanleyowen/otlio)](https://github.com/stanleyowen/otlio/stargazers)
+  [![MIT License](https://img.shields.io/github/license/stanleyowen/otlio)](https://github.com/stanleyowen/otlio/blob/master/LICENSE)
 
-  [![CodeQL](https://github.com/stanleyowen/todo-application/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/stanleyowen/todo-application/actions/workflows/codeql-analysis.yml)
-  [![Semgrep](https://github.com/stanleyowen/todo-application/actions/workflows/semgrep.yml/badge.svg)](https://github.com/stanleyowen/todo-application/actions/workflows/semgrep.yml)
-  [![Netlify Status](https://api.netlify.com/api/v1/badges/56772f5c-0c69-41e8-a788-69ca591e70ef/deploy-status)](https://app.netlify.com/sites/todoapp-task/deploys)
+  [![CodeQL](https://github.com/stanleyowen/otlio/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/stanleyowen/otlio/actions/workflows/codeql-analysis.yml)
+  [![Semgrep](https://github.com/stanleyowen/otlio/actions/workflows/semgrep.yml/badge.svg)](https://github.com/stanleyowen/otlio/actions/workflows/semgrep.yml)
+  [![Netlify Status](https://api.netlify.com/api/v1/badges/593f0dc0-7cdb-40b2-8223-f4dd2acd0841/deploy-status)](https://app.netlify.com/sites/otlio/deploys)
 </div>
 
-Todo Application is an **open source** project, completed with **highest standard security**, which is easy to use and organize!
+Otlio is an **open source** project, completed with **highest standard security**, which is easy to use and organize!
 
 ## Feature
 1. Support for Google and GitHub **OAuth** Login
@@ -24,9 +24,9 @@ Todo Application is an **open source** project, completed with **highest standar
 ## Getting Started
 1. Download this code<br/>
   There are some several quick start options available:
-    - [Fork this repository](https://github.com/stanleyowen/todo-application/fork)
-    - Clone this repository, type `https://github.com/stanleyowen/todo-application.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/todo-application/archive/v0.5.3.zip)
+    - [Fork this repository](https://github.com/stanleyowen/otlio/fork)
+    - Clone this repository, type `https://github.com/stanleyowen/otlio.git` in command line
+    - [Download the latest release](https://github.com/stanleyowen/otlio/archive/v0.5.3.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
@@ -80,11 +80,11 @@ Todo Application is an **open source** project, completed with **highest standar
       - In the `server` diireactory, type `nodemon` in command line
 
 ## Contributing Guidelines
-  Before that, we would like to say thank you for your willing to contribute to Todo Application! Please take a minute to read [contributing guide](CONTRIBUTING.md#contributing). Have an idea, found a bug or an issues? Please [visit here](https://github.com/stanleyowen/todo-application/issues/new/choose).
+  Before that, we would like to say thank you for your willing to contribute to Otlio! Please take a minute to read [contributing guide](CONTRIBUTING.md#contributing). Have an idea, found a bug or an issues? Please [visit here](https://github.com/stanleyowen/otlio/issues/new/choose).
 
 ## License
 [MIT](/LICENSE)
 
 ## Stargazers and Contributors
-   [![Stargazers for @stanleyowen/todo-application](https://reporoster.com/stars/stanleyowen/todo-application)](https://github.com/stanleyowen/todo-application/stargazers)
-   [![Forkers for @stanleyowen/todo-application](https://reporoster.com/forks/stanleyowen/todo-application)](https://github.com/stanleyowen/todo-application/network/members)
+   [![Stargazers for @stanleyowen/otlio](https://reporoster.com/stars/stanleyowen/otlio)](https://github.com/stanleyowen/otlio/stargazers)
+   [![Forkers for @stanleyowen/otlio](https://reporoster.com/forks/stanleyowen/otlio)](https://github.com/stanleyowen/otlio/network/members)
