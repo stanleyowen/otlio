@@ -11,8 +11,8 @@ import { NOTIFICATION_TYPES, setNotification } from '../libraries/setNotificatio
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const ticketTypes = ["Question","Improvement","Security Issue/Bug","Account Management","Others"]
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-const CustomerService = 'https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/765cbf066c6e4c42444a0ce9c2fb7949_li3gyl.webp'
-const MessageSent = 'https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/2405976c7c1485050e78fcf54ca4bfe4_koft6t.webp'
+const CustomerService = 'https://res.cloudinary.com/stanleyowen/image/upload/v1622125690/otlio/765cbf066c6e4c42444a0ce9c2fb7949_li3gyl.webp'
+const MessageSent = 'https://res.cloudinary.com/stanleyowen/image/upload/v1622125924/otlio/2405976c7c1485050e78fcf54ca4bfe4_koft6t.webp'
 
 const validateType = (e) => {
     for (let a=0; a<ticketTypes.length; a++){
