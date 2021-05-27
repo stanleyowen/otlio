@@ -26,7 +26,7 @@ Otlio is an **open source** project, completed with **highest standard security*
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/otlio/fork)
     - Clone this repository, type `https://github.com/stanleyowen/otlio.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/otlio/archive/v0.5.3.zip)
+    - [Download the latest release](https://github.com/stanleyowen/otlio/archive/v0.5.4.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
