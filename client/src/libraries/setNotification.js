@@ -8,7 +8,7 @@ const setNotification = (type, text) => {
     const notifications = document.getElementById('notifications')
     const newNotification = document.createElement('div')
     newNotification.classList.add('notification', `notification-${type}`)
-    newNotification.innerHTML = `${text}`
+    newNotification.innerText = text
     notifications.appendChild(newNotification)
     setTimeout(() => {
         newNotification.classList.add('hide')

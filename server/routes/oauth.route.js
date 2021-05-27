@@ -4,8 +4,8 @@ const router = require('express').Router()
 
 const MSG_DESC = require('../lib/callback')
 
-const status = process.env.NODE_ENV === 'production'
 const jwtSecret = process.env.JWT_SECRET
+const status = process.env.NODE_ENV === 'production'
 
 router.get('/github/auth', passport.authenticate('github', { scope : ['user:email'] }))
 router.get('/github/auth/connect', passport.authenticate('connectGitHub', { scope : ['user:email'] }))
@@ -38,14 +38,14 @@ router.get('/github/connect', async (req, res, next) =>
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
-        else if(user && (req.body = {...req.query, ...user})){
+        else if(user && (req.body = {...req.query, ...user}))
             passport.authenticate('connectGitHub', (err, github, info) => {
                 if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
                 else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
-                else if(github) res.send(JSON.stringify(info, null, 2))
+                else if(github) return res.send(JSON.stringify(info, null, 2))
                 else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
             })(req, res, next)
-        }else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
+        else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
     })(req, res, next)
 )
 
@@ -80,14 +80,14 @@ router.get('/google/connect', async (req, res, next) =>
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
-        else if(user && (req.body = {...req.query, ...user})){
+        else if(user && (req.body = {...req.query, ...user}))
             passport.authenticate('connectGoogle', (err, google, info) => {
                 if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
                 else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
-                else if(google) res.send(JSON.stringify(info, null, 2))
+                else if(google) return res.send(JSON.stringify(info, null, 2))
                 else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
             })(req, res, next)
-        }else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
+        else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
     })(req, res, next)
 )
 
@@ -107,23 +107,20 @@ router.post('/:provider/register', async (req, res, next) => {
         if(err) return res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
         else if(info && (info.status ? info.status >= 400 ? true : false : true)) return res.status(info.status ? info.status : info.status = 400).send(JSON.stringify(info, null, 2))
         else if(user)
-            req.logIn(user, err => {
-                if(err) res.status(500).send(JSON.stringify({status: 500, message: MSG_DESC[0]}, null, 2))
-                return res.cookie('jwt-token', jwt.sign({
-                    id: user._id,
-                    email: user.email,
-                    auth: {
-                        '2FA': user.security['2FA'],
-                        status: false
-                    }
-                }, jwtSecret, { expiresIn: '1d' }), {
-                    path: '/',
-                    maxAge: 86400000,
-                    httpOnly: true,
-                    secure: status,
-                    sameSite: status ? 'none' : 'strict'
-                }).send(JSON.stringify(info, null, 2))
-            })
+            return res.cookie('jwt-token', jwt.sign({
+                id: user._id,
+                email: user.email,
+                auth: {
+                    '2FA': user.security['2FA'],
+                    status: false
+                }
+            }, jwtSecret, { expiresIn: '1d' }), {
+                path: '/',
+                maxAge: 86400000,
+                httpOnly: true,
+                secure: status,
+                sameSite: status ? 'none' : 'strict'
+            }).send(JSON.stringify(info, null, 2))
         else return res.status(504).send(JSON.stringify({status: 504, message: MSG_DESC[34]}, null, 2))
     })(req, res, next)
 })

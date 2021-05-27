@@ -1,14 +1,14 @@
+import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import DateFnsUtils from '@date-io/date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { Select, MenuItem, IconButton } from '@material-ui/core'
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
-import axios from 'axios'
 
 import { labels, validateLabel, getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
@@ -26,8 +26,8 @@ const Edit = ({ userData }) => {
         isLoading: true
     })
 
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
     const handleData = (a, b) => setData({ ...data, [a]: b })
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     useEffect(() => {
         async function getData() {
@@ -46,7 +46,7 @@ const Edit = ({ userData }) => {
                 }
             })
         }
-        document.querySelectorAll('[data-autoresize]').forEach((e) => {
+        document.querySelectorAll('[data-autoresize]').forEach(e => {
             e.style.boxSizing = 'border-box'
             var offset = e.offsetHeight - e.clientHeight
             e.addEventListener('input', (a) => {
@@ -62,11 +62,11 @@ const Edit = ({ userData }) => {
         e.preventDefault()
         const btn = document.getElementById('update-todo')
         async function submitData() {
-            btn.innerHTML = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+            btn.innerText = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.put(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(res => { localStorage.setItem('info', JSON.stringify(res.data)); window.location='/' })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
         if(properties.honeypot) return
         else if(!data.title || !data.date || !data.label) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All the Required Fields !"); document.getElementById(!data.title ? 'title' : !data.date ? 'date' : 'label').focus()}
@@ -84,14 +84,14 @@ const Edit = ({ userData }) => {
                 <div></div><div></div>
             </div></div></div>) : null }
 
-            <div className="main__projects" style={{paddingTop: '80px'}}>
+            <div className="main" style={{paddingTop: '80px'}}>
                 <IconButton href='/' className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
                 <form onSubmit={updateData}>
                     <div className="m-10 no-bot">
                         <div className="contact__infoField">
                             <label htmlFor="bot-title">Title</label>
                             <input title="Title" id="bot-title" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                            <span className="contact__onFocus"></span>
+                            <span className="contact__onFocus" />
                         </div>
                     </div>
                     <div className="form__container">
@@ -99,24 +99,16 @@ const Edit = ({ userData }) => {
                             <div className="contact__infoField">
                                 <label htmlFor="title">Title <span className="required">*</span></label>
                                 <input title="Title" id="title" type="text" className="contact__inputField" maxLength="60" onChange={(event) => handleData('title', event.target.value)} value={data.title} required />
-                                <span className="contact__onFocus"></span>
+                                <span className="contact__onFocus" />
                                 <p className="length">{data.title.length}/60</p>
                             </div>
                         </div>
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="date">Date <span className="required">*</span></label>
-                                <div className="datepicker">
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                        <KeyboardDatePicker
-                                            margin="normal"
-                                            format="dd/MM/yyyy"
-                                            id="date"
-                                            value={data.date}
-                                            onChange={(event) => handleData('date', event)}
-                                        />
-                                    </MuiPickersUtilsProvider>
-                                </div>
+                                <div className="datepicker"><MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <KeyboardDatePicker margin="normal" format="dd/MM/yyyy" id="date" value={data.date} onChange={(event) => handleData('date', event)} />
+                                </MuiPickersUtilsProvider></div>
                             </div>
                         </div>
                     </div>
@@ -132,11 +124,11 @@ const Edit = ({ userData }) => {
                         <div className="contact__infoField">
                             <label htmlFor="description">Description</label>
                             <textarea id="description" className="contact__inputField" data-autoresize rows="2" maxLength="200" onChange={(event) => handleData('description', event.target.value)} value={data.description}></textarea>
-                            <span className="contact__onFocus"></span>
+                            <span className="contact__onFocus" />
                             <p className="length">{data.description.length}/200</p>
                         </div>
                     </div>
-                    <button className="oauth-box google isCentered block mt-30 mb-10 p-12 button" id="update-todo">Update</button>
+                    <button className="oauth-box google isCentered block mt-40 mb-40 p-12 button" id="update-todo">Update</button>
                 </form>
             </div>
         </div>

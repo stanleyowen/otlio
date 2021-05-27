@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
 import axios from 'axios'
+import React, { useEffect } from 'react'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
@@ -18,13 +18,10 @@ const ReqOAuth = ({ userData }) => {
                 }else window.location='/'
             })
             .catch(err => {
-                if(err.response.status === 302){
-                    if(err.response.data.url) window.location = err.response.data.url
-                    else window.location='/login'
-                }else {
+                if(err.response.status === 302) err.response.data.url ? window.location = err.response.data.url : window.location='/login'
+                else {
                     localStorage.setItem('info', JSON.stringify(err.response.data))
-                    if(authenticated) window.location='/account'
-                    else window.location='/login'
+                    authenticated ? window.location='/account' : window.location='/login'
                 }
             })
         }

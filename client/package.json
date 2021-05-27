@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
@@ -14,18 +14,21 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.1.9",
     "axios": "^0.21.1",
+    "cross-env": "^7.0.3",
     "date-fns": "^2.21.3",
-    "dotenv": "^9.0.2",
+    "dompurify": "^2.2.8",
+    "dotenv": "^10.0.0",
     "js-file-download": "^0.4.12",
     "react": "^17.0.2",
+    "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "cross-env REACT_APP_VERSION=$npm_package_version react-scripts start",
+    "build": "cross-env REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

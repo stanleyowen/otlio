@@ -1,6 +1,6 @@
+import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import axios from 'axios'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
@@ -9,7 +9,7 @@ const VerifyAccount = () => {
     
     useEffect(() => {
         async function validateData() {
-            await axios.get(`${SERVER_URL}/account/verify`, { params: { id, token, type: 'accountVerification' } })
+            await axios.get(`${SERVER_URL}/account/verify`, { params: { id, token, type: 'accountVerification' }, withCredentials: true })
             .then(res => {
                 localStorage.setItem('info', JSON.stringify(res.data))
                 window.location='/'

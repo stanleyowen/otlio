@@ -1,15 +1,15 @@
 {
-  "name": "todo-application",
-  "version": "0.5.3",
+  "name": "Otlio",
+  "version": "0.5.4",
   "author": "Stanley Owen <stanleyowen06@gmail.com>",
-  "description": "An open source project of Todo which is easy to use and easy to organize!",
+  "description": "An open source project, completed with highest standard security, which is easy to use and organize!",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stanleyowen/todo-application.git"
+    "url": "git+https://github.com/stanleyowen/otlio.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/stanleyowen/todo-application/issues"
+    "url": "https://github.com/stanleyowen/otlio/issues"
   },
-  "homepage": "https://github.com/stanleyowen/todo-application#readme"
+  "homepage": "https://github.com/stanleyowen/otlio#readme"
 }

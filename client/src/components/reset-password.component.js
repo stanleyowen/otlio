@@ -1,9 +1,9 @@
+import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { IconButton } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/'
-import axios from 'axios'
 
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
@@ -35,13 +35,13 @@ const ResetPassword = () => {
         async function validateData() {
             await axios.get(`${SERVER_URL}/account/forgot-password`, { params: { token, id, type: 'passwordReset' } })
             .then(res => {
-                handleData('email', res.data.credentials.email)
                 handleChange('isLoading', false)
+                handleData('email', res.data.credentials.email)
                 document.getElementById('userPassword').focus()
             })
             .catch(err => {
                 if(err.response.data.message || err.response.data.error_description){
-                    if(err.response.status >= 500){
+                    if(err.response.status >= 500) {
                         setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message ? err.response.data.message : err.response.data.error_description)
                         setTimeout(() => validateData(), 5000)
                     }else {
@@ -56,12 +56,12 @@ const ResetPassword = () => {
     const Submit = (e) => {
         e.preventDefault()
         const btn = document.getElementById('reset-password')
-        async function submitData(){
-            btn.innerHTML = "Saving..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
+        async function submitData() {
+            btn.innerText = "Saving..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/reset-password`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
             .then(() => window.location = '/')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
-            btn.innerHTML = "Save Password"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
+            btn.innerText = "Save Password"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
         if(properties.honeypot) return
         else if(!data.email || !data.password || !data.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!data.email ? 'userEmail' : !data.password ? 'userPassword' : 'userConfirmPassword').focus()}
@@ -88,14 +88,14 @@ const ResetPassword = () => {
                             <div className="m-10 no-bot">
                                 <div className="contact__infoField">
                                     <label htmlFor="bot-validatedEmail">Email</label>
-                                    <input title="Email" id="bot-validatedEmail" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off"/>
-                                    <span className="contact__onFocus"></span>
+                                    <input title="Email" id="bot-validatedEmail" type="text" className="contact__inputField" onChange={(event) => handleChange('honeypot', event.target.value)} value={properties.honeypot} autoComplete="off" />
+                                    <span className="contact__onFocus" />
                                 </div>
                             </div>
                             <div className="m-10">
                                 <div className="contact__infoField">
                                     <label htmlFor="userEmail">Email</label>
-                                    <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} required readOnly autoComplete="username"/>
+                                    <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} required readOnly autoComplete="username" />
                                 </div>
                             </div>
                             <div className="form__container">
@@ -103,7 +103,7 @@ const ResetPassword = () => {
                                     <div className="contact__infoField">
                                         <label htmlFor="userPassword">Password <span className="required">*</span></label>
                                         <input title="Password" id="userPassword" type={ properties.password ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handleData('password', event.target.value)} value={data.password} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.password ? 'off' : 'new-password' } />
-                                        <span className="contact__onFocus"></span>
+                                        <span className="contact__onFocus" />
                                         <IconButton className="view-eye" onClick={() => handleChange('password', !properties.password)}>
                                             <FontAwesomeIcon icon={properties.password ? faEyeSlash : faEye} />
                                         </IconButton>
@@ -113,14 +113,14 @@ const ResetPassword = () => {
                                     <div className="contact__infoField">
                                         <label htmlFor="userConfirmPassword">Confirm Password <span className="required">*</span></label>
                                         <input title="Confirm Password" id="userConfirmPassword" type={ properties.confirmPassword ? 'text':'password' } className="contact__inputField" minLength="6" maxLength="60" onChange={(event) => handleData('confirmPassword', event.target.value)} value={data.confirmPassword} required spellCheck="false" autoCapitalize="none" autoComplete={ properties.confirmPassword ? 'off':'new-password'} />
-                                        <span className="contact__onFocus"></span>
+                                        <span className="contact__onFocus" />
                                         <IconButton className="view-eye" onClick={() => handleChange('confirmPassword', !properties.confirmPassword)}>
                                             <FontAwesomeIcon icon={properties.confirmPassword ? faEyeSlash : faEye} />
                                         </IconButton>
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" className="oauth-box google isCentered block mt-20 p-12 button" id="reset-password">Save Password</button>
+                            <button className="oauth-box google isCentered block mt-20 mb-10 p-12 button" id="reset-password">Save Password</button>
                         </form>
                     </div>
                 </div>

@@ -1,5 +1,3 @@
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-
 export const labels = ["Priority", "Secondary", "Important", "Do Later"]
 
 export const validateLabel = (e) => {
@@ -9,29 +7,7 @@ export const validateLabel = (e) => {
     }
 }
 
-export const OAuthGitHub = (e) => {
-    e.preventDefault()
-    window.location = `${SERVER_URL}/oauth/github/auth`
-}
-
-export const ConnectOAuthGitHub = (e) => {
-    e.preventDefault()
-    window.location = `${SERVER_URL}/oauth/github/auth/connect`
-}
-
-export const OAuthGoogle = (e) => {
-    e.preventDefault()
-    window.location = `${SERVER_URL}/oauth/google/auth`
-}
-
-export const ConnectOAuthGoogle = (e) => {
-    e.preventDefault()
-    window.location = `${SERVER_URL}/oauth/google/auth/connect`
-}
-
-export const getCSRFToken = () => {
-    return localStorage.getItem('XSRF-TOKEN')
-}
+export const getCSRFToken = () => { return localStorage.getItem('XSRF-TOKEN') }
 
 export const openModal = (a, b, c) => {
     const background = document.getElementById(a)
@@ -44,11 +20,10 @@ export const openModal = (a, b, c) => {
 }
 
 export const closeModal = (a, b) => {
-    const background = document.getElementById(a)
     const modal = document.getElementById(b)
+    const background = document.getElementById(a)
     modal.classList.remove('showModal')
     modal.classList.add('closeModal')
     background.classList.remove('showBackground')
     background.classList.add('hideBackground')
-    return false
 }

@@ -1,6 +1,7 @@
-/*! Todo Application - CSS Version 0.5.3 Copyright 2021 */
+/*! Otlio - CSS Version 0.5.4 Copyright 2021 */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -81,7 +82,7 @@ body.dark .otp input {
 }
 body.dark .main__title,
 body.dark .projects__viewMore,
-body.dark .link { color: #79c3ff !important; }
+body.dark .link, body.dark .blue-text { color: #79c3ff !important; }
 body.dark .link:focus { color: #5cb5ff !important; }
 body.dark .otp input { border-color: rgb(59, 57, 57); }
 body.dark .navbar { box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2); }
@@ -92,7 +93,8 @@ body.dark .btn-config .MuiButtonBase-root { color: #e7e7e7; }
 body.dark ::-webkit-calendar-picker-indicator { filter: invert(1); }
 body.dark .main__button { box-shadow: 2px 1000px 1px #212121 inset; }
 body.dark .projects__viewMore:hover { background-color: #79c3ff; color: #212121; }
-body.dark .footer__socialBtn a:hover { background-color: #FFFFFF; color: #212121; }
+body.dark .footer__socialBtn a:hover svg { color: #FFF !important; }
+body.dark .footer__socialBtn a svg { color: rgb(66 133 244) !important }
 body.dark .main__divider { background-image: linear-gradient(315deg, #0cbaba 0%, #f400eb 74%); }
 body.dark .loader { background-color: rgba(114, 114, 114, 0.61); }
 body.dark .form__contact { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 60%), 0 1px 3px 1px rgb(0 0 0 / 30%); }
@@ -113,6 +115,12 @@ body.dark .MuiInput-underline:hover:not(.Mui-disabled):before { border-bottom: 1
 .MuiSvgIcon-root { color: #212121; }
 button, a { user-select: none; cursor: pointer; }
 label { user-select: none; }
+.resize-y { resize: vertical !important; }
+.monospace {
+    font-weight: lighter;
+    font-family: 'Roboto Mono', monospace;
+}
+.raleway { font-family: 'Raleway', sans-serif; }
 .privacy-policy {
     font-family: 'Noto Sans JP', sans-serif;
     margin: auto 150px;
@@ -152,8 +160,7 @@ label { user-select: none; }
     color: #FFF;
     background-color: rgb(252, 52, 52);
 }
-.oauth-box:hover { opacity: 1; transform: scale(1.009); }
-.oauth-box:visited { color: #FFF; }
+.oauth-box:hover { opacity: 1; transform: scale(1.02); }
 .oauth-box svg {
     display: inline-block;
     margin-top: auto;
@@ -178,12 +185,19 @@ label { user-select: none; }
 }
 .success { color: rgb(18, 214, 0); margin-right: 5px }
 .danger { color: rgb(252, 52, 52); margin-right: 5px }
-.button { font-size: 18px; }
+.button {
+    font-size: 18px;
+    box-sizing: border-box;
+}
 .flex { display: flex !important; flex-wrap: wrap; }
 .flex p { flex: 50%; }
 .m-5 { margin: 5px !important; }
 .m-10 { margin: 10px !important; }
 .p-12 { padding: 12px !important; }
+.pl-10 { padding-left: 10px !important; }
+.pr-10 { padding-right: 10px !important; }
+.p-5p { padding: 5% !important; }
+.pt-180 { padding-top: 180px !important; }
 .ml-10 { margin-left: 10px !important; }
 .mr-10 { margin-right: 10px !important; }
 .mt-10 { margin-top: 10px !important; }
@@ -197,6 +211,8 @@ label { user-select: none; }
 .ml-60 { margin-left: 60px !important; }
 .ul-ml40 li { margin-left: 40px !important; }
 .ul-mb10 li { margin-bottom: 10px !important; }
+.no-margin { margin: 0px !important; }
+.no-padding { padding: 0px !important; }
 .full-width { width: 100% !important; }
 .no-border, .no-border tr td  { border: none !important; }
 .no-outline { outline: none !important; }
@@ -359,11 +375,6 @@ label { user-select: none; }
 .btn__changeMode:hover { box-shadow: 0px 0px 11px #9c9b98; }
 .main {
     margin: auto 30px;
-    padding-top: 180px;
-    transition: all .4s;
-}
-.main__projects {
-    margin: auto 30px;
     padding-top: 100px;
     transition: all .4s;
 }
@@ -394,10 +405,8 @@ label { user-select: none; }
 .btn__outline:focus { background-color: #116dc9; color: #FFFFFF; }
 .green__text { color: #23c739; }
 .badges {
-    position: absolute;
     bottom: 10px;
     width: 100%;
-    z-index: -1;
 }
 .badges a { margin-left: 10px; }
 .badges button {
@@ -464,6 +473,19 @@ tbody tr:hover {
     flex: 0.8;
     width: 50%;
     color: #FFFFFF;
+}
+.account-container {
+    display: flex;
+}
+.flex35 {
+    display: flex;
+    flex: .35;
+    flex-direction: column;
+}
+.flex65 {
+    display: flex;
+    flex: .65;
+    flex-direction: column;
 }
 .projects { margin: 100px 10px; }
 .projects h1 { text-align: center; }
@@ -552,9 +574,9 @@ tbody tr:hover {
 .modal__title {
     display: block;
     padding: 10px;
+    margin-top: 10px;
     font-weight: bold;
     text-align: center;
-    border-bottom: 1px solid;
 }
 .modal__closeBtn {
     float: right;
@@ -594,10 +616,10 @@ select {
 }
 .contact__container {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 50% 50%;
     padding: 10px;
 }
-.contact__body, .contact__me { padding: 15px; }
+.phone-device { display: none; }
 .contact__body .animation__underline:after { background-color: #FFFFFF; }
 .contact__body a { color: #FFFFFF; }
 .contact__btn {
@@ -618,9 +640,9 @@ select {
 .contact__btn:hover { background-color: #FFFFFF; color: #212121; }
 .get_in_touch { text-align: center; }
 img {
-    width: 100% !important;
-    height: 350px !important;
+    max-width: 100% !important;
     object-fit: cover !important;
+    transition: all .4s;
 }
 .contact__form { padding: 15px; }
 .contact__infoField {
@@ -685,6 +707,7 @@ img {
     width: 0;
     z-index: -1;
 }
+.blue-text { color: #1a73e8; }
 .notification-success { background-color: #55b559; }
 .notification-warning { background-color: #ffcc00; color: black; }
 .notification-danger { background-color: #f55145; }
@@ -752,8 +775,8 @@ img {
 }
 .footer__socialBtn {
     display: grid;
-    grid-template-columns: auto auto auto auto;
-    width: 50%;
+    grid-template-columns: auto auto auto;
+    width: 100%;
     margin: auto;
 }
 .footer__socialBtn a {
@@ -762,7 +785,7 @@ img {
     display: inline-block;
     width: 40px;
     height: 40px;
-    color: #FFFFFF;
+    color: #1a73e8;
     text-align: center;
     transition: all .4s;
     padding-top: 10px;
@@ -771,9 +794,9 @@ img {
     border-radius: 100%;
     text-decoration: none;
     background-color: none;
-    border: 2px solid #FFFFFF;
+    border: 2px solid #1a73e8;
 }
-.footer__socialBtn a:hover { background-color: #FFFFFF; color: #1a73e8; }
+.footer__socialBtn a:hover { background-color: #1a73e8; color: #FFF; }
 .footer__copyright { margin-top: 40px; width: 100%; text-align: center; }
 .content__transition { display: none; }
 .content__fadeIn {
@@ -792,7 +815,6 @@ img {
 .g-recaptcha { display: inline-block; }
 .unverified path { color: hsl(16, 100%, 50%) !important; }
 .verified path { color: rgb(66, 196, 49) !important; }
-.github-corner:hover .octo-arm{ animation:octocat-wave 560ms ease-in-out }
 .show-password { user-select: none; text-align: center; }
 .container-bar { display: inline-block; }
 .bar1, .bar2, .bar3 {
@@ -897,7 +919,41 @@ blockquote em {font-style: italic;}
     outline: 0;
     transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
+.large { font-size: 60px; }
+.medium { font-size: 15px; }
+.center-object { margin: auto; max-width: 70%; }
 .justify-center { justify-content: center; }
+.text-animation {
+    font-size: 40px;
+    color: #1a73e8;
+    letter-spacing: 2px;
+    font-family: 'Noto Sans', sans-serif;
+}
+.cursor {
+    width: 3px;
+    height: 60px;
+    display: inline-block;
+    background-color: #1a73e8;
+    animation: blink .75s step-end infinite;
+}
+.none { display: none !important; }
+.outline-blue {
+    color: #212121;
+    background: transparent;
+    border: 2px solid #1a73e8;
+}
+.outline-blue:hover {
+    color: #FFF;
+    background: #1a73e8;
+}
+@keyframes blink {
+    from, to {
+        background-color: transparent;
+    }
+    50% {
+        background-color: #1a73e8;
+    }
+}
 @keyframes octocat-wave {
     0%,100%{transform:rotate(0)}
     20%,60%{transform:rotate(-25deg)}
@@ -932,6 +988,10 @@ blockquote em {font-style: italic;}
     .projects__container { grid-template-columns: auto auto; }
     .privacy-policy { margin: 0 100px; }
 }
+@media only screen and (max-width: 800px) {
+    .flex35 { display: none; }
+    .flex65 { flex: 1; }
+}
 @media only screen and (max-width: 768px) {
     .navbar a {
         display: block;
@@ -941,7 +1001,6 @@ blockquote em {font-style: italic;}
     .navbar .icons { display: none; }
     .navbar .description { display: inline-flex; }
     .navbar__menu { display: none; float: none; }
-    .github-corner { display: none; }
     .toggleNavbar { display: block; }
     .main__divider { width: 60%; }
     .main__button { width: 40%; }
@@ -952,24 +1011,24 @@ blockquote em {font-style: italic;}
     .projects__container { grid-template-columns: auto; }
     .contact { margin: auto 25px -70px 25px; }
     .contact__me { padding: 10px; text-align: center; }
-    .contact__container { grid-template-columns: auto; }
     .modal__container { margin: 5% auto; }
     #form { width: 100%; }
     .form__container { grid-template-columns: auto; }
     .footer__socialBtn { width: 75%; }
     .btn__outline { width: 50%; margin-top: 20px; }
     .privacy-policy { margin: 0 20px; }
+    .center-object { max-width: 100%; }
 }
 @media only screen and (max-width: 600px) {
+    .contact__container p { padding: 0px !important; }
+    .contact__container { grid-template-columns: auto; }
+    .phone-device { display: block; }
+    .pc-device { display: none; }
     .animation__message { width: 100%; height: auto; }
     .btn__outline { width: 65%; }
     .privacy-policy { margin: 0 15px; }
     .flex p { flex: 100%; }
     .flex p button { margin-left: 0px !important; margin-right: 0px !important; margin-top: 10px !important; }
-}
-@media (max-width:500px){
-    .github-corner:hover .octo-arm{animation:none}
-    .github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}
 }
 @media only screen and (max-width: 480px) {
     .main__divider { width: 80%; }
