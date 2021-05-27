@@ -166,10 +166,10 @@ const Login = ({ userData }) => {
                 <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener">
                     <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
                 </a></Tooltip>
-                <Tooltip title="Current Status" arrow><a href="https://todoapp.freshstatus.io/" target="_blank" rel="noreferrer">
+                <Tooltip title="Current Status" arrow><a href="https://otlio.statuspage.io/" target="_blank" rel="noreferrer">
                     <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
                 </a></Tooltip>
-                <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noopener">
+                <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/otlio/" target="_blank" rel="noopener">
                     <FontAwesomeIcon icon={faGithub} style={{ fontSize: "1.8em" }} />
                 </a></Tooltip>
             </div>

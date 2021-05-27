@@ -2,8 +2,8 @@ import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
-import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification'
 import "./App.min.css"
+import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification'
 
 import Navbar from './components/navbar.component'
 import Welcome from './components/welcome.component'

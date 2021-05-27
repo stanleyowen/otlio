@@ -234,7 +234,7 @@ const Account = ({ userData }) => {
             <div className="main">
                 <div className="account-container">
                     <div className="flex35 center-object p-5p">
-                        <img src="https://res.cloudinary.com/stanleyowen/image/upload/v1621909134/todoapp/d0d4cf7a79acbcb98834d05980edc55d_toet9z.webp" alt="Organzing Easier" />
+                        <img src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/d0d4cf7a79acbcb98834d05980edc55d_v6zmxx.webp" alt="Introducing 2FA" />
                         <h2 className="isCentered mt-20 mb-20 monospace">Introducing 2FA</h2>
                         <p className="isCentered monospace">Two-Factor Authentication is a security control that requires users to verify their identities by providing multiple pieces of evidence before gaining access to a device or application.</p>
                     </div>
@@ -287,7 +287,7 @@ const Account = ({ userData }) => {
                                 </p>
                             </div>
                             <hr className="mt-20"></hr>
-                            <p className="isCentered mt-20 mb-20"><a className="link" href="https://github.com/stanleyowen/todo-application" target="_blank" rel="noreferrer">GitHub</a> | <a className="link" href="https://todoapp.freshstatus.io/" target="_blank" rel="noopener">System Status</a> | <a className="link" href="/terms-and-conditions">Terms of Service</a> | <a className="link" href="/privacy-policy">Privacy Policy</a></p>
+                            <p className="isCentered mt-20 mb-20"><a className="link" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noreferrer">GitHub</a> | <a className="link" href="https://otlio.statuspage.io/" target="_blank" rel="noopener">System Status</a> | <a className="link" href="/terms-and-conditions">Terms of Service</a> | <a className="link" href="/privacy-policy">Privacy Policy</a></p>
                             <p className="isCentered mt-20 mb-20 bold">Copyright &copy; 2021 Todo Application - All Rights Reserved.</p>
                         </div>
                     </div>

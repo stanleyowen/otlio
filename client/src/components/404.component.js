@@ -8,7 +8,7 @@ const PageNotFound = ({ userData }) => {
     return (
         <div className="main">
             <div className="contact__container">
-                <img className="center-object" src="https://res.cloudinary.com/stanleyowen/image/upload/v1621693324/todoapp/4f4adcbf8c6f66dcfc8a3282ac2bf10a_zu0aqt.webp" alt="Page Not Found" />
+                <img className="center-object" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/4f4adcbf8c6f66dcfc8a3282ac2bf10a_svidxs.webp" alt="Page Not Found" />
                 <div className="center-object">
                     <h1 className="blue-text monospace large">404</h1>
                     <h1 className="blue-text monospace">Page Not Found</h1>
@@ -19,10 +19,10 @@ const PageNotFound = ({ userData }) => {
                         <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener">
                             <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>
-                        <Tooltip title="Current Status" arrow><a href="https://todoapp.freshstatus.io/" target="_blank" rel="noreferrer">
+                        <Tooltip title="Current Status" arrow><a href="https://otlio.statuspage.io/" target="_blank" rel="noreferrer">
                             <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>
-                        <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/todo-application/" target="_blank" rel="noopener">
+                        <Tooltip title="View Code on GitHub" arrow><a href="https://github.com/stanleyowen/otlio/" target="_blank" rel="noopener">
                             <FontAwesomeIcon icon={faGithub} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>
                     </div>
