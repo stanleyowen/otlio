@@ -13,8 +13,8 @@ require('dotenv').config()
 require('./lib/passport')
 
 const app = express()
-const status = process.env.NODE_ENV === 'production'
 const PORT = process.env.PORT || 5000
+const status = process.env.NODE_ENV === 'production'
 
 app.use(cors({
     origin: process.env.CLIENT_URL,
@@ -53,9 +53,9 @@ app.get('/status', (req, res) => res.send(JSON.stringify({status: 200, message: 
 const usersRouter = require('./routes/users.route')
 const todoRouter = require('./routes/todo.route')
 const oauthRouter = require('./routes/oauth.route')
-app.use('/account/', usersRouter)
-app.use('/todo/', todoRouter)
-app.use('/oauth/', oauthRouter)
+app.use('/account', usersRouter)
+app.use('/todo', todoRouter)
+app.use('/oauth', oauthRouter)
 
 mongoose.connect(process.env.ATLAS_URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true })
 mongoose.connection.once('open', () => console.log('MongoDB Database Extablished Successfully'))
