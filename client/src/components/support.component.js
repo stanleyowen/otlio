@@ -22,7 +22,7 @@ const validateType = (e) => {
 }
 
 const Support = ({ userData }) => {
-    var {authenticated, status, email} = userData
+    var {isLoading, authenticated, status, email} = userData
     if(status === 302) email = userData.credentials.email
     const [data, setData] = useState({
         email,
@@ -35,8 +35,10 @@ const Support = ({ userData }) => {
         success: false
     })
 
-    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
+    if(!isLoading && status !== 302 && status !== 200) window.location='/welcome'
+
     const handleData = (a, b) => setData({ ...data, [a]: b })
+    const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     const submitTicket = (e) => {
         e.preventDefault()
