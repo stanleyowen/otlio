@@ -138,6 +138,19 @@ const Landing = () => {
                     <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
                 </div>
             </div>
+            <div className="contact__container mb-20">
+                <img className="center-object phone-device" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" />
+                <div className="center-object full-width">
+                    <CardActionArea>
+                        <div className="p-12">
+                            <h1 className="raleway mb-20">Customer Support</h1>
+                            <h3 className="raleway">We are here to help. Get in touch with us or support, let us know how we can help, and our support teams will get in touch with you as soon as possible.</h3>
+                        </div>
+                    </CardActionArea>
+                    <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="/support">Get Support</a>
+                </div>
+                <img className="center-object pc-device" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" />
+            </div>
         </div>
     )
 }
