@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
-import "./App.min.css"
+import './App.min.css'
 import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification'
 
 import Navbar from './components/navbar.component'
@@ -24,12 +24,14 @@ import PrivacyPolicy from './components/privacy-policy.component'
 import TermsAndConditions from './components/terms-and-condition.component'
 
 export default function App() {
+  const [server, setServer] = useState()
   const [userData, setUserData] = useState({ isLoading: true, type: {}, credentials: {} })
-  const SERVER_URL = process.env.REACT_APP_SERVER_URL
-  const redirectRoute = ['welcome', 'login', 'get-started']
   const privateRoute = ['', 'edit', 'account']
+  const redirectRoute = ['welcome', 'login', 'get-started']
+  const server_list = ['http://localhost:5000', 'https://otlio-us.herokuapp.com', 'https://otlio-eu.herokuapp.com']
   const info = JSON.parse(localStorage.getItem('info'))
-  if(info && info.status && info.message){
+
+  if(info && info.status && info.message) {
     setNotification(info.status === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER, info.message)
     localStorage.removeItem('info')
   }
@@ -42,32 +44,48 @@ export default function App() {
       if(window.location.pathname.split('/')[1] === a) window.location='/welcome'
     })
   }
-  
+
+  async function ping(a){
+    await axios.get(`${server_list[a]}/status`)
+    .then(() => setServer(server_list[a]))
+    .catch(() => {if(server_list[a+1]) ping(a+1)})
+  }
+
   useEffect(() => {
-    axios.get(`${SERVER_URL}/account/user`, { withCredentials: true })
-    .then(res => {
-      setUserData({
-        status: res.status,
-        isLoading: false,
-        id: res.data.credentials.id,
-        email: res.data.credentials.email,
-        authenticated: res.data.credentials.authenticated,
-        thirdParty: res.data.credentials.thirdParty,
-        verified: res.data.credentials.verified,
-        security: res.data.credentials.security
+    async function getData() {
+      await axios.get(`${server}/account/user`, { withCredentials: true })
+      .then(res => {
+        setUserData({
+          status: res.status,
+          isLoading: false,
+          id: res.data.credentials.id,
+          email: res.data.credentials.email,
+          authenticated: res.data.credentials.authenticated,
+          thirdParty: res.data.credentials.thirdParty,
+          verified: res.data.credentials.verified,
+          security: res.data.credentials.security,
+          server
+        })
+        localStorage.setItem('XSRF-TOKEN', res.data['XSRF-TOKEN'])
       })
-      localStorage.setItem('XSRF-TOKEN', res.data['XSRF-TOKEN'])
-    })
-    .catch(err => {
-      setUserData({ type: {}, credentials: {}, security: {}, ...err.response.data, isLoading: false, authenticated: false })
-      localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
-      if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname !== '/login' && window.location.pathname !== '/logout' && window.location.pathname !== '/support')) window.location='/login'
-      if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname !== '/get-started' && window.location.pathname !== '/logout' && window.location.pathname !== '/support' && window.location.pathname.split('/')[1] !== 'verify' )) window.location='/get-started'
-      if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
-    })
+      .catch(err => {
+        setUserData({ type: {}, credentials: {}, security: {}, ...err.response.data, isLoading: false, authenticated: false, server })
+        localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
+        if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname !== '/login' && window.location.pathname !== '/logout' && window.location.pathname !== '/support')) window.location='/login'
+        if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname !== '/get-started' && window.location.pathname !== '/logout' && window.location.pathname !== '/support' && window.location.pathname.split('/')[1] !== 'verify' )) window.location='/get-started'
+        if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
+      })
+    }
+    if(server) getData()
+  },[server])
+
+  useEffect(() => {
     console.log("%c%s","color: red; background: yellow; font-size: 24px","WARNING!")
     console.log("%c%s","font-size: 18px","Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand.")
-  },[SERVER_URL])
+    ping(0)
+  }, [])
+
+  
 
   return (
     <Router>
