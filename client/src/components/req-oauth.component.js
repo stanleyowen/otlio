@@ -1,8 +1,6 @@
 import axios from 'axios'
 import React, { useEffect } from 'react'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-
 const ReqOAuth = ({ userData }) => {
     const {isLoading, authenticated, server: SERVER_URL} = userData
     const {pathname} = window.location

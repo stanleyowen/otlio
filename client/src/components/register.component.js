@@ -8,7 +8,6 @@ import axios from 'axios'
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Register = ({ userData }) => {

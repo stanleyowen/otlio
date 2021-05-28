@@ -2,8 +2,6 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-
 const VerifyAccount = () => {
     const {id, token, server: SERVER_URL} = useParams()
     

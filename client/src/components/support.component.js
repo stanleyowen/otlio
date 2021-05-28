@@ -2,13 +2,12 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { Select, Tooltip, MenuItem } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChartLine, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
+import { faChartLine, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
 import { getCSRFToken } from '../libraries/validation'
 import { NOTIFICATION_TYPES, setNotification } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const ticketTypes = ["Question","Improvement","Security Issue/Bug","Account Management","Others"]
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 const CustomerService = 'https://res.cloudinary.com/stanleyowen/image/upload/v1622125690/otlio/765cbf066c6e4c42444a0ce9c2fb7949_li3gyl.webp'
@@ -35,8 +34,6 @@ const Support = ({ userData }) => {
         success: false
     })
 
-    if(!isLoading && status !== 302 && status !== 200) window.location='/welcome'
-
     const handleData = (a, b) => setData({ ...data, [a]: b })
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
@@ -61,7 +58,7 @@ const Support = ({ userData }) => {
 
     return (
         <div>
-            { status !== 302 && status !== 200 ?
+            { isLoading ?
             (<div className="loader"><div className="spin-container"><div className="loading">
                 <div></div><div></div><div></div>
                 <div></div><div></div>
@@ -96,8 +93,9 @@ const Support = ({ userData }) => {
                                 <form className="contact__form" onSubmit={submitTicket}>
                                     <div className="m-10">
                                         <div className="contact__infoField">
-                                            <label htmlFor="userEmail">From</label>
-                                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} required readOnly autoComplete="username" />
+                                            <label htmlFor="userEmail">From <span className="required">*</span></label>
+                                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} onChange={(e) => handleData('email', e.target.value)} required autoComplete="username" />
+                                            <span className="contact__onFocus" />
                                         </div>
                                     </div>
                                     <div className="m-10 no-bot">
