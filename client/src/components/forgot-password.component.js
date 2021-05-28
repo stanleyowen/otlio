@@ -8,10 +8,10 @@ import { faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons'
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const ResetPassword = ({ userData }) => {
+    const {server: SERVER_URL} = userData
     const [email, setEmail] = useState(userData.email ? userData.email : '')
     const [properties, setProperties] = useState({
         honeypot: '',

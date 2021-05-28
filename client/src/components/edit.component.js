@@ -10,10 +10,8 @@ import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/picker
 import { labels, validateLabel, getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-
 const Edit = ({ userData }) => {
-    const {authenticated, isLoading} = userData
+    const {authenticated, isLoading, server: SERVER_URL} = userData
     const [data, setData] = useState({
         _id: useParams().id,
         title: '',
@@ -56,7 +54,7 @@ const Edit = ({ userData }) => {
             e.removeAttribute('data-autoresize')
         })
         if(!isLoading && authenticated) getData()
-    }, [userData, data._id])
+    }, [userData, data._id, SERVER_URL])
 
     const updateData = (e) => {
         e.preventDefault()

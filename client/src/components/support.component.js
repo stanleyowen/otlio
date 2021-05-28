@@ -22,7 +22,7 @@ const validateType = (e) => {
 }
 
 const Support = ({ userData }) => {
-    var {isLoading, authenticated, status, email} = userData
+    var {isLoading, authenticated, status, email, server: SERVER_URL} = userData
     if(status === 302) email = userData.credentials.email
     const [data, setData] = useState({
         email,

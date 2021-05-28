@@ -8,10 +8,10 @@ import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine } from '@f
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Login = ({ userData }) => {
+    const {server: SERVER_URL} = userData
     const {mfa} = userData.type
     const {email} = userData.credentials
     const [properties, setProperties] = useState({
@@ -72,8 +72,8 @@ const Login = ({ userData }) => {
             })
             if(btn) btn.innerText = "Resend"; handleChange('disabled', false)
         }
-        if((userData.status === 302 && !properties.verify && mfa) || properties.sendOTP) {properties.sendOTP = false; sendOTP()}
-    }, [userData, properties, data])
+        if(((userData.status === 302 && !properties.verify && mfa) || properties.sendOTP) && SERVER_URL) {properties.sendOTP = false; sendOTP()}
+    }, [userData, properties, data, SERVER_URL])
 
     const LogIn = (e) => {
         e.preventDefault()

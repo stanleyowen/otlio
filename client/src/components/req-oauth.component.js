@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
 const ReqOAuth = ({ userData }) => {
-    const {isLoading, authenticated} = userData
+    const {isLoading, authenticated, server: SERVER_URL} = userData
     const {pathname} = window.location
     const code = window.location.search
 
@@ -25,8 +25,8 @@ const ReqOAuth = ({ userData }) => {
                 }
             })
         }
-        if(!isLoading) validateData()
-    },[code, pathname])
+        if(!isLoading && SERVER_URL) validateData()
+    },[code, pathname, SERVER_URL])
 
     return(<div className="loader"><div className="spin-container"><div className="loading">
         <div></div><div></div><div></div>

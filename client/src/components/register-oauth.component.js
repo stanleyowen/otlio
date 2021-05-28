@@ -9,10 +9,10 @@ import { faEye, faEyeSlash, faEnvelope, faChartLine } from '@fortawesome/free-so
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-const OAuth = () => {
+const OAuth = ({ userData }) => {
+    const {server: SERVER_URL} = userData
     const {service, email: rawEmail} = useParams()
     const [data, setData] = useState({
         email: decodeURIComponent(rawEmail),
@@ -33,8 +33,8 @@ const OAuth = () => {
             await axios.get(`${SERVER_URL}/oauth/${service}/register`, { params: {email: data.email}, withCredentials: true })
             .then().catch(() => window.location='/login')
         }
-        validateData()
-    },[service, data.email])
+        if(SERVER_URL) validateData()
+    },[service, data.email, SERVER_URL])
 
 
     const Submit = (e) => {

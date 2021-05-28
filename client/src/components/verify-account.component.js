@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
 const VerifyAccount = () => {
-    const {id, token} = useParams()
+    const {id, token, server: SERVER_URL} = useParams()
     
     useEffect(() => {
         async function validateData() {
@@ -22,8 +22,8 @@ const VerifyAccount = () => {
                 }
             })
         }
-        validateData()
-    },[id, token])
+        if(SERVER_URL) validateData()
+    },[id, token, SERVER_URL])
 
     return (<div className="loader"><div className="spin-container"><div className="loading">
             <div></div><div></div><div></div>

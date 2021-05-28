@@ -10,8 +10,6 @@ import { faPen, faTrash, faPlus, faTimes } from '@fortawesome/free-solid-svg-ico
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 import { labels, validateLabel, getCSRFToken, openModal, closeModal } from '../libraries/validation'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-
 const timestamp = (e) => {
     var data = new Date(e)
     var today = new Date()
@@ -31,7 +29,7 @@ const timestamp = (e) => {
 }
 
 const Home = ({ userData }) => {
-    const {email, authenticated, isLoading} = userData
+    const {email, authenticated, isLoading, server: SERVER_URL} = userData
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'))
     const [todoData, setTodoData] = useState()
     const [data, setData] = useState({

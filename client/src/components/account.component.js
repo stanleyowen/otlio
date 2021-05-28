@@ -11,10 +11,9 @@ import { getCSRFToken, openModal, closeModal } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
 const sanitizer = dompurify.sanitize
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
 const Account = ({ userData }) => {
-    const {email, thirdParty, security, authenticated, isLoading} = userData
+    const {email, thirdParty, security, authenticated, isLoading, server: SERVER_URL} = userData
     const {valid, invalid} = authenticated ? security['backup-codes'] : []
 
     const [password, setPassword] = useState({

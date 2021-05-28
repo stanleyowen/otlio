@@ -45,7 +45,7 @@ export default function App() {
     })
   }
 
-  async function ping(a){
+  async function ping(a) {
     await axios.get(`${server_list[a]}/status`)
     .then(() => setServer(server_list[a]))
     .catch(() => {if(server_list[a+1]) ping(a+1)})
@@ -85,8 +85,6 @@ export default function App() {
     ping(0)
   }, [])
 
-  
-
   return (
     <Router>
       <Navbar userData={userData} />
@@ -98,7 +96,7 @@ export default function App() {
         <Route path='/logout' component={() => <Logout userData={userData} />} />
         <Route path='/edit/:id' component={() => <EditTodo userData={userData} />} />
         <Route path='/oauth' component={() => <ReqOAuth userData={userData} />} />
-        <Route path='/auth/:service/:email' component={OAuth} />
+        <Route path='/auth/:service/:email' component={() => <OAuth userData={userData} />} />
         <Route path='/account' component={() => <Account userData={userData} />} />
         <Route path='/support' component={() => <Support userData={userData} />} />
         <Route path='/reset-password' exact component={() => <ReqResetPassword userData={userData} />} />

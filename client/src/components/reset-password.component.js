@@ -12,7 +12,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const ResetPassword = () => {
-    const {id, token} = useParams()
+    const {id, token, server: SERVER_URL} = useParams()
     const [data, setData] = useState({
         id,
         token,
@@ -50,8 +50,9 @@ const ResetPassword = () => {
                     }
                 }else window.location='/reset-password'
             })
-        } validateData()
-    },[id, token, data.email])
+        }
+        if(SERVER_URL) validateData()
+    },[id, token, data.email, SERVER_URL])
 
     const Submit = (e) => {
         e.preventDefault()

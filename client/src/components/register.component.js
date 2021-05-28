@@ -12,7 +12,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Register = ({ userData }) => {
-    const {status} = userData
+    const {status, server: SERVER_URL} = userData
     const {verifyAccount} = userData.type
     const {email} = userData.credentials
     const [properties, setProperties] = useState({
