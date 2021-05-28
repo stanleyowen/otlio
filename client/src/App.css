@@ -436,7 +436,7 @@ tbody tr:nth-child(odd) {
 }
 tbody tr:hover {
     background-color: #e7e5e5;
-    transition: all .4s;
+    transition: all .2s;
 }
 .btn__value {
     background-color: #1a73e8;

@@ -84,7 +84,7 @@ const Landing = () => {
                 <div className="center-object full-width">
                     <CardActionArea>
                         <div className="p-12">
-                            <h1 className="raleway mb-20">Built-in Security</h1>
+                            <h1 className="raleway mb-20">Built-In Security</h1>
                             <h3 className="raleway">Otlio Service Security is secure by default which uses:</h3>
                             <ul className="ul-ml40 ul-mb10 medium">
                                 <li className="mt-20">Up-to-date Dependencies</li>
@@ -102,15 +102,21 @@ const Landing = () => {
                 <div className="center-object full-width">
                     <CardActionArea>
                         <div className="p-12">
-                            <h1 className="raleway mb-20">Fast and Reliable</h1>
-                            <h3 className="raleway">Otlio Infrastructures are hosted on:</h3>
-                            <ul className="ul-ml40 ul-mb10 medium mb-20">
-                                <li className="mt-20">Netlify (Frontend)</li>
-                                <li>Heroku (Backend)</li>
+                            <h1 className="raleway mb-20">99% Uptime</h1>
+                            <h3 className="raleway">We are committed to making our products and services accessible to everyone in any region. Our infrastructures are configured to automatically switch to another available API(s) when the server is down or under maintenance.</h3>
+                            <h3 className="raleway mt-20">Otlio Infrastructures are hosted on:</h3>
+                            <ul className="ul-ml40 ul-mb10 medium">
+                                <li className="mt-20">Netlify: <a className="link" href="https://otlio.netlify.app" target="_blank" rel="noreferrer">otlio.netlify.app</a></li>
+                                <li>Heroku:
+                                    <ul className="medium">
+                                        <li className="mt-20"><a className="link" href="https://otlio-eu.herokuapp.com" target="_blank" rel="noreferrer">otlio-eu.herokuapp.com</a> (Europe)</li>
+                                        <li><a className="link" href="https://otlio-us.herokuapp.com" target="_blank" rel="noreferrer">otlio-us.herokuapp.com</a> (United States)</li>
+                                    </ul>
+                                </li>
                             </ul>
-                            <h3 className="raleway">Therefore, our services will always online and available on any region including Europe, South America, Asia, and Australia.</h3>
                         </div>
                     </CardActionArea>
+                    <a className="oauth-box outline-blue isCentered block mt-10 mb-20 p-12 button monospace" href="https://otlio.statuspage.io/" target="_blank" rel="noopener">Service Status and Uptime</a>
                 </div>
                 <img className="center-object pc-device" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" />
             </div>
@@ -120,12 +126,12 @@ const Landing = () => {
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">Open Source Project</h1>
-                            <h3 className="raleway">Otlio is completely open source project which is hosted publicly on <a className="link" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">GitHub Cloud Platform</a>. Some objectives we made this project into Open Source are:</h3>
+                            <h3 className="raleway">Otlio is completely an open source project which is hosted publicly on <a className="link" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">GitHub</a>. Some objectives we made this project into open source are:</h3>
                             <ul className="ul-ml40 ul-mb10 medium mb-20">
-                                <li className="mt-20">Flexibility, which can be customized to meet some prerequisites.</li>
-                                <li>Transparency, which allow everyone to get full visibility into the code base, discussions, etc.</li>
-                                <li>Continuous Evolution, for better code quality</li>
-                                <li>Security and Reliability</li>
+                                <li className="mt-20"><b>Flexibility</b>, which can be customized to meet some prerequisites.</li>
+                                <li><b>Transparency</b>, which allow everyone to get full visibility into the code base, discussions, etc.</li>
+                                <li><b>Continuous Evolution</b>, for better code quality</li>
+                                <li><b>Security and Reliability</b></li>
                             </ul>
                         </div>
                     </CardActionArea>

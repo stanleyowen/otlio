@@ -126,7 +126,7 @@ const Home = ({ userData }) => {
 
     const todoList = (b = todoData ? todoData : cacheTodo) => {
         if(b) return b.map((a, index) => {
-            return(
+            return (
                 <Draggable key={a._id} draggableId={a._id} index={index}>
                     {(provided) => (
                         <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
