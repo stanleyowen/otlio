@@ -78,8 +78,8 @@ const Home = ({ userData }) => {
             })
             e.removeAttribute('data-autoresize')
         })
-        if(!isLoading && authenticated) getTodoData()
-    }, [userData, properties.disabled])
+        if(!isLoading && authenticated && SERVER_URL) getTodoData()
+    }, [userData, properties.disabled, SERVER_URL])
 
     const addTodo = (e) => {
         e.preventDefault()

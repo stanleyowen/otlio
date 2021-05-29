@@ -2,6 +2,7 @@ import axios from 'axios'
 import dompurify from 'dompurify'
 import download from 'js-file-download'
 import React, { useState, useEffect } from 'react'
+import { Skeleton } from '@material-ui/lab'
 import { FormControlLabel, IconButton, Switch } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons'
@@ -25,7 +26,8 @@ const Account = ({ userData }) => {
         disabled: false,
         password: false,
         newPassword: false,
-        confirmPassword: false
+        confirmPassword: false,
+        mfa: false 
     })
     const [data, setData] = useState({
         tokenId: '',
@@ -233,7 +235,7 @@ const Account = ({ userData }) => {
             <div className="main">
                 <div className="account-container">
                     <div className="flex35 center-object p-5p">
-                        <img src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/d0d4cf7a79acbcb98834d05980edc55d_v6zmxx.webp" alt="Introducing 2FA" />
+                        {properties.mfa ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="200px" />} <img className={properties.mfa ? '':'none'} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/d0d4cf7a79acbcb98834d05980edc55d_v6zmxx.webp" alt="Introducing 2FA" onLoad={() => handleChange('mfa', true)} />
                         <h2 className="isCentered mt-20 mb-20 monospace">Introducing 2FA</h2>
                         <p className="isCentered monospace">Two-Factor Authentication is a security control that requires users to verify their identities by providing multiple pieces of evidence before gaining access to a device or application.</p>
                     </div>
