@@ -416,9 +416,9 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
     })
 }))
 
-passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, id, done) => {
-    const {type, subject, description, verified} = req.body
-    if(!type || !subject || !description) return done(null, false, {status: 400, message: MSG_DESC[11]})
+passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwordField: 'type', passReqToCallback: true, session: false }, (req, email, type, done) => {
+    const {subject, description} = req.body
+    if(!subject || !description) return done(null, false, {status: 400, message: MSG_DESC[11]})
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(subject.length < 15 || subject.length > 50) return done(null, false, {status: 400, message: MSG_DESC[50]})
     else if(validateTicketType(type)) return done(null, false, {status: 400, message: MSG_DESC[49]})
@@ -427,7 +427,7 @@ passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwo
         to: process.env.MAIL_SUPPORT,
         replyTo: email,
         subject: `[Otlio] ${subject}`,
-        text: `---------- User Details ---------\nID: ${id}\nEmail Address: ${email}\nVerified Account: ${verified}\n\n---------- Ticket Description ---------\nTicket Type: ${type}\nSubject: ${subject}\nDescription:\n${description}`
+        text: `Email Address: ${email}\nTicket Type: ${type}\nSubject: ${subject}\nDescription:\n${description}`
     }
     transporter.sendMail(mailOptions, err => {
         if(err) return done(err, false)
