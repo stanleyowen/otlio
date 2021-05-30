@@ -452,62 +452,19 @@ passport.use('todoData', new localStrategy({ usernameField: 'email', passwordFie
     else
         Todo.find({email}, (err, data) => {
             if(err) return done(err, false)
-            let sortData = []
-            let sortedData = []
             let todoData = []
-            data.map(a =>{
-                let data = todoData
-                if(a.previousId) data = sortData
-                data.push({
+            data.map(a =>
+                todoData.push({
                     _id: String(a._id),
                     email: a.email,
                     title: decrypt(a.title, 1),
                     label: decrypt(a.label, 1),
                     description: a.description.data ? decrypt(a.description, 1) : '',
                     date: decrypt(a.date, 1),
-                    previousId: a.previousId ? a.previousId : '',
-                    updatedAt: a.updatedAt
+                    index: a.index
                 })
-            })
-            for (let a=0; a<sortData.length; a++) {
-                for (let b=0; b<sortData.length; b++) {
-                    if(sortData[a]._id === sortData[b].previousId){
-                        sortData.splice(b+1, 0, sortData[a])
-                        sortData.splice(a, 1)
-                    }
-                    else if(sortData[a].previousId === sortData[b].previousId && a !== b) {
-                        sortedData = [sortData[a], sortData[b]]
-                        sortedData.sort((a,b) => {
-                            if(a.updatedAt > b.updatedAt) return -1
-                            if(a.updatedAt < b.updatedAt) return 1
-                            return 0
-                        })
-                        sortData.splice(a, 1)
-                        sortData.splice(b-1, 1)
-                        sortData.splice(a, 0, ...sortedData)
-                        // console.log(sortData)
-                    }
-                }
-            }
-            // sortData.sort((a, b) => {
-            //     if(a.updateAt < b.updateAt) return -1
-            //     if(a.updateAt > b.updateAt) return 1
-            //     return 0
-            // })
-            console.log(sortData)
-            if(sortData.length > 0)
-                for(let a=sortData.length-1; a>-1; a--) {
-                    for (let b=0; b<todoData.length; b++) {
-                        if(sortData[a].previousId === todoData[b]._id) {
-                            // sortData.splice(a, 1)
-                            // console.log(sortData.length, a)
-                            todoData.splice(b+1, 0, sortData[a])
-                            // console.log(todoData)
-                        }
-                    }
-                }
-            // console.log(todoData)
-            return done(null, todoData)
+            )
+            return done(null, todoData.sort((a, b) => { return a.index - b.index }))
         })
 }))
 
@@ -549,18 +506,15 @@ passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordF
 }))
 
 passport.use('updateIndex', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, _id, done) => {
-    var {previousId} = req.body
-    if(!previousId) return done(null, false, {status: 400, message: MSG_DESC[11]})
+    const {data} = req.body
+    if(!data) return done(null, false, {status: 400, message: MSG_DESC[11]})
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, {status: 400, message: MSG_DESC[8]})
-    // else if(previousId === _id) previousId=null
-    // console.log(previousId)
-    Todo.findOneAndUpdate({_id, email}, { previousId }, (err) => {
-        if(err) return done(err, false)
-        Todo.findOneAndUpdate({_id: previousId, email}, { previousId: '' }, (err, data) => {
+    data.map(a =>
+        Todo.findOneAndUpdate({_id: a._id, email}, { index: a.index }, (err) => {
             if(err) return done(err, false)
-            return done(null, true, { status: 200, message: MSG_DESC[21] })
         })
-    })
+    )
+    return done(null, true, { status: 200, message: MSG_DESC[21] })
 }))
 
 passport.use('deleteTodo', new localStrategy({ usernameField: 'email', passwordField: 'objId', session: false }, (email, _id, done) => {
