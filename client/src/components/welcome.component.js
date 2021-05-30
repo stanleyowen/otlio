@@ -109,26 +109,28 @@ const Landing = () => {
                     </CardActionArea>
                 </div>
             </div>
-            <div className="contact__container mb-20">
-                <img className={(properties.cloud ? "":"none ") + "center-object phone-device"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
+            <div className="contact__container mb-20 gray-bg">
+                <img className={(properties.cloud ? "":"none ") + "center-object phone-device"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622385526/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
                 <div className="center-object full-width">
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">99% Uptime</h1>
-                            <h3 className="raleway">We are committed to making our products and services accessible to everyone in any region. Our infrastructures are configured to automatically switch to another available API(s) when the server is down or under maintenance.</h3>
-                            {/* <h3 className="raleway mt-20">Otlio Infrastructures are hosted on:</h3>
+                            <h3 className="raleway">We are committed to making our products and services accessible for everyone, everywhere, and anytime.</h3>
+                            <h3 className="mt-20 raleway">Our infrastructures are configured to automatically switch to another available server when the server is down or under maintenance.</h3>
+                            <h3 className="raleway mt-20">Otlio Infrastructures are hosted on:</h3>
                             <ul className="ul-ml40 ul-mb10 medium">
                                 <li className="mt-20">Netlify: <a className="link" href="https://otlio.netlify.app" target="_blank" rel="noreferrer">otlio.netlify.app</a></li>
                                 <li>Heroku:
                                     <ul className="medium">
-                                        <li className="mt-20"><a className="link" href="https://otlio-eu.herokuapp.com" target="_blank" rel="noreferrer">otlio-eu.herokuapp.com</a> (Europe)</li>
-                                        <li><a className="link" href="https://otlio-us.herokuapp.com" target="_blank" rel="noreferrer">otlio-us.herokuapp.com</a> (United States)</li>
+                                        <li className="mt-10"><a className="link" href="https://otlio.herokuapp.com" target="_blank" rel="noreferrer">otlio.herokuapp.com</a> (US)</li>
+                                        <li><a className="link" href="https://otlio-eu.herokuapp.com" target="_blank" rel="noreferrer">otlio-eu.herokuapp.com</a> (EU)</li>
+                                        <li><a className="link" href="https://otlio-us.herokuapp.com" target="_blank" rel="noreferrer">otlio-us.herokuapp.com</a> (US)</li>
                                     </ul>
                                 </li>
-                            </ul> */}
+                            </ul>
                         </div>
                     </CardActionArea>
-                    <div className="footer__socialBtn col-6 mb-20 mt-20">
+                    <div className="footer__socialBtn col-6 mt-10">
                         <Tooltip title="Uptime Reports" arrow><a href="https://02zrgrp9.status.cron-job.org/" target="_blank" rel="noreferrer">
                             <FontAwesomeIcon icon={faRocket} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>
@@ -157,7 +159,7 @@ const Landing = () => {
                     <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
                 </div>
             </div>
-            <div className="contact__container mb-20">
+            <div className="contact__container mb-20 gray-bg">
                 <img className={(properties.support ? "":"none ") + "center-object phone-device"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" />
                 <div className="center-object full-width">
                     <CardActionArea><div className="p-12">
@@ -165,6 +167,10 @@ const Landing = () => {
                         <h3 className="raleway">We are here to help. Get in touch with us or support, let us know how we can help, and our support teams will get in touch with you as soon as possible.</h3>
                     </div></CardActionArea>
                     <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="/support">Get Support</a>
+                    <div className="full-width mt-50 mb-20">
+                        <blockquote className="quotes mb-20">Building a good customer experience doesn't happen by accident. It happens by design.</blockquote>
+                        <span className="author alignRight mr-10">- Aldous Huxley</span>
+                    </div>
                 </div>
                 {properties.support ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.support ? "":"none ") + "center-object pc-device"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" onLoad={() => handleChange('support', true)} />
             </div>

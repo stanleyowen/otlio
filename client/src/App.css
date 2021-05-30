@@ -204,6 +204,7 @@ label { user-select: none; }
 .mt-20 { margin-top: 20px !important; }
 .mt-30 { margin-top: 30px !important; }
 .mt-40 { margin-top: 40px !important; }
+.mt-50 { margin-top: 50px !important; }
 .mb-10 { margin-bottom: 10px !important; }
 .mb-20 { margin-bottom: 20px !important; }
 .mb-40 { margin-bottom: 40px !important; }
@@ -222,6 +223,13 @@ label { user-select: none; }
 .disabled, .disabled:hover {
     cursor: auto;
     opacity: 0.7;
+}
+body.dark .gray-bg {
+    background-color: rgb(39, 38, 38);
+}
+.gray-bg {
+    background-color: rgb(244, 246, 247);
+    transition: all .4s;
 }
 .loader {
     position: fixed;
@@ -858,7 +866,42 @@ blockquote a{
     color: #c76c0c;
 }
 blockquote a:hover{ color: #666; }
-blockquote em {font-style: italic;}
+blockquote em { font-style: italic; }
+.quotes {
+    border: none;
+    background: none;
+    font-weight: 100;
+    font-size: 1.3rem;
+    line-height: 1.4;
+    margin-left: 40px;
+}
+.quotes:before,
+.quotes:after {
+	position: absolute;
+	color: #f1efe6;
+	font-size: 8rem;
+	width: 4rem;
+	height: 4rem;
+}
+.quotes:before {
+	content: '“';
+	left: -3.2rem;
+	top: -2.5rem;
+    color: #add8e6b0;
+}
+.quotes:after {
+	content: '”';
+	right: -1.5rem;
+	bottom: -1rem;
+    color: #add8e6b0;
+}
+.author {
+    display: block;
+	text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+.alignRight { text-align: right; }
 .block { display: block !important; }
 .small { font-size: 14px; }
 .full td { width: 70%; text-align: left; }
