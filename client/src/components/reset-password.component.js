@@ -10,8 +10,9 @@ import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotificatio
 
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-const ResetPassword = () => {
-    const {id, token, server: SERVER_URL} = useParams()
+const ResetPassword = ({ userData }) => {
+    const {server: SERVER_URL} = userData
+    const {id, token} = useParams()
     const [data, setData] = useState({
         id,
         token,

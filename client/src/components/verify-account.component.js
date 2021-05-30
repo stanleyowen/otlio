@@ -2,8 +2,9 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-const VerifyAccount = () => {
-    const {id, token, server: SERVER_URL} = useParams()
+const VerifyAccount = ({ userData }) => {
+    const {server: SERVER_URL} = userData
+    const {id, token} = useParams()
     
     useEffect(() => {
         async function validateData() {
