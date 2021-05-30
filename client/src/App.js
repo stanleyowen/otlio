@@ -101,7 +101,7 @@ export default function App() {
         <Route path='/support' component={() => <Support userData={userData} />} />
         <Route path='/reset-password' exact component={() => <ReqResetPassword userData={userData} />} />
         <Route path='/reset-password/:id/:token' component={() => <ResetPassword userData={userData} />} />
-        <Route path='/verify/:id/:token' component={<VerifyAccount userData={userData} />} />
+        <Route path='/verify/:id/:token' component={() => <VerifyAccount userData={userData} />} />
         <Route path='/privacy-policy' component={PrivacyPolicy} />
         <Route path='/terms-and-conditions' component={TermsAndConditions} />
         <Route path='*' component={() => <PageNotFound userData={userData} />} />

@@ -779,6 +779,7 @@ img {
     width: 100%;
     margin: auto;
 }
+.col-6 { grid-template-columns: auto auto !important }
 .footer__socialBtn a {
     width: 100%;
     margin: auto;

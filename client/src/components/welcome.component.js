@@ -1,7 +1,9 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Skeleton from '@material-ui/lab/Skeleton'
-import { CardActionArea } from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChartLine, faRocket } from '@fortawesome/free-solid-svg-icons'
+import { CardActionArea, Tooltip } from '@material-ui/core'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
@@ -73,11 +75,11 @@ const Landing = () => {
                 <div className="contact__container">
                     <div className="center-object">
                         <div className="inline">
-                            <span className="blue-text monospace text-animation" data-elements="Organizing Easier, Improve Productivity"></span>
+                            <span className="blue-text monospace text-animation" data-elements="Organizing Easier, Improve Productivity, Stay Productive"></span>
                             <span className="cursor large">&nbsp;</span>
                         </div>
                         <h1 className="monospace" style={{fontSize: '40px'}}>with Otlio</h1>
-                        <h3 className="mt-40 monospace">An open source project, completed with <b>highest standard security</b>, which is easy to use and organize!</h3>
+                        <h3 className="mt-40 monospace">Join millions of people getting more organized and productive for free</h3>
                         <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="/get-started">Get Started</a>
                     </div>
                     {properties.organizingEasier ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.organizingEasier ? "":"none ") + "center-object"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/7c27535f88bae9519ceb14a8983c57ff_mpieim.webp" alt="Organzing Easier" onLoad={() => handleChange('organizingEasier', true)} />
@@ -88,7 +90,7 @@ const Landing = () => {
                 <a href="https://github.com/stanleyowen/otlio/blob/master/LICENSE" target="_blank" rel="noopener"><button className="btn__label">License</button><button className="btn__value">{repoInfo[1]}</button></a>
                 <a href="https://github.com/stanleyowen/otlio/releases" target="_blank" rel="noopener"><button className="btn__label">Version</button><button className="btn__value">{currentversion}</button></a>
             </div>
-            <h1 className="mt-40 isCentered monospace">Features</h1>
+            <h1 className="mt-40 isCentered monospace blue-text">Features</h1>
             <div className="contact__container mb-20">
                 {properties.security ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.security ? "":"none ") + "center-object"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072617/otlio/e91e6348157868de9dd8b25c81aebfb9_ynvmkr.webp" alt="Built-In Security" onLoad={() => handleChange('security', true)} />
                 <div className="center-object full-width">
@@ -99,7 +101,7 @@ const Landing = () => {
                             <ul className="ul-ml40 ul-mb10 medium">
                                 <li className="mt-20">Up-to-date Dependencies</li>
                                 <li><a className="link" href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard" target="_blank" rel="noreferrer">Advanced Encryption Standard</a> Algorithm</li>
-                                <li>TSL (Transport Layer Security) and SSL (Secure Socket Layer)</li>
+                                <li>TLS (Transport Layer Security) and SSL (Secure Socket Layer)</li>
                                 <li>Rate Limiter to Mitigate DDoS Attacks</li>
                                 <li>Technology to protect app from some well-known web vulnerabilities by setting HTTP headers appropriately.</li>
                             </ul>
@@ -114,7 +116,7 @@ const Landing = () => {
                         <div className="p-12">
                             <h1 className="raleway mb-20">99% Uptime</h1>
                             <h3 className="raleway">We are committed to making our products and services accessible to everyone in any region. Our infrastructures are configured to automatically switch to another available API(s) when the server is down or under maintenance.</h3>
-                            <h3 className="raleway mt-20">Otlio Infrastructures are hosted on:</h3>
+                            {/* <h3 className="raleway mt-20">Otlio Infrastructures are hosted on:</h3>
                             <ul className="ul-ml40 ul-mb10 medium">
                                 <li className="mt-20">Netlify: <a className="link" href="https://otlio.netlify.app" target="_blank" rel="noreferrer">otlio.netlify.app</a></li>
                                 <li>Heroku:
@@ -123,10 +125,17 @@ const Landing = () => {
                                         <li><a className="link" href="https://otlio-us.herokuapp.com" target="_blank" rel="noreferrer">otlio-us.herokuapp.com</a> (United States)</li>
                                     </ul>
                                 </li>
-                            </ul>
+                            </ul> */}
                         </div>
                     </CardActionArea>
-                    <a className="oauth-box outline-blue isCentered block mt-10 mb-20 p-12 button monospace" href="https://otlio.statuspage.io/" target="_blank" rel="noopener">Service Status and Uptime</a>
+                    <div className="footer__socialBtn col-6 mb-20 mt-20">
+                        <Tooltip title="Uptime Reports" arrow><a href="https://02zrgrp9.status.cron-job.org/" target="_blank" rel="noreferrer">
+                            <FontAwesomeIcon icon={faRocket} style={{ fontSize: "1.8em" }} />
+                        </a></Tooltip>
+                        <Tooltip title="Service Status" arrow><a href="https://otlio.statuspage.io/" target="_blank" rel="noreferrer">
+                            <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
+                        </a></Tooltip>
+                    </div>
                 </div>
                 {properties.cloud ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.cloud ? "":"none ") + "center-object pc-device"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
             </div>
