@@ -504,6 +504,21 @@ passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordF
     })
 }))
 
+passport.use('updateIndex', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, _id, done) => {
+    var {previousId} = req.body
+    if(!previousId) return done(null, false, {status: 400, message: MSG_DESC[11]})
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, {status: 400, message: MSG_DESC[8]})
+    // else if(previousId === _id) previousId=null
+    // console.log(previousId)
+    Todo.findOneAndUpdate({_id, email}, { previousId }, (err) => {
+        if(err) return done(err, false)
+        Todo.findOneAndUpdate({_id: previousId, email}, { previousId: '' }, (err, data) => {
+            if(err) return done(err, false)
+            return done(null, true, { status: 200, message: MSG_DESC[21] })
+        })
+    })
+}))
+
 passport.use('deleteTodo', new localStrategy({ usernameField: 'email', passwordField: 'objId', session: false }, (email, _id, done) => {
     Todo.findOneAndDelete({_id, email}, (err, data) => {
         if(err) return done(err, false)

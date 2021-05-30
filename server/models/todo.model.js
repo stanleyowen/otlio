@@ -45,7 +45,8 @@ const todoSchema = new Schema ({
             minlength: 32,
             maxlength: 32
         }
-    }
+    },
+    previousId: { type: String }
 }, { timestamps: true })
 
 const Todo = mongoose.model('todo', todoSchema)

@@ -117,39 +117,49 @@ const Home = ({ userData }) => {
     }
 
     const handleOnDragEnd = (res) => {
-        if (!res.destination) return
+        console.log(res)
+        const {source, destination} = res
+        if (!destination || !source || !res.draggableId || destination.index == source.index) return;
         const items = Array.from(todoData)
         const [reorderedItem] = items.splice(res.source.index, 1)
         items.splice(res.destination.index, 0, reorderedItem)
         setTodoData(items)
+        localStorage.setItem('todoData', JSON.stringify(items))
+        const data = {
+            _id: destination.index > source.index ? res.draggableId : document.getElementById('todo').querySelectorAll('tr')[destination.index].getAttribute('data-rbd-drag-handle-draggable-id'),
+            previousId: destination.index > source.index ? document.getElementById('todo').querySelectorAll('tr')[destination.index].getAttribute('data-rbd-drag-handle-draggable-id') : res.draggableId
+        }
+        axios.put(`${SERVER_URL}/todo/index`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+        .then().catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
     }
-
     const todoList = (b = todoData ? todoData : cacheTodo) => {
-        if(b) return b.map((a, index) => {
-            return (
-                <Draggable key={a._id} draggableId={a._id} index={index}>
-                    {(provided) => (
-                        <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                            <td><span className={a.description ? 'bold' : ''}>{a.title}</span><br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
-                            <td><span className={"label "+a.label.split(' ').join('-').toLowerCase()}>{titleCase(a.label)}</span></td>
-                            <td>{timestamp(a.date)}</td>
-                            <td>
-                                <span className="btn-config">
-                                    <Tooltip title="Edit Task"><IconButton href={`/edit/${a._id}`}>
-                                        <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
-                                    </IconButton></Tooltip>
-                                </span>
-                                <span className="btn-config">
-                                    <Tooltip title="Delete Task"><IconButton onClick={() => deleteData(a._id)}>
-                                        <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
-                                    </IconButton></Tooltip>
-                                </span>
-                            </td>
-                        </tr>
-                    )}
-                </Draggable>
-            )
-        })
+        if(b) {
+            return b.map((a, index) => {
+                return (
+                    <Draggable key={a._id} draggableId={a._id} index={index}>
+                        {(provided) => (
+                            <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                <td><span className={a.description ? 'bold' : ''}>{a.title}</span><br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
+                                <td><span className={"label "+a.label.split(' ').join('-').toLowerCase()}>{titleCase(a.label)}</span></td>
+                                <td>{timestamp(a.date)}</td>
+                                <td>
+                                    <span className="btn-config">
+                                        <Tooltip title="Edit Task"><IconButton href={`/edit/${a._id}`}>
+                                            <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
+                                        </IconButton></Tooltip>
+                                    </span>
+                                    <span className="btn-config">
+                                        <Tooltip title="Delete Task"><IconButton onClick={() => deleteData(a._id)}>
+                                            <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
+                                        </IconButton></Tooltip>
+                                    </span>
+                                </td>
+                            </tr>
+                        )}
+                    </Draggable>
+                )
+            })
+        }
     }
 
     return (
@@ -165,7 +175,7 @@ const Home = ({ userData }) => {
                     </tr></thead>
                     <DragDropContext onDragEnd={handleOnDragEnd}><Droppable droppableId="todo">
                         {(provided) => (
-                            <tbody {...provided.droppableProps} ref={provided.innerRef}>
+                            <tbody {...provided.droppableProps} ref={provided.innerRef} id="todo">
                                 { todoList() }
                                 { provided.placeholder }
                                 { !cacheTodo && !todoData ?
