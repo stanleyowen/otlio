@@ -125,9 +125,12 @@ const Home = ({ userData }) => {
         items.splice(res.destination.index, 0, reorderedItem)
         setTodoData(items)
         localStorage.setItem('todoData', JSON.stringify(items))
+        console.log(document.getElementById('todo').querySelectorAll('tr')[source.index].getAttribute('data-rbd-drag-handle-draggable-id'), document.getElementById('todo').querySelectorAll('tr')[0].getAttribute('data-rbd-drag-handle-draggable-id'))
         const data = {
             _id: destination.index > source.index ? res.draggableId : document.getElementById('todo').querySelectorAll('tr')[destination.index].getAttribute('data-rbd-drag-handle-draggable-id'),
-            previousId: destination.index > source.index ? document.getElementById('todo').querySelectorAll('tr')[destination.index].getAttribute('data-rbd-drag-handle-draggable-id') : res.draggableId
+            previousId: destination.index > source.index ? document.getElementById('todo').querySelectorAll('tr')[destination.index].getAttribute('data-rbd-drag-handle-draggable-id') : res.draggableId,
+            newSourceId: destination.index > source.index ? document.getElementById('todo').querySelectorAll('tr')[source.index+1].getAttribute('data-rbd-drag-handle-draggable-id') : res.draggableId,
+            // newSourceId: Math.abs(destination.index - source.index) === 1 ? destination.index > source.index ? '' : res.draggableId : destination.index > source.index  ? document.getElementById('todo').querySelectorAll('tr')[source.index+1].getAttribute('data-rbd-drag-handle-draggable-id') : res.draggableId,
         }
         axios.put(`${SERVER_URL}/todo/index`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
         .then().catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
