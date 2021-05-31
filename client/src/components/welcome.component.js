@@ -1,3 +1,5 @@
+import aos from 'aos';
+import 'aos/dist/aos.css';
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Skeleton from '@material-ui/lab/Skeleton'
@@ -10,6 +12,7 @@ import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotificatio
 const GITHUB_API = "https://api.github.com/repos/stanleyowen/otlio"
 
 const Landing = () => {
+    aos.init()
     const [repoInfo, setRepoInfo] = useState([])
     const [properties, setProperties] = useState({
         organizingEasier: false,
@@ -93,8 +96,8 @@ const Landing = () => {
             </div>
             <h1 className="mt-40 isCentered monospace blue-text">Features</h1>
             <div className="contact__container mb-20">
-                {properties.security ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.security ? "":"none ") + "center-object"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072617/otlio/e91e6348157868de9dd8b25c81aebfb9_ynvmkr.webp" alt="Built-In Security" onLoad={() => handleChange('security', true)} />
-                <div className="center-object full-width">
+                {properties.security ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.security ? "":"none ") + "center-object"} data-aos="fade-right" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072617/otlio/e91e6348157868de9dd8b25c81aebfb9_ynvmkr.webp" alt="Built-In Security" onLoad={() => handleChange('security', true)} />
+                <div className="center-object full-width" data-aos="fade-left">
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">Built-In Security</h1>
@@ -111,8 +114,8 @@ const Landing = () => {
                 </div>
             </div>
             <div className="contact__container mb-20 gray-bg">
-                <img className={(properties.cloud ? "":"none ") + "center-object phone-device"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622385526/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
-                <div className="center-object full-width">
+                <img className={(properties.cloud ? "":"none ") + "center-object phone-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622385526/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
+                <div className="center-object full-width" data-aos="fade-right">
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">99% Uptime</h1>
@@ -131,7 +134,7 @@ const Landing = () => {
                             </ul>
                         </div>
                     </CardActionArea>
-                    <div className="footer__socialBtn col-6 mt-10">
+                    <div className="footer__socialBtn col-6 mt-10" data-aos="fade-up">
                         <Tooltip title="Uptime Reports" arrow><a href="https://02zrgrp9.status.cron-job.org/" target="_blank" rel="noreferrer">
                             <FontAwesomeIcon icon={faRocket} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>
@@ -140,11 +143,11 @@ const Landing = () => {
                         </a></Tooltip>
                     </div>
                 </div>
-                {properties.cloud ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.cloud ? "":"none ") + "center-object pc-device"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
+                {properties.cloud ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.cloud ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
             </div>
             <div className="contact__container mb-40">
-                {properties.theme ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.theme ? "":"none ") + "center-object rounded-corner box-effect"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622447717/otlio/9e1f47a80b0fee4283036db027d6e6ce_qryfyb.webp" alt="Dark Mode" onLoad={() => handleChange('theme', true)} />
-                <div className="center-object full-width">
+                {properties.theme ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.theme ? "":"none ") + "center-object rounded-corner box-effect"} data-aos="fade-right" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622447717/otlio/9e1f47a80b0fee4283036db027d6e6ce_qryfyb.webp" alt="Dark Mode" onLoad={() => handleChange('theme', true)} />
+                <div className="center-object full-width" data-aos="fade-left">
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">Compatible with Dark Mode</h1>
@@ -155,23 +158,23 @@ const Landing = () => {
                 </div>
             </div>
             <div className="contact__container mb-20 gray-bg">
-                <img className={(properties.support ? "":"none ") + "center-object phone-device"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" />
-                <div className="center-object full-width">
+                <img className={(properties.support ? "":"none ") + "center-object phone-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" />
+                <div className="center-object full-width" data-aos="fade-right">
                     <CardActionArea><div className="p-12">
                         <h1 className="raleway mb-20">Customer Support</h1>
                         <h3 className="raleway">We are here to help. Get in touch with us or support, let us know how we can help, and our support teams will get in touch with you as soon as possible.</h3>
                     </div></CardActionArea>
-                    <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="/support">Get Support</a>
-                    <div className="full-width mt-50 mb-20">
+                    <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" data-aos="fade-up" href="/support">Get Support</a>
+                    <div className="full-width mt-50 mb-20" data-aos="fade-left">
                         <blockquote className="quotes mb-20">Building a good customer experience doesn't happen by accident. It happens by design.</blockquote>
                         <span className="author alignRight mr-10">- Aldous Huxley</span>
                     </div>
                 </div>
-                {properties.support ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.support ? "":"none ") + "center-object pc-device"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" onLoad={() => handleChange('support', true)} />
+                {properties.support ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.support ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" onLoad={() => handleChange('support', true)} />
             </div>
             <div className="contact__container mb-40">
-                {properties.theme ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.github ? "":"none ") + "center-object"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/589612f86db2a2b483b007bc2a1e9665_db0zwi.webp" alt="Open Source Project" onLoad={() => handleChange('github', true)} />
-                <div className="center-object full-width">
+                {properties.theme ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.github ? "":"none ") + "center-object"} data-aos="fade-right" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/589612f86db2a2b483b007bc2a1e9665_db0zwi.webp" alt="Open Source Project" onLoad={() => handleChange('github', true)} />
+                <div className="center-object full-width" data-aos="fade-left">
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20">Open Source Project</h1>
@@ -184,7 +187,7 @@ const Landing = () => {
                             </ul>
                         </div>
                     </CardActionArea>
-                    <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
+                    <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" data-aos="fade-up" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
                 </div>
             </div>
         </div>

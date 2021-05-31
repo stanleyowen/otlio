@@ -651,6 +651,7 @@ select {
     display: grid;
     grid-template-columns: 50% 50%;
     padding: 10px;
+    overflow: hidden !important;
 }
 .phone-device { display: none; }
 .contact__body .animation__underline:after { background-color: #FFFFFF; }
