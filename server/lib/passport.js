@@ -189,7 +189,7 @@ passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 't
                 if(err) return done(err, false)
                 else if(!user) return done(null, false, { status: 401, message: MSG_DESC[10] })
                 else if(user) {
-                    data.remove(err => {
+                    data.deleteOne(err => {
                         if(err) return done(err, false)
                         if(type === 'passwordReset') {
                             const mailOptions = {
@@ -386,7 +386,7 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordFi
             if(err) return done(err, false)
             else if(!data) return done(null, false, { status: 400, message: MSG_DESC[38] })
             else if(data && _id == decrypt(data.userId, 2) && token === decrypt(data.token, 2))
-                data.remove(err => {
+                data.deleteOne(err => {
                     if(err) return done(err, false)
                     return done(null, req.body, { status: 200, message: MSG_DESC[5] })
                 })
