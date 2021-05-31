@@ -183,6 +183,31 @@ label { user-select: none; }
     position: relative;
     z-index: 10001;
 }
+body.dark .box-effect { box-shadow: 0 1px 4px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 255, 255, 0.3) inset; }
+body.dark .box-effect::before, body.dark .box-effect::after {
+    box-shadow:0 0 20px rgba(255, 255, 255, 0.8);
+}
+.box-effect {
+  	position: relative;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+.box-effect::before, .box-effect::after {
+	content: "";
+    position: absolute;
+    z-index: -1;
+    box-shadow:0 0 20px rgba(0,0,0,0.8);
+    top: 10px;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    -moz-border-radius: 100px / 10px;
+    border-radius: 100px / 10px;
+}
+.box-effect:after {
+	right:10px;
+    left:auto;
+    transform:skew(8deg) rotate(3deg);
+}
 .success { color: rgb(18, 214, 0); margin-right: 5px }
 .danger { color: rgb(252, 52, 52); margin-right: 5px }
 .button {
@@ -902,6 +927,7 @@ blockquote em { font-style: italic; }
     align-items: center;
 }
 .alignRight { text-align: right; }
+.rounded-corner { border-radius: 10px; }
 .block { display: block !important; }
 .small { font-size: 14px; }
 .full td { width: 70%; text-align: left; }
