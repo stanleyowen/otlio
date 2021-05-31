@@ -5,13 +5,16 @@ import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers } from '
 
 const Navbar = ({ userData }) => {
     const {authenticated, isLoading} = userData
-    const theme = localStorage.getItem('__theme')
+    const theme = localStorage.getItem('theme')
     const [value_a, setValue_a] = useState([])
     const [value_b, setValue_b] = useState([])
     const [value_c, setValue_c] = useState()
 
     useEffect(() => {
-        if(theme === "dark") document.body.classList.add("dark")
+        if(((!theme || theme === "system") && window.matchMedia('(prefers-color-scheme: dark)').matches) || theme === "dark") {
+            if(!theme) localStorage.setItem('theme', 'system')
+            document.body.classList.add("dark")
+        }
         if(!isLoading && authenticated) {
             setValue_a(['Dashboard','/', <FontAwesomeIcon icon={faListUl} style={{ fontSize: "1.5em" }} />])
             setValue_b(['Sign Out','/logout', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />])
@@ -31,7 +34,7 @@ const Navbar = ({ userData }) => {
     const changeMode = (e) => {
         e.preventDefault()
         document.body.classList.toggle("dark")
-        localStorage.setItem("__theme", document.body.classList.contains('dark') ? 'dark' : 'light')
+        localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light')
     }
 
     return (
