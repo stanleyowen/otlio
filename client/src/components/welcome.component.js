@@ -190,6 +190,33 @@ const Landing = () => {
                     <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" data-aos="fade-up" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
                 </div>
             </div>
+            <footer className="footer">
+				<div>
+                    <div className="mb-40 col">
+                        <nav className="col">
+                            <div className="monospace mb-10">Resources</div>
+                            <ul className="no-dots margin10 font-default small">
+                                <li><a href="/login">Login</a></li>
+                                <li><a href="/get-started">Get Started</a></li>
+                                <li><a href="https://github.com/stanleyowen/otlio">GitHub</a></li>
+                            </ul>
+                        </nav>
+                        <nav className="col">
+                            <div className="monospace mb-10">Support</div>
+                            <ul className="no-dots margin10 font-default small">
+                                <li><a href="https://otlio.statuspage.io/">Service Status</a></li>
+                                <li><a href="https://02zrgrp9.status.cron-job.org/">Uptime Report</a></li>
+                                <li><a href="http://localhost:3000/support">Contact Us</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <ul className="monospace">
+                        <li className="inline"><span className="font-default bold">&copy;</span> 2021 Otlio</li>
+                        <li className="inline ml-20"><a href="/terms-and-conditions">Terms</a></li>
+                        <li className="inline ml-20"><a href="/privacy-policy">Privacy</a></li>
+                    </ul>
+                </div>
+			</footer>
         </div>
     )
 }
