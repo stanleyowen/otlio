@@ -36,7 +36,7 @@ const Landing = () => {
             index++
             if(text === data[x]) {
                 clearInterval(interval)
-                setTimeout(() => interval = setInterval(backspace, 25), 3000)
+                setTimeout(() => interval = setInterval(backspace, 25), 1000)
             }
         }
         function backspace() {
@@ -47,7 +47,7 @@ const Landing = () => {
                 clearInterval(interval)
                 x === (data.length-1) ? x=0 : x++
                 index = 0
-                setTimeout(() => interval = setInterval(type, 100), 200)
+                setTimeout(() => interval = setInterval(type, 100), 10)
             }
         }
         async function getRepoInfo() {

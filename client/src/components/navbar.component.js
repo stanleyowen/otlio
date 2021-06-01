@@ -23,6 +23,12 @@ const Navbar = ({ userData }) => {
             setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />])
             setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />])
         }
+
+        window.addEventListener('scroll', e => {
+            const nav = document.querySelector('.navbar')
+            if(window.pageYOffset > 0) nav.classList.add('navbar-shade')
+            else nav.classList.remove('navbar-shade')
+        })
     },[userData, theme])
 
     const toggleNavbar = (e) => {
