@@ -36,7 +36,7 @@ const Landing = () => {
             index++
             if(text === data[x]) {
                 clearInterval(interval)
-                setTimeout(() => interval = setInterval(backspace, 25), 1000)
+                setTimeout(() => interval = setInterval(backspace, 15), 1000)
             }
         }
         function backspace() {
@@ -47,7 +47,7 @@ const Landing = () => {
                 clearInterval(interval)
                 x === (data.length-1) ? x=0 : x++
                 index = 0
-                setTimeout(() => interval = setInterval(type, 100), 10)
+                setTimeout(() => interval = setInterval(type, 80), 100)
             }
         }
         async function getRepoInfo() {
@@ -70,7 +70,7 @@ const Landing = () => {
             })
         }
         getRepoInfo()
-        interval = setInterval(type, 100)
+        interval = setInterval(type, 80)
     },[currentversion])
     
     return (
@@ -100,15 +100,17 @@ const Landing = () => {
                 <div className="center-object full-width" data-aos="fade-left">
                     <CardActionArea>
                         <div className="p-12">
-                            <h1 className="raleway mb-20">Built-In Security</h1>
-                            <h3 className="raleway">Otlio Service Security is secure by default which uses:</h3>
-                            <ul className="ul-ml40 ul-mb10 medium">
-                                <li className="mt-20">Up-to-date Dependencies</li>
-                                <li><a className="link" href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard" target="_blank" rel="noreferrer">Advanced Encryption Standard</a> Algorithm</li>
-                                <li>TLS (Transport Layer Security) and SSL (Secure Socket Layer)</li>
-                                <li>Rate Limiter to Mitigate DDoS Attacks</li>
-                                <li>Technology to protect app from some well-known web vulnerabilities by setting HTTP headers appropriately.</li>
-                            </ul>
+                            <h1 className="raleway mb-20 blue-text">Security and Privacy</h1>
+                            <h3 className="raleway">
+                                We provide a secure environment for everyone to our services with:
+                                <ul className="ul-ml40 ul-mb10 medium">
+                                    <li className="mt-10"><span className="blue-text">Encryption Algorithm</span> such as HTTPS technology and Trransport Layer Security</li>
+                                    <li><span className="blue-text">Rate Limiting Algorithm</span> to prevent DDoS and minimizing end-to-end latency across large distributed systems</li>
+                                    <li><span className="blue-text">Security Alerts</span> by notifying users when something changed or suspicious login detected</li>
+                                    <li><span className="blue-text">Two Factor Authentication</span></li>
+                                    <li><span className="blue-text">Enhanced Database Protection</span></li>
+                                </ul>
+                            </h3>
                         </div>
                     </CardActionArea>
                 </div>
@@ -118,23 +120,12 @@ const Landing = () => {
                 <div className="center-object full-width" data-aos="fade-right">
                     <CardActionArea>
                         <div className="p-12">
-                            <h1 className="raleway mb-20">99% Uptime</h1>
-                            <h3 className="raleway">We are committed to making our products and services accessible for everyone, everywhere, and anytime.</h3>
-                            <h3 className="mt-20 raleway">Our infrastructures are configured to automatically switch to another available server when the server is down or under maintenance.</h3>
-                            <h3 className="raleway mt-20">Otlio Infrastructures are hosted on:</h3>
-                            <ul className="ul-ml40 ul-mb10 medium">
-                                <li className="mt-20">Netlify: <a className="link" href="https://otlio.netlify.app" target="_blank" rel="noreferrer">otlio.netlify.app</a></li>
-                                <li>Heroku:
-                                    <ul className="medium">
-                                        <li className="mt-10"><a className="link" href="https://otlio.herokuapp.com" target="_blank" rel="noreferrer">otlio.herokuapp.com</a> (US)</li>
-                                        <li><a className="link" href="https://otlio-eu.herokuapp.com" target="_blank" rel="noreferrer">otlio-eu.herokuapp.com</a> (EU)</li>
-                                        <li><a className="link" href="https://otlio-us.herokuapp.com" target="_blank" rel="noreferrer">otlio-us.herokuapp.com</a> (US)</li>
-                                    </ul>
-                                </li>
-                            </ul>
+                            <h1 className="raleway mb-20 blue-text">99% Uptime</h1>
+                            <h3 className="raleway">We are committed to making our products and services accessible for everyone with 99% uptime and three-way servers to improve our services.</h3>
+                            <h3 className="mt-20 raleway">Our infrastructures are configured to automatically switch to another available server in range when one server is down or under maintenance.</h3>
                         </div>
                     </CardActionArea>
-                    <div className="footer__socialBtn col-6 mt-10" data-aos="fade-up">
+                    <div className="footer__socialBtn col-6 mt-30" data-aos="fade-up">
                         <Tooltip title="Uptime Reports" arrow><a href="https://02zrgrp9.status.cron-job.org/" target="_blank" rel="noreferrer">
                             <FontAwesomeIcon icon={faRocket} style={{ fontSize: "1.8em" }} />
                         </a></Tooltip>
@@ -145,19 +136,18 @@ const Landing = () => {
                 </div>
                 {properties.cloud ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.cloud ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
             </div>
-            <div className="contact__container mb-40">
-                {properties.theme ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.theme ? "":"none ") + "center-object rounded-corner box-effect"} data-aos="fade-right" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622447717/otlio/9e1f47a80b0fee4283036db027d6e6ce_qryfyb.webp" alt="Dark Mode" onLoad={() => handleChange('theme', true)} />
+            <div className="contact__container mb-20">
+                {properties.github ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.github ? "":"none ") + "center-object"} data-aos="fade-right" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/589612f86db2a2b483b007bc2a1e9665_db0zwi.webp" alt="Open Source Project" onLoad={() => handleChange('github', true)} />
                 <div className="center-object full-width" data-aos="fade-left">
                     <CardActionArea>
                         <div className="p-12">
-                            <h1 className="raleway mb-20">Compatible with Dark Mode</h1>
-                            <h3 className="raleway">Otlio User Interface is also available in dark mode and allows user to switch smoothly between light and dark mode.</h3>
-                            <h3 className="raleway mt-20">Users are also allowed to automtically switch theme according to users' preferences or single theme.</h3>
+                            <h1 className="raleway mb-20">Open Source Project</h1>
+                            <h3 className="raleway">Otlio is completely an open source project which is hosted publicly on <a className="link" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">GitHub</a>.</h3>
                         </div>
                     </CardActionArea>
                 </div>
             </div>
-            <div className="contact__container mb-20 gray-bg">
+            <div className="contact__container mb-40 gray-bg">
                 <img className={(properties.support ? "":"none ") + "center-object phone-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" />
                 <div className="center-object full-width" data-aos="fade-right">
                     <CardActionArea><div className="p-12">
@@ -171,24 +161,6 @@ const Landing = () => {
                     </div>
                 </div>
                 {properties.support ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.support ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" onLoad={() => handleChange('support', true)} />
-            </div>
-            <div className="contact__container mb-40">
-                {properties.theme ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.github ? "":"none ") + "center-object"} data-aos="fade-right" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/589612f86db2a2b483b007bc2a1e9665_db0zwi.webp" alt="Open Source Project" onLoad={() => handleChange('github', true)} />
-                <div className="center-object full-width" data-aos="fade-left">
-                    <CardActionArea>
-                        <div className="p-12">
-                            <h1 className="raleway mb-20">Open Source Project</h1>
-                            <h3 className="raleway">Otlio is completely an open source project which is hosted publicly on <a className="link" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">GitHub</a>. Some objectives we made this project into open source are:</h3>
-                            <ul className="ul-ml40 ul-mb10 medium mb-20">
-                                <li className="mt-20"><b>Flexibility</b>, which can be customized to meet some prerequisites.</li>
-                                <li><b>Transparency</b>, which allow everyone to get full visibility into the code base, discussions, etc.</li>
-                                <li><b>Continuous Evolution</b>, for better code quality</li>
-                                <li><b>Security and Reliability</b></li>
-                            </ul>
-                        </div>
-                    </CardActionArea>
-                    <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" data-aos="fade-up" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
-                </div>
             </div>
             <footer className="footer">
 				<div>
