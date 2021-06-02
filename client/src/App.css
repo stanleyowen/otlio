@@ -931,6 +931,8 @@ blockquote em { font-style: italic; }
     justify-content: center;
     align-items: center;
 }
+.h2 { font-size: 20px; }
+.table-col-3 td { width: 33.3% !important; }
 .alignRight { text-align: right; }
 .rounded-corner { border-radius: 10px; }
 .block { display: block !important; }

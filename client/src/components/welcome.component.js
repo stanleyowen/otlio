@@ -3,9 +3,7 @@ import 'aos/dist/aos.css';
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Skeleton from '@material-ui/lab/Skeleton'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChartLine, faRocket } from '@fortawesome/free-solid-svg-icons'
-import { CardActionArea, Tooltip } from '@material-ui/core'
+import { CardActionArea } from '@material-ui/core'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
@@ -106,9 +104,9 @@ const Landing = () => {
                                 <ul className="ul-ml40 ul-mb10 medium">
                                     <li className="mt-10"><span className="blue-text">Encryption Algorithm</span> such as HTTPS technology and Trransport Layer Security</li>
                                     <li><span className="blue-text">Rate Limiting Algorithm</span> to prevent DDoS and minimizing end-to-end latency across large distributed systems</li>
-                                    <li><span className="blue-text">Security Alerts</span> by notifying users when something changed or suspicious login detected</li>
-                                    <li><span className="blue-text">Two Factor Authentication</span></li>
+                                    {/* <li><span className="blue-text">Two Factor Authentication</span></li> */}
                                     <li><span className="blue-text">Enhanced Database Protection</span></li>
+                                    <li><span className="blue-text">Security Alerts</span></li>
                                 </ul>
                             </h3>
                         </div>
@@ -121,18 +119,12 @@ const Landing = () => {
                     <CardActionArea>
                         <div className="p-12">
                             <h1 className="raleway mb-20 blue-text">99% Uptime</h1>
-                            <h3 className="raleway">We are committed to making our products and services accessible for everyone with 99% uptime and three-way servers to improve our services.</h3>
+                            <h3 className="raleway">We are committed to making our products and services <span className="blue-text">accessible for everyone</span> with 99% uptime and three-way servers to improve our services.</h3>
                             <h3 className="mt-20 raleway">Our infrastructures are configured to automatically switch to another available server in range when one server is down or under maintenance.</h3>
                         </div>
                     </CardActionArea>
-                    <div className="footer__socialBtn col-6 mt-30" data-aos="fade-up">
-                        <Tooltip title="Uptime Reports" arrow><a href="https://02zrgrp9.status.cron-job.org/" target="_blank" rel="noreferrer">
-                            <FontAwesomeIcon icon={faRocket} style={{ fontSize: "1.8em" }} />
-                        </a></Tooltip>
-                        <Tooltip title="Service Status" arrow><a href="https://otlio.statuspage.io/" target="_blank" rel="noreferrer">
-                            <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "1.8em" }} />
-                        </a></Tooltip>
-                    </div>
+                    <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://02zrgrp9.status.cron-job.org/" target="_blank" rel="noopener">Uptime Reports</a>
+                    <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://otlio.statuspage.io/" target="_blank" rel="noopener">Service Status</a>
                 </div>
                 {properties.cloud ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.cloud ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
             </div>
@@ -141,10 +133,23 @@ const Landing = () => {
                 <div className="center-object full-width" data-aos="fade-left">
                     <CardActionArea>
                         <div className="p-12">
-                            <h1 className="raleway mb-20">Open Source Project</h1>
-                            <h3 className="raleway">Otlio is completely an open source project which is hosted publicly on <a className="link" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">GitHub</a>.</h3>
+                            <h1 className="raleway mb-20 blue-text">Open Source Project</h1>
+                            <h3 className="raleway">Otlio is completely an open source project which is hosted publicly on <span className="blue-text">GitHub</span>.</h3>
                         </div>
                     </CardActionArea>
+                        <table className="table-col-3 monospace no-border full-width block h2" cellPadding="0" cellSpacing="0" data-aos="fade-right">
+                            <tr>
+                                <td className="isCentered">Stars</td>
+                                <td className="isCentered">Monthly Viewers</td>
+                                <td className="isCentered">Monthly Cloners</td>
+                            </tr>
+                            <tr>
+                                <td className="isCentered">12</td>
+                                <td className="isCentered">4432</td>
+                                <td className="isCentered">380</td>
+                            </tr>
+                        </table>
+                    <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
                 </div>
             </div>
             <div className="contact__container mb-40 gray-bg">
