@@ -67,24 +67,28 @@ const Landing = () => {
                 else setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Invalid API")
             })
         }
+        getRepoInfo()
+        interval = setInterval(type, 80)
+    },[currentversion])
+    
+    useEffect(() => {
         async function countAnimation() {
             ['star', 'viewer', 'cloner'].forEach(a => {
                 let i = 0
                 const element = document.getElementById(a)
                 const data = element.getAttribute(`data-${a}`)
                 async function updateValue() {
-                    if(i >= data) return;
-                    setTimeout(() => {element.innerText=i; updateValue()}, data < 50 ? 1000 : data < 500 ? 50 : 1)
-                    i++
+                    if(i >= data) return
+                    i = i + (data > 400 ? Math.round(data/200) : data > 200 ? 10 : data > 25 ? 2 : 1)
+                    if(i > data) i = data
+                    setTimeout(() => {element.innerText=i; updateValue()}, data < 50 ? 300 : data < 500 ? 30 : 15)
                 }
                 updateValue()
             })
         }
-        getRepoInfo()
-        countAnimation()
-        interval = setInterval(type, 80)
-    },[currentversion])
-    
+        if(repoInfo) countAnimation()
+    }, [repoInfo])
+
     return (
         <div>
             <div className="main">
@@ -151,18 +155,18 @@ const Landing = () => {
                             <h3 className="raleway">Otlio is completely an open source project which is hosted publicly on <span className="blue-text">GitHub</span>.</h3>
                         </div>
                     </CardActionArea>
-                        <table className="table-col-3 monospace no-border full-width block h2" cellPadding="0" cellSpacing="0" data-aos="fade-right">
-                            <tr>
-                                <td className="isCentered">Stars</td>
-                                <td className="isCentered">Monthly Viewers</td>
-                                <td className="isCentered">Monthly Cloners</td>
-                            </tr>
-                            <tr>
-                                <td className="isCentered" id="star" data-star="12">N/A</td>
-                                <td className="isCentered" id="viewer" data-viewer="4432">N/A</td>
-                                <td className="isCentered"  id="cloner" data-cloner="380">N/A</td>
-                            </tr>
-                        </table>
+                    <table className="table-col-3 monospace no-border full-width block h2" cellPadding="0" cellSpacing="0" data-aos="fade-right" id="counter">
+                        <tr>
+                            <td className="isCentered">Stars</td>
+                            <td className="isCentered">Monthly Viewers</td>
+                            <td className="isCentered">Monthly Cloners</td>
+                        </tr>
+                        <tr>
+                            <td className="isCentered" id="star" data-star={repoInfo[0]}>N/A</td>
+                            <td className="isCentered" id="viewer" data-viewer="4516">N/A</td>
+                            <td className="isCentered" id="cloner" data-cloner="384">N/A</td>
+                        </tr>
+                    </table>
                     <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
                 </div>
             </div>
