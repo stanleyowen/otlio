@@ -86,7 +86,9 @@ const Landing = () => {
                 updateValue()
             })
         }
-        if(repoInfo) countAnimation()
+        new IntersectionObserver(a => {
+            if(a[0].isIntersecting === true && repoInfo) countAnimation()
+        }, { threshold: [1] }).observe(document.getElementById('counter'))
     }, [repoInfo])
 
     return (
@@ -120,7 +122,7 @@ const Landing = () => {
                             <h3 className="raleway">
                                 We provide a secure environment for everyone to our services with:
                                 <ul className="ul-ml40 ul-mb10 medium">
-                                    <li className="mt-10"><span className="blue-text">Encryption Algorithm</span> such as HTTPS technology and Trransport Layer Security</li>
+                                    <li className="mt-10"><span className="blue-text">Encryption Algorithm</span> such as HTTPS technology and Transport Layer Security</li>
                                     <li><span className="blue-text">Rate Limiting Algorithm</span> to prevent DDoS and minimizing end-to-end latency across large distributed systems</li>
                                     {/* <li><span className="blue-text">Two Factor Authentication</span></li> */}
                                     <li><span className="blue-text">Enhanced Database Protection</span></li>
@@ -156,16 +158,16 @@ const Landing = () => {
                         </div>
                     </CardActionArea>
                     <table className="table-col-3 monospace no-border full-width block h2" cellPadding="0" cellSpacing="0" data-aos="fade-right" id="counter">
-                        <tr>
+                        <thead><tr>
                             <td className="isCentered">Stars</td>
                             <td className="isCentered">Monthly Viewers</td>
                             <td className="isCentered">Monthly Cloners</td>
-                        </tr>
-                        <tr>
+                        </tr></thead>
+                        <tbody><tr style={{background: 'none'}}>
                             <td className="isCentered" id="star" data-star={repoInfo[0]}>N/A</td>
                             <td className="isCentered" id="viewer" data-viewer="4516">N/A</td>
                             <td className="isCentered" id="cloner" data-cloner="384">N/A</td>
-                        </tr>
+                        </tr></tbody>
                     </table>
                     <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
                 </div>
