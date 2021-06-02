@@ -67,7 +67,21 @@ const Landing = () => {
                 else setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Invalid API")
             })
         }
+        async function countAnimation() {
+            ['star', 'viewer', 'cloner'].forEach(a => {
+                let i = 0
+                const element = document.getElementById(a)
+                const data = element.getAttribute(`data-${a}`)
+                async function updateValue() {
+                    if(i >= data) return;
+                    setTimeout(() => {element.innerText=i; updateValue()}, data < 50 ? 1000 : data < 500 ? 50 : 1)
+                    i++
+                }
+                updateValue()
+            })
+        }
         getRepoInfo()
+        countAnimation()
         interval = setInterval(type, 80)
     },[currentversion])
     
@@ -144,9 +158,9 @@ const Landing = () => {
                                 <td className="isCentered">Monthly Cloners</td>
                             </tr>
                             <tr>
-                                <td className="isCentered">12</td>
-                                <td className="isCentered">4432</td>
-                                <td className="isCentered">380</td>
+                                <td className="isCentered" id="star" data-star="12">N/A</td>
+                                <td className="isCentered" id="viewer" data-viewer="4432">N/A</td>
+                                <td className="isCentered"  id="cloner" data-cloner="380">N/A</td>
                             </tr>
                         </table>
                     <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
