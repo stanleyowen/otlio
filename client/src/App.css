@@ -537,7 +537,6 @@ tbody tr:hover {
     grid-template-columns: auto auto auto;
     margin: 20px;
 }
-/* body.dark .projects__card { box-shadow: 1px 1px 15px #222222; }
 .projects__card {
     padding: 15px 10px;
     display: block;
@@ -552,7 +551,7 @@ tbody tr:hover {
     box-shadow: 1px 3px 30px #dee2e6;
 }
 .projects__card .col { width: 30%; }
-.projects__card .col:not(:first-child) { width: 70%; } */
+.projects__card .col:not(:first-child) { width: 70%; }
 .projects__title { font-weight: bold; font-size: 20px; }
 .projects__description { opacity: 0; }
 .projects__card:hover .projects__description { opacity: 1; }
