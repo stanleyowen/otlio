@@ -195,7 +195,7 @@ const Landing = () => {
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
+                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
                             <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
@@ -204,7 +204,7 @@ const Landing = () => {
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
+                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
                             <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
@@ -213,7 +213,7 @@ const Landing = () => {
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
+                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
                             <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
@@ -222,7 +222,7 @@ const Landing = () => {
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
+                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
                             <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
@@ -231,7 +231,7 @@ const Landing = () => {
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
+                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
                             <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
@@ -240,7 +240,7 @@ const Landing = () => {
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
+                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
                             <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>

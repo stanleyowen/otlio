@@ -32,6 +32,8 @@ body.dark tbody tr:hover {
     background-color: #333333;
     transition: all .4s;
 }
+body.dark .projects__card { box-shadow: 1px 1px 15px #222222; }
+body.dark .projects__card:hover { box-shadow: 1px 1px 15px rgb(15, 15, 15); }
 body.dark .btn__outline { color: #7bb4ff; border: 2px solid #7bb4ff; }
 body.dark .btn__outline:hover { background-color: #7bb4ff; color: #FFFFFF; }
 body.dark .btn__outline:focus,
