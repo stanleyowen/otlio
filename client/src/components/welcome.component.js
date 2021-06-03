@@ -193,55 +193,55 @@ const Landing = () => {
             </div>
             <div className="projects__container">
                 <div className="m-10">
-                    <div className="projects__card col">
-                        <div className="blue-text">
+                    <div className="projects__card">
+                        <div className="blue-text flex">
                             <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace">Hello World</p>
+                            <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
                     </div>
                 </div>
                 <div className="m-10">
-                    <div className="projects__card col">
-                        <div className="blue-text">
+                    <div className="projects__card">
+                        <div className="blue-text flex">
                             <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace">Hello World</p>
+                            <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
                     </div>
                 </div>
                 <div className="m-10">
-                    <div className="projects__card col">
-                        <div className="blue-text">
+                    <div className="projects__card">
+                        <div className="blue-text flex">
                             <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace">Hello World</p>
+                            <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
                     </div>
                 </div>
                 <div className="m-10">
-                    <div className="projects__card col">
-                        <div className="blue-text">
+                    <div className="projects__card">
+                        <div className="blue-text flex">
                             <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace">Hello World</p>
+                            <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
                     </div>
                 </div>
                 <div className="m-10">
-                    <div className="projects__card col">
-                        <div className="blue-text">
+                    <div className="projects__card">
+                        <div className="blue-text flex">
                             <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace">Hello World</p>
+                            <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
                     </div>
                 </div>
                 <div className="m-10">
-                    <div className="projects__card col">
-                        <div className="blue-text">
+                    <div className="projects__card">
+                        <div className="blue-text flex">
                             <FontAwesomeIcon className="col isCentered" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace">Hello World</p>
+                            <p className="h2 col monospace m-auto">Hello World</p>
                         </div>
                         <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
                     </div>
