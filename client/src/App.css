@@ -539,6 +539,7 @@ tbody tr:hover {
     grid-template-columns: auto auto auto;
     margin: 20px;
 }
+#additional-feature { grid-template-columns: 33.3% 33.3% 33.3%; }
 .projects__card {
     padding: 15px 10px;
     display: block;
@@ -1081,6 +1082,7 @@ footer a:visited { color: #FFF; }
 @media only screen and (max-width: 900px) {
     .body__aboutLeft,.body__aboutRight { font-size: 320px; }
     .projects__container { grid-template-columns: auto auto; }
+    #additional-feature { grid-template-columns: 50% 50%; }
     .privacy-policy { margin: 0 100px; }
 }
 @media only screen and (max-width: 800px) {
@@ -1103,7 +1105,6 @@ footer a:visited { color: #FFF; }
     .body__aboutRight {
         flex: 0.5!important;
     }
-    .projects__container { grid-template-columns: auto; }
     .contact { margin: auto 25px -70px 25px; }
     .contact__me { padding: 10px; text-align: center; }
     .modal__container { margin: 5% auto; }
@@ -1115,6 +1116,8 @@ footer a:visited { color: #FFF; }
     .center-object { max-width: 100%; }
 }
 @media only screen and (max-width: 600px) {
+    .projects__container { grid-template-columns: auto; }
+    #additional-feature { grid-template-columns: 100%; }
     .contact__container p { padding: 0px !important; }
     .contact__container { grid-template-columns: auto; }
     .phone-device { display: block; }

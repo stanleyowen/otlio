@@ -4,8 +4,8 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Skeleton from '@material-ui/lab/Skeleton'
 import { CardActionArea } from '@material-ui/core'
-import { faDraftingCompass, faFingerprint, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDraftingCompass, faFingerprint, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
@@ -191,7 +191,7 @@ const Landing = () => {
                     {properties.support ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.support ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" onLoad={() => handleChange('support', true)} />
                 </div>
             </div>
-            <div className="projects__container">
+            <div className="projects__container" id="additional-feature">
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
