@@ -146,7 +146,7 @@ const Login = ({ userData }) => {
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
-                                <div id="otp" className="otp flex justify-center isCentered">
+                                <div id="otp" className="otp flex-wrap justify-center isCentered">
                                     <input id="token-1" /><input id="token-2" /><input id="token-3" />
                                     <input id="token-4" /><input id="token-5" /><input id="token-6" />
                                     { data.isBackupCode ? ([<input id="token-7" />,<input id="token-8" />]) : null }
@@ -155,9 +155,9 @@ const Login = ({ userData }) => {
                         </div>
                         <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => {handleData('isBackupCode', !data.isBackupCode); document.getElementById('token-1').focus()}}>Backup Codes</button></p>
                         <p className="isCentered mt-10">Hasn't Received the Code? <button type="button" className="link-btn link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</button></p>
-                        <div className="flex isCentered">
-                            <p><button type="reset" className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
-                            <p><button type="submit" className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="verify">Verify</button></p>
+                        <div className="contact__container isCentered no-padding">
+                            <p className="pr-10"><button type="reset" className="oauth-box google isCentered block mt-10 mb-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
+                            <p className="pl-10"><button type="submit" className="oauth-box google isCentered block mt-10 p-12 button" id="verify">Verify</button></p>
                         </div>
                     </form>
                 </div>

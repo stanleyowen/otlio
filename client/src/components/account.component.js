@@ -367,7 +367,7 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
-                                            <div id="otp1" className="otp flex justify-center isCentered">
+                                            <div id="otp1" className="otp flex-wrap justify-center isCentered">
                                                 <input id="token-1" /><input id="token-2" /><input id="token-3" />
                                                 <input id="token-4" /><input id="token-5" /><input id="token-6" />
                                                 { data.isBackupCode ? ([<input id="token-7" />,<input id="token-8" />]) : null }
@@ -404,7 +404,7 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="otp-token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
-                                            <div id="otp2" className="otp flex justify-center isCentered">
+                                            <div id="otp2" className="otp flex-wrap justify-center isCentered">
                                                 <input id="otp-token-1" /><input id="otp-token-2" /><input id="otp-token-3" />
                                                 <input id="otp-token-4" /><input id="otp-token-5" /><input id="otp-token-6" />
                                                 { data.isBackupCode ? ([<input id="otp-token-7" />, <input id="otp-token-8" />]) : null }
