@@ -4,7 +4,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Skeleton from '@material-ui/lab/Skeleton'
 import { CardActionArea } from '@material-ui/core'
-import { faFingerprint, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { faDraftingCompass, faFingerprint, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
@@ -195,55 +195,28 @@ const Landing = () => {
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace m-auto">Hello World</p>
+                            <FontAwesomeIcon className="col isCentered blue-text" icon={faFingerprint} size="3x" />
+                            <p className="h2 col monospace m-auto">2FA (Two Factor Authentication)</p>
                         </div>
-                        <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
+                        <p className="raleway mt-10 p-12">A security control that requires users to verify their identities before gaining access.</p>
                     </div>
                 </div>
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
                             <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace m-auto">Hello World</p>
+                            <p className="h2 col monospace m-auto">Continuous Updates</p>
                         </div>
-                        <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
+                        <p className="raleway mt-10 p-12">We continually deploy improvements, bug fixes, updates, and new features.</p>
                     </div>
                 </div>
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace m-auto">Hello World</p>
+                            <FontAwesomeIcon className="col isCentered blue-text" icon={faDraftingCompass} size="3x" />
+                            <p className="h2 col monospace m-auto">Drag and Drop</p>
                         </div>
-                        <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
-                    </div>
-                </div>
-                <div className="m-10">
-                    <div className="projects__card">
-                        <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace m-auto">Hello World</p>
-                        </div>
-                        <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
-                    </div>
-                </div>
-                <div className="m-10">
-                    <div className="projects__card">
-                        <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace m-auto">Hello World</p>
-                        </div>
-                        <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
-                    </div>
-                </div>
-                <div className="m-10">
-                    <div className="projects__card">
-                        <div className="blue-text flex">
-                            <FontAwesomeIcon className="col isCentered blue-text" icon={faSyncAlt} size="3x" />
-                            <p className="h2 col monospace m-auto">Hello World</p>
-                        </div>
-                        <p className="raleway mt-10 p-12">Join millions of people getting more organized and productive for free</p>
+                        <p className="raleway mt-10 p-12">Simply drag the task(s) and drop onto the desired position!</p>
                     </div>
                 </div>
             </div>
