@@ -1,6 +1,6 @@
 import aos from 'aos';
-import 'aos/dist/aos.css';
 import axios from 'axios'
+import 'aos/dist/aos.css'
 import React, { useEffect, useState } from 'react'
 import Skeleton from '@material-ui/lab/Skeleton'
 import { CardActionArea } from '@material-ui/core'
@@ -13,7 +13,10 @@ const GITHUB_API = "https://api.github.com/repos/stanleyowen/otlio"
 
 const Landing = () => {
     aos.init()
-    const [repoInfo, setRepoInfo] = useState([])
+    const star = document.getElementById('star')
+    const stars = document.getElementById('stars')
+    const license = document.getElementById('license')
+    const version = document.querySelector('meta[name="version"]').content
     const [properties, setProperties] = useState({
         organizingEasier: false,
         security: false,
@@ -22,16 +25,29 @@ const Landing = () => {
         github: false,
         support: false
     })
-    const currentversion = document.querySelector('meta[name="version"]').content
 
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     useEffect(() => {
+        var x = 0; var index = 0; var interval
         const element = document.querySelector('.text-animation')
         const data = element.getAttribute('data-elements').split(',')
-        var x = 0; var index = 0; var interval
-        function type() {
-            var text = data[x].substring(0, index+1)
+        async function getRepoInfo() {
+            await axios.all([axios.get(GITHUB_API), axios.get(`${GITHUB_API}/releases`)])
+            .then(res => {
+                var latestVersion = res[1].data[0].tag_name.slice(1)
+                star.innerText = res[0].data.stargazers_count
+                stars.setAttribute('data-stars', star.innerText)
+                license.innerText = res[0].data.license.spdx_id
+                if(version !== latestVersion) setNotification(NOTIFICATION_TYPES.WARNING, `Version ${latestVersion} is available`)
+            })
+            .catch(err => {
+                if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, `ERR: ${err.response.data.message}`)
+                else setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Couldn't Fetch GitHub Data")
+            })
+        }
+        async function type() {
+            const text = data[x].substring(0, index+1)
             element.innerText = text
             index++
             if(text === data[x]) {
@@ -39,43 +55,24 @@ const Landing = () => {
                 setTimeout(() => interval = setInterval(backspace, 15), 1000)
             }
         }
-        function backspace() {
-            var text = data[x].substring(0, index-1)
+        async function backspace() {
+            const text = data[x].substring(0, index-1)
             element.innerText = text
             index--
             if(text === '') {
+                index = 0
                 clearInterval(interval)
                 x === (data.length-1) ? x=0 : x++
-                index = 0
                 setTimeout(() => interval = setInterval(type, 80), 100)
             }
         }
-        async function getRepoInfo() {
-            await axios.get(GITHUB_API)
-            .then(async res => {
-                setRepoInfo([res.data.stargazers_count, res.data.license.spdx_id])
-                await axios.get(`${GITHUB_API}/releases`)
-                .then(res => {
-                    let latestVersion =  res.data[0] ? res.data[0].tag_name.slice(1) : '1.0.0'
-                    if(currentversion !== latestVersion) setNotification(NOTIFICATION_TYPES.WARNING, `Version ${latestVersion} is available`)
-                })
-                .catch(err => {
-                    if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message)
-                    else setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Couldn't Check for Updates")
-                })
-            })
-            .catch(err => {
-                if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, 'ERR: '+err.response.data.message)
-                else setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Invalid API")
-            })
-        }
-        getRepoInfo()
+        if(star && license && version) getRepoInfo()
         interval = setInterval(type, 80)
-    },[currentversion])
-    
+    },[star, stars, license, version])
+
     useEffect(() => {
         async function countAnimation() {
-            ['star', 'viewer', 'cloner'].forEach(a => {
+            ['stars', 'viewer', 'cloner'].forEach(a => {
                 let i = 0
                 const element = document.getElementById(a)
                 const data = element.getAttribute(`data-${a}`)
@@ -89,9 +86,9 @@ const Landing = () => {
             })
         }
         new IntersectionObserver(a => {
-            if(a[0].isIntersecting === true && repoInfo) countAnimation()
+            if(a[0].isIntersecting === true && stars && stars.getAttribute('data-stars')) countAnimation()
         }, { threshold: [1] }).observe(document.getElementById('counter'))
-    }, [repoInfo])
+    }, [stars])
 
     return (
         <div>
@@ -110,9 +107,9 @@ const Landing = () => {
                 </div>
             </div>
             <div className="isCentered badges mt-40 mb-40">
-                <a href="https://github.com/stanleyowen/otlio/stargazers" target="_blank" rel="noopener"><button className="btn__label">Stars</button><button className="btn__value">{repoInfo[0]}</button></a>
-                <a href="https://github.com/stanleyowen/otlio/blob/master/LICENSE" target="_blank" rel="noopener"><button className="btn__label">License</button><button className="btn__value">{repoInfo[1]}</button></a>
-                <a href="https://github.com/stanleyowen/otlio/releases" target="_blank" rel="noopener"><button className="btn__label">Version</button><button className="btn__value">{currentversion}</button></a>
+                <a href="https://github.com/stanleyowen/otlio/stargazers" target="_blank" rel="noopener"><button className="btn__label">Stars</button><button className="btn__value" id="star" /></a>
+                <a href="https://github.com/stanleyowen/otlio/blob/master/LICENSE" target="_blank" rel="noopener"><button className="btn__label">License</button><button className="btn__value" id="license" /></a>
+                <a href="https://github.com/stanleyowen/otlio/releases" target="_blank" rel="noopener"><button className="btn__label">Version</button><button className="btn__value">{version}</button></a>
             </div>
             <h1 className="mt-40 isCentered monospace blue-text">Features</h1>
             <div id="feature">
@@ -127,7 +124,6 @@ const Landing = () => {
                                     <ul className="ul-ml40 ul-mb10 medium">
                                         <li className="mt-10"><span className="blue-text">Encryption Algorithm</span> such as HTTPS technology and Transport Layer Security</li>
                                         <li><span className="blue-text">Rate Limiting Algorithm</span> to prevent DDoS and minimizing end-to-end latency across large distributed systems</li>
-                                        {/* <li><span className="blue-text">Two Factor Authentication</span></li> */}
                                         <li><span className="blue-text">Enhanced Database Protection</span></li>
                                         <li><span className="blue-text">Security Alerts</span></li>
                                     </ul>
@@ -141,8 +137,8 @@ const Landing = () => {
                     <div className="center-object full-width" data-aos="fade-right">
                         <CardActionArea className="rounded-corner">
                             <div className="p-12">
-                                <h1 className="raleway mb-20 blue-text">99.9% Uptime</h1>
-                                <h3 className="raleway">We are committed to making our products and services <span className="blue-text">accessible for everyone</span> with 99.9% uptime and three-way servers to improve our services.</h3>
+                                <h1 className="raleway mb-20 blue-text">99% Uptime</h1>
+                                <h3 className="raleway">We are committed to making our products and services <span className="blue-text">accessible for everyone</span> with 99% uptime and three-way servers to improve our services.</h3>
                                 <h3 className="mt-20 raleway">Our infrastructures are configured to automatically switch to another available server in range when one server is down or under maintenance.</h3>
                             </div>
                         </CardActionArea>
@@ -167,7 +163,7 @@ const Landing = () => {
                                 <td className="isCentered">Monthly Cloners</td>
                             </tr></thead>
                             <tbody><tr style={{background: 'none'}}>
-                                <td className="isCentered" id="star" data-star={repoInfo[0]}>N/A</td>
+                                <td className="isCentered" id="stars">N/A</td>
                                 <td className="isCentered" id="viewer" data-viewer="4516">N/A</td>
                                 <td className="isCentered" id="cloner" data-cloner="384">N/A</td>
                             </tr></tbody>
