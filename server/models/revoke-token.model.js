@@ -11,9 +11,7 @@ const blacklistedTokenSchema = new Schema ({
     token: {
         data: {
             type: String,
-            required: true,
-            minlength: 544,
-            maxlength: 544
+            required: true
         }, iv: {
             type: String,
             required: true,
