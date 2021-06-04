@@ -14,6 +14,7 @@ const Login = ({ userData }) => {
     const {server: SERVER_URL} = userData
     const {mfa} = userData.type
     const {email} = userData.credentials
+    const next = new URLSearchParams(window.location.search).get('next')
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,
@@ -75,13 +76,13 @@ const Login = ({ userData }) => {
         if(((userData.status === 302 && !properties.verify && mfa) || properties.sendOTP) && SERVER_URL) {properties.sendOTP = false; sendOTP()}
     }, [userData, properties, data, SERVER_URL])
 
-    const LogIn = (e) => {
+    const LogIn = e => {
         e.preventDefault()
         const btn = document.getElementById('login')
         async function submitData() {
             btn.innerText = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/login`, login, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = '/')
+            .then(() => window.location = next ? next : '/')
             .catch(err => {
                 if(err.response.status === 302) {handleChange('sendOTP', true); handleChange('verify', true)}
                 else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
@@ -104,7 +105,7 @@ const Login = ({ userData }) => {
         async function submitData() {
             btn.innerText = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/otp`, {...data, rememberMe: login.rememberMe}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = '/')
+            .then(() => window.location = next ? next : '/')
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
                 document.getElementById('token-1').focus()
@@ -222,7 +223,7 @@ const Login = ({ userData }) => {
         </div>
         <div className="contact__container isCentered mb-10">
             <p className="mb-10"><a className="link" href="/reset-password">Forgot Password?</a></p>
-            <p>Haven't have an Account? <a className="link" href="/get-started">Get Started</a></p>
+            <p>Haven't have an Account? <a className="link" href={"/get-started"+(next?`?next=${encodeURIComponent(next)}`:'')}>Get Started</a></p>
         </div>
     </div>)
 }

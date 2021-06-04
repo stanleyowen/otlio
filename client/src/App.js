@@ -26,7 +26,7 @@ import TermsAndConditions from './components/terms-and-condition.component'
 export default function App() {
   const [server, setServer] = useState()
   const [userData, setUserData] = useState({ isLoading: true, type: {}, credentials: {} })
-  const privateRoute = ['', 'edit', 'account']
+  const protectedRoute = ['', 'edit', 'account']
   const redirectRoute = ['welcome', 'login', 'get-started']
   const server_list = ['http://localhost:5000', 'https://otlio-us.herokuapp.com', 'https://otlio-eu.herokuapp.com']
   const info = JSON.parse(localStorage.getItem('info'))
@@ -40,8 +40,8 @@ export default function App() {
       if(window.location.pathname.split('/')[1] === a) window.location='/'
     })
   }else if(!userData.isLoading && !userData.authenticated){
-    privateRoute.forEach(a => {
-      if(window.location.pathname.split('/')[1] === a) window.location='/welcome'
+    protectedRoute.forEach(a => {
+      if(window.location.pathname.split('/')[1] === a) window.location=`/login?next=${encodeURIComponent(window.location.pathname)}`
     })
   }
 

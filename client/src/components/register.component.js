@@ -14,6 +14,7 @@ const Register = ({ userData }) => {
     const {status, server: SERVER_URL} = userData
     const {verifyAccount} = userData.type
     const {email} = userData.credentials
+    const next = new URLSearchParams(window.location.search).get('next')
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,
@@ -147,7 +148,7 @@ const Register = ({ userData }) => {
                 </form>
             </div>
         </div>
-        <p className="isCentered mb-10">Already have an Account? <a className="link" href="/login">Login</a></p>
+        <p className="isCentered mb-10">Already have an Account? <a className="link" href={"/login"+(next?`?next=${encodeURIComponent(next)}`:'')}>Login</a></p>
     </div>)
 }
 
