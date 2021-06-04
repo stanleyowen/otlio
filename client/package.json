@@ -11,21 +11,22 @@
     "@material-ui/core": "^4.11.4",
     "@material-ui/lab": "*",
     "@material-ui/pickers": "^3.3.10",
-    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/jest-dom": "^5.13.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.1.9",
     "aos": "^2.3.4",
     "axios": "^0.21.1",
     "cross-env": "^7.0.3",
     "date-fns": "^2.22.1",
-    "dompurify": "^2.2.8",
+    "dompurify": "^2.2.9",
     "js-file-download": "^0.4.12",
     "react": "^17.0.2",
+    "react-app-polyfill": "^2.0.0",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^2.0.1"
   },
   "scripts": {
     "start": "cross-env REACT_APP_VERSION=$npm_package_version react-scripts start",
@@ -43,12 +44,14 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not op_mini all",
+      "IE 11"
     ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
-      "last 1 safari version"
+      "last 1 safari version",
+      "IE 11"
     ]
   }
 }
