@@ -41,7 +41,10 @@ export default function App() {
     })
   }else if(!userData.isLoading && !userData.authenticated) {
     protectedRoute.forEach(a => {
-      if(window.location.pathname.split('/')[1] === a) window.location=`/login?next=${encodeURIComponent(window.location.pathname)}`
+      if(window.location.pathname.split('/')[1] === a){
+        if(window.location.pathname.split('/')[1] !== 'app') window.location=`/login?next=${encodeURIComponent(window.location.pathname)}`
+        else window.location = '/login'
+      }
     })
   }
 
