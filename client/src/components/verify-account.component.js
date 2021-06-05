@@ -11,7 +11,7 @@ const VerifyAccount = ({ userData }) => {
             await axios.get(`${SERVER_URL}/account/verify`, { params: { id, token, type: 'accountVerification' }, withCredentials: true })
             .then(res => {
                 localStorage.setItem('info', JSON.stringify(res.data))
-                window.location='/'
+                window.location='/app'
             })
             .catch(err => {
                 if(err.response.status >= 500) setTimeout(() => validateData(), 5000)

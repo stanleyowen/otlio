@@ -60,7 +60,7 @@ const ResetPassword = ({ userData }) => {
         async function submitData() {
             btn.innerText = "Saving..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/reset-password`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = '/')
+            .then(() => window.location = '/app')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerText = "Save Password"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }

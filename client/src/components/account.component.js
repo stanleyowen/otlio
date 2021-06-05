@@ -255,7 +255,7 @@ const Account = ({ userData }) => {
                                     </button>
                                 </div>
                                 <div className="m-10">
-                                    <button className="oauth-box primary mt-20" onClick={() => window.location='logout'}>
+                                    <button className="oauth-box primary mt-20" onClick={() => window.location='/logout'}>
                                         <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
                                     </button>
                                 </div>

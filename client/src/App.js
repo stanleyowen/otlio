@@ -6,7 +6,7 @@ import './App.min.css'
 import { setNotification, NOTIFICATION_TYPES } from './libraries/setNotification'
 
 import Navbar from './components/navbar.component'
-import Welcome from './components/welcome.component'
+import Landing from './components/landing.component'
 import Register from './components/register.component'
 import Login from './components/login.component'
 import Logout from './components/logout.component'
@@ -26,8 +26,8 @@ import TermsAndConditions from './components/terms-and-condition.component'
 export default function App() {
   const [server, setServer] = useState()
   const [userData, setUserData] = useState({ isLoading: true, type: {}, credentials: {} })
-  const protectedRoute = ['', 'edit', 'account']
-  const redirectRoute = ['welcome', 'login', 'get-started']
+  const protectedRoute = ['app', 'edit', 'account']
+  const redirectRoute = ['login', 'get-started']
   const server_list = ['http://localhost:5000', 'https://otlio-us.herokuapp.com', 'https://otlio-eu.herokuapp.com']
   const info = JSON.parse(localStorage.getItem('info'))
 
@@ -35,11 +35,11 @@ export default function App() {
     setNotification(info.status === 200 ? NOTIFICATION_TYPES.SUCCESS : NOTIFICATION_TYPES.DANGER, info.message)
     localStorage.removeItem('info')
   }
-  if(!userData.isLoading && userData.authenticated){
+  if(!userData.isLoading && userData.authenticated) {
     redirectRoute.forEach(a => {
-      if(window.location.pathname.split('/')[1] === a) window.location='/'
+      if(window.location.pathname.split('/')[1] === a) window.location='/app'
     })
-  }else if(!userData.isLoading && !userData.authenticated){
+  }else if(!userData.isLoading && !userData.authenticated) {
     protectedRoute.forEach(a => {
       if(window.location.pathname.split('/')[1] === a) window.location=`/login?next=${encodeURIComponent(window.location.pathname)}`
     })
@@ -89,8 +89,8 @@ export default function App() {
     <Router>
       <Navbar userData={userData} />
       <Switch>
-        <Route path='/' exact component={() => <Home userData={userData} />} />
-        <Route path='/welcome' component={Welcome} />
+        <Route path='/' exact component={Landing} />
+        <Route path='/app' component={() => <Home userData={userData} />} />
         <Route path='/get-started' component={() => <Register userData={userData} />} />
         <Route path='/login' component={() => <Login userData={userData} />} />
         <Route path='/logout' component={() => <Logout userData={userData} />} />

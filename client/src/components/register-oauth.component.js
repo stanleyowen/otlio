@@ -43,7 +43,7 @@ const OAuth = ({ userData }) => {
         async function submitData() {
             btn.innerText = "Creating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/oauth/${service}/register`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = '/')
+            .then(() => window.location = '/app')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerText = "Create Account"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }

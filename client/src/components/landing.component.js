@@ -1,4 +1,4 @@
-import aos from 'aos';
+import aos from 'aos'
 import axios from 'axios'
 import 'aos/dist/aos.css'
 import React, { useEffect, useState } from 'react'
@@ -21,7 +21,7 @@ const Landing = () => {
         organizingEasier: false,
         security: false,
         cloud: false,
-        theme: false,
+        // theme: false,
         github: false,
         support: false
     })
@@ -29,9 +29,6 @@ const Landing = () => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     useEffect(() => {
-        var x = 0; var index = 0; var interval
-        const element = document.querySelector('.text-animation')
-        const data = element.getAttribute('data-elements').split(',')
         async function getRepoInfo() {
             await axios.all([axios.get(GITHUB_API), axios.get(`${GITHUB_API}/releases`)])
             .then(res => {
@@ -42,10 +39,40 @@ const Landing = () => {
                 if(version !== latestVersion) setNotification(NOTIFICATION_TYPES.WARNING, `Version ${latestVersion} is available`)
             })
             .catch(err => {
-                if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, `ERR: ${err.response.data.message}`)
-                else setNotification(NOTIFICATION_TYPES.DANGER, "ERR: Couldn't Fetch GitHub Data")
+                if(err.response.data.message) setNotification(NOTIFICATION_TYPES.DANGER, `Error: ${err.response.data.message}`)
+                else setNotification(NOTIFICATION_TYPES.DANGER, "Error in Fetching GitHub Data")
             })
         }
+        if(star && license && version) getRepoInfo()
+    },[star, stars, license, version])
+
+    useEffect(() => {
+        async function countAnimation() {
+            ['stars', 'viewer', 'cloner'].forEach(a => {
+                let i = 0
+                const element = document.getElementById(a)
+                const data = element.getAttribute(`data-${a}`)
+                async function updateValue() {
+                    if(i >= data) return
+                    i = i + (data > 400 ? Math.round(data/200) : data > 200 ? 10 : data > 25 ? 2 : 1)
+                    if(i > data) i = data
+                    setTimeout(() => {
+                        element.innerText=i
+                        updateValue()
+                    }, data < 50 ? 300 : data < 500 ? 30 : 15)
+                }
+                updateValue()
+            })
+        }
+        new IntersectionObserver(a => {
+            if(a[0].isIntersecting === true && stars && stars.getAttribute('data-stars')) countAnimation()
+        }, { threshold: [1] }).observe(document.getElementById('counter'))
+    }, [stars])
+
+    useEffect(() => {
+        var x = 0; var index = 0; var interval
+        const element = document.querySelector('.text-animation')
+        const data = element.getAttribute('data-elements').split(',')
         async function type() {
             const text = data[x].substring(0, index+1)
             element.innerText = text
@@ -66,29 +93,8 @@ const Landing = () => {
                 setTimeout(() => interval = setInterval(type, 80), 100)
             }
         }
-        if(star && license && version) getRepoInfo()
         interval = setInterval(type, 80)
-    },[star, stars, license, version])
-
-    useEffect(() => {
-        async function countAnimation() {
-            ['stars', 'viewer', 'cloner'].forEach(a => {
-                let i = 0
-                const element = document.getElementById(a)
-                const data = element.getAttribute(`data-${a}`)
-                async function updateValue() {
-                    if(i >= data) return
-                    i = i + (data > 400 ? Math.round(data/200) : data > 200 ? 10 : data > 25 ? 2 : 1)
-                    if(i > data) i = data
-                    setTimeout(() => {element.innerText=i; updateValue()}, data < 50 ? 300 : data < 500 ? 30 : 15)
-                }
-                updateValue()
-            })
-        }
-        new IntersectionObserver(a => {
-            if(a[0].isIntersecting === true && stars && stars.getAttribute('data-stars')) countAnimation()
-        }, { threshold: [1] }).observe(document.getElementById('counter'))
-    }, [stars])
+    }, [])
 
     return (
         <div>
@@ -153,7 +159,7 @@ const Landing = () => {
                         <CardActionArea className="rounded-corner">
                             <div className="p-12">
                                 <h1 className="raleway mb-20 blue-text">Open Source Project</h1>
-                                <h3 className="raleway">Otlio is completely an open source project which is hosted publicly on <span className="blue-text">GitHub</span>.</h3>
+                                <h3 className="raleway">Otlio is an open source project which is hosted publicly on <span className="blue-text">GitHub</span>.</h3>
                             </div>
                         </CardActionArea>
                         <table className="table-col-3 monospace no-border full-width block h2" cellPadding="0" cellSpacing="0" data-aos="fade-right" id="counter">
@@ -187,7 +193,7 @@ const Landing = () => {
                     {properties.support ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.support ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622188175/otlio/95cc64dd2825f9df13ec4ad683ecf339_ukjqzi.webp" alt="Customer Support" onLoad={() => handleChange('support', true)} />
                 </div>
             </div>
-            <div className="projects__container" id="additional-feature">
+            <div className="projects__container" id="additional-feature" data-aos="fade-down">
                 <div className="m-10">
                     <div className="projects__card">
                         <div className="blue-text flex">

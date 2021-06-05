@@ -82,7 +82,7 @@ const Login = ({ userData }) => {
         async function submitData() {
             btn.innerText = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/login`, login, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = next ? next : '/')
+            .then(() => window.location = next ? next : '/app')
             .catch(err => {
                 if(err.response.status === 302) {handleChange('sendOTP', true); handleChange('verify', true)}
                 else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
@@ -105,7 +105,7 @@ const Login = ({ userData }) => {
         async function submitData() {
             btn.innerText = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/otp`, {...data, rememberMe: login.rememberMe}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = next ? next : '/')
+            .then(() => window.location = next ? next : '/app')
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
                 document.getElementById('token-1').focus()

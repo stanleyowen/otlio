@@ -84,7 +84,7 @@ const Support = ({ userData }) => {
                     (<div className="center-object">
                         <h1 className="blue-text monospace">Message Sent</h1>
                         <h3 className="mt-20 monospace">Thank you for submitting the details. We have received your issue(s) and or enhancement(s), and you should receive an email from us after 48 hours.</h3>
-                        <button className="oauth-box google isCentered block mt-30 mb-20 p-12 button" onClick={() => authenticated ? window.location='/' : window.location='/get-started'}>Back to Home</button>
+                        <button className="oauth-box google isCentered block mt-30 mb-20 p-12 button" onClick={() => window.location = authenticated ? '/app' : '/get-started'}>Back to Home</button>
                     </div>) :
                     (<div className="no-padding mb-20">
                         <div className="form__contact no-margin">

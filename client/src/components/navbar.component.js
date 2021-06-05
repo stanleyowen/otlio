@@ -16,7 +16,7 @@ const Navbar = ({ userData }) => {
             document.body.classList.add("dark")
         }
         if(!isLoading && authenticated) {
-            setValue_a(['Dashboard','/', <FontAwesomeIcon icon={faListUl} style={{ fontSize: "1.5em" }} />])
+            setValue_a(['Dashboard','/app', <FontAwesomeIcon icon={faListUl} style={{ fontSize: "1.5em" }} />])
             setValue_b(['Sign Out','/logout', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />])
             setValue_c(['Account Settings','/account', <FontAwesomeIcon icon={faUser} style={{ fontSize: "1.4em" }} />])
         }else {
@@ -46,7 +46,7 @@ const Navbar = ({ userData }) => {
     return (
         <div>
             <div className="navbar">
-                <a className="navbar__logo" href={ authenticated ? '/':'/welcome' }>Otlio</a>
+                <a className="navbar__logo" href={ authenticated ? '/app':'/' }>Otlio</a>
                 <div className="navbar__menu" id="navbar__menu">
                     <a className="animation__underline" href={value_a[1]}>
                         <span className="icons"><Tooltip title={value_a[0] ? value_a[0] : ''}><span>{value_a[2]}</span></Tooltip></span>

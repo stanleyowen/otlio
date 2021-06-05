@@ -40,7 +40,7 @@ const Edit = ({ userData }) => {
                     setTimeout(() => getData(), 5000)
                 }else {
                     localStorage.setItem('info', JSON.stringify(err.response.data))
-                    window.location='/'
+                    window.location='/app'
                 }
             })
         }
@@ -62,7 +62,7 @@ const Edit = ({ userData }) => {
         async function submitData() {
             btn.innerText = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.put(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(res => { localStorage.setItem('info', JSON.stringify(res.data)); window.location='/' })
+            .then(res => { localStorage.setItem('info', JSON.stringify(res.data)); window.location='/app' })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerText = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
