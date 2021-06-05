@@ -28,7 +28,7 @@ export default function App() {
   const [userData, setUserData] = useState({ isLoading: true, type: {}, credentials: {} })
   const protectedRoute = ['app', 'edit', 'account']
   const redirectRoute = ['login', 'get-started']
-  const server_list = ['http://localhost:5000', 'https://otlio-us.herokuapp.com', 'https://otlio-eu.herokuapp.com']
+  const server_list = ['http://localhost:5000', 'https://otlio.herokuapp.com', 'https://otlio-us.herokuapp.com', 'https://otlio-eu.herokuapp.com']
   const info = JSON.parse(localStorage.getItem('info'))
 
   if(info && info.status && info.message) {
@@ -48,7 +48,9 @@ export default function App() {
   async function ping(a) {
     await axios.get(`${server_list[a]}/status`)
     .then(() => setServer(server_list[a]))
-    .catch(() => {if(server_list[a+1]) ping(a+1)})
+    .catch(err => {
+      if(err.response.status >= 500 && server_list[a+1]) ping(a+1)
+    })
   }
 
   useEffect(() => {
