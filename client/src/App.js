@@ -52,7 +52,8 @@ export default function App() {
     await axios.get(`${server_list[a]}/status`)
     .then(() => setServer(server_list[a]))
     .catch(err => {
-      if(err.response.status >= 500 && server_list[a+1]) ping(a+1)
+      if((err.response && err.response.status >= 500) && server_list[a+1]) ping(a+1)
+      else if(!err.response && server_list[a+1]) ping(a+1)
     })
   }
 

@@ -14,7 +14,7 @@ const Login = ({ userData }) => {
     const {server: SERVER_URL} = userData
     const {mfa} = userData.type
     const {email} = userData.credentials
-    const next = new URLSearchParams(window.location.search).get('next')
+    const next = new URLSearchParams(window.location.search).get('next').toString()
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,
