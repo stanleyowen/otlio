@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "express-rate-limit": "^5.2.6",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.11",
+    "mongoose": "^5.12.13",
     "nodemailer": "^6.6.1",
     "passport": "^0.4.1",
     "passport-github": "^1.1.0",

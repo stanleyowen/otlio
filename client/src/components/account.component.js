@@ -2,6 +2,7 @@ import axios from 'axios'
 import dompurify from 'dompurify'
 import download from 'js-file-download'
 import React, { useState, useEffect } from 'react'
+import { Skeleton } from '@material-ui/lab'
 import { FormControlLabel, IconButton, Switch } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons'
@@ -11,10 +12,9 @@ import { getCSRFToken, openModal, closeModal } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
 const sanitizer = dompurify.sanitize
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 
 const Account = ({ userData }) => {
-    const {email, thirdParty, security, authenticated, isLoading} = userData
+    const {email, thirdParty, security, authenticated, isLoading, server: SERVER_URL} = userData
     const {valid, invalid} = authenticated ? security['backup-codes'] : []
 
     const [password, setPassword] = useState({
@@ -26,7 +26,8 @@ const Account = ({ userData }) => {
         disabled: false,
         password: false,
         newPassword: false,
-        confirmPassword: false
+        confirmPassword: false,
+        mfa: false 
     })
     const [data, setData] = useState({
         tokenId: '',
@@ -234,7 +235,7 @@ const Account = ({ userData }) => {
             <div className="main">
                 <div className="account-container">
                     <div className="flex35 center-object p-5p">
-                        <img src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/d0d4cf7a79acbcb98834d05980edc55d_v6zmxx.webp" alt="Introducing 2FA" />
+                        {properties.mfa ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="200px" />} <img className={properties.mfa ? '':'none'} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/d0d4cf7a79acbcb98834d05980edc55d_v6zmxx.webp" alt="Introducing 2FA" onLoad={() => handleChange('mfa', true)} />
                         <h2 className="isCentered mt-20 mb-20 monospace">Introducing 2FA</h2>
                         <p className="isCentered monospace">Two-Factor Authentication is a security control that requires users to verify their identities by providing multiple pieces of evidence before gaining access to a device or application.</p>
                     </div>
@@ -254,7 +255,7 @@ const Account = ({ userData }) => {
                                     </button>
                                 </div>
                                 <div className="m-10">
-                                    <button className="oauth-box primary mt-20" onClick={() => window.location='logout'}>
+                                    <button className="oauth-box primary mt-20" onClick={() => window.location='/logout'}>
                                         <FontAwesomeIcon icon={faSignOutAlt} size='2x'/> <p>Sign Out</p>
                                     </button>
                                 </div>
@@ -288,7 +289,7 @@ const Account = ({ userData }) => {
                             </div>
                             <hr className="mt-20"></hr>
                             <p className="isCentered mt-20 mb-20"><a className="link" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noreferrer">GitHub</a> | <a className="link" href="https://otlio.statuspage.io/" target="_blank" rel="noopener">System Status</a> | <a className="link" href="/terms-and-conditions">Terms of Service</a> | <a className="link" href="/privacy-policy">Privacy Policy</a></p>
-                            <p className="isCentered mt-20 mb-20 bold">Copyright &copy; 2021 Otlio - All Rights Reserved.</p>
+                            <p className="isCentered mt-20 mb-20 bold raleway">&copy; 2021 Otlio - All Rights Reserved.</p>
                         </div>
                     </div>
                 </div>
@@ -366,7 +367,7 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
-                                            <div id="otp1" className="otp flex justify-center isCentered">
+                                            <div id="otp1" className="otp flex-wrap justify-center isCentered">
                                                 <input id="token-1" /><input id="token-2" /><input id="token-3" />
                                                 <input id="token-4" /><input id="token-5" /><input id="token-6" />
                                                 { data.isBackupCode ? ([<input id="token-7" />,<input id="token-8" />]) : null }
@@ -403,7 +404,7 @@ const Account = ({ userData }) => {
                                     <div className="m-10">
                                         <div className="contact__infoField">
                                             <label htmlFor="otp-token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
-                                            <div id="otp2" className="otp flex justify-center isCentered">
+                                            <div id="otp2" className="otp flex-wrap justify-center isCentered">
                                                 <input id="otp-token-1" /><input id="otp-token-2" /><input id="otp-token-3" />
                                                 <input id="otp-token-4" /><input id="otp-token-5" /><input id="otp-token-6" />
                                                 { data.isBackupCode ? ([<input id="otp-token-7" />, <input id="otp-token-8" />]) : null }

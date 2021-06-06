@@ -8,12 +8,13 @@ import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine } from '@f
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Login = ({ userData }) => {
+    const {server: SERVER_URL} = userData
     const {mfa} = userData.type
     const {email} = userData.credentials
+    const next = new URLSearchParams(window.location.search).get('next')
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,
@@ -72,16 +73,16 @@ const Login = ({ userData }) => {
             })
             if(btn) btn.innerText = "Resend"; handleChange('disabled', false)
         }
-        if((userData.status === 302 && !properties.verify && mfa) || properties.sendOTP) {properties.sendOTP = false; sendOTP()}
-    }, [userData, properties, data])
+        if(((userData.status === 302 && !properties.verify && mfa) || properties.sendOTP) && SERVER_URL) {properties.sendOTP = false; sendOTP()}
+    }, [userData, properties, data, SERVER_URL])
 
-    const LogIn = (e) => {
+    const LogIn = e => {
         e.preventDefault()
         const btn = document.getElementById('login')
         async function submitData() {
             btn.innerText = "Logging In..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/login`, login, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = '/')
+            .then(() => window.location = next ? next : '/app')
             .catch(err => {
                 if(err.response.status === 302) {handleChange('sendOTP', true); handleChange('verify', true)}
                 else setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
@@ -104,7 +105,7 @@ const Login = ({ userData }) => {
         async function submitData() {
             btn.innerText = "Verifying..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/otp`, {...data, rememberMe: login.rememberMe}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = '/')
+            .then(() => window.location = next ? next : '/app')
             .catch(err => {
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
                 document.getElementById('token-1').focus()
@@ -146,7 +147,7 @@ const Login = ({ userData }) => {
                         <div className="m-10">
                             <div className="contact__infoField">
                                 <label htmlFor="token-1">{ data.isBackupCode ? 'Backup Code' : 'Verification Code' } <span className="required">*</span></label>
-                                <div id="otp" className="otp flex justify-center isCentered">
+                                <div id="otp" className="otp flex-wrap justify-center isCentered">
                                     <input id="token-1" /><input id="token-2" /><input id="token-3" />
                                     <input id="token-4" /><input id="token-5" /><input id="token-6" />
                                     { data.isBackupCode ? ([<input id="token-7" />,<input id="token-8" />]) : null }
@@ -155,9 +156,9 @@ const Login = ({ userData }) => {
                         </div>
                         <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => {handleData('isBackupCode', !data.isBackupCode); document.getElementById('token-1').focus()}}>Backup Codes</button></p>
                         <p className="isCentered mt-10">Hasn't Received the Code? <button type="button" className="link-btn link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</button></p>
-                        <div className="flex isCentered">
-                            <p><button type="reset" className="oauth-box google isCentered block mt-20 mb-10 mr-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
-                            <p><button type="submit" className="oauth-box google isCentered block mt-20 mb-10 ml-10 p-12 button" id="verify">Verify</button></p>
+                        <div className="contact__container isCentered no-padding">
+                            <p className="pr-10"><button type="reset" className="oauth-box google isCentered block mt-10 mb-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
+                            <p className="pl-10"><button type="submit" className="oauth-box google isCentered block mt-10 p-12 button" id="verify">Verify</button></p>
                         </div>
                     </form>
                 </div>
@@ -222,7 +223,7 @@ const Login = ({ userData }) => {
         </div>
         <div className="contact__container isCentered mb-10">
             <p className="mb-10"><a className="link" href="/reset-password">Forgot Password?</a></p>
-            <p>Haven't have an Account? <a className="link" href="/get-started">Get Started</a></p>
+            <p>Haven't have an Account? <a className="link" href={"/get-started"+(next?`?next=${encodeURIComponent(next)}`:'')}>Get Started</a></p>
         </div>
     </div>)
 }

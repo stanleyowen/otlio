@@ -5,21 +5,30 @@ import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers } from '
 
 const Navbar = ({ userData }) => {
     const {authenticated, isLoading} = userData
-    const theme = localStorage.getItem('__theme')
+    const theme = localStorage.getItem('theme')
     const [value_a, setValue_a] = useState([])
     const [value_b, setValue_b] = useState([])
     const [value_c, setValue_c] = useState()
 
     useEffect(() => {
-        if(theme === "dark") document.body.classList.add("dark")
+        if(((!theme || theme === "system") && window.matchMedia('(prefers-color-scheme: dark)').matches) || theme === "dark") {
+            if(!theme) localStorage.setItem('theme', 'system')
+            document.body.classList.add("dark")
+        }
         if(!isLoading && authenticated) {
-            setValue_a(['Dashboard','/', <FontAwesomeIcon icon={faListUl} style={{ fontSize: "1.5em" }} />])
+            setValue_a(['Dashboard','/app', <FontAwesomeIcon icon={faListUl} style={{ fontSize: "1.5em" }} />])
             setValue_b(['Sign Out','/logout', <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: "1.5em" }} />])
             setValue_c(['Account Settings','/account', <FontAwesomeIcon icon={faUser} style={{ fontSize: "1.4em" }} />])
         }else {
             setValue_a(['Login','/login', <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: "1.5em" }} />])
             setValue_b(['Get Started','/get-started', <FontAwesomeIcon icon={faUsers} style={{ fontSize: "1.5em" }} />])
         }
+
+        window.addEventListener('scroll', e => {
+            const nav = document.querySelector('.navbar')
+            if(window.pageYOffset > 0) nav.classList.add('navbar-shade')
+            else nav.classList.remove('navbar-shade')
+        })
     },[userData, theme])
 
     const toggleNavbar = (e) => {
@@ -31,13 +40,13 @@ const Navbar = ({ userData }) => {
     const changeMode = (e) => {
         e.preventDefault()
         document.body.classList.toggle("dark")
-        localStorage.setItem("__theme", document.body.classList.contains('dark') ? 'dark' : 'light')
+        localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light')
     }
 
     return (
         <div>
             <div className="navbar">
-                <a className="navbar__logo" href={ authenticated ? '/':'/welcome' }>Otlio</a>
+                <a className="navbar__logo" href={authenticated ? '/app':'/'}>Otlio</a>
                 <div className="navbar__menu" id="navbar__menu">
                     <a className="animation__underline" href={value_a[1]}>
                         <span className="icons"><Tooltip title={value_a[0] ? value_a[0] : ''}><span>{value_a[2]}</span></Tooltip></span>

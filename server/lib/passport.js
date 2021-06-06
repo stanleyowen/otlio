@@ -189,7 +189,7 @@ passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 't
                 if(err) return done(err, false)
                 else if(!user) return done(null, false, { status: 401, message: MSG_DESC[10] })
                 else if(user) {
-                    data.remove(err => {
+                    data.deleteOne(err => {
                         if(err) return done(err, false)
                         if(type === 'passwordReset') {
                             const mailOptions = {
@@ -386,7 +386,7 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordFi
             if(err) return done(err, false)
             else if(!data) return done(null, false, { status: 400, message: MSG_DESC[38] })
             else if(data && _id == decrypt(data.userId, 2) && token === decrypt(data.token, 2))
-                data.remove(err => {
+                data.deleteOne(err => {
                     if(err) return done(err, false)
                     return done(null, req.body, { status: 200, message: MSG_DESC[5] })
                 })
@@ -416,9 +416,9 @@ passport.use('generateToken', new localStrategy({ usernameField: 'email', passwo
     })
 }))
 
-passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, id, done) => {
-    const {type, subject, description, verified} = req.body
-    if(!type || !subject || !description) return done(null, false, {status: 400, message: MSG_DESC[11]})
+passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwordField: 'type', passReqToCallback: true, session: false }, (req, email, type, done) => {
+    const {subject, description} = req.body
+    if(!subject || !description) return done(null, false, {status: 400, message: MSG_DESC[11]})
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(subject.length < 15 || subject.length > 50) return done(null, false, {status: 400, message: MSG_DESC[50]})
     else if(validateTicketType(type)) return done(null, false, {status: 400, message: MSG_DESC[49]})
@@ -427,7 +427,7 @@ passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwo
         to: process.env.MAIL_SUPPORT,
         replyTo: email,
         subject: `[Otlio] ${subject}`,
-        text: `---------- User Details ---------\nID: ${id}\nEmail Address: ${email}\nVerified Account: ${verified}\n\n---------- Ticket Description ---------\nTicket Type: ${type}\nSubject: ${subject}\nDescription:\n${description}`
+        text: `Email Address: ${email}\nTicket Type: ${type}\nSubject: ${subject}\nDescription:\n${description}`
     }
     transporter.sendMail(mailOptions, err => {
         if(err) return done(err, false)
@@ -455,15 +455,16 @@ passport.use('todoData', new localStrategy({ usernameField: 'email', passwordFie
             let todoData = []
             data.map(a =>
                 todoData.push({
-                    _id: a._id,
+                    _id: String(a._id),
                     email: a.email,
                     title: decrypt(a.title, 1),
                     label: decrypt(a.label, 1),
                     description: a.description.data ? decrypt(a.description, 1) : '',
-                    date: decrypt(a.date, 1)
+                    date: decrypt(a.date, 1),
+                    index: a.index
                 })
             )
-            return done(null, todoData)
+            return done(null, todoData.sort((a, b) => { return a.index - b.index }))
         })
 }))
 
@@ -502,6 +503,18 @@ passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordF
         if(err) return done(err, false)
         return done(null, true, { status: 200, message: MSG_DESC[21] })
     })
+}))
+
+passport.use('updateIndex', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, _id, done) => {
+    const {data} = req.body
+    if(!data) return done(null, false, {status: 400, message: MSG_DESC[11]})
+    else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, {status: 400, message: MSG_DESC[8]})
+    data.map(a =>
+        Todo.findOneAndUpdate({_id: a._id, email}, { index: a.index }, (err) => {
+            if(err) return done(err, false)
+        })
+    )
+    return done(null, true, { status: 200, message: MSG_DESC[21] })
 }))
 
 passport.use('deleteTodo', new localStrategy({ usernameField: 'email', passwordField: 'objId', session: false }, (email, _id, done) => {

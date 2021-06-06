@@ -10,8 +10,6 @@ import { faPen, faTrash, faPlus, faTimes } from '@fortawesome/free-solid-svg-ico
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 import { labels, validateLabel, getCSRFToken, openModal, closeModal } from '../libraries/validation'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-
 const timestamp = (e) => {
     var data = new Date(e)
     var today = new Date()
@@ -31,7 +29,7 @@ const timestamp = (e) => {
 }
 
 const Home = ({ userData }) => {
-    const {email, authenticated, isLoading} = userData
+    const {email, authenticated, isLoading, server: SERVER_URL} = userData
     const cacheTodo = JSON.parse(localStorage.getItem('todoData'))
     const [todoData, setTodoData] = useState()
     const [data, setData] = useState({
@@ -80,8 +78,8 @@ const Home = ({ userData }) => {
             })
             e.removeAttribute('data-autoresize')
         })
-        if(!isLoading && authenticated) getTodoData()
-    }, [userData, properties.disabled])
+        if(!isLoading && authenticated && SERVER_URL) getTodoData()
+    }, [userData, properties.disabled, SERVER_URL])
 
     const addTodo = (e) => {
         e.preventDefault()
@@ -119,39 +117,46 @@ const Home = ({ userData }) => {
     }
 
     const handleOnDragEnd = (res) => {
-        if (!res.destination) return
+        const {source, destination} = res
+        if (!destination || !source || destination.index == source.index) return;
         const items = Array.from(todoData)
         const [reorderedItem] = items.splice(res.source.index, 1)
         items.splice(res.destination.index, 0, reorderedItem)
         setTodoData(items)
+        localStorage.setItem('todoData', JSON.stringify(items))
+        const data = []
+        items.map((a, index) => data.push({ _id: a._id, index }))
+        axios.put(`${SERVER_URL}/todo/index`, {data}, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
+        .then().catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
     }
-
     const todoList = (b = todoData ? todoData : cacheTodo) => {
-        if(b) return b.map((a, index) => {
-            return(
-                <Draggable key={a._id} draggableId={a._id} index={index}>
-                    {(provided) => (
-                        <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                            <td><span className={a.description ? 'bold' : ''}>{a.title}</span><br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
-                            <td><span className={"label "+a.label.split(' ').join('-').toLowerCase()}>{titleCase(a.label)}</span></td>
-                            <td>{timestamp(a.date)}</td>
-                            <td>
-                                <span className="btn-config">
-                                    <Tooltip title="Edit Task"><IconButton href={`/edit/${a._id}`}>
-                                        <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
-                                    </IconButton></Tooltip>
-                                </span>
-                                <span className="btn-config">
-                                    <Tooltip title="Delete Task"><IconButton onClick={() => deleteData(a._id)}>
-                                        <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
-                                    </IconButton></Tooltip>
-                                </span>
-                            </td>
-                        </tr>
-                    )}
-                </Draggable>
-            )
-        })
+        if(b) {
+            return b.map((a, index) => {
+                return (
+                    <Draggable key={a._id} draggableId={a._id} index={index}>
+                        {(provided) => (
+                            <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                <td><span className={a.description ? 'bold' : ''}>{a.title}</span><br/><div dangerouslySetInnerHTML={{__html: a.description.replace(/\n/g, '<br>')}} /></td>
+                                <td><span className={"label "+a.label.split(' ').join('-').toLowerCase()}>{titleCase(a.label)}</span></td>
+                                <td>{timestamp(a.date)}</td>
+                                <td>
+                                    <span className="btn-config">
+                                        <Tooltip title="Edit Task"><IconButton href={`/edit/${a._id}`}>
+                                            <FontAwesomeIcon icon={faPen} style={{ fontSize: ".8em" }} />
+                                        </IconButton></Tooltip>
+                                    </span>
+                                    <span className="btn-config">
+                                        <Tooltip title="Delete Task"><IconButton onClick={() => deleteData(a._id)}>
+                                            <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
+                                        </IconButton></Tooltip>
+                                    </span>
+                                </td>
+                            </tr>
+                        )}
+                    </Draggable>
+                )
+            })
+        }
     }
 
     return (
@@ -167,7 +172,7 @@ const Home = ({ userData }) => {
                     </tr></thead>
                     <DragDropContext onDragEnd={handleOnDragEnd}><Droppable droppableId="todo">
                         {(provided) => (
-                            <tbody {...provided.droppableProps} ref={provided.innerRef}>
+                            <tbody {...provided.droppableProps} ref={provided.innerRef} id="todo">
                                 { todoList() }
                                 { provided.placeholder }
                                 { !cacheTodo && !todoData ?

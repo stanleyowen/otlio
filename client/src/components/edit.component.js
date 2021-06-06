@@ -10,10 +10,8 @@ import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/picker
 import { labels, validateLabel, getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-
 const Edit = ({ userData }) => {
-    const {authenticated, isLoading} = userData
+    const {authenticated, isLoading, server: SERVER_URL} = userData
     const [data, setData] = useState({
         _id: useParams().id,
         title: '',
@@ -42,7 +40,7 @@ const Edit = ({ userData }) => {
                     setTimeout(() => getData(), 5000)
                 }else {
                     localStorage.setItem('info', JSON.stringify(err.response.data))
-                    window.location='/'
+                    window.location='/app'
                 }
             })
         }
@@ -56,7 +54,7 @@ const Edit = ({ userData }) => {
             e.removeAttribute('data-autoresize')
         })
         if(!isLoading && authenticated) getData()
-    }, [userData, data._id])
+    }, [userData, data._id, SERVER_URL])
 
     const updateData = (e) => {
         e.preventDefault()
@@ -64,7 +62,7 @@ const Edit = ({ userData }) => {
         async function submitData() {
             btn.innerText = "Updating..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.put(`${SERVER_URL}/todo/data`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(res => { localStorage.setItem('info', JSON.stringify(res.data)); window.location='/' })
+            .then(res => { localStorage.setItem('info', JSON.stringify(res.data)); window.location='/app' })
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerText = "Update"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }
@@ -85,7 +83,7 @@ const Edit = ({ userData }) => {
             </div></div></div>) : null }
 
             <div className="main" style={{paddingTop: '80px'}}>
-                <IconButton href='/' className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
+                <IconButton href='/app' className="float-right"><FontAwesomeIcon icon={faTimes} style={{ fontSize: '.8em', color: 'black' }} /></IconButton>
                 <form onSubmit={updateData}>
                     <div className="m-10 no-bot">
                         <div className="contact__infoField">

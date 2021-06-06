@@ -2,13 +2,12 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { Select, Tooltip, MenuItem } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChartLine, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
+import { faChartLine, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
 import { getCSRFToken } from '../libraries/validation'
 import { NOTIFICATION_TYPES, setNotification } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const ticketTypes = ["Question","Improvement","Security Issue/Bug","Account Management","Others"]
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 const CustomerService = 'https://res.cloudinary.com/stanleyowen/image/upload/v1622125690/otlio/765cbf066c6e4c42444a0ce9c2fb7949_li3gyl.webp'
@@ -22,7 +21,7 @@ const validateType = (e) => {
 }
 
 const Support = ({ userData }) => {
-    var {isLoading, authenticated, status, email} = userData
+    const {isLoading, authenticated, status, email, server: SERVER_URL} = userData
     if(status === 302) email = userData.credentials.email
     const [data, setData] = useState({
         email,
@@ -34,8 +33,6 @@ const Support = ({ userData }) => {
         honeypot: '',
         success: false
     })
-
-    if(!isLoading && status !== 302 && status !== 200) window.location='/welcome'
 
     const handleData = (a, b) => setData({ ...data, [a]: b })
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
@@ -61,7 +58,7 @@ const Support = ({ userData }) => {
 
     return (
         <div>
-            { status !== 302 && status !== 200 ?
+            { isLoading ?
             (<div className="loader"><div className="spin-container"><div className="loading">
                 <div></div><div></div><div></div>
                 <div></div><div></div>
@@ -86,8 +83,8 @@ const Support = ({ userData }) => {
                     { properties.success ?
                     (<div className="center-object">
                         <h1 className="blue-text monospace">Message Sent</h1>
-                        <h3 className="mt-20 monospace">Thank you for submitting the details. We have received your issue(s) and or enhancement(s), and you should receive an email from us after 48 hours.</h3>
-                        <button className="oauth-box google isCentered block mt-30 mb-20 p-12 button" onClick={() => authenticated ? window.location='/' : window.location='/get-started'}>Back to Home</button>
+                        <h3 className="mt-20 monospace">Thank you for submitting the details. We have received your message, and we will contact you as soon as possible!</h3>
+                        <a className="oauth-box google outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href={authenticated ? '/app' : '/get-started'}>Back to Home</a>
                     </div>) :
                     (<div className="no-padding mb-20">
                         <div className="form__contact no-margin">
@@ -96,8 +93,9 @@ const Support = ({ userData }) => {
                                 <form className="contact__form" onSubmit={submitTicket}>
                                     <div className="m-10">
                                         <div className="contact__infoField">
-                                            <label htmlFor="userEmail">From</label>
-                                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} required readOnly autoComplete="username" />
+                                            <label htmlFor="userEmail">From <span className="required">*</span></label>
+                                            <input title="Email" id="userEmail" type="email" className="contact__inputField" minLength="6" maxLength="60" value={data.email} onChange={(e) => handleData('email', e.target.value)} autoFocus required autoComplete="username" />
+                                            <span className="contact__onFocus" />
                                         </div>
                                     </div>
                                     <div className="m-10 no-bot">
@@ -110,7 +108,7 @@ const Support = ({ userData }) => {
                                     <div className="m-10 mt-20">
                                         <div className="contact__infoField">
                                             <label htmlFor="subject">Subject <span className="required">*</span></label>
-                                            <input title="Subject" id="subject" type="text" className="contact__inputField" minLength="15" maxLength="60" value={data.subject} onChange={(e) => handleData('subject', e.target.value)} autoFocus required />
+                                            <input title="Subject" id="subject" type="text" className="contact__inputField" minLength="15" maxLength="60" value={data.subject} onChange={(e) => handleData('subject', e.target.value)} required />
                                             <span className="contact__onFocus" />
                                             <p className="length">{data.subject.length}/60</p>
                                         </div>

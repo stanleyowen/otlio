@@ -8,10 +8,10 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons/'
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-const ResetPassword = () => {
+const ResetPassword = ({ userData }) => {
+    const {server: SERVER_URL} = userData
     const {id, token} = useParams()
     const [data, setData] = useState({
         id,
@@ -50,8 +50,9 @@ const ResetPassword = () => {
                     }
                 }else window.location='/reset-password'
             })
-        } validateData()
-    },[id, token, data.email])
+        }
+        if(SERVER_URL) validateData()
+    },[id, token, data.email, SERVER_URL])
 
     const Submit = (e) => {
         e.preventDefault()
@@ -59,7 +60,7 @@ const ResetPassword = () => {
         async function submitData() {
             btn.innerText = "Saving..."; btn.setAttribute("disabled", "true"); btn.classList.add("disabled")
             await axios.post(`${SERVER_URL}/account/reset-password`, data, { headers: { 'XSRF-TOKEN': getCSRFToken() }, withCredentials: true })
-            .then(() => window.location = '/')
+            .then(() => window.location = '/app')
             .catch(err => setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message))
             btn.innerText = "Save Password"; btn.removeAttribute("disabled"); btn.classList.remove("disabled")
         }

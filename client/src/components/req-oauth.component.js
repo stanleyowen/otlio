@@ -1,10 +1,8 @@
 import axios from 'axios'
 import React, { useEffect } from 'react'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-
 const ReqOAuth = ({ userData }) => {
-    const {isLoading, authenticated} = userData
+    const {isLoading, authenticated, server: SERVER_URL} = userData
     const {pathname} = window.location
     const code = window.location.search
 
@@ -15,18 +13,18 @@ const ReqOAuth = ({ userData }) => {
                 if(authenticated){
                     localStorage.setItem('info', JSON.stringify(res.data))
                     window.location='/account'
-                }else window.location='/'
+                }else window.location='/app'
             })
             .catch(err => {
-                if(err.response.status === 302) err.response.data.url ? window.location = err.response.data.url : window.location='/login'
+                if(err.response.status === 302) window.location = err.response.data.url ? err.response.data.url : '/login'
                 else {
                     localStorage.setItem('info', JSON.stringify(err.response.data))
-                    authenticated ? window.location='/account' : window.location='/login'
+                    window.location = authenticated ? '/account' : '/login'
                 }
             })
         }
-        if(!isLoading) validateData()
-    },[code, pathname])
+        if(!isLoading && SERVER_URL) validateData()
+    },[code, pathname, SERVER_URL])
 
     return(<div className="loader"><div className="spin-container"><div className="loading">
         <div></div><div></div><div></div>

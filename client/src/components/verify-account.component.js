@@ -2,9 +2,8 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-
-const VerifyAccount = () => {
+const VerifyAccount = ({ userData }) => {
+    const {server: SERVER_URL} = userData
     const {id, token} = useParams()
     
     useEffect(() => {
@@ -12,7 +11,7 @@ const VerifyAccount = () => {
             await axios.get(`${SERVER_URL}/account/verify`, { params: { id, token, type: 'accountVerification' }, withCredentials: true })
             .then(res => {
                 localStorage.setItem('info', JSON.stringify(res.data))
-                window.location='/'
+                window.location='/app'
             })
             .catch(err => {
                 if(err.response.status >= 500) setTimeout(() => validateData(), 5000)
@@ -22,8 +21,8 @@ const VerifyAccount = () => {
                 }
             })
         }
-        validateData()
-    },[id, token])
+        if(SERVER_URL) validateData()
+    },[id, token, SERVER_URL])
 
     return (<div className="loader"><div className="spin-container"><div className="loading">
             <div></div><div></div><div></div>

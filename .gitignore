@@ -5,6 +5,7 @@ client/coverage
 client/build
 client/.eslintcache
 client/debug.log
+client/.netlify
 
 client/.env
 client/.DS_Store

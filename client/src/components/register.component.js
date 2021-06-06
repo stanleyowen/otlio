@@ -8,13 +8,13 @@ import axios from 'axios'
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Register = ({ userData }) => {
-    const {status} = userData
+    const {status, server: SERVER_URL} = userData
     const {verifyAccount} = userData.type
     const {email} = userData.credentials
+    const next = new URLSearchParams(window.location.search).get('next')
     const [properties, setProperties] = useState({
         honeypot: '',
         verify: false,
@@ -148,7 +148,7 @@ const Register = ({ userData }) => {
                 </form>
             </div>
         </div>
-        <p className="isCentered mb-10">Already have an Account? <a className="link" href="/login">Login</a></p>
+        <p className="isCentered mb-10">Already have an Account? <a className="link" href={"/login"+(next?`?next=${encodeURIComponent(next)}`:'')}>Login</a></p>
     </div>)
 }
 
