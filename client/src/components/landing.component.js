@@ -218,7 +218,7 @@ const Landing = () => {
                             <FontAwesomeIcon className="col isCentered blue-text" icon={faDraftingCompass} size="3x" />
                             <p className="h2 col monospace m-auto">Drag and Drop</p>
                         </div>
-                        <p className="raleway mt-10 p-12">Simply drag the task(s) and drop onto the desired position!</p>
+                        <p className="raleway mt-10 p-12">Simply drag the task and drop onto the desired position!</p>
                     </div>
                 </div>
             </div>

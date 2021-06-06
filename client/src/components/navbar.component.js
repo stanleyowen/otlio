@@ -46,7 +46,7 @@ const Navbar = ({ userData }) => {
     return (
         <div>
             <div className="navbar">
-                <a className="navbar__logo" href={ authenticated ? '/app':'/' }>Otlio</a>
+                <a className="navbar__logo" href={authenticated ? '/app':'/'}>Otlio</a>
                 <div className="navbar__menu" id="navbar__menu">
                     <a className="animation__underline" href={value_a[1]}>
                         <span className="icons"><Tooltip title={value_a[0] ? value_a[0] : ''}><span>{value_a[2]}</span></Tooltip></span>

@@ -289,7 +289,7 @@ const Account = ({ userData }) => {
                             </div>
                             <hr className="mt-20"></hr>
                             <p className="isCentered mt-20 mb-20"><a className="link" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noreferrer">GitHub</a> | <a className="link" href="https://otlio.statuspage.io/" target="_blank" rel="noopener">System Status</a> | <a className="link" href="/terms-and-conditions">Terms of Service</a> | <a className="link" href="/privacy-policy">Privacy Policy</a></p>
-                            <p className="isCentered mt-20 mb-20 bold">Copyright &copy; 2021 Otlio - All Rights Reserved.</p>
+                            <p className="isCentered mt-20 mb-20 bold raleway">&copy; 2021 Otlio - All Rights Reserved.</p>
                         </div>
                     </div>
                 </div>

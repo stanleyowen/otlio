@@ -9,20 +9,18 @@
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
     min-width: 300px;
+    min-height: 100vh;
     color: #212121;
-    background-color: #FFFFFF;
+    background-color: #FFF;
     scroll-behavior: smooth;
     transition: all .4s;
-    -webkit-tap-highlight-color: transparent;
     font-family: 'Chilanka', sans-serif;
 }
 body.dark {
-    color: #FFFFFF !important;
+    color: #FFF !important;
     background-color: #212121 !important;
 }
-a:visited { color: #212121; }
 body.dark a, body.dark a:visited { color: #FFF; }
 body.dark tbody tr:nth-child(odd) {
     background-color: #3a3a3a;
@@ -114,6 +112,7 @@ body.dark .btn__value {
 }
 body.dark .MuiInput-underline:after { border-bottom: 2px solid #FFFFFF !important; }
 body.dark .MuiInput-underline:hover:not(.Mui-disabled):before { border-bottom: 1px solid #7c7c7c !important; }
+a:visited { color: #212121; }
 .MuiSvgIcon-root { color: #212121; }
 button, a { user-select: none; cursor: pointer; transition: all .4s; }
 label { user-select: none; }
@@ -166,7 +165,7 @@ label { user-select: none; }
     color: #FFF;
     background-color: rgb(252, 52, 52);
 }
-.oauth-box:hover { opacity: 1; transform: scale(1.02); }
+.oauth-box:hover { opacity: 1; transform: scale(1.02) !important; }
 .oauth-box svg {
     display: inline-block;
     margin-top: auto;
@@ -543,7 +542,7 @@ tbody tr:hover {
 .projects__card {
     padding: 15px 10px;
     display: block;
-    background-color: #FFFFFF;
+    background-color: #fcfcfc;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgb(0 0 0 / 8%);
     transition: all .3s;

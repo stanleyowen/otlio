@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Skeleton } from '@material-ui/lab'
 import { Tooltip } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
