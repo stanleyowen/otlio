@@ -106,10 +106,10 @@ const Register = ({ userData }) => {
         <div className="form__contact">
             <div className="get_in_touch"><h1>Create your account</h1></div>
             <div className="oauth-container">
-                <button className="oauth-box google" onClick={() => window.location = `${SERVER_URL}/oauth/google/auth`} id="1">
+                <button className="oauth-box google" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/google/auth` : null}>
                     <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Join Us with Google</p>
                 </button>
-                <button className="oauth-box github mt-20" onClick={() => window.location = `${SERVER_URL}/oauth/github/auth`}>
+                <button className="oauth-box github mt-20" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/github/auth` : null}>
                     <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Join Us with GitHub</p>
                 </button>
             </div>
