@@ -59,6 +59,14 @@ const Home = ({ userData }) => {
     }
 
     useEffect(() => {
+        if(!SERVER_URL)
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.add('disabled')
+            a.setAttribute('disabled', true)
+        })
+    }, [SERVER_URL])
+
+    useEffect(() => {
         const background = document.getElementById('background')
         const modal = document.getElementById('modal')
         window.onclick = e => {

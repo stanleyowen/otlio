@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Select, Tooltip, MenuItem } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
@@ -37,6 +37,14 @@ const Support = ({ userData }) => {
     const handleData = (a, b) => setData({ ...data, [a]: b })
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
+    useEffect(() => {
+        if(!SERVER_URL)
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.add('disabled')
+            a.setAttribute('disabled', true)
+        })
+    }, [SERVER_URL])
+    
     const submitTicket = (e) => {
         e.preventDefault()
         const btn = document.getElementById('send-request')

@@ -7,6 +7,14 @@ const ReqOAuth = ({ userData }) => {
     const code = window.location.search
 
     useEffect(() => {
+        if(!SERVER_URL)
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.add('disabled')
+            a.setAttribute('disabled', true)
+        })
+    }, [SERVER_URL])
+
+    useEffect(() => {
         async function validateData() {
             await axios.get(`${SERVER_URL}${pathname}${code}`, { withCredentials: true })
             .then(res => {
