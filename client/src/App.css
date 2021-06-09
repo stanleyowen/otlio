@@ -1115,6 +1115,7 @@ footer a:visited { color: #FFF; }
     .center-object { max-width: 100%; }
 }
 @media only screen and (max-width: 600px) {
+    .MuiSkeleton-root { height: 300px !important; }
     .projects__container { grid-template-columns: auto; }
     #additional-feature { grid-template-columns: 100%; }
     .contact__container p { padding: 0px !important; }
