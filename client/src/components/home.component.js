@@ -154,7 +154,7 @@ const Home = ({ userData }) => {
                                         </IconButton></Tooltip>
                                     </span>
                                     <span className="btn-config">
-                                        <Tooltip title="Delete Task"><IconButton onClick={() => deleteData(a._id)}>
+                                        <Tooltip title="Delete Task"><IconButton onClick={SERVER_URL ? () => deleteData(a._id) : null}>
                                             <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
                                         </IconButton></Tooltip>
                                     </span>

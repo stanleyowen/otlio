@@ -285,12 +285,12 @@ const Account = ({ userData }) => {
                             <div className="get_in_touch mt-40"><h1 className="monospace">Third Party</h1></div>
                             <div className="contact__container mt-10">
                                 <p className="pr-10">
-                                    <button className="oauth-box google mt-10 mb-10" onClick={() => authenticated ? window.location = `${SERVER_URL}/oauth/google/auth/connect` : null}>
+                                    <button className="oauth-box google mt-10 mb-10" onClick={() => authenticated && SERVER_URL ? window.location = `${SERVER_URL}/oauth/google/auth/connect` : null}>
                                         <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with Google</p>
                                     </button>
                                 </p>
                                 <p className="pl-10">
-                                    <button className="oauth-box github mt-10" onClick={() => authenticated ? window.location = `${SERVER_URL}/oauth/github/auth/connect` : null}>
+                                    <button className="oauth-box github mt-10" onClick={() => authenticated && SERVER_URL ? window.location = `${SERVER_URL}/oauth/github/auth/connect` : null}>
                                         <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with GitHub</p>
                                     </button>
                                 </p>
