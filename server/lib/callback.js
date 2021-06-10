@@ -51,6 +51,7 @@ const MSG_DESC = [
     'Invalid Ticket Type',                                              // 49
     'Invalid Subject Format',                                           // 50
     'Support Ticket has been Opened Successfully.',                     // 51
+    'Invalid Object ID',                                                // 52
 ]
 
 module.exports = MSG_DESC

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { IconButton, Tooltip } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash, faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons/'
@@ -30,6 +30,19 @@ const Register = ({ userData }) => {
     const handleRegister = (a, b) => setRegister({ ...register, [a]: b })
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
+    useEffect(() => {
+        if(SERVER_URL)
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.remove('disabled')
+            a.removeAttribute('disabled')
+        })
+        else
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.add('disabled')
+            a.setAttribute('disabled', true)
+        })
+    }, [SERVER_URL])
+    
     if(status === 302 && !properties.verify && verifyAccount) handleChange('verify', true)
 
     const Register = (e) => {
@@ -98,10 +111,10 @@ const Register = ({ userData }) => {
         <div className="form__contact">
             <div className="get_in_touch"><h1>Create your account</h1></div>
             <div className="oauth-container">
-                <button className="oauth-box google" onClick={() => window.location = `${SERVER_URL}/oauth/google/auth`}>
+                <button className="oauth-box google" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/google/auth` : null}>
                     <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Join Us with Google</p>
                 </button>
-                <button className="oauth-box github mt-20" onClick={() => window.location = `${SERVER_URL}/oauth/github/auth`}>
+                <button className="oauth-box github mt-20" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/github/auth` : null}>
                     <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Join Us with GitHub</p>
                 </button>
             </div>

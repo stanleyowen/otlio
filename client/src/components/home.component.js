@@ -59,6 +59,19 @@ const Home = ({ userData }) => {
     }
 
     useEffect(() => {
+        if(SERVER_URL)
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.remove('disabled')
+            a.removeAttribute('disabled')
+        })
+        else
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.add('disabled')
+            a.setAttribute('disabled', true)
+        })
+    }, [SERVER_URL])
+
+    useEffect(() => {
         const background = document.getElementById('background')
         const modal = document.getElementById('modal')
         window.onclick = e => {
@@ -146,7 +159,7 @@ const Home = ({ userData }) => {
                                         </IconButton></Tooltip>
                                     </span>
                                     <span className="btn-config">
-                                        <Tooltip title="Delete Task"><IconButton onClick={() => deleteData(a._id)}>
+                                        <Tooltip title="Delete Task"><IconButton onClick={SERVER_URL ? () => deleteData(a._id) : null}>
                                             <FontAwesomeIcon icon={faTrash} style={{ fontSize: ".8em" }} />
                                         </IconButton></Tooltip>
                                     </span>

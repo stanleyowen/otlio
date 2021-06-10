@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const passport = require('passport')
+const ObjectId = require('mongoose').Types.ObjectId
 const nodemailer = require('nodemailer')
 const JWTStrategy = require('passport-jwt').Strategy
 const localStrategy = require('passport-local').Strategy
@@ -29,6 +30,11 @@ const transporter = nodemailer.createTransport({
       pass: process.env.MAIL_PASSWORD
     }
 })
+
+const isObjId = (e) => {
+    if(ObjectId.isValid(e) && (String)(new ObjectId(e)) === e) return true
+    else return false
+}
 
 const validateTicketType = (e) => {
     for (a=0; a<type.length; a++){
@@ -83,6 +89,7 @@ passport.use('login', new localStrategy({ usernameField: 'email', passwordField:
 passport.use('changePassword', new localStrategy({ usernameField: 'email', passwordField: 'oldPassword', passReqToCallback: true, session: false }, (req, email, password, done) => {
     const {_id, newPassword, confirmPassword} = req.body
     if(!_id || !newPassword || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] })
+    else if(!isObjId(_id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
     else if(password.length < 6 || password.length > 60 || newPassword.length < 6 || newPassword.length > 60 || confirmPassword.length < 6 || confirmPassword.length > 60) return done(null, false, { status: 400, message: MSG_DESC[9] })
     else if(newPassword !== confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[7] })
@@ -122,6 +129,7 @@ passport.use('tokenData', new localStrategy({ usernameField: 'id', passwordField
     const userId = id.split('-')[0].toLowerCase()
     const tokenId = id.split('-')[1].toLowerCase()
     if(!type || !userId || !tokenId) return done(null, false, { status: 400, message: MSG_DESC[11] })
+    else if(!isObjId(userId) || !isObjId(tokenId)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     var query = {}; query['_id'] = tokenId; query['type.'.concat(type)] = true
     Token.findOne(query, (err, user) => {
         if(err) return done(err, false)
@@ -170,6 +178,7 @@ passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 't
     const userId = id.split('-')[0].toLowerCase()
     const tokenId = id.split('-')[1].toLowerCase()
     if(!type || !userId || !tokenId) return done(null, false, { status: 400, message: MSG_DESC[11] })
+    else if(!isObjId(userId) || !isObjId(tokenId)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     else if(type === 'passwordReset') {
         if(!email || !password || !confirmPassword) return done(null, false, { status: 400, message: MSG_DESC[11] })
         else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, { status: 400, message: MSG_DESC[8] })
@@ -210,6 +219,7 @@ passport.use('token', new localStrategy({ usernameField: 'id', passwordField: 't
 }))
 
 passport.use('verifyAccount', new localStrategy({ usernameField: 'email', passwordField: '_id', session: false }, (email, _id, done) => {
+    if(!isObjId(_id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     User.findOne({ _id, email, verified: false }, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 400, message: MSG_DESC[16] })
@@ -258,6 +268,7 @@ passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, cl
 passport.use('connectGitHub', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: `${process.env.GITHUB_CALLBACK}/connect`, passReqToCallback: true }, (req, accessToken, refreshToken, profile, done) => {
     const {_id, email} = req.body
     if(profile._json.email !== email) return done(null, false, { status: 403, message: MSG_DESC[48] })
+    else if(!isObjId(_id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     User.findOne({_id, email}, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 403, message: MSG_DESC[27] })
@@ -300,6 +311,7 @@ passport.use('google', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, cl
 passport.use('connectGoogle', new GoogleStrategy ({ clientID: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_SECRET, callbackURL: `${process.env.GOOGLE_CALLBACK}/connect`, passReqToCallback: true }, (req, accessToken, refreshToken, profile, done) => {
     const {_id, email} = req.body
     if(profile._json.email !== email) return done(null, false, { status: 403, message: MSG_DESC[48] })
+    else if(!isObjId(_id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     User.findOne({_id, email: profile._json.email}, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 403, message: MSG_DESC[25] })
@@ -342,6 +354,7 @@ passport.use('registerOAuth', new localStrategy({ usernameField: 'email', passwo
 }))
 
 passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordField: '_id', session: false }, (email, id, done) => {
+    if(!isObjId(id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     User.findOne({ _id: id, email }, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 400, message: MSG_DESC[32] })
@@ -365,6 +378,7 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordFi
     const {tokenId, token, isBackupCode} = req.body
     const data = req.body
     if(!token || (!isBackupCode && !tokenId)) return done(null, false, { status: 428, message: MSG_DESC[37] })
+    else if(tokenId && !isObjId(tokenId)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     else if(isBackupCode && token)
         User.findOne({_id, email}, (err, user) => {
             if(err) return done(err, false)
@@ -395,10 +409,11 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordFi
 
 passport.use('generateToken', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false } , (req, email, _id, done) => {
     const {regenerate} = req.body
+    if(!isObjId(_id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     User.findOne({_id, email}, (err, user) => {
         if(err) return done(err, false)
         else if(!user) return done(null, false, { status: 400, message: MSG_DESC[16] })
-        else if(user){
+        else if(user) {
             if(regenerate || !user.security['2FA']){
                 let backupCodes = [];
                 for (let x=0; x<10; x++) backupCodes.push(encrypt((crypto.randomInt(Math.pow(10, 8-1), Math.pow(10, 8)).toString()), 4))
@@ -436,7 +451,8 @@ passport.use('supportTicket', new localStrategy({ usernameField: 'email', passwo
 }))
 
 passport.use('todoData', new localStrategy({ usernameField: 'email', passwordField: 'email', passReqToCallback: true, session: false }, (req, email, id, done) => {
-    if(req.query.id)
+    if(req.query.id && !isObjId(req.query.id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
+    else if(req.query.id)
         Todo.findOne({_id: req.query.id, email}, (err, data) => {
             if(err) return done(err, false)
             else if(!data) return done(err, null, {status: 404, message: MSG_DESC[13]})
@@ -490,6 +506,7 @@ passport.use('addTodo', new localStrategy({ usernameField: 'email', passwordFiel
 passport.use('updateTodo', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, _id, done) => {
     const {title, label, description, date} = req.body
     if(!title || !label || !date) return done(null, false, {status: 400, message: MSG_DESC[11]})
+    else if(!isObjId(_id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, {status: 400, message: MSG_DESC[8]})
     else if(title.length > 60) return done(null, false, {status: 400, message: MSG_DESC[17]})
     else if(validateLabel(label)) return done(null, false, {status: 400, message: MSG_DESC[18]})
@@ -509,15 +526,17 @@ passport.use('updateIndex', new localStrategy({ usernameField: 'email', password
     const {data} = req.body
     if(!data) return done(null, false, {status: 400, message: MSG_DESC[11]})
     else if(EMAIL_VAL.test(String(email).toLocaleLowerCase()) === false || email.length < 6 || email.length > 60) return done(null, false, {status: 400, message: MSG_DESC[8]})
-    data.map(a =>
+    data.map(a => {
+        if(!isObjId(a._id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
         Todo.findOneAndUpdate({_id: a._id, email}, { index: a.index }, (err) => {
             if(err) return done(err, false)
         })
-    )
+    })
     return done(null, true, { status: 200, message: MSG_DESC[21] })
 }))
 
 passport.use('deleteTodo', new localStrategy({ usernameField: 'email', passwordField: 'objId', session: false }, (email, _id, done) => {
+    if(!isObjId(_id)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     Todo.findOneAndDelete({_id, email}, (err, data) => {
         if(err) return done(err, false)
         else if(!data) return done(null, false, { status: 403, message: MSG_DESC[16] })

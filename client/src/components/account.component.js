@@ -1,6 +1,5 @@
 import axios from 'axios'
 import dompurify from 'dompurify'
-import download from 'js-file-download'
 import React, { useState, useEffect } from 'react'
 import { Skeleton } from '@material-ui/lab'
 import { FormControlLabel, IconButton, Switch } from '@material-ui/core'
@@ -73,6 +72,19 @@ const Account = ({ userData }) => {
         }
     }, [properties.disabled, data])
 
+    useEffect(() => {
+        if(SERVER_URL)
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.remove('disabled')
+            a.removeAttribute('disabled')
+        })
+        else
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.add('disabled')
+            a.setAttribute('disabled', true)
+        })
+    }, [SERVER_URL])
+
     const BackupCodes = () => {
         const codes = [...valid, ...invalid]
         // function validateToken(token) {
@@ -115,7 +127,15 @@ const Account = ({ userData }) => {
     const DownloadCode = (e) => {
         e.preventDefault()
         const btn = document.getElementById('download-code')
-        download(BackupCode(), 'Backup Codes.txt')
+        const tempLink = document.createElement('a')
+        const blob = new Blob ([BackupCode()], { type: 'application/octet-stream' })
+        tempLink.classList.add('none')
+        tempLink.download = 'Backup Codes.txt'
+        tempLink.href = URL.createObjectURL(blob)
+        tempLink.dataset.downloadurl = ['application/octet-stream', tempLink.download, tempLink.href].join(':')
+        document.body.appendChild(tempLink)
+        tempLink.click()
+        document.body.removeChild(tempLink)
         btn.innerText = "Downloaded"
         setTimeout(() => btn.innerText = "Download", 3000)
     }
@@ -277,12 +297,12 @@ const Account = ({ userData }) => {
                             <div className="get_in_touch mt-40"><h1 className="monospace">Third Party</h1></div>
                             <div className="contact__container mt-10">
                                 <p className="pr-10">
-                                    <button className="oauth-box google mt-10 mb-10" onClick={() => authenticated ? window.location = `${SERVER_URL}/oauth/google/auth/connect` : null}>
+                                    <button className="oauth-box google mt-10 mb-10" onClick={() => authenticated && SERVER_URL ? window.location = `${SERVER_URL}/oauth/google/auth/connect` : null}>
                                         <FontAwesomeIcon icon={faGoogle} size='2x'/> {!isLoading && thirdParty && thirdParty.google ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.google ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with Google</p>
                                     </button>
                                 </p>
                                 <p className="pl-10">
-                                    <button className="oauth-box github mt-10" onClick={() => authenticated ? window.location = `${SERVER_URL}/oauth/github/auth/connect` : null}>
+                                    <button className="oauth-box github mt-10" onClick={() => authenticated && SERVER_URL ? window.location = `${SERVER_URL}/oauth/github/auth/connect` : null}>
                                         <FontAwesomeIcon icon={faGithub} size='2x'/> {!isLoading && thirdParty && thirdParty.github ? <FontAwesomeIcon icon={faCheck} size='2x'/> : null } <p>{ thirdParty ? thirdParty.github ? <span><span id="connect">Connected</span><span id="disconnect">Disconnect</span></span> : 'Connect' : 'Connect' } with GitHub</p>
                                     </button>
                                 </p>

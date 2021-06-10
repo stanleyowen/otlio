@@ -39,6 +39,19 @@ const Login = ({ userData }) => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     useEffect(() => {
+        if(SERVER_URL)
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.remove('disabled')
+            a.removeAttribute('disabled')
+        })
+        else
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.add('disabled')
+            a.setAttribute('disabled', true)
+        })
+    }, [SERVER_URL])
+
+    useEffect(() => {
         const btn = document.getElementById('send-otp')
         const otp = document.querySelectorAll('#otp > *[id]')
         for (let i=0; i<otp.length; i++) {
@@ -155,7 +168,7 @@ const Login = ({ userData }) => {
                             </div>
                         </div>
                         <p className="isCentered mt-20">If you're unable to receive a security code, use one of your <button type="button" className="link-btn link" onClick={() => {handleData('isBackupCode', !data.isBackupCode); document.getElementById('token-1').focus()}}>Backup Codes</button></p>
-                        <p className="isCentered mt-10">Hasn't Received the Code? <button type="button" className="link-btn link" id="send-otp" onClick={properties.disabled ? null : () => handleChange('sendOTP', true)}>Resend Code</button></p>
+                        <p className="isCentered mt-10">Hasn't Received the Code? <button type="button" className="link-btn link" id="send-otp" onClick={properties.disabled || !SERVER_URL ? null : () => handleChange('sendOTP', true)}>Resend Code</button></p>
                         <div className="contact__container isCentered no-padding">
                             <p className="pr-10"><button type="reset" className="oauth-box google isCentered block mt-10 mb-10 p-12 button" id="cancel" onClick={() => window.location='/logout'}>Cancel</button></p>
                             <p className="pl-10"><button type="submit" className="oauth-box google isCentered block mt-10 p-12 button" id="verify">Verify</button></p>
@@ -180,10 +193,10 @@ const Login = ({ userData }) => {
         <div className="form__contact">
             <div className="get_in_touch"><h1>Login</h1></div>
             <div className="oauth-container">
-                <button className="oauth-box google" onClick={() => window.location = `${SERVER_URL}/oauth/google/auth`}>
+                <button className="oauth-box google" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/google/auth` : null}>
                     <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
                 </button>
-                <button className="oauth-box github mt-20" onClick={() => window.location = `${SERVER_URL}/oauth/github/auth`}>
+                <button className="oauth-box github mt-20" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/github/auth` : null}>
                     <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
                 </button>
             </div>
