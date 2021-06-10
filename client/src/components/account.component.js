@@ -1,6 +1,5 @@
 import axios from 'axios'
 import dompurify from 'dompurify'
-import download from 'js-file-download'
 import React, { useState, useEffect } from 'react'
 import { Skeleton } from '@material-ui/lab'
 import { FormControlLabel, IconButton, Switch } from '@material-ui/core'
@@ -123,7 +122,15 @@ const Account = ({ userData }) => {
     const DownloadCode = (e) => {
         e.preventDefault()
         const btn = document.getElementById('download-code')
-        download(BackupCode(), 'Backup Codes.txt')
+        const tempLink = document.createElement('a')
+        const blob = new Blob ([BackupCode()], { type: 'application/octet-stream' })
+        tempLink.classList.add('none')
+        tempLink.download = 'Backup Codes.txt'
+        tempLink.href = URL.createObjectURL(blob)
+        tempLink.dataset.downloadurl = ['application/octet-stream', tempLink.download, tempLink.href].join(':')
+        document.body.appendChild(tempLink)
+        tempLink.click()
+        document.body.removeChild(tempLink)
         btn.innerText = "Downloaded"
         setTimeout(() => btn.innerText = "Download", 3000)
     }
