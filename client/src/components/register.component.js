@@ -31,7 +31,12 @@ const Register = ({ userData }) => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     useEffect(() => {
-        if(!SERVER_URL)
+        if(SERVER_URL)
+        document.querySelectorAll('button').forEach(a => {
+            a.classList.remove('disabled')
+            a.removeAttribute('disabled')
+        })
+        else
         document.querySelectorAll('button').forEach(a => {
             a.classList.add('disabled')
             a.setAttribute('disabled', true)
