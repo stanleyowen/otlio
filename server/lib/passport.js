@@ -398,8 +398,8 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordFi
     else
         OTPToken.findById(tokenId, (err, data) => {
             if(err) return done(err, false)
-            else if(!data) return done(null, false, { status: 400, message: MSG_DESC[38] })
-            else if(data && _id == decrypt(data.userId, 2) && token === decrypt(data.token, 2))
+            else if(!data || _id != decrypt(data.userId, 2) || token !== decrypt(data.token, 2)) return done(null, false, { status: 400, message: MSG_DESC[38] })
+            else if(data)
                 data.deleteOne(err => {
                     if(err) return done(err, false)
                     return done(null, req.body, { status: 200, message: MSG_DESC[5] })
