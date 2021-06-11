@@ -10,11 +10,10 @@ import { faCheck, faInfo, faKey, faTimes, faSignOutAlt, faEyeSlash, faEye, faExc
 import { getCSRFToken, openModal, closeModal } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
-const sanitizer = dompurify.sanitize
-
 const Account = ({ userData }) => {
     const {email, thirdParty, security, authenticated, isLoading, server: SERVER_URL} = userData
     const {valid, invalid} = authenticated ? security['backup-codes'] : []
+    const sanitizer = dompurify.sanitize
 
     const [password, setPassword] = useState({
         oldPassword: '',
@@ -26,7 +25,7 @@ const Account = ({ userData }) => {
         password: false,
         newPassword: false,
         confirmPassword: false,
-        mfa: false 
+        mfa: false
     })
     const [data, setData] = useState({
         tokenId: '',
@@ -43,7 +42,7 @@ const Account = ({ userData }) => {
             ['password', 'mfa', 'otp', 'backup-code'].forEach(a => {
                 const modal = document.getElementById(`${a}-modal`)
                 const background = document.getElementById(`${a}-bg`)
-                if(e.target === background && !properties.disabled){
+                if(e.target === background && !properties.disabled) {
                     modal.classList.remove('showModal')
                     modal.classList.add('closeModal')
                     background.classList.remove('showBackground')
@@ -135,8 +134,11 @@ const Account = ({ userData }) => {
         tempLink.dataset.downloadurl = ['application/octet-stream', tempLink.download, tempLink.href].join(':')
         document.body.appendChild(tempLink)
         tempLink.click()
-        document.body.removeChild(tempLink)
         btn.innerText = "Downloaded"
+        setTimeout(() => {
+            document.body.removeChild(tempLink)
+            window.URL.revokeObjectURL(tempLink)
+        }, 500)
         setTimeout(() => btn.innerText = "Download", 3000)
     }
 
