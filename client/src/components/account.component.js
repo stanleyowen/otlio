@@ -10,6 +10,8 @@ import { faCheck, faInfo, faKey, faTimes, faSignOutAlt, faEyeSlash, faEye, faExc
 import { getCSRFToken, openModal, closeModal } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
+const isNum = /^\d+$/
+
 const Account = ({ userData }) => {
     const {email, thirdParty, security, authenticated, isLoading, server: SERVER_URL} = userData
     const {valid, invalid} = authenticated ? security['backup-codes'] : []
@@ -172,6 +174,7 @@ const Account = ({ userData }) => {
         else if(!password.oldPassword || !password.newPassword || !password.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById(!password.oldPassword ? 'old-password' : !password.newPassword ? 'new-password' : 'confirm-password').focus()}
         else if(password.newPassword.length < 6 || password.confirmPassword.length < 6 || password.newPassword.length > 60 || password.confirmPassword.length > 60) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Provide a Password between 6 ~ 60 characters !'); document.getElementById(password.newPassword.length < 6 || password.newPassword.length > 60 ? 'new-password' : 'confirm-password').focus()}
         else if(password.newPassword !== password.confirmPassword) {setNotification(NOTIFICATION_TYPES.DANGER, 'Please Make Sure Both Passwords are Match !'); document.getElementById('confirm-password').focus()}
+        else if(security['2FA'] && !isNum.test(data.token)) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid OTP Code Format !"); document.getElementById('otp-token-1').focus()}
         else submitData()
     }
 
@@ -226,6 +229,7 @@ const Account = ({ userData }) => {
         if(properties.honeypot) return
         else if(!data.isBackupCode && !data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!data.token) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus()}
+        else if(!isNum.test(data.token)) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid OTP Code Format !"); document.getElementById('token-1').focus()}
         else submitData()
     }
 
