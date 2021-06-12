@@ -377,7 +377,7 @@ passport.use('sendOTP', new localStrategy({ usernameField: 'email', passwordFiel
 passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordField: '_id', passReqToCallback: true, session: false }, (req, email, _id, done) => {
     const {tokenId, token, isBackupCode} = req.body
     const data = req.body
-    if(!token || (!isBackupCode && !tokenId)) return done(null, false, { status: 428, message: MSG_DESC[37] })
+    if(!token || (!isBackupCode && !tokenId)) return done(null, false, { status: 400, message: MSG_DESC[37] })
     else if(tokenId && !isObjId(tokenId)) return done(null, false, { status: 400, message: MSG_DESC[52] })
     else if(isBackupCode && token)
         User.findOne({_id, email}, (err, user) => {
