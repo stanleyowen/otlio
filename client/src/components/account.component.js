@@ -163,7 +163,7 @@ const Account = ({ userData }) => {
                 setNotification(NOTIFICATION_TYPES.SUCCESS, res.data.message)
             })
             .catch(err => {
-                if(err.response.status === 428) openModal('otp-bg', 'otp-modal')
+                openModal('otp-bg', 'otp-modal')
                 document.getElementById('otp-token-1').focus()
                 setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
             })
