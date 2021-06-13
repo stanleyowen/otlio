@@ -21,6 +21,7 @@ const jwtSecret = process.env.JWT_SECRET
 const CLIENT_URL = process.env.CLIENT_URL
 const listLabel = ["Priority","Secondary","Important","Do Later"]
 const type = ["Question","Improvement","Security Issue/Bug","Account Management","Others"]
+const isNum = /^\d+$/
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const transporter = nodemailer.createTransport({
@@ -379,6 +380,7 @@ passport.use('verifyOTP', new localStrategy({ usernameField: 'email', passwordFi
     const data = req.body
     if(!token || (!isBackupCode && !tokenId)) return done(null, false, { status: 400, message: MSG_DESC[37] })
     else if(tokenId && !isObjId(tokenId)) return done(null, false, { status: 400, message: MSG_DESC[52] })
+    else if(token && !isNum.test(token)) return done(null, false, { status: 400, message: MSG_DESC[53] })
     else if(isBackupCode && token)
         User.findOne({_id, email}, (err, user) => {
             if(err) return done(err, false)

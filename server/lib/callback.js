@@ -52,6 +52,7 @@ const MSG_DESC = [
     'Invalid Subject Format',                                           // 50
     'Support Ticket has been Opened Successfully.',                     // 51
     'Invalid Object ID',                                                // 52
+    'Invalid OTP Code Format',                                          // 53
 ]
 
 module.exports = MSG_DESC
