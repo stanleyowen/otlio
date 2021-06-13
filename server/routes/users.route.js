@@ -71,7 +71,7 @@ router.post('/login', new rateLimit({
                 }
             }, jwtSecret, { expiresIn: '1d' }), {
                 path: '/',
-                expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
+                expires: JSON.parse(req.body.rememberMe ? req.body.rememberMe : true) ? new Date(Date.now() + 86400000) : false,
                 httpOnly: true,
                 secure: status,
                 sameSite: status ? 'none' : 'strict'
@@ -252,7 +252,7 @@ router.post('/otp', async (req, res, next) =>
                         }
                     }, jwtSecret, { expiresIn: '1d' }), {
                         path: '/',
-                        expires: JSON.parse(req.body.rememberMe) ? new Date(Date.now() + 86400000) : false,
+                        expires: JSON.parse(req.body.rememberMe ? req.body.rememberMe : true) ? new Date(Date.now() + 86400000) : false,
                         httpOnly: true,
                         secure: status,
                         sameSite: status ? 'none' : 'strict'
