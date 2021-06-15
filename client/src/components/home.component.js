@@ -131,7 +131,7 @@ const Home = ({ userData }) => {
 
     const handleOnDragEnd = (res) => {
         const {source, destination} = res
-        if (!destination || !source || destination.index == source.index) return;
+        if (!destination || !source || destination.index === source.index) return;
         const items = Array.from(todoData)
         const [reorderedItem] = items.splice(res.source.index, 1)
         items.splice(res.destination.index, 0, reorderedItem)
