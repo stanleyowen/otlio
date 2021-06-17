@@ -64,9 +64,10 @@ const Landing = () => {
                 updateValue()
             })
         }
-        new IntersectionObserver(a => {
-            if(a[0].isIntersecting === true && stars && stars.getAttribute('data-stars')) countAnimation()
-        }, { threshold: [1] }).observe(document.getElementById('counter'))
+        if (!window.IntersectionObserver) countAnimation()
+        else new IntersectionObserver(a => {
+                if(a[0].isIntersecting === true && stars && stars.getAttribute('data-stars')) countAnimation()
+            }, { threshold: [1] }).observe(document.getElementById('counter'))
     }, [stars])
 
     useEffect(() => {
