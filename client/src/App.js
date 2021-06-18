@@ -48,15 +48,6 @@ export default function App() {
     })
   }
 
-  async function ping(a) {
-    await axios.get(`${server_list[a]}/status`)
-    .then(() => setServer(server_list[a]))
-    .catch(err => {
-      if((err.response && err.response.status >= 500) && server_list[a+1]) ping(a+1)
-      else if(!err.response && server_list[a+1]) ping(a+1)
-    })
-  }
-
   useEffect(() => {
     async function getData() {
       await axios.get(`${server}/account/user`, { withCredentials: true })
@@ -77,6 +68,7 @@ export default function App() {
       .catch(err => {
         setUserData({ type: {}, credentials: {}, security: {}, ...err.response.data, isLoading: false, authenticated: false, server })
         localStorage.setItem('XSRF-TOKEN', err.response.data['XSRF-TOKEN'])
+        localStorage.removeItem('todoData')
         if(err.response.status === 302 && err.response.data.type.mfa && (window.location.pathname !== '/login' && window.location.pathname !== '/logout' && window.location.pathname !== '/support')) window.location='/login'
         if(err.response.status === 302 && err.response.data.type.verifyAccount && (window.location.pathname !== '/get-started' && window.location.pathname !== '/logout' && window.location.pathname !== '/support' && window.location.pathname.split('/')[1] !== 'verify' )) window.location='/get-started'
         if(err.response.data.message && err.response.data.message !== "No auth token") setNotification(NOTIFICATION_TYPES.DANGER, err.response.data.message)
@@ -86,6 +78,14 @@ export default function App() {
   },[server])
 
   useEffect(() => {
+    async function ping(a) {
+      await axios.get(`${server_list[a]}/status`)
+      .then(() => setServer(server_list[a]))
+      .catch(err => {
+        if((err.response && err.response.status >= 500) && server_list[a+1]) ping(a+1)
+        else if(!err.response && server_list[a+1]) ping(a+1)
+      })
+    }
     console.log("%c%s","color: red; background: yellow; font-size: 24px","WARNING!")
     console.log("%c%s","font-size: 18px","Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand.")
     ping(0)

@@ -8,6 +8,7 @@ import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine } from '@f
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
+const isNum =  /^\d+$/
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Login = ({ userData }) => {
@@ -128,6 +129,7 @@ const Login = ({ userData }) => {
         if(properties.honeypot) return
         else if(!data.tokenId) setNotification(NOTIFICATION_TYPES.DANGER, "Sorry, we are not able to process your request. Please try again later.")
         else if(!data.token) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Make Sure to Fill Out All Required the Fields !"); document.getElementById('token-1').focus()}
+        else if(!isNum.test(data.token)) {setNotification(NOTIFICATION_TYPES.DANGER, "Please Provide a Valid OTP Code Format !"); document.getElementById('token-1').focus()}
         else submitData()
     }
     return properties.verify ?

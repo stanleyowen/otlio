@@ -14,7 +14,7 @@ const CustomerService = 'https://res.cloudinary.com/stanleyowen/image/upload/v16
 const MessageSent = 'https://res.cloudinary.com/stanleyowen/image/upload/v1622125924/otlio/2405976c7c1485050e78fcf54ca4bfe4_koft6t.webp'
 
 const validateType = (e) => {
-    for (let a=0; a<ticketTypes.length; a++){
+    for (let a=0; a<ticketTypes.length; a++) {
         if(e === ticketTypes[a]) return false
         else if(a === ticketTypes.length-1 && e !== ticketTypes[a]) return true
     }
