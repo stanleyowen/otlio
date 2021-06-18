@@ -247,7 +247,7 @@ const Landing = () => {
                             <ul className="no-dots margin10 font-default small">
                                 <li><a href="https://otlio.statuspage.io/">Service Status</a></li>
                                 <li><a href="https://02zrgrp9.status.cron-job.org/">Uptime Report</a></li>
-                                <li><a href="http://localhost:3000/support">Contact Us</a></li>
+                                <li><a href="/support">Contact Us</a></li>
                             </ul>
                         </nav>
                     </div>
