@@ -13,15 +13,16 @@ const GITHUB_API = "https://api.github.com/repos/stanleyowen/otlio"
 
 const Landing = () => {
     aos.init()
-    const star = document.getElementById('star')
+    const [data, setData] = useState({
+        stars: '',
+        license: ''
+    })
     const stars = document.getElementById('stars')
-    const license = document.getElementById('license')
     const version = document.querySelector('meta[name="version"]').content
     const [properties, setProperties] = useState({
         organizingEasier: false,
         security: false,
         cloud: false,
-        // theme: false,
         github: false,
         support: false
     })
@@ -33,9 +34,11 @@ const Landing = () => {
             await axios.all([axios.get(GITHUB_API), axios.get(`${GITHUB_API}/releases`)])
             .then(res => {
                 var latestVersion = res[1].data[0].tag_name.slice(1)
-                star.innerText = res[0].data.stargazers_count
-                stars.setAttribute('data-stars', star.innerText)
-                license.innerText = res[0].data.license.spdx_id
+                setData({
+                    stars: res[0].data.stargazers_count,
+                    license: res[0].data.license.spdx_id
+                })
+                stars.setAttribute('data-stars', res[0].data.stargazers_count)
                 if(version !== latestVersion) setNotification(NOTIFICATION_TYPES.WARNING, `Version ${latestVersion} is available`)
             })
             .catch(err => {
@@ -43,8 +46,8 @@ const Landing = () => {
                 else setNotification(NOTIFICATION_TYPES.DANGER, "Error in Fetching GitHub Data")
             })
         }
-        if(star && license && version) getRepoInfo()
-    },[star, stars, license, version])
+        if(stars && version) getRepoInfo()
+    },[stars, version])
 
     useEffect(() => {
         async function countAnimation() {
@@ -113,8 +116,8 @@ const Landing = () => {
                 </div>
             </div>
             <div className="isCentered badges mt-40 mb-40">
-                <a href="https://github.com/stanleyowen/otlio/stargazers" target="_blank" rel="noopener"><button className="btn__label">Stars</button><button className="btn__value" id="star" /></a>
-                <a href="https://github.com/stanleyowen/otlio/blob/master/LICENSE" target="_blank" rel="noopener"><button className="btn__label">License</button><button className="btn__value" id="license" /></a>
+                <a href="https://github.com/stanleyowen/otlio/stargazers" target="_blank" rel="noopener"><button className="btn__label">Stars</button><button className="btn__value">{data.stars}</button></a>
+                <a href="https://github.com/stanleyowen/otlio/blob/master/LICENSE" target="_blank" rel="noopener"><button className="btn__label">License</button><button className="btn__value">{data.license}</button></a>
                 <a href="https://github.com/stanleyowen/otlio/releases" target="_blank" rel="noopener"><button className="btn__label">Version</button><button className="btn__value">{version}</button></a>
             </div>
             <h1 className="mt-40 isCentered monospace blue-text">Features</h1>
