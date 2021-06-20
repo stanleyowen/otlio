@@ -17,7 +17,6 @@ const Landing = () => {
         stars: '',
         license: ''
     })
-    const stars = document.getElementById('stars')
     const version = document.querySelector('meta[name="version"]').content
     const [properties, setProperties] = useState({
         organizingEasier: false,
@@ -38,7 +37,6 @@ const Landing = () => {
                     stars: res[0].data.stargazers_count,
                     license: res[0].data.license.spdx_id
                 })
-                stars.setAttribute('data-stars', res[0].data.stargazers_count)
                 if(version !== latestVersion) setNotification(NOTIFICATION_TYPES.WARNING, `Version ${latestVersion} is available`)
             })
             .catch(err => {
@@ -46,10 +44,11 @@ const Landing = () => {
                 else setNotification(NOTIFICATION_TYPES.DANGER, "Error in Fetching GitHub Data")
             })
         }
-        if(stars && version) getRepoInfo()
-    },[stars, version])
+        if(version) getRepoInfo()
+    },[version])
 
     useEffect(() => {
+        const stars = document.getElementById('stars')
         async function countAnimation() {
             ['stars', 'viewer', 'cloner'].forEach(a => {
                 let i = 0
@@ -70,7 +69,7 @@ const Landing = () => {
         new IntersectionObserver(a => {
             if(a[0].isIntersecting === true && stars && stars.getAttribute('data-stars')) countAnimation()
         }, { threshold: [1] }).observe(document.getElementById('counter'))
-    }, [stars])
+    }, [data.stars])
 
     useEffect(() => {
         var x = 0; var index = 0; var interval
@@ -172,7 +171,7 @@ const Landing = () => {
                                 <td className="isCentered">Monthly Cloners</td>
                             </tr></thead>
                             <tbody><tr style={{background: 'none'}}>
-                                <td className="isCentered" id="stars">N/A</td>
+                                <td className="isCentered" id="stars" data-stars={data.stars}>N/A</td>
                                 <td className="isCentered" id="viewer" data-viewer="4516">N/A</td>
                                 <td className="isCentered" id="cloner" data-cloner="384">N/A</td>
                             </tr></tbody>
