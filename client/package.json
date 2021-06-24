@@ -12,7 +12,7 @@
     "@material-ui/lab": "*",
     "@material-ui/pickers": "^3.3.10",
     "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
+    "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.1.9",
     "aos": "^2.3.4",
     "axios": "^0.21.1",
@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "cross-env REACT_APP_VERSION=$npm_package_version react-scripts start",
-    "build": "cross-env REACT_APP_VERSION=$npm_package_version react-scripts build",
+    "build": "cross-env REACT_APP_VERSION=$npm_package_version GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
