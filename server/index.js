@@ -18,7 +18,7 @@ const status = process.env.NODE_ENV === 'production'
 
 app.use(cors({
     origin: (origin, cb) => {
-        if(process.env.CLIENT_URL.indexOf(origin) !== -1) cb(null, true)
+        if(process.env.CLIENT_URL.split(',').indexOf(origin) !== -1) cb(null, true)
     },
     optionsSuccessStatus: 200,
     credentials: true
