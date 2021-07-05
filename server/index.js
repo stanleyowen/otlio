@@ -17,7 +17,10 @@ const PORT = process.env.PORT || 5000
 const status = process.env.NODE_ENV === 'production'
 
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: (origin, cb) => {
+        if(process.env.CLIENT_URL.split(',').indexOf(origin) !== -1) cb(null, true)
+        else cb(new Error('CORS Error'))
+    },
     optionsSuccessStatus: 200,
     credentials: true
 }))
