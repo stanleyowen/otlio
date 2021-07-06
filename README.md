@@ -30,7 +30,7 @@ If you find this project useful, leave a 🌟 to keep a beginner motivated. 😊
   There are some several quick start options available:
     - [Fork this repository](https://github.com/stanleyowen/otlio/fork)
     - Clone this repository, type `https://github.com/stanleyowen/otlio.git` in command line
-    - [Download the latest release](https://github.com/stanleyowen/otlio/archive/v0.5.7.zip)
+    - [Download the latest release](https://github.com/stanleyowen/otlio/archive/v0.5.8.zip)
 2. Install All the Dependencies
     - Open your terminal
     - Change directory `cd` to both `client` and `server` folder
