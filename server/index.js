@@ -18,8 +18,11 @@ const status = process.env.NODE_ENV === 'production'
 
 app.use(cors({
     origin: (origin, cb) => {
-        if(process.env.CLIENT_URL.split(',').indexOf(origin) !== -1) cb(null, true)
-        else cb(new Error('CORS Error'))
+        if(!origin || process.env.CLIENT_URL.split(',').indexOf(origin) !== -1) cb(null, true)
+        else cb(JSON.stringify({
+            status: 401,
+            message: 'Connnection has been blocked by CORS Policy: The origin header(s) is not equal to the supplied origin.'
+        }, null, 2))
     },
     optionsSuccessStatus: 200,
     credentials: true
