@@ -448,23 +448,20 @@ body.dark .gray-bg {
 .btn__outline:hover { background-color: #1976d2; color: #FFFFFF; }
 .btn__outline:focus { background-color: #116dc9; color: #FFFFFF; }
 .green__text { color: #23c739; }
-.badges {
-    bottom: 10px;
-    width: 100%;
-}
 .badges a { margin-left: 10px; }
 .badges button {
-    padding: 3px 4px;
+    padding: 3px;
     transition: all .4s;
-    border-color: none;
 }
 .badges button:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    padding: 3px 6px;
+    border: none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 .badges button:not(:first-child) {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 .responsive-table { overflow-x: auto; }
 .bold { font-weight: bold; }
