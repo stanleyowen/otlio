@@ -448,14 +448,21 @@ body.dark .gray-bg {
 .btn__outline:hover { background-color: #1976d2; color: #FFFFFF; }
 .btn__outline:focus { background-color: #116dc9; color: #FFFFFF; }
 .green__text { color: #23c739; }
-.badges {
-    bottom: 10px;
-    width: 100%;
-}
 .badges a { margin-left: 10px; }
 .badges button {
-    padding: 2px;
+    padding: 3px;
     transition: all .4s;
+}
+body.dark button:first-child { border: 2px #FFF solid; } 
+.badges button:first-child {
+    padding: 3px 6px;
+    border: 2px #1a73e8 solid;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.badges button:not(:first-child) {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 .responsive-table { overflow-x: auto; }
 .bold { font-weight: bold; }
