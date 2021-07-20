@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
 import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core'
-import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons/'
+import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine, faInfoCircle } from '@fortawesome/free-solid-svg-icons/'
 
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
@@ -213,7 +213,12 @@ const Login = ({ userData }) => {
                     </div>
                     <div className="m-10">
                         <div className="contact__infoField">
-                            <label htmlFor="userEmail">Email</label>
+                            <label htmlFor="userEmail">
+                                Email &nbsp;
+                                <Tooltip title="This is your email address you used when you register for Otlio Services" arrow>
+                                    <span><FontAwesomeIcon icon={faInfoCircle} style={{ fontSize: "1em" }} /></span>
+                                </Tooltip>
+                            </label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => handleLogin('email', event.target.value)} value={login.email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
                             <span className="contact__onFocus" />
                         </div>

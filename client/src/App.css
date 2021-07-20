@@ -453,7 +453,7 @@ body.dark .gray-bg {
     padding: 3px;
     transition: all .4s;
 }
-body.dark button:first-child { border: 2px #FFF solid; } 
+body.dark .badges button:first-child { border: 2px #FFF solid; } 
 .badges button:first-child {
     padding: 3px 6px;
     border: 2px #1a73e8 solid;

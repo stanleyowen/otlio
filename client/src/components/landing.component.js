@@ -6,18 +6,16 @@ import Skeleton from '@material-ui/lab/Skeleton'
 import { CardActionArea } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDraftingCompass, faFingerprint, faMoon, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
-
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
 const GITHUB_API = "https://api.github.com/repos/stanleyowen/otlio"
 
 const Landing = () => {
-    aos.init()
+    const version = document.querySelector('meta[name="version"]').content
     const [data, setData] = useState({
         stars: '',
         license: ''
     })
-    const version = document.querySelector('meta[name="version"]').content
     const [properties, setProperties] = useState({
         organizingEasier: false,
         security: false,
@@ -66,7 +64,7 @@ const Landing = () => {
                 updateValue()
             })
         }
-        if(stars && stars.getAttribute('data-stars')){
+        if(stars && stars.getAttribute('data-stars')) {
             if (!window.IntersectionObserver) countAnimation()
             else new IntersectionObserver(a => {
                     if(a[0].isIntersecting === true) countAnimation()
@@ -75,6 +73,7 @@ const Landing = () => {
     }, [data.stars])
 
     useEffect(() => {
+        aos.init()
         var x = 0; var index = 0; var interval
         const element = document.querySelector('.text-animation')
         const data = element.getAttribute('data-elements').split(',')
@@ -175,9 +174,16 @@ const Landing = () => {
                             </tr></thead>
                             <tbody><tr style={{background: 'none'}}>
                                 <td className="isCentered" id="stars" data-stars={data.stars}>N/A</td>
-                                <td className="isCentered" id="viewer" data-viewer="4516">N/A</td>
-                                <td className="isCentered" id="cloner" data-cloner="384">N/A</td>
+                                <td className="isCentered">
+                                    <span id="viewer" data-viewer="6192">N/A</span>
+                                    <sup className="small required">*</sup>
+                                </td>
+                                <td className="isCentered">
+                                    <span id="cloner" data-cloner="384">N/A</span>
+                                    <sup className="small required">*</sup>
+                                </td>
                             </tr></tbody>
+                            <span className="required small">* As of 17 June 2021</span>
                         </table>
                         <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://github.com/stanleyowen/otlio" target="_blank" rel="noopener">View Code on GitHub</a>
                     </div>
