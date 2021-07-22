@@ -194,13 +194,17 @@ const Login = ({ userData }) => {
     (<div id="form">
         <div className="form__contact">
             <div className="get_in_touch"><h1>Login</h1></div>
-            <div className="oauth-container">
-                <button className="oauth-box google" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/google/auth` : null}>
-                    <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
-                </button>
-                <button className="oauth-box github mt-20" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/github/auth` : null}>
-                    <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
-                </button>
+            <div className="contact__container isCentered no-padding">
+                <p className="pr-10 p-15">
+                    <button className="oauth-box google" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/google/auth` : null}>
+                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
+                    </button>
+                </p>
+                <p className="pl-10 p-15">
+                    <button className="oauth-box github" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/github/auth` : null}>
+                        <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
+                    </button>
+                </p>
             </div>
             <div className="form">
                 <form className="contact__form" onSubmit={LogIn}>
