@@ -29,12 +29,12 @@ const Edit = ({ userData }) => {
 
     useEffect(() => {
         if(SERVER_URL)
-        document.querySelectorAll('button').forEach(a => {
+        document.querySelectorAll('button, input').forEach(a => {
             a.classList.remove('disabled')
             a.removeAttribute('disabled')
         })
         else
-        document.querySelectorAll('button').forEach(a => {
+        document.querySelectorAll('button, input').forEach(a => {
             a.classList.add('disabled')
             a.setAttribute('disabled', true)
         })
