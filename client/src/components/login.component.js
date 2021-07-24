@@ -40,19 +40,6 @@ const Login = ({ userData }) => {
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
 
     useEffect(() => {
-        if(SERVER_URL)
-        document.querySelectorAll('button, input').forEach(a => {
-            a.classList.remove('disabled')
-            a.removeAttribute('disabled')
-        })
-        else
-        document.querySelectorAll('button, input').forEach(a => {
-            a.classList.add('disabled')
-            a.setAttribute('disabled', true)
-        })
-    }, [SERVER_URL])
-
-    useEffect(() => {
         const btn = document.getElementById('send-otp')
         const otp = document.querySelectorAll('#otp > *[id]')
         for (let i=0; i<otp.length; i++) {

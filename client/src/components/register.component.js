@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { IconButton, Tooltip } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash, faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons/'
@@ -29,19 +29,6 @@ const Register = ({ userData }) => {
 
     const handleRegister = (a, b) => setRegister({ ...register, [a]: b })
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
-
-    useEffect(() => {
-        if(SERVER_URL)
-        document.querySelectorAll('button, input').forEach(a => {
-            a.classList.remove('disabled')
-            a.removeAttribute('disabled')
-        })
-        else
-        document.querySelectorAll('button, input').forEach(a => {
-            a.classList.add('disabled')
-            a.setAttribute('disabled', true)
-        })
-    }, [SERVER_URL])
     
     if(status === 302 && !properties.verify && verifyAccount) handleChange('verify', true)
 
