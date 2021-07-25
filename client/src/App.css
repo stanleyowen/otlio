@@ -1,4 +1,4 @@
-/* Otlio - CSS Version 0.5.8 Copyright 2021 */
+/* Otlio - CSS Version 0.5.9 Copyright 2021 */
 @import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
@@ -229,6 +229,7 @@ body.dark .box-effect::before, body.dark .box-effect::after {
 .m-auto { margin: auto !important; }
 .m-10 { margin: 10px !important; }
 .p-12 { padding: 12px !important; }
+.p-15 { padding: 15px !important; }
 .pl-10 { padding-left: 10px !important; }
 .pr-10 { padding-right: 10px !important; }
 .p-5p { padding: 5% !important; }
@@ -448,14 +449,21 @@ body.dark .gray-bg {
 .btn__outline:hover { background-color: #1976d2; color: #FFFFFF; }
 .btn__outline:focus { background-color: #116dc9; color: #FFFFFF; }
 .green__text { color: #23c739; }
-.badges {
-    bottom: 10px;
-    width: 100%;
-}
 .badges a { margin-left: 10px; }
 .badges button {
-    padding: 2px;
+    padding: 3px;
     transition: all .4s;
+}
+body.dark .badges button:first-child { border: 2px #FFF solid; } 
+.badges button:first-child {
+    padding: 3px 6px;
+    border: 2px #1a73e8 solid;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.badges button:not(:first-child) {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 .responsive-table { overflow-x: auto; }
 .bold { font-weight: bold; }
@@ -538,7 +546,7 @@ tbody tr:hover {
     grid-template-columns: auto auto auto;
     margin: 20px;
 }
-#additional-feature { grid-template-columns: 33.3% 33.3% 33.3%; }
+#additional-feature { grid-template-columns: 33.3% 33.3% 33.3% }
 .projects__card {
     padding: 15px 10px;
     display: block;

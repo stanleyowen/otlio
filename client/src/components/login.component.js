@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
 import { Tooltip, IconButton, FormControlLabel, Checkbox } from '@material-ui/core'
-import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons/'
+import { faQuestionCircle, faEyeSlash, faEye, faEnvelope, faChartLine, faInfoCircle } from '@fortawesome/free-solid-svg-icons/'
 
 import { getCSRFToken } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
@@ -38,19 +38,6 @@ const Login = ({ userData }) => {
     const handleData = (a, b) => setData({ ...data, [a]: b })
     const handleLogin = (a, b) => setLogin({ ...login, [a]: b })
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
-
-    useEffect(() => {
-        if(SERVER_URL)
-        document.querySelectorAll('button').forEach(a => {
-            a.classList.remove('disabled')
-            a.removeAttribute('disabled')
-        })
-        else
-        document.querySelectorAll('button').forEach(a => {
-            a.classList.add('disabled')
-            a.setAttribute('disabled', true)
-        })
-    }, [SERVER_URL])
 
     useEffect(() => {
         const btn = document.getElementById('send-otp')
@@ -194,13 +181,17 @@ const Login = ({ userData }) => {
     (<div id="form">
         <div className="form__contact">
             <div className="get_in_touch"><h1>Login</h1></div>
-            <div className="oauth-container">
-                <button className="oauth-box google" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/google/auth` : null}>
-                    <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
-                </button>
-                <button className="oauth-box github mt-20" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/github/auth` : null}>
-                    <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
-                </button>
+            <div className="contact__container isCentered no-padding">
+                <p className="pr-10 p-15">
+                    <button className="oauth-box google" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/google/auth` : null}>
+                        <FontAwesomeIcon icon={faGoogle} size='2x'/> <p> Login with Google</p>
+                    </button>
+                </p>
+                <p className="pl-10 p-15">
+                    <button className="oauth-box github" onClick={SERVER_URL ? () => window.location = `${SERVER_URL}/oauth/github/auth` : null}>
+                        <FontAwesomeIcon icon={faGithub} size='2x'/> <p> Login with GitHub</p>
+                    </button>
+                </p>
             </div>
             <div className="form">
                 <form className="contact__form" onSubmit={LogIn}>
@@ -213,7 +204,12 @@ const Login = ({ userData }) => {
                     </div>
                     <div className="m-10">
                         <div className="contact__infoField">
-                            <label htmlFor="userEmail">Email</label>
+                            <label htmlFor="userEmail">
+                                Email &nbsp;
+                                <Tooltip title="This is your email address you used when you register for Otlio Services" arrow>
+                                    <span><FontAwesomeIcon icon={faInfoCircle} style={{ fontSize: "1em" }} /></span>
+                                </Tooltip>
+                            </label>
                             <input title="Email" id="userEmail" type="email" className="contact__inputField" onChange={(event) => handleLogin('email', event.target.value)} value={login.email} required autoFocus spellCheck="false" autoCapitalize="none" autoComplete="username"/>
                             <span className="contact__onFocus" />
                         </div>

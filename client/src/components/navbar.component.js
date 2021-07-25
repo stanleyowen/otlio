@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { IconButton, Tooltip } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAdjust, faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers } from '@fortawesome/free-solid-svg-icons/'
+import { faSignOutAlt, faUser, faListUl, faSignInAlt, faUsers, faMoon, faSun } from '@fortawesome/free-solid-svg-icons/'
 
 const Navbar = ({ userData }) => {
     const {authenticated, isLoading} = userData
     const theme = localStorage.getItem('theme')
+    const [isDark, setTheme] = useState(false)
     const [value_a, setValue_a] = useState([])
     const [value_b, setValue_b] = useState([])
     const [value_c, setValue_c] = useState()
 
     useEffect(() => {
         if(((!theme || theme === "system") && window.matchMedia('(prefers-color-scheme: dark)').matches) || theme === "dark") {
-            if(!theme) localStorage.setItem('theme', 'system')
+            if(!theme) {
+                setTheme(true)
+                localStorage.setItem('theme', 'system')
+            }
             document.body.classList.add("dark")
         }
         if(!isLoading && authenticated) {
@@ -40,6 +44,7 @@ const Navbar = ({ userData }) => {
     const changeMode = (e) => {
         e.preventDefault()
         document.body.classList.toggle("dark")
+        setTheme(document.body.classList.contains('dark') ? true : false)
         localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light')
     }
 
@@ -73,7 +78,7 @@ const Navbar = ({ userData }) => {
                 </div>
             </div>
 		    <Tooltip title="Change Mode"><button className="btn__changeMode" onClick={changeMode}>
-                <FontAwesomeIcon icon={faAdjust} size="2x" />
+                <FontAwesomeIcon icon={isDark ? faSun : faMoon} size="2x" />
             </button></Tooltip>
         </div>
     )

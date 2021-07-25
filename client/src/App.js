@@ -91,6 +91,19 @@ export default function App() {
     ping(0)
   }, [])
 
+  useEffect(() => {
+    if(server)
+      document.querySelectorAll('button, input').forEach(a => {
+        a.classList.remove('disabled')
+        a.removeAttribute('disabled')
+      })
+    else
+      document.querySelectorAll('button, input').forEach(a => {
+          a.classList.add('disabled')
+          a.setAttribute('disabled', true)
+      })
+  }, [server])
+
   return (
     <Router>
       <Navbar userData={userData} />

@@ -73,19 +73,6 @@ const Account = ({ userData }) => {
         }
     }, [properties.disabled, data])
 
-    useEffect(() => {
-        if(SERVER_URL)
-        document.querySelectorAll('button').forEach(a => {
-            a.classList.remove('disabled')
-            a.removeAttribute('disabled')
-        })
-        else
-        document.querySelectorAll('button').forEach(a => {
-            a.classList.add('disabled')
-            a.setAttribute('disabled', true)
-        })
-    }, [SERVER_URL])
-
     const BackupCodes = () => {
         const codes = [...valid, ...invalid]
         // function validateToken(token) {
