@@ -152,8 +152,8 @@ const Landing = () => {
                                 <h3 className="mt-20 raleway">Our infrastructures are configured to automatically switch to another available server in range when one server is down or under maintenance.</h3>
                             </div>
                         </CardActionArea>
-                        <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://02zrgrp9.status.cron-job.org/" target="_blank" rel="noopener">Uptime Reports</a>
                         <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://otlio.statuspage.io/" target="_blank" rel="noopener">Service Status</a>
+                        <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://02zrgrp9.status.cron-job.org/" target="_blank" rel="noopener">Uptime Reports</a>
                     </div>
                     {properties.cloud ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.cloud ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/af051c89597cd018ce51bd8fd53014ff_zpl0bt.webp" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
                 </div>

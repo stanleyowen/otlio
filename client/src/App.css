@@ -229,6 +229,7 @@ body.dark .box-effect::before, body.dark .box-effect::after {
 .m-auto { margin: auto !important; }
 .m-10 { margin: 10px !important; }
 .p-12 { padding: 12px !important; }
+.p-15 { padding: 15px !important; }
 .pl-10 { padding-left: 10px !important; }
 .pr-10 { padding-right: 10px !important; }
 .p-5p { padding: 5% !important; }
@@ -545,7 +546,7 @@ tbody tr:hover {
     grid-template-columns: auto auto auto;
     margin: 20px;
 }
-#additional-feature { grid-template-columns: 33.3% 33.3% 33.3%; }
+#additional-feature { grid-template-columns: 33.3% 33.3% 33.3% }
 .projects__card {
     padding: 15px 10px;
     display: block;
