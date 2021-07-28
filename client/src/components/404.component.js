@@ -10,7 +10,7 @@ const PageNotFound = ({ userData }) => {
     return (
         <div className="main">
             <div className="contact__container">
-                {isLoaded ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(isLoaded ? '':'none ') + "center-object"} src="https://res.cloudinary.com/stanleyowen/image/upload/v1622072616/otlio/4f4adcbf8c6f66dcfc8a3282ac2bf10a_svidxs.webp" alt="Page Not Found" onLoad={() => setLoaded(true)} />
+                {isLoaded ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(isLoaded ? '':'none ') + "center-object"} src="https://user-images.githubusercontent.com/69080584/127343833-a9ea63e9-d0bc-43a3-bf58-9969aa9148ab.png" alt="Page Not Found" onLoad={() => setLoaded(true)} />
                 <div className="center-object">
                     <h1 className="blue-text monospace large">404</h1>
                     <h1 className="blue-text monospace">Page Not Found</h1>
