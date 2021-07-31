@@ -5,7 +5,7 @@ const ObjectId = require('mongoose').Types.ObjectId
 const nodemailer = require('nodemailer')
 const JWTStrategy = require('passport-jwt').Strategy
 const localStrategy = require('passport-local').Strategy
-const GitHubStrategy = require('passport-github').Strategy
+const GitHubStrategy = require('passport-github2').Strategy
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 
 const MSG_DESC = require('./callback')
@@ -242,8 +242,8 @@ passport.use('verifyAccount', new localStrategy({ usernameField: 'email', passwo
     })
 }))
 
-passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: process.env.GITHUB_CALLBACK }, (accessToken, refreshToken, profile, done) => {
-    const {email} = profile._json
+passport.use('github', new GitHubStrategy ({ clientID: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET, callbackURL: process.env.GITHUB_CALLBACK, scope: 'user:email' }, (accessToken, refreshToken, profile, done) => {
+    const email = profile.emails[0].value
     User.findOne({email}, (err, user) => {
         if(err) return done(err, false)
         else if(!user)
