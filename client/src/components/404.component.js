@@ -4,14 +4,15 @@ import { Tooltip } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faEnvelope, faChartLine } from '@fortawesome/free-solid-svg-icons'
-import Image from '../libraries/image.json'
+import Images from '../libraries/image.json'
 
 const PageNotFound = ({ userData }) => {
     const [isLoaded, setLoaded] = useState(false)
     return (
         <div className="main">
             <div className="contact__container">
-                {isLoaded ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(isLoaded ? '':'none ') + "center-object"} src={Image.notFound} alt="Page Not Found" onLoad={() => setLoaded(true)} />
+                {isLoaded ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(isLoaded ? '':'none ') + "center-object"} src={Images.notFound} alt="Page Not Found" onLoad={() => setLoaded(true)} onError={e => { e.target.src=Images.localNotFound }} />
+                {/* onError={e => { e.target.src = Images.localNotFound; e.onError = null; }} */}
                 <div className="center-object">
                     <h1 className="blue-text monospace large">404</h1>
                     <h1 className="blue-text monospace">Page Not Found</h1>

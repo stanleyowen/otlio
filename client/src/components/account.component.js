@@ -254,7 +254,7 @@ const Account = ({ userData }) => {
             <div className="main">
                 <div className="account-container">
                     <div className="flex35 center-object p-5p">
-                        {properties.mfa ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="200px" />} <img className={properties.mfa ? '':'none'} src={Images['2FA']} alt="Introducing 2FA" onLoad={() => handleChange('mfa', true)} />
+                        {properties.mfa ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="200px" />} <img className={properties.mfa ? '':'none'} src={Images['2FA']} alt="Introducing 2FA" onLoad={() => handleChange('mfa', true)} onError={e => { e.target.src=Images.local2FA }} />
                         <h2 className="isCentered mt-20 mb-20 monospace">Introducing 2FA</h2>
                         <p className="isCentered monospace">Two-Factor Authentication is a security control that requires users to verify their identities by providing multiple pieces of evidence before gaining access to a device or application.</p>
                     </div>

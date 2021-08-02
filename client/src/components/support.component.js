@@ -66,7 +66,7 @@ const Support = ({ userData }) => {
             <div className="main">
                 <div className="contact__container">
                     <div className="center-object">
-                        <img src={properties.success ? Images.messageSent : Images.customerSupport} alt={properties.success ?  "Message Sent" : "Contact Us"} />
+                        <img src={properties.success ? Images.messageSent : Images.customerSupport} alt={properties.success ?  "Message Sent" : "Contact Us"} onError={e => { e.target.src=properties.success ? Images.localMessageSent : Images.localCustomerSupport }} />
                         <div className="footer__socialBtn mt-20 mb-20">
                             <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener">
                                 <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />
