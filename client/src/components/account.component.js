@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons'
 import { faCheck, faInfo, faKey, faTimes, faSignOutAlt, faEyeSlash, faEye, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
+import Images from '../libraries/image.json'
 import { getCSRFToken, openModal, closeModal } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
@@ -253,7 +254,7 @@ const Account = ({ userData }) => {
             <div className="main">
                 <div className="account-container">
                     <div className="flex35 center-object p-5p">
-                        {properties.mfa ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="200px" />} <img className={properties.mfa ? '':'none'} src="https://user-images.githubusercontent.com/69080584/127344051-76c49390-9a92-437e-8bc7-67fbc49eef6c.png" alt="Introducing 2FA" onLoad={() => handleChange('mfa', true)} />
+                        {properties.mfa ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="200px" />} <img className={properties.mfa ? '':'none'} src={Images['2FA']} alt="Introducing 2FA" onLoad={() => handleChange('mfa', true)} />
                         <h2 className="isCentered mt-20 mb-20 monospace">Introducing 2FA</h2>
                         <p className="isCentered monospace">Two-Factor Authentication is a security control that requires users to verify their identities by providing multiple pieces of evidence before gaining access to a device or application.</p>
                     </div>
