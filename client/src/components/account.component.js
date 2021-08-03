@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGoogle, faKeycdn } from '@fortawesome/free-brands-svg-icons'
 import { faCheck, faInfo, faKey, faTimes, faSignOutAlt, faEyeSlash, faEye, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
-import Images from '../libraries/image.json'
+import Images from '../libraries/image'
 import { getCSRFToken, openModal, closeModal } from '../libraries/validation'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 

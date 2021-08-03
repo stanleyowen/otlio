@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faChartLine, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
-import Images from '../libraries/image.json'
+import Images from '../libraries/image'
 import { getCSRFToken } from '../libraries/validation'
 import { NOTIFICATION_TYPES, setNotification } from '../libraries/setNotification'
 

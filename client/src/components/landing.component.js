@@ -7,7 +7,7 @@ import { CardActionArea } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDraftingCompass, faFingerprint, faMoon, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
-import Images from '../libraries/image.json'
+import Images from '../libraries/image'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
 const GITHUB_API = "https://api.github.com/repos/stanleyowen/otlio"
