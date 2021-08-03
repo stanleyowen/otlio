@@ -5,13 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faChartLine, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
+import Images from '../libraries/image'
 import { getCSRFToken } from '../libraries/validation'
 import { NOTIFICATION_TYPES, setNotification } from '../libraries/setNotification'
 
 const ticketTypes = ["Question","Improvement","Security Issue/Bug","Account Management","Others"]
 const EMAIL_VAL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-const CustomerService = 'https://user-images.githubusercontent.com/69080584/127345265-6dea5059-320c-42b2-9e1a-8bcc23c214d9.png'
-const MessageSent = 'https://user-images.githubusercontent.com/69080584/127345328-c48c3979-c686-4230-ab2d-917d57734405.png'
 
 const validateType = (e) => {
     for (let a=0; a<ticketTypes.length; a++) {
@@ -67,7 +66,7 @@ const Support = ({ userData }) => {
             <div className="main">
                 <div className="contact__container">
                     <div className="center-object">
-                        <img src={properties.success ? MessageSent : CustomerService} alt={properties.success ?  "Message Sent" : "Contact Us"} />
+                        <img src={properties.success ? Images.messageSent : Images.customerSupport} alt={properties.success ?  "Message Sent" : "Contact Us"} onError={e => { e.target.src=properties.success ? Images.localMessageSent : Images.localCustomerSupport }} />
                         <div className="footer__socialBtn mt-20 mb-20">
                             <Tooltip title="Contact Support" arrow><a href="/support" rel="noopener">
                                 <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: "1.8em" }} />

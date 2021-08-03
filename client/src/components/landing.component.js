@@ -6,6 +6,8 @@ import Skeleton from '@material-ui/lab/Skeleton'
 import { CardActionArea } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDraftingCompass, faFingerprint, faMoon, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+
+import Images from '../libraries/image'
 import { setNotification, NOTIFICATION_TYPES } from '../libraries/setNotification'
 
 const GITHUB_API = "https://api.github.com/repos/stanleyowen/otlio"
@@ -113,7 +115,7 @@ const Landing = () => {
                         <h3 className="mt-40 monospace">Join millions of people getting more organized and productive for free</h3>
                         <a className="oauth-box outline-blue isCentered block mt-30 mb-20 p-12 button monospace" href="/get-started">Get Started</a>
                     </div>
-                    {properties.organizingEasier ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.organizingEasier ? "":"none ") + "center-object"} src="https://user-images.githubusercontent.com/69080584/127344230-854bca56-1410-4db3-8279-decf0cf4f96c.png" alt="Organzing Easier" onLoad={() => handleChange('organizingEasier', true)} />
+                    {properties.organizingEasier ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.organizingEasier ? "":"none ") + "center-object"} src={Images.organizingEasier} alt="Organzing Easier" onLoad={() => handleChange('organizingEasier', true)} onError={e => { e.target.src=Images.localOrganizingEasier }} />
                 </div>
             </div>
             <div className="isCentered badges mt-40 mb-40">
@@ -124,7 +126,7 @@ const Landing = () => {
             <h1 className="mt-40 isCentered monospace blue-text">Features</h1>
             <div id="feature">
                 <div className="contact__container mb-20">
-                    {properties.security ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.security ? "":"none ") + "center-object"} data-aos="fade-right" src="https://user-images.githubusercontent.com/69080584/127344792-cd01ccd8-9b16-4b40-8b58-f59918e7f9e0.png" alt="Built-In Security" onLoad={() => handleChange('security', true)} />
+                    {properties.security ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.security ? "":"none ") + "center-object"} data-aos="fade-right" src={Images.security} alt="Built-In Security" onLoad={() => handleChange('security', true)} onError={e => { e.target.src=Images.localSecurity }} />
                     <div className="center-object full-width" data-aos="fade-left">
                         <CardActionArea className="rounded-corner">
                             <div className="p-12">
@@ -143,7 +145,7 @@ const Landing = () => {
                     </div>
                 </div>
                 <div className="contact__container mb-20 gray-bg">
-                    <img className={(properties.cloud ? "":"none ") + "center-object phone-device"} data-aos="fade-left" src="https://user-images.githubusercontent.com/69080584/127344393-3982f4dc-3ecf-417e-80bb-915ba18b2e50.png" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
+                    <img className={(properties.cloud ? "":"none ") + "center-object phone-device"} data-aos="fade-left" src={Images.cloud} alt="Reliable Services" onLoad={() => handleChange('cloud', true)} onError={e => { e.target.src=Images.localCloud }} />
                     <div className="center-object full-width" data-aos="fade-right">
                         <CardActionArea className="rounded-corner">
                             <div className="p-12">
@@ -155,10 +157,10 @@ const Landing = () => {
                         <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://otlio.statuspage.io/" target="_blank" rel="noopener">Service Status</a>
                         <a className="oauth-box outline-blue isCentered block mt-20 mb-20 p-12 button monospace" data-aos="fade-up" href="https://02zrgrp9.status.cron-job.org/" target="_blank" rel="noopener">Uptime Reports</a>
                     </div>
-                    {properties.cloud ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.cloud ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://user-images.githubusercontent.com/69080584/127344567-90d78b7e-7c67-4057-8b51-0f078e1735be.png" alt="Reliable Services" onLoad={() => handleChange('cloud', true)} />
+                    {properties.cloud ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.cloud ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src={Images.cloud} alt="Reliable Services" onLoad={() => handleChange('cloud', true)} onError={e => { e.target.src=Images.localCloud }} />
                 </div>
                 <div className="contact__container mb-20">
-                    {properties.github ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.github ? "":"none ") + "center-object"} data-aos="fade-right" src="https://user-images.githubusercontent.com/69080584/127344646-00e0ae50-6add-4a15-a358-68c6d20b3ec4.png" alt="Open Source Project" onLoad={() => handleChange('github', true)} />
+                    {properties.github ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.github ? "":"none ") + "center-object"} data-aos="fade-right" src={Images.github} alt="Open Source Project" onLoad={() => handleChange('github', true)} onError={e => { e.target.src=Images.localGithub }} />
                     <div className="center-object full-width" data-aos="fade-left">
                         <CardActionArea className="rounded-corner">
                             <div className="p-12">
@@ -189,7 +191,7 @@ const Landing = () => {
                     </div>
                 </div>
                 <div className="contact__container mb-40 gray-bg">
-                    <img className={(properties.support ? "":"none ") + "center-object phone-device"} data-aos="fade-left" src="https://user-images.githubusercontent.com/69080584/127344713-9c6b757d-0919-49a9-842c-4afff1ab5ddc.png" alt="Customer Support" />
+                    <img className={(properties.support ? "":"none ") + "center-object phone-device"} data-aos="fade-left" src={Images.support} alt="Customer Support" onError={e => { e.target.src=Images.localSupport }} />
                     <div className="center-object full-width" data-aos="fade-right">
                         <CardActionArea className="rounded-corner"><div className="p-12">
                             <h1 className="raleway mb-20 blue-text">Customer Support</h1>
@@ -201,7 +203,7 @@ const Landing = () => {
                             <span className="author alignRight mr-10">- Aldous Huxley</span>
                         </div>
                     </div>
-                    {properties.support ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.support ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src="https://user-images.githubusercontent.com/69080584/127344713-9c6b757d-0919-49a9-842c-4afff1ab5ddc.png" alt="Customer Support" onLoad={() => handleChange('support', true)} />
+                    {properties.support ? null : <Skeleton variant="rect" animation="wave" className="center-object" width="100%" height="100%" />} <img className={(properties.support ? "":"none ") + "center-object pc-device"} data-aos="fade-left" src={Images.support} alt="Customer Support" onLoad={() => handleChange('support', true)} onError={e => { e.target.src=Images.localSupport }} />
                 </div>
             </div>
             <div className="projects__container" id="additional-feature" data-aos="fade-down">
