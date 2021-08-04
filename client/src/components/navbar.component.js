@@ -13,10 +13,8 @@ const Navbar = ({ userData }) => {
 
     useEffect(() => {
         if(((!theme || theme === "system") && window.matchMedia('(prefers-color-scheme: dark)').matches) || theme === "dark") {
-            if(!theme) {
-                setTheme(true)
-                localStorage.setItem('theme', 'system')
-            }
+            if(!theme) localStorage.setItem('theme', 'system')
+            setTheme(true)
             document.body.classList.add("dark")
         }
         if(!isLoading && authenticated) {
