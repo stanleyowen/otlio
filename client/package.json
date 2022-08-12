@@ -17,7 +17,7 @@
     "aos": "^2.3.4",
     "axios": "^0.23.0",
     "cross-env": "^7.0.3",
-    "date-fns": "^2.25.0",
+    "date-fns": "^2.29.1",
     "dompurify": "^2.3.8",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
