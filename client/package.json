@@ -15,7 +15,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "aos": "^2.3.4",
-    "axios": "^0.23.0",
+    "axios": "^0.27.2",
     "cross-env": "^7.0.3",
     "date-fns": "^2.25.0",
     "dompurify": "^2.3.8",
