@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit')
 
 const MSG_DESC = require('./lib/callback')
 
-if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 require('./lib/passport')
 
 const app = express()
