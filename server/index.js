@@ -13,12 +13,12 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 require('./lib/passport')
 
 const app = express()
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5000
 const status = process.env.NODE_ENV === 'production'
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.ATLAS_URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true })
+        await mongoose.connect(process.env.ATLAS_URI)
         console.log('MongoDB Database Connected Successfully')
     } catch (err) {
         console.error(err.message)
