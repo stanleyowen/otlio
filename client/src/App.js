@@ -28,7 +28,7 @@ export default function App() {
   const [userData, setUserData] = useState({ isLoading: true, type: {}, credentials: {} })
   const protectedRoute = ['app', 'edit', 'account']
   const redirectRoute = ['login', 'get-started']
-  const server_list = ['https://otlio.herokuapp.com', 'https://otlio-us.herokuapp.com', 'https://otlio-eu.herokuapp.com', 'http://localhost:5000']
+  const server_list = ['https://otlio.cyclic.app/', 'https://otlio.herokuapp.com', 'https://otlio-us.herokuapp.com', 'https://otlio-eu.herokuapp.com', 'http://localhost:5000']
   const info = JSON.parse(localStorage.getItem('info'))
 
   if(info && info.status && info.message) {
