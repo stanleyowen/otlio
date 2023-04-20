@@ -10,7 +10,6 @@ const rateLimit = require('express-rate-limit')
 const MSG_DESC = require('./lib/callback')
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
-require('./lib/passport')
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -25,7 +24,7 @@ const connectDB = async () => {
         process.exit(1)
     }
 }
-        
+require('./lib/passport')
 app.use(cors({
     origin: (origin, cb) => {
         if(!origin || process.env.CLIENT_URL.split(',').indexOf(origin) !== -1) cb(null, true)
