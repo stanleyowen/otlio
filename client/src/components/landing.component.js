@@ -265,7 +265,7 @@ const Landing = () => {
                         </nav>
                     </div>
                     <ul className="monospace">
-                        <li className="inline"><span className="font-default bold">&copy;</span> 2021 Otlio</li>
+                        <li className="inline"><span className="font-default bold">&copy;</span> 2023 Otlio</li>
                         <li className="inline ml-20"><a href="/terms-and-conditions">Terms</a></li>
                         <li className="inline ml-20"><a href="/privacy-policy">Privacy</a></li>
                     </ul>
