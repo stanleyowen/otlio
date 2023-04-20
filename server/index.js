@@ -18,8 +18,8 @@ const status = process.env.NODE_ENV === 'production'
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.ATLAS_URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true })
-        console.log('MongoDB Database Connected Successfully')
+        const conn = await mongoose.connect(process.env.ATLAS_URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true })
+        console.log(`MongoDB Connected: ${conn.connection.host}`)
     } catch (err) {
         console.error(err.message)
         process.exit(1)
