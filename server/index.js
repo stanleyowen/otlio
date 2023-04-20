@@ -16,6 +16,16 @@ const app = express()
 const PORT = process.env.PORT || 5000
 const status = process.env.NODE_ENV === 'production'
 
+const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.ATLAS_URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true })
+        console.log('MongoDB Database Connected Successfully')
+    } catch (err) {
+        console.error(err.message)
+        process.exit(1)
+    }
+}
+        
 app.use(cors({
     origin: (origin, cb) => {
         if(!origin || process.env.CLIENT_URL.split(',').indexOf(origin) !== -1) cb(null, true)
@@ -63,6 +73,6 @@ app.use('/account', usersRouter)
 app.use('/todo', todoRouter)
 app.use('/oauth', oauthRouter)
 
-mongoose.connect(process.env.ATLAS_URI, { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true })
-mongoose.connection.once('open', () => console.log('MongoDB Database Extablished Successfully'))
-app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`))
+connectDB().then(() => {
+    app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`))
+})
