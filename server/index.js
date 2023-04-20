@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 require('./lib/passport')
 
 const app = express()
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
 const status = process.env.NODE_ENV === 'production'
 
 const connectDB = async () => {
