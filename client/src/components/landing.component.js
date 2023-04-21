@@ -245,6 +245,11 @@ const Landing = () => {
                 </div>
             </div>
             <footer className="footer">
+                <div className='oauth-container mt-10'>
+                    <a href="https://www.netlify.com">
+                        <img src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg" alt="Deploys by Netlify" />
+                    </a>
+                </div>
 				<div>
                     <div className="mb-40 col">
                         <nav className="col">
