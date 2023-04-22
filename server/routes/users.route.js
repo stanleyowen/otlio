@@ -12,13 +12,13 @@ const jwtSecret = process.env.JWT_SECRET
 const status = process.env.NODE_ENV === 'production'
 
 const OTPLimiter = new rateLimit({
-    max: 15,
+    max: 20,
     windowMs: 3600000,
     skipFailedRequests: true,
     handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[41]}, null, 2))
 })
 const Limiter = new rateLimit({
-    max: 5,
+    max: 10,
     windowMs: 86400000, // 1 day
     skipFailedRequests: true,
     handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[30]}, null, 2))

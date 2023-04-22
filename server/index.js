@@ -28,7 +28,7 @@ const connectDB = async () => {
         
 app.use(cors({
     origin: (origin, cb) => {
-        if(!origin || process.env.CLIENT_URL.split(',').indexOf(origin) !== -1) cb(null, true)
+        if(!origin || process.env.CLIENT_URL === "*" || process.env.CLIENT_URL.split(',').indexOf(origin) !== -1) cb(null, true)
         else cb(JSON.stringify({
             status: 401,
             message: 'Connnection has been blocked by CORS Policy: The origin header(s) is not equal to the supplied origin.'
@@ -57,7 +57,7 @@ app.use((req, res, next) => {
 })
 app.use(new rateLimit({
     windowMs: 60000, // 1 minute
-    max: 30,
+    max: 100,
     handler: (req, res) => res.status(429).send(JSON.stringify({status: 429, message: MSG_DESC[41]}, null, 2))
 }))
 app.use((err, req, res, next) => {
