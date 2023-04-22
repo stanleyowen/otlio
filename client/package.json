@@ -19,6 +19,7 @@
     "cross-env": "^7.0.3",
     "date-fns": "^2.25.0",
     "dompurify": "^2.4.0",
+    "dotenv": "^16.0.3",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
     "react-beautiful-dnd": "^13.1.0",

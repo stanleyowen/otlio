@@ -1,0 +1,48 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: server
+    src: ./
+    engine: nodejs16
+    primary: true
+    public: true
+    presets:
+      env:
+        - name: ATLAS_URI
+          default: your_atlas_uri
+        - name: JWT_SECRET
+          default: your_jwt_secret
+        - name: SECRET_KEY_1
+          default: add_your_secret_key
+        - name: SECRET_KEY_2
+          default: add_your_secret_key
+        - name: SECRET_KEY_3
+          default: add_your_secret_key
+        - name: SECRET_KEY_4
+          default: add_your_secret_key
+        - name: SECRET_KEY_5
+          default: add_your_secret_key
+        - name: NODE_ENV
+          default: production
+        - name: CLIENT_URL
+          default: your_client_url
+        - name: GITHUB_ID
+          default: your_github_id
+        - name: GITHUB_SECRET
+          default: your_github_secret
+        - name: GITHUB_CALLBACK
+          default: your_github_callback
+        - name: GOOGLE_ID
+          default: your_google_id
+        - name: GOOGLE_SECRET
+          default: your_google_secret
+        - name: GOOGLE_CALLBACK
+          default: your_google_callback
+        - name: MAIL_SUPPORT
+          default: cs@example.com
+        - name: MAIL_SERVICE
+          default: gmail
+        - name: MAIL_EMAIL
+          default: cs@example.com
+        - name: MAIL_PASSWORD
+          default: admin
