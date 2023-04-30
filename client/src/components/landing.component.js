@@ -23,7 +23,7 @@ const Landing = () => {
         security: false,
         cloud: false,
         github: false,
-        support: false
+        support: false,
     })
 
     const handleChange = (a, b) => setProperties({ ...properties, [a]: b })
@@ -66,11 +66,19 @@ const Landing = () => {
                 updateValue()
             })
         }
+
         if(stars && stars.getAttribute('data-stars')) {
             if (!window.IntersectionObserver) countAnimation()
-            else new IntersectionObserver(a => {
-                    if(a[0].isIntersecting === true) countAnimation()
-                }, { threshold: [1] }).observe(document.getElementById('counter'))
+            else {
+                const observer = new IntersectionObserver(async a => {
+                    // Unobserve the element as soon as the threshold is reached
+                    if(a[0].isIntersecting === true) {
+                            countAnimation();
+                            observer.unobserve(document.getElementById('counter'))
+                        }
+                }, { threshold: [1] })
+                observer.observe(document.getElementById('counter'));
+            }
         }
     }, [data.stars])
 
