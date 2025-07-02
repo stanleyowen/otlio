@@ -24,5 +24,9 @@ USER nodejs
 # Expose the port the app runs on
 EXPOSE 5001
 
+# Set environment variable for Docker
+ENV HOST=0.0.0.0
+ENV PORT=5001
+
 # Define the command to run the application
 CMD ["node", "index.js"]
