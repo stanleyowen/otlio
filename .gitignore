@@ -7,7 +7,6 @@ client/.eslintcache
 client/debug.log
 client/.netlify
 
-client/.env
 client/.DS_Store
 client/.env.local
 client/.env.development.local
@@ -15,7 +14,6 @@ client/.env.test.local
 client/.env.production.local
 
 server/node_modules
-server/.env
 server/.DS_Store.env.local
 server/.env.development.local
 server/.env.test.local
