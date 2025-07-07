@@ -15,6 +15,7 @@ client/.env.production.local
 
 server/node_modules
 server/.DS_Store.env.local
+server/.env.local
 server/.env.development.local
 server/.env.test.local
 server/.env.production.local

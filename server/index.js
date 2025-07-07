@@ -9,7 +9,9 @@ const rateLimit = require("express-rate-limit");
 
 const MSG_DESC = require("./lib/callback");
 
-if (process.env.NODE_ENV !== "production") require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config({ path: ".env.local" });
+}
 require("./lib/passport");
 
 const app = express();
@@ -46,7 +48,9 @@ app.use(
             {
               status: 401,
               message:
-                "Connnection has been blocked by CORS Policy: The origin header(s) is not equal to the supplied origin.",
+                "Connection from " +
+                origin +
+                " has been blocked by CORS Policy: The origin header(s) is not equal to the supplied origin.",
             },
             null,
             2
