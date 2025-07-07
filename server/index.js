@@ -39,7 +39,8 @@ app.use(
       if (
         !origin ||
         process.env.CLIENT_URL === "*" ||
-        process.env.CLIENT_URL.split(",").indexOf(origin) !== -1
+        process.env.CLIENT_URL.split(",").indexOf(origin) !== -1 ||
+        origin.startsWith("tauri://")
       )
         cb(null, true);
       else
