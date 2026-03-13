@@ -15,7 +15,7 @@ if (process.env.NODE_ENV !== "production") {
 require("./lib/passport");
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 3000;
 const status = process.env.NODE_ENV === "production";
 
 const connectDB = async () => {
@@ -54,13 +54,13 @@ app.use(
                 " has been blocked by CORS Policy: The origin header(s) is not equal to the supplied origin.",
             },
             null,
-            2
-          )
+            2,
+          ),
         );
     },
     optionsSuccessStatus: 200,
     credentials: true,
-  })
+  }),
 );
 app.use(helmet());
 app.use(express.json({ limit: "5mb" }));
@@ -75,7 +75,7 @@ app.use(
       secure: status,
       sameSite: status ? "none" : "strict",
     },
-  })
+  }),
 );
 app.use((req, res, next) => {
   res.header("Content-Type", "application/json; charset=UTF-8");
@@ -93,7 +93,7 @@ app.use(
       res
         .status(429)
         .send(JSON.stringify({ status: 429, message: MSG_DESC[41] }, null, 2)),
-  })
+  }),
 );
 app.use((err, req, res, next) => {
   if (err.code !== "EBADCSRFTOKEN") return next(err);
@@ -106,9 +106,9 @@ app.get("/status", (req, res) =>
     JSON.stringify(
       { status: 200, message: "Server is up and running" },
       null,
-      2
-    )
-  )
+      2,
+    ),
+  ),
 );
 
 const usersRouter = require("./routes/users.route");
@@ -119,5 +119,7 @@ app.use("/todo", todoRouter);
 app.use("/oauth", oauthRouter);
 
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
+  app.listen(PORT, "0.0.0.0", () =>
+    console.log(`Server is running on PORT ${PORT}`),
+  );
 });
