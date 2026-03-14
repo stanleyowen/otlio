@@ -38,32 +38,12 @@ export default function App() {
   const server_list = process.env.REACT_APP_SERVER.split(",");
   const info = JSON.parse(localStorage.getItem("info"));
 
-  // Check if user has dismissed migration notice
-  const showMigrationNotice = () => {
-    const migrationNoticeDismissed = localStorage.getItem(
-      "migrationNoticeDismissed"
-    );
-    if (migrationNoticeDismissed !== "true") {
-      const notification = setNotification(
-        NOTIFICATION_TYPES.WARNING,
-        "We're migrating to a new server.\nDue to instance spin-down during inactivity, initialization may take up to 50 seconds. Thanks for your patience!\nClick to dismiss this message."
-      );
-
-      // Add click handler to dismiss permanently
-      notification.style.cursor = "pointer";
-      notification.addEventListener("click", () => {
-        localStorage.setItem("migrationNoticeDismissed", "true");
-        notification.classList.add("hide");
-      });
-    }
-  };
-
   if (info && info.status && info.message) {
     setNotification(
       info.status === 200
         ? NOTIFICATION_TYPES.SUCCESS
         : NOTIFICATION_TYPES.DANGER,
-      info.message
+      info.message,
     );
     localStorage.removeItem("info");
   }
@@ -77,7 +57,7 @@ export default function App() {
       if (window.location.pathname.split("/")[1] === a) {
         if (window.location.pathname.split("/")[1] !== "app")
           window.location = `/login?next=${encodeURIComponent(
-            window.location.pathname
+            window.location.pathname,
           )}`;
         else window.location = "/login";
       }
@@ -137,7 +117,7 @@ export default function App() {
           )
             setNotification(
               NOTIFICATION_TYPES.DANGER,
-              err.response.data.message
+              err.response.data.message,
             );
         });
     }
@@ -145,8 +125,6 @@ export default function App() {
   }, [server]);
 
   useEffect(() => {
-    showMigrationNotice();
-
     async function ping(a) {
       await axios
         .get(`${server_list[a]}/status`)
@@ -160,12 +138,12 @@ export default function App() {
     console.log(
       "%c%s",
       "color: red; background: yellow; font-size: 24px",
-      "WARNING!"
+      "WARNING!",
     );
     console.log(
       "%c%s",
       "font-size: 18px",
-      "Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand."
+      "Using this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS.\nDo not enter or paste code that you do not understand.",
     );
     ping(0);
   }, []);
