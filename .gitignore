@@ -25,3 +25,6 @@ docs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+# Local secrets (server/.env is only an empty template)
+.env.local
+.env.bak

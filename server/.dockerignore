@@ -1,0 +1,8 @@
+*
+!package.json
+!yarn.lock
+!index.js
+!lib/
+!models/
+!routes/
+lib/*.bak

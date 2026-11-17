@@ -1,0 +1,31 @@
+# otlio API in a hardened container, published on 127.0.0.1:3000 for a Cloudflare Tunnel.
+#
+#   cp .env .env.local    # fill in, then:
+#   docker compose up -d --build        (from server/)
+#
+# Config is NOT passed with env_file: Compose would expand any "$" inside the secrets.
+# index.js loads .env.local itself (dotenv) when NODE_ENV is unset, so the file is mounted read-only.
+name: otlio
+services:
+  api:
+    build: .
+    image: otlio:latest
+    container_name: otlio
+    volumes:
+      - ./.env.local:/app/.env.local:ro
+    environment:
+      PORT: "3000"
+      # mongoose 5 triggers DEP0170, whose message includes the full MongoDB URI with credentials.
+      NODE_OPTIONS: "--no-deprecation"
+    ports:
+      - "127.0.0.1:${HOST_PORT:-3000}:3000"
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 384m
+    pids_limit: 64
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
